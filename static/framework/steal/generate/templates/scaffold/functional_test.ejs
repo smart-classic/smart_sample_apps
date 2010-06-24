@@ -1,0 +1,42 @@
+module("<%= underscore %>")
+
+test("<%= plural %> present", function(){
+
+        S.open("//<%= appPath %>/<%= appName %>.html");
+		S('.<%= underscore %>').exists(function(){
+			ok(true, "<%= plural %> present");
+	    });
+
+})
+
+test("create <%= plural %>", function(){
+    S("[name=name]").type("Ice")
+    S("[name=description]").type("Cold Water")
+    S("[type=submit]").click()
+    S('.<%= underscore %>:nth-child(2)').exists()
+    S('.<%= underscore %>:nth-child(2) td:first').text(function(text){
+        ok(text.match(/Ice/), "Typed Ice");
+    });
+})
+
+test("edit <%= plural %>", function(){
+    S('.<%= underscore %>:nth-child(2) a.edit').click();
+    S(".<%= underscore %> input[name=name]").type(" Water")
+    S(".<%= underscore %> input[name=description]").type("\b\b\b\b\bTap Water")
+    S(".update").click()
+    S('.<%= underscore %>:nth-child(2) .edit').exists()
+    S('.<%= underscore %>:nth-child(2) td:first').text(function(text){
+        ok(text.match(/Ice Water/), "Typed Ice Water");
+    });
+    S('.<%= underscore %>:nth-child(2) td:nth-child(2)').text(function(text){
+        ok(text.match(/Cold Tap Water/), "Typed Ice Water");
+    });
+})
+
+
+test("destroy", function(){
+    S(".<%= underscore %>:nth-child(2) .destroy").click()
+    S.confirm(true);
+	S('.<%= underscore %>:nth-child(2)').missing()
+    ok("destroyed");
+});

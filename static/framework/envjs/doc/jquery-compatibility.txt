@@ -1,0 +1,105 @@
+== Testing Methodology ==
+1) Either grab Thatcher's branch for the given date, or make sure your branch 
+   is up to date with all his patches for that date.  (github.com/thatcher/env-js)
+
+2) Run ./bin/test-jquery.sh $VERSION for each version: 1.3.2, 1.3.1, and 1.2.6.
+
+3) Record the number of tests passed/failed/errors reported via the command line.
+
+4) If running a given version of jQuery for the first time, then:
+   a) cd ./test/vendor/jQuery/$VERSION/test
+   b) open index.html in Firefox
+   c) let the tests run to completion
+   d) note the total number of tests at the bottom of the page
+   e) subtract the number of tests passed & failed from this total
+   f) the result is the number of tests that were not ran because
+      of exceptions halting the execution of a test file
+
+5) Note the date and your email here.
+
+
+== 2009-08-18: thatcher.christopher@gmail.com ==
+(ran against github.com/thatcher/env-js)
+
+jQuery 1.3.2:
+* 1346 tests of 1471 passed, 125 failed.
+
+== 2009-08-18: thatcher.christopher@gmail.com ==
+(ran against github.com/thatcher/env-js)
+
+jQuery 1.3.2:
+* 1308 tests of 1472 passed, 164 failed.
+
+== 2009-05-08: larry.karnowski@gmail.com ==
+(ran against github.com/thatcher/env-js)
+
+jQuery 1.3.2:
+* 996 Passed, 91 Failed, 47 Errors [an improvement of 153 passes and 4 less errors!]
+* 1135 total assertions when ran from command line
+* 1358 total assertions when ran in Firefox
+* so 223 assertions didn't run due to exceptions [an improvement of 10]
+
+jQuery 1.3.1:
+* 912 Passed, 114 Failed, 48 Errors [an improvement of 158!]
+* 1077 total assertions when ran from command line [an improvement of 51]
+* 1302 total assertions when ran in Firefox
+* so 225 assertions didn't run due to exceptions
+
+jQuery 1.2.6:
+* 784 Passed, 119 Failed, 0 Errors [an improvement of 21]
+* 911 total tests from command line [total above is only 903; where did the other 8 go?]
+* 1124 total tests when ran in Firefox
+* so 213 tests didn't run due to exceptions [same as before]
+
+== 2009-04-10: larry.karnowski@gmail.com ==
+(ran against github.com/karnowski/env-js)
+(after changing testrunner not to blow up on JavaScript exceptions)
+
+jQuery 1.3.2:
+* 843 Passed, 223 Failed, 51 Errors
+* 1117 total assertions when ran from command line
+* 1358 total assertions when ran in Firefox
+* so 241 assertions didn't run due to exceptions [an improvement of 708!]
+
+jQuery 1.3.1:
+* 754 Passed, 221 Failed, 51 Errors
+* 1026 total assertions when ran from command line
+* 1302 total assertions when ran in Firefox
+* so 276 assertions didn't run due to exceptions [an improvement of 620!]
+
+jQuery 1.2.6:
+* 763 Passed, 142 Failed, 0 Errors
+* 911 total tests from command line
+* 1124 total tests when ran in Firefox
+* so 213 tests didn't run due to exceptions [same as before]
+
+
+== 2009-04-02: larry.karnowski@gmail.com ==
+
+jQuery 1.3.2:
+* 352 Passed, 57 Failed
+* 1358 total tests
+* so 949 tests didn't run due to exceptions
+
+jQuery 1.3.1:
+* 350 Passed, 56 Failed [1 worse than before]
+* 1302 total tests
+* so 896 tests didn't run due to exceptions
+
+jQuery 1.2.6:
+* 763 Passed, 142 Failed [1 worse than before]
+* 1124 total tests
+* so 219 tests didn't run due to exceptions [6 worse than before]
+
+
+== 2009-02-17: larry.karnowski@gmail.com ==
+
+jQuery 1.3.1:
+* 351 Passed, 55 Failed
+* 1302 total tests
+* so 896 tests didn't run due to exceptions
+
+jQuery 1.2.6:
+* 764 Passed, 147 Failed
+* 1124 total tests
+* so 213 tests didn't run due to exceptions

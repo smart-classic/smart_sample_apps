@@ -1,0 +1,43 @@
+
+/* 
+	Classy yet somehow fancy
+	table style created by Radu Bilei
+	for Chris Heilmann's CSS Table Gallery
+	http://twitter.com/radubilei
+	http://icant.co.uk/csstablegallery
+*/
+
+table.pretty,th,td	{	border:none;  border-collapse:collapse; font-family:corbel,'helvetica neue','trebuchet ms',arial,helvetica,sans-serif; font-size:1em; line-height:1.5em}
+table.pretty		{	background:#888; -webkit-border-radius:6px; -moz-border-radius:6px; border-radius:6px; -webkit-box-shadow:1px 1px 10px rgba(0,0,0,0.3); -moz-box-shadow:1px 1px 10px rgba(0,0,0,0.3)}
+caption		{	text-align:left; text-transform:uppercase; font-size:150%; font-weight:bold; padding:1.5em 0; color:black}
+
+table.pretty thead, 
+tfoot			{	color:white; }
+
+table.pretty thead th				{	padding:0.5em 1em; text-transform:uppercase; text-align:left; }
+
+
+table.pretty tbody td,
+table.pretty tbody th				{	font-size:100%; padding:0.5em 1em; background-color:#e5e5e5; vertical-align:top}
+table.pretty tbody th				{	color:#222;	text-align:right; background-image:url(tabel.png); background-repeat:repeat-y; border-right:1px solid #ccc}
+table.pretty tbody td:last-child		{	border-right:1px solid black}
+table.pretty tbody td:first-child		{	border-left:1px solid black}
+
+table.pretty tbody tr.odd th, 
+table.pretty tbody tr.odd td			{	background-color:#eee; color:#222}
+
+table.pretty tfoot td,
+table.pretty tfoot th				{	border:none; padding:0.3em; font-size:80%; text-align: right;}
+table.pretty tfoot th				{	text-align:right}
+
+table.pretty a:link	{	line-height:1em; color:black; display:inline-block; padding:3px 7px; margin:-3px -7px}
+table.pretty a:visited	{	color:#555}
+table.pretty a:hover	{	text-decoration:none; background:black; color:white; -webkit-border-radius:4px; -moz-border-radius:4px; border-radius:4px}
+
+::-moz-selection{	background:#202020; color:white}
+::selection		{	background:#202020; color:white}
+
+table.pretty thead ::-moz-selection, 
+table.pretty tfoot ::-moz-selection	{	background:white; color:#202020}
+table.pretty thead ::selection, 
+table.pretty tfoot ::selection		{	background:white; color:#202020}

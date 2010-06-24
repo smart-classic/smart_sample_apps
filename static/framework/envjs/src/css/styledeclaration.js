@@ -1,0 +1,7 @@
+
+/**
+ * @author thatcher
+ */
+CSSStyleDeclaration = function(){
+
+};

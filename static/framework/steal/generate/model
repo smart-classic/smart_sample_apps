@@ -1,0 +1,21 @@
+if (_args.length < 1) {
+	print("USAGE : steal/js steal/generate/model ClassName Type")
+	print("TYPES : JsonRest\n")
+	print("EX    : steal/js steal/generate/model Cashnet.Models.Customer");
+	print("      > cashnet/models/customer.js")
+	print();
+	quit();
+}
+
+load('steal/rhino/loader.js');
+rhinoLoader(function(){
+	steal.plugins('steal/ejs','steal/file','steal/generate','steal/inflector');
+});
+
+(function(){
+	$modelName = _args[0];
+	$modelType = _args[1];
+	load("steal/generate/parts/convert.js")
+	load("steal/generate/parts/model.js")
+	new Generate().postGenerationMessage();
+})();
