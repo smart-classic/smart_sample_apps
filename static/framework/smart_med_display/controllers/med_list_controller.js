@@ -38,7 +38,7 @@ extend('SmartMedDisplay.Controllers.MedListController',
     },
     
 	"#ExpandMeds, #TheList click": function() {
-				SmartMedDisplay.Models.Med.getMeds(
+				SmartMedDisplay.Models.Med.get(
 				this.callback(function(data) 
 				{
 					this.expanded = !this.expanded;
