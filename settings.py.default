@@ -2,7 +2,7 @@
 
 ## PARAMETERS TO REVIEW
 
-APP_HOME = "/home/jmandel/Desktop/smart/smart_sample_app"
+APP_HOME = "/web/smart_meds_app"
 
 ####
 #### Below here probably doesn't need modification
