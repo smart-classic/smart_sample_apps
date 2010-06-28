@@ -8,7 +8,7 @@ extend('SmartMedDisplay.Models.Med',
 /* @Static */
 {
 	api_function: "meds.get_all",	
-	objectType: "<med:medication>",
+	objectType: "med:medication",
 	instantiateByType: function() {
 		if (this.rdf === undefined || !this.rdf instanceof jQuery.rdf)
 			throw "rdfToMeds needs a jquery.rdf to work with!";
@@ -32,12 +32,13 @@ extend('SmartMedDisplay.Models.Med',
 			ret.push(new SmartMedDisplay.Models.Med({
 				drug: m.medlabel.value,
 				dose: m.dose.value,
-				unit: m.doseUnits.value.path,
+				unit: m.doseUnits.value.fragment,
 				frequency: m.freq.value,
-				route: m.route.value.path,
+				route: m.route.value.fragment,
 				strength: m.strength.value,
-				strengthUnits: m.strengthUnits.value.path,
-				form: m.form.value.path
+				strengthUnits: m.strengthUnits.value.fragment,
+				form: m.form.value.fragment,
+				cui: m.cui.value
 			}));
 		}
 		
@@ -50,13 +51,15 @@ extend('SmartMedDisplay.Models.Med',
 	init: function(params) {
 		this.drug = params.drug;
 		this.dose = params.dose;
-		this.unit = params.unit+ "("+
+		this.unit = params.unit+ " ("+
 				params.strength+" " + 
-				params.strengthUnits+" " + 
-				params.form+")";
+				params.strengthUnits+ 
+				//params.form+
+				")";
 		this.route = params.route;
 		this.frequency = params.frequency||"";
 		this.notes = params.notes || "";	
+		this.cui = params.cui;
 	},
 
     properName : function() {

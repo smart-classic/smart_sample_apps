@@ -1,32 +1,17 @@
 /**
  * @tag controllers, home
  */
-SmartMedDisplay.Controllers.KeybindController.
-extend('SmartMedDisplay.Controllers.MedListController',
+jQuery.Controller.
+extend('SmartMedDisplay.Controllers.RxnormController',
 /* @Static */
 {
 },
 /* @Prototype */
 {
 	init: function() {
-		var v = this.view('init', {} );
-		this.element.html(v);
-		this.expanded = false;
-		this.expandedElt = $("#ExpandedMeds");
-		this.slideDelay = 60;
-		this.selectedRow = 0;
-		
-		if (this.expandedElt.length === 0) {
-			this.expandedElt = $("<div id='ExpandedMeds'></div>");
-			$("#ExpandMeds").parent().append(this.expandedElt);
-		}
-
-		// It would be nice to have these automatically unbind on teardown.
-		this.bindKeys("j", "k");
-		
-		$("#TheList").click();		
-        
-},
+		this.element.html("");
+   
+	},
 
     "#DestroyButton click" : function() {
         	this.element.controller().destroy();
@@ -41,7 +26,6 @@ extend('SmartMedDisplay.Controllers.MedListController',
 				SmartMedDisplay.Models.Med.get(
 				this.callback(function(data) 
 				{
-					this.meds = data;
 					this.expanded = !this.expanded;
 					$("#ExpandMeds").html(this.expanded? "-" : "+");
 
@@ -51,9 +35,6 @@ extend('SmartMedDisplay.Controllers.MedListController',
 						var v = this.view('meds', {meds: data});
 						this.expandedElt.hide().html(v).fadeIn(this.slideDelay);
 						this.selectedRow = 0;
-
-						var $old_sel = $(".medtable tr.selected");
-						this.moveSel($old_sel, $old_sel);
 					}
 			     }), 
 			     function(){alert("Error!");});
@@ -77,15 +58,6 @@ extend('SmartMedDisplay.Controllers.MedListController',
 			$("TD:first-child", $old_sel).html("");
 			$("TD:first-child", $new_sel).html(">");
 			$new_sel.addClass("selected");
-
-			this.selectedRow = $(".medtable tr").index($new_sel);
-			
-			$("#MedDetails").html(
-					this.view('table',
-					{
-						data: SmartMedDisplay.Models.MedDetails.
-							getDetails(this.meds[this.selectedRow])
-					}));
 		}
 		
 	}
