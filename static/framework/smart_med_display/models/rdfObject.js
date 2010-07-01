@@ -32,7 +32,7 @@ $.Model.extend('SmartMedDisplay.Models.rdfObject',
 	
 	get: function(success, error){
 		SMART.api_call(	
-					this.api_function+"/records/"+SMART.record_info.id, 
+					this.api_function+"/records/"+SMART.record_info.id+"/", 
     				{}, 
     				this.callback([this.rdfToJS, success])
     			);  

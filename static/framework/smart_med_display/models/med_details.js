@@ -8,7 +8,7 @@ extend('SmartMedDisplay.Models.MedDetails',
 /* @Static */
 {
 	getDetails : function(med) {
-
+		
 		var s = "<"+med.cui._string+"> "
 		var r = med.Class.rdf
 		 .where(s+ " ?p ?o");
