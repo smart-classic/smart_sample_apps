@@ -13,5 +13,3 @@
 </tr>
 {% } %}
 </table>
-
-<button id='DestroyButton'>Destroy</button>

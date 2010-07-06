@@ -2,13 +2,30 @@
 <html>
   <head>
     <title>MedDisplay App</title>
-    </head>
+	<script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true" type="text/javascript"></script>
+	<script type='text/javascript' src='framework/steal/steal.js?smart_med_display,development'></script>
+  </head>
 
   <body>
+	<em id="UserDisplay">Smart MedList Loading...</em>
+	<div id='MedListTabs'>
+	<ul>
+	<li>
+	<a href="#tabs-list">Med List</a>
+	</li>
+    <li>
+    <a href="#tabs-timeline">Timeline</a>
+    </li>
+    </ul>
+	<div id='tabs-list'>
+	<div id="MedList"></div>
+    <div id="MedDetails" style="float: left;">Med Details here...</div><br clear="both"/>
+	</div>
 
-	<h2 id="UserDisplay">Smart MedList Loading...</h2>
-    <div id="MedList"></div>
-    <div id="MedDetails" style="float: left;">Med Details here...</div>
-	<script type='text/javascript' src='framework/steal/steal.js?smart_med_display,development'></script>
+	<div id="tabs-timeline">
+	<div id="tl"></div>
+    </div>
+
+    </div>
   </body>
 </html>

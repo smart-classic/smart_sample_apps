@@ -28,7 +28,9 @@ extend('SmartMedDisplay.Models.Med',
 		 .optional("?med med:dose ?dose")
 		 .optional("?med med:doseUnits ?doseUnits")
 		 .optional("?med med:route ?route")
-		 .optional("?med med:frequency ?freq");
+		 .optional("?med med:frequency ?freq")
+		 .optional("?med med:startDate ?sd")
+		 .optional("?med med:endDate ?ed");
 			
 		for (var i = 0; i < r.length; i++) {
 			var m = r[i];
@@ -41,12 +43,15 @@ extend('SmartMedDisplay.Models.Med',
 				strength: m.strength?m.strength.value: "",
 				strengthUnits:m.strengthUnits? m.strengthUnits.value.fragment: "",
 				form: m.form?m.form.value.fragment: "",
-				cui: m.cui ? m.cui.value: ""
+				cui: m.cui ? m.cui.value: "",
+				rdf : m
 			}));
 		}
 		
 		return ret;
 	}
+
+
 	
 },
 /* @Prototype */
@@ -64,9 +69,49 @@ extend('SmartMedDisplay.Models.Med',
 		this.frequency = params.frequency||"";
 		this.notes = params.notes || "";	
 		this.cui = params.cui;
+		this.rdf = params.rdf;
+		
+
+		if (params.rdf.sd)
+		{
+		var start = this.Class.rdf.where(params.rdf.sd.value + " dc:date ?start")[0].start.value;
+		this.start_date = Date.parse(start).toISOString();
+		}
+		else this.start_date = null;
+		
+		if (params.rdf.ed){
+		var end = this.Class.rdf.where(params.rdf.ed.value + " dc:date ?end")[0].end.value;
+		this.end_date  = Date.parse(end).toISOString();
+		}
+		else this.end_date = null;
+
 	},
 
     properName : function() {
 		return this.drug.toUpperCase();
+	},
+	
+	
+	toString: function() {
+		 return this.dose + " " + this.unit + " " + this.route + " " + this.frequency;	
+	},
+	
+	toTimelineEvent : function() {
+		var event = {};
+		event.title = this.drug;
+		event.description = this.toString();
+		event.isDuration = false;
+		
+		if (this.start_date|| this.end_date)
+		{
+			event.start = this.start_date ;//"2008-08-05";// this.rdf.start_date.value;
+			event.end = this.end_date;
+			event.isDuration = true;
+			event.image = "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";		
+		}
+		
+		return event;
 	}
+	
+	
 });

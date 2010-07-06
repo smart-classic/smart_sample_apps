@@ -9,8 +9,11 @@ steal.plugins('jquery/controller','jquery/controller/subscribe',
 	      .then('scripts/smart-api-client')
 	      .then('scripts/jquery.hotkeys')
 	      .then('scripts/jquery.addons')
+	      .then('scripts/jquery-ui-1.8.2.custom.min')
+	      .then('scripts/date')
 	      .then('scripts/jquery.rdfquery.core-1.0')
-    .create_link('/framework/smart_med_display/stylesheets/med_display.css') // this is bad, need good path interp.
+    .create_link('/framework/smart_med_display/stylesheets/med_display.css')
+    .create_link('/framework/smart_med_display/stylesheets/jquery-ui-1.8.2.custom.css')// this is bad, need good path interp.
     .resources()
      .models('rdfObject', 'med', 'med_details')
      .controllers('keybind', 'med_list', 'med_display')
