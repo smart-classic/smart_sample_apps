@@ -33,8 +33,22 @@
 		});
 		
 		var is_a_statin = function(drug) {
-			return (drug.match("statin$"));
-		}
+		
+			if (drug.match(/statin$/i)) return true;
+			if (drug.match(/Advicor/i)) return true;
+			if (drug.match(/Altoprev/i)) return true;
+			if (drug.match(/Caduet/i)) return true;
+			if (drug.match(/Crestor/i)) return true;
+			if (drug.match(/Lescol/i)) return true;
+			if (drug.match(/Lipitor/i)) return true;
+			if (drug.match(/Mevacor/i)) return true;
+			if (drug.match(/Pravachol/i)) return true;
+			if (drug.match(/Simcor/i)) return true;
+			if (drug.match(/Vytorin/i)) return true;
+			if (drug.match(/Zocor/i)) return true;
+			
+			return false;
+	    }
 		
 	</script>
   </body>
