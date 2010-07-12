@@ -8,16 +8,23 @@ extend('SmartMedDisplay.Models.MedDetails',
 /* @Static */
 {
 	getDetails : function(med) {
-		
-		var s = "<"+med.cui._string+"> "
-		var r = med.Class.rdf
-		 .where(s+ " ?p ?o");
-		
-		var ret = {};
-		for (var i = 0; i < r.length; i++)
-			ret[r[i].p.value._string] = r[i].o.value._string || r[i].o.value;
-		
-		return ret;
+	
+	var s = "<"+med.cui._string+"> "
+	var r = med.Class.rdf
+	 .where(s+ " ?p ?o");
+	
+	var ret = {};
+	for (var i = 0; i < r.length; i++)
+		ret[r[i].p.value._string] = r[i].o.value._string || r[i].o.value;
+	
+	var r = med.Class.rdf
+			.where(med.rdf.med.value+" ?p ?o")
+			.where("?o ?f_field ?f_detail");
+
+	for (var i = 0; i < r.length; i++)
+		ret[r[i].f_field.value._string] = r[i].f_detail.value._string || r[i].f_detail.value;
+	
+	return ret;
 		
 	}
 },
