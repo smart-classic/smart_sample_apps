@@ -22,10 +22,13 @@ extend('SmartMedDisplay.Models.MedDetails',
 			.where("?o ?f_field ?f_detail");
 
 	for (var i = 0; i < r.length; i++)
-		ret[r[i].f_field.value._string] = r[i].f_detail.value._string || r[i].f_detail.value;
+	{
+		var field = r[i].f_field.value._string;
+		var value = r[i].f_detail.type=="bnode"? "" : r[i].f_detail.value._string || r[i].f_detail.value
+		ret[field] = value;
+	}
 	
-	return ret;
-		
+	return ret;	
 	}
 },
 /* @Prototype */

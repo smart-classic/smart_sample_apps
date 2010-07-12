@@ -28,6 +28,7 @@ extend('SmartMedDisplay.Models.Med',
 		 .optional("?med med:dose ?dose")
 		 .optional("?med med:doseUnits ?doseUnits")
 		 .optional("?med med:route ?route")
+		 .optional("?med med:notes ?notes")
 		 .optional("?med med:frequency ?freq")
 		 .optional("?med med:startDate ?sd")
 		 .optional("?med med:endDate ?ed");
@@ -43,6 +44,7 @@ extend('SmartMedDisplay.Models.Med',
 				strength: m.strength?m.strength.value: "",
 				strengthUnits:m.strengthUnits? m.strengthUnits.value.fragment: "",
 				form: m.form?m.form.value.fragment: "",
+				notes: m.notes?m.notes.value: "",
 				cui: m.cui ? m.cui.value: "",
 				rdf : m
 			}));
