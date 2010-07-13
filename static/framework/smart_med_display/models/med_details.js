@@ -13,9 +13,13 @@ extend('SmartMedDisplay.Models.MedDetails',
 	var r = med.Class.rdf
 	 .where(s+ " ?p ?o");
 	
-	var ret = {};
+	var ret = [];
 	for (var i = 0; i < r.length; i++)
-		ret[r[i].p.value._string] = r[i].o.value._string || r[i].o.value;
+	{
+		var field  = r[i].p.value._string;
+		var value = r[i].o.value._string || r[i].o.value;
+		ret.push([field, value]);
+	}
 	
 	var r = med.Class.rdf
 			.where("<"+med.rdf.med.value+"> ?p ?o")
@@ -25,7 +29,7 @@ extend('SmartMedDisplay.Models.MedDetails',
 	{
 		var field = r[i].f_field.value._string;
 		var value = r[i].f_detail.type=="bnode"? "" : r[i].f_detail.value._string || r[i].f_detail.value
-		ret[field] = value;
+		ret.push([field, value]);
 	}
 	
 	return ret;	

@@ -1,6 +1,7 @@
 <table class='detailsTable'>
-{%  for (var n in data)  { 
-         var v =  data[n];
+{%  for (var d = 0; d < data.length;d++)  { 
+         var n = data[d][0];
+         var v = data[d][1];
 %}
 <tr >
   <td>{%= n %}</td>
