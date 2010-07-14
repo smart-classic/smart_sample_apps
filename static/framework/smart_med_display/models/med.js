@@ -19,23 +19,26 @@ extend('SmartMedDisplay.Models.Med',
 		this.rdf.prefix("med","http://smartplatforms.org/med#");
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
 		       		
-		var r = this.rdf
-		 .where("?med rdf:type "+this.object_type)
-		 .where("?med dcterms:title ?medlabel")
-		 .optional("?med med:strength ?strength")
-		 .optional("?med med:strengthUnits ?strengthUnits")
-		 .optional("?med med:form ?form")
-		 .optional("?med med:drug ?cui")
-		 .optional("?med med:dose ?dose")
-		 .optional("?med med:doseUnits ?doseUnits")
-		 .optional("?med med:route ?route")
-		 .optional("?med med:notes ?notes")
-		 .optional("?med med:frequency ?freq")
-		 .optional("?med med:startDate ?sd")
-		 .optional("?med med:endDate ?ed");
+		var r = this.rdf.where("?med rdf:type "+this.object_type);
 			
 		for (var i = 0; i < r.length; i++) {
-			var m = r[i];
+			 var med = "<"+r[i].med.value+"> ";
+			 
+			 var details = this.rdf
+			 .where( med+"dcterms:title ?medlabel")
+			 .optional(med+"med:strength ?strength")
+			 .optional(med+"med:strengthUnits ?strengthUnits")
+			 .optional(med+"med:form ?form")
+			 .optional(med+"med:drug ?cui")
+			 .optional(med+"med:dose ?dose")
+			 .optional(med+"med:doseUnits ?doseUnits")
+			 .optional(med+"med:route ?route")
+			 .optional(med+"med:notes ?notes")
+			 .optional(med+"med:frequency ?freq")
+			 .optional(med+"med:startDate ?sd")
+			 .optional(med+"med:endDate ?ed")[0];
+			
+			var m = details;
 			ret.push(new SmartMedDisplay.Models.Med({
 				drug: m.medlabel.value,
 				dose: m.dose? m.dose.value :  "",
@@ -47,7 +50,7 @@ extend('SmartMedDisplay.Models.Med',
 				form: m.form?m.form.value.fragment: "",
 				notes: m.notes?m.notes.value: "",
 				cui: m.cui ? m.cui.value: "",
-				rdf : m
+				rdf : r[i]
 			}));
 		}
 		
