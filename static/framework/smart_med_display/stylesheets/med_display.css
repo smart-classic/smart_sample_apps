@@ -13,3 +13,8 @@ TR.selected {background:none repeat scroll 0 0 #AAC0CC;}
     position: absolute;
     left: -10000px;
 }
+
+.timeline-event-label, .timeline-default{
+    font-family: Trebuchet MS, Helvetica, Arial, sans serif;
+    font-size: 8pt;
+}

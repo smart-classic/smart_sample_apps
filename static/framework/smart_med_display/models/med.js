@@ -52,6 +52,14 @@ extend('SmartMedDisplay.Models.Med',
 		}
 		
 		return ret;
+	},
+	earlier: function(a,b)
+	{	if (a == null) return b;
+		if (b == null) return a;
+		return (a<b)? a : b;
+	},
+	later: function(a,b){
+		return this.earlier(b,a);
 	}
 
 
@@ -78,13 +86,13 @@ extend('SmartMedDisplay.Models.Med',
 		if (params.rdf.sd)
 		{
 		var start = this.Class.rdf.where(params.rdf.sd.value + " dc:date ?start")[0].start.value;
-		this.start_date = Date.parse(start).toISOString();
+		this.start_date = Date.parse(start);
 		}
 		else this.start_date = null;
 		
 		if (params.rdf.ed){
 		var end = this.Class.rdf.where(params.rdf.ed.value + " dc:date ?end")[0].end.value;
-		this.end_date  = Date.parse(end).toISOString();
+		this.end_date  = Date.parse(end);
 		}
 		else this.end_date = null;
 
@@ -98,22 +106,64 @@ extend('SmartMedDisplay.Models.Med',
 	toString: function() {
 		 return this.dose + " " + this.unit + " " + this.route + " " + this.frequency;	
 	},
+	getDispenseEvents: function() {
+		var ds = [];
+		var fulfillments = this.Class.rdf
+						   .where("<"+this.rdf.med.value+"> ?med:fulfillment ?f")
+						   .where("?f dc:date ?d")
+						   .optional("?f sp:dispenseQuantity ?q");
+
+		for (var i = 0; i < fulfillments.length; i++)
+		{
+			var devent = {};
+
+			var d = Date.parse(fulfillments[i].d.value.substring(0,10));
+			
+			devent.title = fulfillments[i].q.value;
+			devent.description = d.toString('M/d/yyyy') + ": Dispensed " + fulfillments[i].q.value;
+			devent.start = d;
+
+			devent.instant = true;
+			ds.push(devent);
+		}
+		
+		ds.sort(function(a,b){return (a.start>b.start)-(a.start<b.start);});
+
+		return ds;
+	},
 	
-	toTimelineEvent : function() {
-		var event = {};
-		event.title = this.drug;
-		event.description = this.toString();
-		event.isDuration = false;
+	toTimelineEvents : function() {
+		var dispenses = this.getDispenseEvents();
+		if (dispenses.length > 0)
+		{
+			this.start_date = this.Class.earlier(this.start_date,dispenses[0].start);
+			this.end_date = this.Class.later(this.end_date, dispenses[dispenses.length-1].start);
+			
+		}
+		
+		var main_event = {};
+		main_event.title = this.drug;
+		main_event.description = this.toString();
 		
 		if (this.start_date|| this.end_date)
 		{
-			event.start = this.start_date ;//"2008-08-05";// this.rdf.start_date.value;
-			event.end = this.end_date;
-			event.isDuration = true;
-			event.image = "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";		
-		}
+			main_event.instant = false;
+			main_event.start = this.start_date ;//"2008-08-05";
+			main_event.end = this.end_date;
+			main_event.image = "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";		
+		}		
 		
-		return event;
+		
+		if (main_event.start != main_event.end){
+			dispenses.push(main_event);
+		} else
+		{
+			dispenses[0].title = main_event.title +": " + dispenses[0].title;
+			main_event.title = "";
+		}
+	
+		
+		return dispenses;
 	}
 	
 	

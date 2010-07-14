@@ -99,9 +99,19 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		}
 	},
 	timelineData : function() {
-		var events = []
+		var events = [];
+		var rownum=-1;
+		             
 		for (var i = 0; i < this.meds.length; i++) {
-			events.push(this.meds[i].toTimelineEvent());
+			var med_events = this.meds[i].toTimelineEvents();
+			rownum++;
+			for (var j = 0; j< med_events.length; j++)
+			{
+				if (med_events[j].instant === false) rownum++;
+				med_events[j].trackNum = ""+rownum;
+				med_events[j].description += "And tracknum "+rownum;
+				events.push(med_events[j]);	
+			}
 		}
 		
 		var ret = {};
@@ -111,36 +121,32 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		ret.events = events;
 		
 		return ret;
+		
 	},
-	earliestMed : function() {
+	earliestEvent : function(events) {
 		var d = new Date(); // start with today's date as the assumption to disprove.
-		for (var i = 0; i < this.meds.length; i++ ) {
-			if (this.meds[i].start_date === null) continue;
-			var one_date = Date.parse(this.meds[i].start_date.substring(0,10));
-			
-			if (one_date < d)
-				d = one_date;
+		for (var i = 0; i < events.length; i++ ) {
+			if (events[i].start < d)
+				d = events[i].start;			
 		}
 		return d.toISOString().substring(0,10);
 	},
-	latestMed : function() {
+	latestEvent : function(events) {
 		var d = new Date(1000,1,1); // start with today's date as the assumption to disprove.
-		for (var i = 0; i < this.meds.length; i++ ) {
-			if (this.meds[i].end_date === null) continue;
-			var one_date = Date.parse(this.meds[i].end_date.substring(0,10));
-			
-			if (one_date > d)
-				d = one_date;
+		for (var i = 0; i < events.length; i++ ) {
+			var ev_end = events[i].end ? events[i].end : events[i].start;
+			if (ev_end > d)
+				d = ev_end;			
 		}
 		return d.toISOString().substring(0,10);
 	},
-	replaceUndefinedDates : function(earliest, latest) {
-		for (var i = 0; i < this.meds.length; i++ ) {
-			m = this.meds[i];
-			if (!(m.start_date || m.end_date)) m;
+	replaceUndefinedDates : function(events) {
+		for (var i = 0; i < events.length; i++ ) {
+			if (typeof(events[i].start)=="object")
+				events[i].start=events[i].start.toISOString().substring(0,10);
+			if (typeof(events[i].end)=="object")
+				events[i].end=events[i].end.toISOString().substring(0,10);
 			
-			if (m.start_date === null) m.start_date = earliest;
-			if (m.end_date === null) m.end_date = latest;
 		}
 	},
 	
@@ -150,19 +156,24 @@ extend('SmartMedDisplay.Controllers.MedListController',
         var eventSource1 = new Timeline.DefaultEventSource();
         
         var theme1 = Timeline.ClassicTheme.create();
-        theme1.event.tape.height=10;
-        theme1.event.track.height = 10;
-        theme1.event.track.gap = 10;
-        theme1.event.instant.icon = "/framework/smart_med_display/images/1x1.png";
+//        theme1.event.tape.height=10;
+//        theme1.event.track.height = 10;
+//        theme1.event.track.gap = 2;
+//        theme1.event.label.offsetFromLine = 100;
+//        theme1.event.instant.iconWidth = 2;
+//        theme1.event.instant.iconHeight = 2;        
+//        theme1.event.instant.icon = "/framework/smart_med_display/images/1x1.png";
         
         theme1.autoWidth = true; // Set the Timeline's "width" automatically.
                                  // Set autoWidth on the Timeline's first band's theme,
                                  // will affect all bands.
 
-        theme1.timeline_start = this.earliestMed();//new Date(Date.UTC(2008, 0, 1));
-        theme1.timeline_stop  = this.latestMed();//new Date(Date.UTC(2010, 0, 1));
+        var eventData = this.timelineData();
         
-        this.replaceUndefinedDates(theme1.timeline_start, theme1.timeline_stop);
+        theme1.timeline_start = this.earliestEvent(eventData.events);//new Date(Date.UTC(2008, 0, 1));
+        theme1.timeline_stop  = this.latestEvent(eventData.events);//new Date(Date.UTC(2010, 0, 1));
+        
+        this.replaceUndefinedDates(eventData.events);
         
         var one_day=1000*60*60*24;
         var numDays =  (Date.parse(theme1.timeline_stop).getTime() - Date.parse(theme1.timeline_start).getTime()) / one_day;
@@ -184,7 +195,7 @@ extend('SmartMedDisplay.Controllers.MedListController',
         // create the Timeline
         this.tl = Timeline.create(tl_el, bandInfos, Timeline.HORIZONTAL);
         var url = '.';
-        eventSource1.loadJSON(this.timelineData(), url);
+        eventSource1.loadJSON(eventData, url);
         this.tl.layout();
 	}
 	
