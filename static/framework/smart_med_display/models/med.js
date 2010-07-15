@@ -52,6 +52,7 @@ extend('SmartMedDisplay.Models.Med',
 				notes: m.notes?m.notes.value: "",
 				cui: m.cui ? m.cui.value: "",
 				rdf : r[i],
+					details: m,
 				nodename: med
 			}));
 		}
@@ -88,15 +89,15 @@ extend('SmartMedDisplay.Models.Med',
 		this.rdf = params.rdf;
 		this.nodename = params.nodename;
 
-		if (params.rdf.sd)
+		if (params.details.sd)
 		{
-		var start = this.Class.rdf.where(params.rdf.sd.value + " dc:date ?start")[0].start.value;
+		var start = this.Class.rdf.where(params.details.sd.value + " dc:date ?start")[0].start.value;
 		this.start_date = Date.parse(start);
 		}
 		else this.start_date = null;
 		
-		if (params.rdf.ed){
-		var end = this.Class.rdf.where(params.rdf.ed.value + " dc:date ?end")[0].end.value;
+		if (params.details.ed){
+		var end = this.Class.rdf.where(params.details.ed.value + " dc:date ?end")[0].end.value;
 		this.end_date  = Date.parse(end);
 		}
 		else this.end_date = null;
@@ -116,7 +117,7 @@ extend('SmartMedDisplay.Models.Med',
 
 
 		var fulfillments = this.Class.rdf
-		    .where(this.nodename+" ?med:fulfillment ?f")
+		    .where(this.nodename+" med:fulfillment ?f")
 		    .where("?f dc:date ?d")
 		    .optional("?f sp:dispenseQuantity ?q");
 
@@ -161,7 +162,7 @@ extend('SmartMedDisplay.Models.Med',
 		}		
 		
 		
-		if (main_event.start != main_event.end){
+		if (main_event.start != main_event.end || dispenses.length == 0){
 			dispenses.push(main_event);
 		} else
 		{
