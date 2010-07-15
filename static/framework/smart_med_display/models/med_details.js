@@ -12,7 +12,7 @@ extend('SmartMedDisplay.Models.MedDetails',
 	var ret = [];
 
 	var r = med.Class.rdf
-	.where("<"+med.rdf.med.value+"> ?p ?o")
+	.where(this.nodename+" ?p ?o")
 	.where("?o ?f_field ?f_detail");
 
 	for (var i = 0; i < r.length; i++)

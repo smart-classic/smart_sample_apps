@@ -22,21 +22,22 @@ extend('SmartMedDisplay.Models.Med',
 		var r = this.rdf.where("?med rdf:type "+this.object_type);
 			
 		for (var i = 0; i < r.length; i++) {
-			 var med = "<"+r[i].med.value+"> ";
-			 
+		    var med = r[i].med.value;
+		    if (r[i].med.type === 'uri') med = "<"+med+">";
+
 			 var details = this.rdf
-			 .where( med+"dcterms:title ?medlabel")
-			 .optional(med+"med:strength ?strength")
-			 .optional(med+"med:strengthUnits ?strengthUnits")
-			 .optional(med+"med:form ?form")
-			 .optional(med+"med:drug ?cui")
-			 .optional(med+"med:dose ?dose")
-			 .optional(med+"med:doseUnits ?doseUnits")
-			 .optional(med+"med:route ?route")
-			 .optional(med+"med:notes ?notes")
-			 .optional(med+"med:frequency ?freq")
-			 .optional(med+"med:startDate ?sd")
-			 .optional(med+"med:endDate ?ed")[0];
+			 .where( med+" dcterms:title ?medlabel")
+			 .optional(med+" med:strength ?strength")
+			 .optional(med+" med:strengthUnits ?strengthUnits")
+			 .optional(med+" med:form ?form")
+			 .optional(med+" med:drug ?cui")
+			 .optional(med+" med:dose ?dose")
+			 .optional(med+" med:doseUnits ?doseUnits")
+			 .optional(med+" med:route ?route")
+			 .optional(med+" med:notes ?notes")
+			 .optional(med+" med:frequency ?freq")
+			 .optional(med+" med:startDate ?sd")
+			 .optional(med+" med:endDate ?ed")[0];
 			
 			var m = details;
 			ret.push(new SmartMedDisplay.Models.Med({
@@ -50,7 +51,8 @@ extend('SmartMedDisplay.Models.Med',
 				form: m.form?m.form.value.fragment: "",
 				notes: m.notes?m.notes.value: "",
 				cui: m.cui ? m.cui.value: "",
-				rdf : r[i]
+				rdf : r[i],
+				nodename: med
 			}));
 		}
 		
@@ -84,7 +86,7 @@ extend('SmartMedDisplay.Models.Med',
 		this.notes = params.notes || "";	
 		this.cui = params.cui;
 		this.rdf = params.rdf;
-		
+		this.nodename = params.nodename;
 
 		if (params.rdf.sd)
 		{
@@ -111,10 +113,12 @@ extend('SmartMedDisplay.Models.Med',
 	},
 	getDispenseEvents: function() {
 		var ds = [];
+
+
 		var fulfillments = this.Class.rdf
-						   .where("<"+this.rdf.med.value+"> ?med:fulfillment ?f")
-						   .where("?f dc:date ?d")
-						   .optional("?f sp:dispenseQuantity ?q");
+		    .where(this.nodename+" ?med:fulfillment ?f")
+		    .where("?f dc:date ?d")
+		    .optional("?f sp:dispenseQuantity ?q");
 
 		for (var i = 0; i < fulfillments.length; i++)
 		{
