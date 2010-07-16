@@ -117,7 +117,7 @@ extend('SmartMedDisplay.Models.Med',
 
 
 		var fulfillments = this.Class.rdf
-		    .where(this.nodename+" med:fulfillment ?f")
+		    .where(this.nodename+" sp:fulfillment ?f")
 		    .where("?f dc:date ?d")
 		    .optional("?f sp:dispenseQuantity ?q");
 
