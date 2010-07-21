@@ -81,15 +81,17 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 			// api calls have a function name and named variables
 			// we have to track the calls because asynchronicity might
 			// make the results come back in a different order
-			this.api_call = function(func, params, callback) {
+			this.api_call = function(options, callback) {
 				var call_uuid = randomUUID();
 				this.active_calls[call_uuid] = callback;
 
 				this.frame.postMessage(JSON.stringify( {
 					'type' : 'apicall',
 					'uuid' : call_uuid,
-					'func' : func,
-					'params' : params
+					'func' : options.url,
+					'method': options.method,
+					'params' : options.data,
+					'contentType' : options.contentType || "application/x-www-form-urlencoded"
 				}), this.smart_server_origin);
 			}
 
@@ -217,24 +219,30 @@ function randomUUID() {
 
 SMART_CLIENT.prototype.MEDS_get_all = function(callback) {
 	var _this = this;
-	this.api_call("med_store/records/" + SMART.record_info.id + "/", {},
-			function(contentType, data) {
+	this.api_call({method: 'GET', 
+		   url: "med_store/records/" + SMART.record_info.id + "/", 
+		   data: {}},
+	function(contentType, data) {
 				var rdf = _this.process_rdf(contentType, data);
 				callback(rdf);
+			});
+	
+};
+
+
+SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
+	var _this = this;
+	this.api_call({method: 'POST', 
+				   url: "med_store/records/" + SMART.record_info.id + "/", 
+				   contentType: 'application/rdf+xml', 
+				   data: data},
+			function(contentType, data) {
+				callback(data);
 			});
 };
 
 SMART_CLIENT.prototype.createXMLDocument = function(string) {
-	var browserName = navigator.appName;
-	var doc;
-	if (browserName == 'Microsoft Internet Explorer') {
-		doc = new ActiveXObject('Microsoft.XMLDOM');
-		doc.async = 'false'
-		doc.loadXML(string);
-	} else {
-		doc = (new DOMParser()).parseFromString(string, 'text/xml');
-	}
-	return doc;
+	return (new DOMParser()).parseFromString(string, 'text/xml');
 };
 
 SMART_CLIENT.prototype.process_rdf = function(contentType, data) {

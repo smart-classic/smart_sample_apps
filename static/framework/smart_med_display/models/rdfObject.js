@@ -18,6 +18,10 @@ $.Model.extend('SmartMedDisplay.Models.rdfObject',
     			);  
     },
 
+    post: function(data, success, error){
+		SMART.MEDS_post(data, success);  
+    },
+
     // Abstract function
     instantiateByType : function() {
     	throw "Subclass must implement abstract function instantiateByType - do not call on rdfObject directly!";

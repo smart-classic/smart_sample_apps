@@ -29,6 +29,11 @@ extend('SmartMedDisplay.Controllers.MedListController',
 			$("#ExpandMeds").parent().append(this.expandedElt);
 		}
 
+		$('#AddMedsButton').click(function() {
+			SmartMedDisplay.Models.Med.post($('#AddMedsText').val(), function(){alert("Meds Posted.")});
+			});	
+
+		
 		// It would be nice to have these automatically unbind on teardown.
 		this.bindKeys("j", "k");
 		
