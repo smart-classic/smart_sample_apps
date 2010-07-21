@@ -22,6 +22,10 @@ $.Model.extend('SmartMedDisplay.Models.rdfObject',
 		SMART.MEDS_post(data, success);  
     },
 
+    del: function(success, error){
+		SMART.MEDS_delete(success);  
+    },
+
     // Abstract function
     instantiateByType : function() {
     	throw "Subclass must implement abstract function instantiateByType - do not call on rdfObject directly!";

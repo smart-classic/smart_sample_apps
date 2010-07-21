@@ -241,6 +241,17 @@ SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
 			});
 };
 
+
+SMART_CLIENT.prototype.MEDS_delete = function(callback) {
+	var _this = this;
+	this.api_call({method: 'DELETE', 
+				   url: "med_store/records/" + SMART.record_info.id + "/", 
+				   data: {}},
+			function(contentType, data) {
+				callback(data);
+			});
+};
+
 SMART_CLIENT.prototype.createXMLDocument = function(string) {
 	return (new DOMParser()).parseFromString(string, 'text/xml');
 };
@@ -267,3 +278,4 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	// abstract method to instantiate a list of objects from the rdf store.
 	return rdf;
 }
+

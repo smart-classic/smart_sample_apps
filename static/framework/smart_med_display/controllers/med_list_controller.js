@@ -15,13 +15,14 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		this.expandedElt = $("#ExpandedMeds");
 		this.slideDelay = 60;
 		this.selectedRow = 0;
+		var _this = this;
 		
 		$("#MedListTabs").tabs();
 
 		$('#MedListTabs').bind('tabsshow', this.callback(function(event, ui) {
 		    if (ui.panel.id == "tabs-timeline") {        
 	 			this.updateTimeline();
-		    }
+		    }		    
 		}));
 		
 		if (this.expandedElt.length === 0) {
@@ -30,9 +31,22 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		}
 
 		$('#AddMedsButton').click(function() {
-			SmartMedDisplay.Models.Med.post($('#AddMedsText').val(), function(){alert("Meds Posted.")});
+			SmartMedDisplay.Models.Med.post($('#AddMedsText').val(), function(){
+				_this.expand_list(false);	
+				$("#MedListTabs").tabs('select', 0);
+			});
+			return false;
 			});	
 
+		$('#DeleteMedsButton').click(function() {
+			SmartMedDisplay.Models.Med.del(function(){
+				_this.expand_list(false);	
+				$("#MedListTabs").tabs('select', 0);
+			});
+			return false;
+			});	
+
+		
 		
 		// It would be nice to have these automatically unbind on teardown.
 		this.bindKeys("j", "k");
@@ -51,28 +65,35 @@ extend('SmartMedDisplay.Controllers.MedListController',
     },
     
 	"#ExpandMeds, #TheList click": function() {
-    	if (this.expanded) {
+    	this.expanded = !this.expanded;
+    	this.expand_list(!this.expanded);
+	},
+	
+	expand_list : function(status){
+    	if (status) {
 			$("#ExpandedMeds").fadeOut(this.slideDelay);
-			this.expanded = false;
 			$("#ExpandMeds").html("+");
+			$("#MedDetails").html("");
     	} else {
-    		SmartMedDisplay.Models.Med.get(
+			this.expandedElt.hide();
+			$("#ExpandMeds").html("-");
+			$("#MedDetails").html("");
+
+			this.selectedRow = 0;
+			SmartMedDisplay.Models.Med.get(
     				this.callback(function(data) 
     				{
     					this.meds = data;
-    					this.expanded = true;
-    					$("#ExpandMeds").html("-");
-						var v = this.view('meds', {meds: data});
-						this.expandedElt.hide().html(v).fadeIn(this.slideDelay);
-						this.selectedRow = 0;
+ 						var v = this.view('meds', {meds: data});
+						this.expandedElt.html(v).fadeIn(this.slideDelay);
 						var $old_sel = $(".medtable tr.selected");
 						this.moveSel($old_sel, $old_sel);
     			     }), 
     			     function(){alert("Error!");});
-	
     	}
-    	
+		
 	},
+	
 	key_j : function () {
 		var $old_sel = $(".medtable tr.selected");
 		var $new_sel = $old_sel.next();

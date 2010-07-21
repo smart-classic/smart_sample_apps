@@ -18,3 +18,5 @@ TR.selected {background:none repeat scroll 0 0 #AAC0CC;}
     font-family: Trebuchet MS, Helvetica, Arial, sans serif;
     font-size: 8pt;
 }
+
+#AddMedsText {font-size: 8pt; width: 100%; height: 500px;}
