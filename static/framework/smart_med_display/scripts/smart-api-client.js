@@ -26,6 +26,9 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 					// receives the setup message.
 					// easier for development, may need some work
 					this.smart_server_origin = event.origin;
+					if (this.smart_server_origin === "null")
+					    this.smart_server_origin = "*";
+
 					this.receive_setup_message(parsed_message);
 				}
 
@@ -92,7 +95,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 					'method': options.method,
 					'params' : options.data,
 					'contentType' : options.contentType || "application/x-www-form-urlencoded"
-					    }), this.smart_server_origin? this.smart_server_origin : "*");
+					    }), this.smart_server_origin);
 			}
 
 	var _this = this;
