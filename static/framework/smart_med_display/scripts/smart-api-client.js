@@ -92,7 +92,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 					'method': options.method,
 					'params' : options.data,
 					'contentType' : options.contentType || "application/x-www-form-urlencoded"
-				}), this.smart_server_origin);
+					    }), this.smart_server_origin? this.smart_server_origin : "*");
 			}
 
 	var _this = this;
