@@ -1,4 +1,4 @@
-jQuery.Controller.extend('SmartMedDisplay.Controllers.MedDisplayController',
+jQuery.Controller.extend('SmartMedDisplay.Controllers.ProblemDisplayController',
 /* @Static */
 {
     onDocument: true
@@ -7,6 +7,9 @@ jQuery.Controller.extend('SmartMedDisplay.Controllers.MedDisplayController',
 {
     load: function() {
 	
+
+	if (!$('#ProblemList').length) return;
+
 		var 	ORIGIN = null, 
 				FRAME = window.top;
 
@@ -14,7 +17,6 @@ jQuery.Controller.extend('SmartMedDisplay.Controllers.MedDisplayController',
 		
 		SMART.send_ready_message(function(record_info) {	
 			  	$("#UserDisplay").html(record_info.full_name)
-				$("#MedList").smart_med_display_med_list();
 				$("#ProblemList").smart_med_display_problem_list();
 				});
 		}

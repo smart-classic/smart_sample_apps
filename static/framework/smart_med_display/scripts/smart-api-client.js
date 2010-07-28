@@ -133,28 +133,30 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
 			else
 				load.callback = callback;
-			load.getScript(filenames[0]);
+			load.getScript(filenames[0][0], filenames[0][1]);
 		};
 
 		// dynamically load any javascript file.
-		load.getScript = function(filename) {
-			var script = document.createElement('script')
-			script.setAttribute("type", "text/javascript")
-			script.setAttribute("src", filename)
-			if (typeof script != "undefined")
-				document.getElementsByTagName("head")[0].appendChild(script)
+		load.getScript = function(test, filename) {
+			var script = document.createElement('script');
+			script.setAttribute("type", "text/javascript");
+			script.setAttribute("src", filename);
+			load.test = test;
+			load.filename = filename;
+			if (typeof script !== "undefined")
+				document.getElementsByTagName("head")[0].appendChild(script); 
 			load.tryReady(0);
 		};
 
 		load.tryReady = function(time_elapsed) {
 			// Continually polls to see if jQuery is loaded.
-			if (typeof jQuery == "undefined") { // if jQuery isn't loaded yet...
+			if (!load.test()) { // if jQuery isn't loaded yet...
 				if (time_elapsed <= 5000) { // and we havn't given up trying...
 					setTimeout(function() {
 						load.tryReady(time_elapsed + 200);
 					}, 200); // set a timer to check again in 200 ms.
 				} else {
-					alert("Timed out while loading jQuery.")
+					alert("Timed out while loading jQuery: " + load.filename);
 				}
 			} else {
 				load.callback();
@@ -162,16 +164,24 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		};
 
 		var filenames = [];
-
+		var need_rest = false;
 		if (typeof (jQuery) === "undefined"
 				|| typeof (jQuery.fn) === "undefined") {
-			filenames.push("/framework/jquery/jquery.js");
+			filenames.push([function() {return typeof(jQuery) !== "undefined" && typeof(jQuery.fn) !== "undefined"}, 
+			                "/framework/jquery/jquery.js"]);
+			need_rest = true;
 		}
 
-		if (typeof (jQuery) === "undefined"
-				|| typeof (jQuery.fn) === "undefined"
-				|| typeof (jQuery.rdf) === "undefined") {
-			filenames.push("/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js");
+		if ( need_rest || typeof (jQuery.rdf) === "undefined") {
+			filenames.push([function() {return typeof(jQuery.rdf) !== "undefined"}, 
+			                "/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js"]);
+			need_rest = true;
+		}
+
+		if ( need_rest ) {
+			filenames.push([function() {return typeof(jQuery.ui) !== "undefined"}, 
+			                "/framework/smart_med_display/scripts/jquery-ui-1.8.2.custom.min.js"]);
+			need_rest = true;		    
 		}
 		load(filenames);
 	};
@@ -255,6 +265,48 @@ SMART_CLIENT.prototype.MEDS_delete = function(callback) {
 			});
 };
 
+SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
+	var _this = this;
+	this.api_call({method: 'GET', 
+		   url: "problem_store/records/" + SMART.record_info.id + "/", 
+		   data: {}},
+	function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				callback(rdf);
+			});
+};
+
+SMART_CLIENT.prototype.PROBLEMS_put= function(data, callback) {
+	var _this = this;
+	this.api_call({method: 'PUT', 
+				   url: "problem_store/records/" + SMART.record_info.id + "/", 
+				   contentType: 'application/rdf+xml', 
+				   data: data},
+			function(contentType, data) {
+				callback(data);
+			});
+};
+SMART_CLIENT.prototype.PROBLEMS_delete = function(query, callback) {
+	var _this = this;
+	
+	if (arguments.length == 1) {
+		callback = query;
+		query = "";
+	}
+	
+	this.api_call({method: 'DELETE', 
+				   url: "problem_store/records/" + SMART.record_info.id + "/", 
+				   contentType: "application/sparql",
+				   data: query},
+			function(contentType, data) {
+				callback(data);
+			});
+};
+
+
+
+
+
 SMART_CLIENT.prototype.createXMLDocument = function(string) {
 	return (new DOMParser()).parseFromString(string, 'text/xml');
 };
@@ -281,4 +333,34 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	// abstract method to instantiate a list of objects from the rdf store.
 	return rdf;
 }
+
+SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query,callback) {
+	var _this = this;
+	this.api_call({method: 'GET', 
+		   url: "codes/systems/"+system+"/query", 
+		   data: {q : query}},
+	function(contentType, data) {
+			   var js =  JSON.parse(data);
+				callback(js);
+			});
+}
+
+
+SMART_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
+	var _this = this;
+	var source = function(request, response) {
+		_this.CODING_SYSTEM_get(system, request.term, function(json) {
+			response(jQuery.map(json, function(item) {return {label: item.full_value, value: item.umls_code};}));
+		}) 
+	};
+	
+	return source;
+}
+
+
+
+
+
+
+
 

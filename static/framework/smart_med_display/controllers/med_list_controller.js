@@ -45,8 +45,6 @@ extend('SmartMedDisplay.Controllers.MedListController',
 			});
 			return false;
 			});	
-
-		
 		
 		// It would be nice to have these automatically unbind on teardown.
 		this.bindKeys("j", "k");

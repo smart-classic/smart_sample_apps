@@ -7,7 +7,21 @@ SmartMedDisplay.Models.rdfObject.
 extend('SmartMedDisplay.Models.Med',
 /* @Static */
 {
-	api_function: "med_store",	
+	get: function(success, error){
+		SMART.MEDS_get_all(	
+					this.callback([this.saveRDF, success])
+				);  
+	},
+	
+	post: function(data, success, error){
+		SMART.MEDS_post(data, success);  
+	},
+	
+	del: function(success, error){
+		SMART.MEDS_delete(success);  
+	},
+
+
 	object_type: "med:medication",
 	instantiateByType: function() {
 		

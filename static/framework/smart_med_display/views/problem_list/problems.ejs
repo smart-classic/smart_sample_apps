@@ -1,0 +1,15 @@
+<table class='medtable'>
+<%  for (var i = 0; i < problems.length; i++)  { 
+         var problem = problems[i];
+%>
+<tr class='problem' <%=problem %>>
+  <td><%= (i === 0) ? ">" : ""%></td>
+  <td><%=problem.cui %></td>
+  <td><%= problem.title %></td>
+  <td><%= problem.notes%></td>
+  <td><%= problem.onset %></td>
+  <td><%= problem.resolution %></td>
+  <td>[<a href="#" class='delete_problem'>X</a>]</td>
+</tr>
+<% } %>
+</table>

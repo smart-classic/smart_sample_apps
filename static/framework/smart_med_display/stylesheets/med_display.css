@@ -1,6 +1,6 @@
 body {font-family: Calibri,Trebuchet,Verdana,Helvetica,Arial,sans-serif; margin: 0px;}
 #TheList {cursor: pointer; vertical-align: top; }
-#ExpandMeds {margin-top: -.35em; font-size:  2em; text-decoration: none; ouine: none; width: .5em; display: inline-block;}
+#ExpandMeds {margin-top: -.35em;  text-decoration: none; ouine: none; width: .5em; display: inline-block;}
 #MedList{ margin: 0px; border: 0px; padding: 0px;}
 .medtable, #MedDetails {border-collapse: collapse; font-size: .8em; font-family: Garamond,"Times New Roman"}
 .medtable TD {padding:0.5em;}
@@ -8,15 +8,5 @@ body {font-family: Calibri,Trebuchet,Verdana,Helvetica,Arial,sans-serif; margin:
 TR:nth-child(even) {background:none repeat scroll 0 0 #EEEEEE;}
 TR:nth-child(odd) {background:none repeat scroll 0 0 #CCCCCC;}
 TR.selected {background:none repeat scroll 0 0 #AAC0CC;}
-
-.ui-tabs .ui-tabs-hide {
-    position: absolute;
-    left: -10000px;
-}
-
-.timeline-event-label, .timeline-default{
-    font-family: Trebuchet MS, Helvetica, Arial, sans serif;
-    font-size: 8pt;
-}
-
-#AddMedsText {font-size: 8pt; width: 100%; height: 500px;}
+.ui-widget{ font-size:1em; }
+.ui-autocomplete { height: 228px; overflow-y: scroll; overflow-x: hidden; font-size: 10px;}
