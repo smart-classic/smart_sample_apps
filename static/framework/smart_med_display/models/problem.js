@@ -38,7 +38,6 @@ extend('SmartMedDisplay.Models.Problem',
 			WHERE {?s ?p ?o\
 				       FILTER  (?s = <'+uri+'>)\
 				}';
-		alert(pr);
 		SMART.PROBLEMS_delete(pr,success);  
 	},
 	

@@ -133,15 +133,14 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
 			else
 				load.callback = callback;
-			load.getScript(filenames[0][0], filenames[0][1]);
+			load.getScript(filenames[0]);
 		};
 
 		// dynamically load any javascript file.
-		load.getScript = function(test, filename) {
+		load.getScript =  function(filename) {
 			var script = document.createElement('script');
 			script.setAttribute("type", "text/javascript");
-			script.setAttribute("src", filename);
-			load.test = test;
+			script.setAttribute("src", filename.url);
 			load.filename = filename;
 			if (typeof script !== "undefined")
 				document.getElementsByTagName("head")[0].appendChild(script); 
@@ -150,13 +149,13 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
 		load.tryReady = function(time_elapsed) {
 			// Continually polls to see if jQuery is loaded.
-			if (!load.test()) { // if jQuery isn't loaded yet...
-				if (time_elapsed <= 5000) { // and we havn't given up trying...
+			if (load.filename()) { // if jQuery isn't loaded yet...
+				if (time_elapsed <= 10000) { // and we havn't given up trying...
 					setTimeout(function() {
 						load.tryReady(time_elapsed + 200);
 					}, 200); // set a timer to check again in 200 ms.
 				} else {
-					alert("Timed out while loading jQuery: " + load.filename);
+					alert("Timed out while loading jQuery: " + load.filename.url);
 				}
 			} else {
 				load.callback();
@@ -165,24 +164,22 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
 		var filenames = [];
 		var need_rest = false;
-		if (typeof (jQuery) === "undefined"
-				|| typeof (jQuery.fn) === "undefined") {
-			filenames.push([function() {return typeof(jQuery) !== "undefined" && typeof(jQuery.fn) !== "undefined"}, 
-			                "http://smart.gping.org:8001/framework/jquery/jquery.js"]);
-			need_rest = true;
-		}
 
-		if ( need_rest || typeof (jQuery.rdf) === "undefined") {
-			filenames.push([function() {return typeof(jQuery.rdf) !== "undefined"}, 
-			                "http://smart.gping.org:8001/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js"]);
-			need_rest = true;
-		}
+		var need_jquery = function() { return (typeof (jQuery) === "undefined" || typeof (jQuery.fn) === "undefined");};
+		need_jquery.url =  "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js";
+		
+		var need_ui  = function() {return (typeof(jQuery.fn.autocomplete) === "undefined");};
+		need_ui.url = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.js";
 
-		if ( need_rest ) {
-			filenames.push([function() {return typeof(jQuery.ui) !== "undefined"}, 
-			                "http://smart.gping.org:8001/framework/smart_med_display/scripts/jquery-ui-1.8.2.custom.min.js"]);
-			need_rest = true;		    
-		}
+		var need_rdf = function() {return (typeof(jQuery.rdf) === "undefined");};
+		need_rdf.url = "http://smart.gping.org:8001/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js";
+		
+		var funcs = [need_jquery, need_ui, need_rdf];
+		
+		for (var i = 0; i < funcs.length; i++)
+			if (funcs[i]())
+				filenames.push(funcs[i]);
+		
 		load(filenames);
 	};
 
@@ -312,6 +309,7 @@ SMART_CLIENT.prototype.createXMLDocument = function(string) {
 };
 
 SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
+	
 	if (contentType !== "xml")
 		throw "getRDF expected an XML document... got " + contentType;
 
@@ -319,17 +317,20 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	var d = this.createXMLDocument(data);
 
 	var rdf = jQuery.rdf();
-	rdf.load(d, {});
-
-	// Load all the namespaces from the xml+rdf into jquery.rdf
-	for ( var i = 0; i < d.firstChild.attributes.length; i++) {
-		a = d.firstChild.attributes[i];
-		var match = /xmlns:(.*)/i.exec(a.nodeName);
-		if (match.length == 2) {
-			rdf.prefix(match[1], a.nodeValue);
+	
+	try {
+		rdf.load(d, {});
+		// Load all the namespaces from the xml+rdf into jquery.rdf
+		for ( var i = 0; i < d.firstChild.attributes.length; i++) {
+			a = d.firstChild.attributes[i];
+			var match = /xmlns:(.*)/i.exec(a.nodeName);
+			if (match.length == 2) {
+				rdf.prefix(match[1], a.nodeValue);
+			}
 		}
 	}
-
+	catch(err){ }
+	
 	// abstract method to instantiate a list of objects from the rdf store.
 	return rdf;
 }
