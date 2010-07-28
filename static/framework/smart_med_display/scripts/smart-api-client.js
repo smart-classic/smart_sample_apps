@@ -168,19 +168,19 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		if (typeof (jQuery) === "undefined"
 				|| typeof (jQuery.fn) === "undefined") {
 			filenames.push([function() {return typeof(jQuery) !== "undefined" && typeof(jQuery.fn) !== "undefined"}, 
-			                "/framework/jquery/jquery.js"]);
+			                "http://smart.gping.org:8001/framework/jquery/jquery.js"]);
 			need_rest = true;
 		}
 
 		if ( need_rest || typeof (jQuery.rdf) === "undefined") {
 			filenames.push([function() {return typeof(jQuery.rdf) !== "undefined"}, 
-			                "/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js"]);
+			                "http://smart.gping.org:8001/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js"]);
 			need_rest = true;
 		}
 
 		if ( need_rest ) {
 			filenames.push([function() {return typeof(jQuery.ui) !== "undefined"}, 
-			                "/framework/smart_med_display/scripts/jquery-ui-1.8.2.custom.min.js"]);
+			                "http://smart.gping.org:8001/framework/smart_med_display/scripts/jquery-ui-1.8.2.custom.min.js"]);
 			need_rest = true;		    
 		}
 		load(filenames);
