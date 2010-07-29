@@ -5,8 +5,8 @@ body {font-family: Calibri,Trebuchet,Verdana,Helvetica,Arial,sans-serif; margin:
 .medtable, #MedDetails {border-collapse: collapse; font-size: .8em; font-family: Garamond,"Times New Roman"}
 .medtable TD {padding:0.5em;}
 .medtable TR {cursor: pointer;}
-TR:nth-child(even) {background:none repeat scroll 0 0 #EEEEEE;}
-TR:nth-child(odd) {background:none repeat scroll 0 0 #CCCCCC;}
-TR.selected {background:none repeat scroll 0 0 #AAC0CC;}
+.medtable TR:nth-child(even) {background:none repeat scroll 0 0 #EEEEEE;}
+.medtable TR:nth-child(odd) {background:none repeat scroll 0 0 #CCCCCC;}
+.medtable TR.selected {background:none repeat scroll 0 0 #AAC0CC;}
 .ui-widget{ font-size:1em; }
 .ui-autocomplete { height: 228px; overflow-y: scroll; overflow-x: hidden; font-size: 10px;}

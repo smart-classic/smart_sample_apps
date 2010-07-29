@@ -49,6 +49,14 @@ jQuery.Controller.extend('SmartMedDisplay.Controllers.ProblemListController',
 	},
 	display_problems: function() {
 
+		jQuery('#AddProblemForm').val("");
+		jQuery('#ProblemEntry').val("");
+		jQuery('#OnsetEntry').val("");
+		jQuery('#ResolutionEntry').val("");
+		jQuery('#NotesEntry').val("");
+
+		jQuery('#ProblemEntry').focus();	
+		
 		SmartMedDisplay.Models.Problem.get(
 			this.callback(
 				function(problems) {
