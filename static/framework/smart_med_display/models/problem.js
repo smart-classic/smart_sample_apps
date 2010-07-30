@@ -13,12 +13,11 @@ extend('SmartMedDisplay.Models.Problem',
 			);  
 	},
 
-	post: function(data, success, error){
-		SMART.PROBLEMS_post(data, success);  
+	put: function(data, external_id, success, error){
+		SMART.PROBLEMS_put(data, external_id, success);  
 	},
-	
 
-	put: function(data, success, error){
+	post: function(data, success, error){
 		var pr = '<?xml version="1.0" encoding="utf-8"?>\
 			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sp="http://smartplatforms.org/" xmlns:umls="http://www.nlm.nih.gov/research/umls/">\
 	        <rdf:Description rdf:about="http://smartplatforms.org/problem/'+randomUUID()+'">\
@@ -30,7 +29,7 @@ extend('SmartMedDisplay.Models.Problem',
 	           <sp:notes>'+data.notes+'</sp:notes>\
 	        </rdf:Description>\
             </rdf:RDF>';
-		SMART.PROBLEMS_put(pr, success);  
+		SMART.PROBLEMS_post(pr, success);  
 	},
 	
 	del: function(uri,success, error){

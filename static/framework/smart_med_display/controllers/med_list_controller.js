@@ -31,12 +31,24 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		}
 
 		$('#AddMedsButton').click(function() {
-			SmartMedDisplay.Models.Med.post($('#AddMedsText').val(), function(){
+			
+			var cb = function(){
 				_this.expand_list(false);	
 				$("#MedListTabs").tabs('select', 0);
-			});
-			return false;
-			});	
+				return false;
+			};
+			
+			if ($('#AddExternalID').val() == "")
+			{
+				SmartMedDisplay.Models.Med.post($('#AddMedsText').val(), cb);
+			}
+			else 
+			{
+				SmartMedDisplay.Models.Med.put($('#AddMedsText').val(), 
+											   $('#AddExternalID').val(),
+											   cb);				
+			}
+		});
 
 		$('#DeleteMedsButton').click(function() {
 			SmartMedDisplay.Models.Med.delete_all(function(){

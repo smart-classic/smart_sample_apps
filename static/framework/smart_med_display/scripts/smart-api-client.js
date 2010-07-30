@@ -252,42 +252,6 @@ SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
 			});
 };
 
-
-
-SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
-	var _this = this;
-	this.api_call({method: 'GET', 
-		   url: "/records/" + SMART.record_info.id + "/problems", 
-		   data: {}},
-	function(contentType, data) {
-				var rdf = _this.process_rdf(contentType, data);
-				callback(rdf);
-			});
-};
-
-SMART_CLIENT.prototype.PROBLEMS_put= function(data, callback) {
-	var _this = this;
-	this.api_call({method: 'POST', 
-			url: "/records/" + SMART.record_info.id + "/problems", 
-				   contentType: 'application/rdf+xml', 
-				   data: data},
-			function(contentType, data) {
-				callback(data);
-			});
-};
-SMART_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback) {
-	var _this = this;
-		
-	this.api_call({method: 'DELETE', 
-		   	url: problem_uri, 
-			data: {}
-			},
-			function(contentType, data) {
-				callback(data);
-			});
-};
-
-
 SMART_CLIENT.prototype.MEDS_delete = function(callback) {
 	var _this = this;
 	this.api_call({method: 'DELETE', 
@@ -308,6 +272,68 @@ SMART_CLIENT.prototype.MED_delete = function(uri, callback) {
 				callback(data);
 			});
 };
+
+
+SMART_CLIENT.prototype.MED_put = function(data, external_id, callback) {
+	var _this = this;
+	this.api_call({method: 'PUT', 
+		url: "/records/" + SMART.record_info.id + "/medications/external_id/"+external_id, 
+		contentType: 'application/rdf+xml', 
+		data: data},
+	function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				callback(rdf);
+			});
+	
+};
+
+SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
+	var _this = this;
+	this.api_call({method: 'GET', 
+		   url: "/records/" + SMART.record_info.id + "/problems", 
+		   data: {}},
+	function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				callback(rdf);
+			});
+};
+
+SMART_CLIENT.prototype.PROBLEMS_post= function(data, callback) {
+	var _this = this;
+	this.api_call({method: 'POST', 
+			url: "/records/" + SMART.record_info.id + "/problems", 
+				   contentType: 'application/rdf+xml', 
+				   data: data},
+			function(contentType, data) {
+				callback(data);
+			});
+};
+
+
+SMART_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback) {
+	var _this = this;
+		
+	this.api_call({method: 'DELETE', 
+		   	url: problem_uri, 
+			data: {}
+			},
+			function(contentType, data) {
+				callback(data);
+			});
+};
+
+SMART_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
+	var _this = this;
+	this.api_call({method: 'PUT', 
+		url: "/records/" + SMART.record_info.id + "/problems/external_id/"+external_id, 
+		contentType: 'application/rdf+xml', 
+		data: data},
+	function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				callback(rdf);
+			});
+};
+
 
 
 

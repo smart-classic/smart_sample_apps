@@ -17,6 +17,12 @@ extend('SmartMedDisplay.Models.Med',
 		SMART.MEDS_post(data, success);  
 	},
 	
+
+	put: function(data, external_id, success, error){
+		SMART.MED_put(data, external_id, success);  
+	},
+
+
 	delete_all: function(success, error){
 		SMART.MEDS_delete(success);  
 	},

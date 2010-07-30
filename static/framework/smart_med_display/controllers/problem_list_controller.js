@@ -26,7 +26,7 @@ jQuery.Controller.extend('SmartMedDisplay.Controllers.ProblemListController',
 		jQuery('#OnsetEntry').datepicker();
 		jQuery('#ResolutionEntry').datepicker();
 		form.submit(function() {
-			SmartMedDisplay.Models.Problem.put(
+			SmartMedDisplay.Models.Problem.post(
 					{
 					cui: form.data("problem_code"),
 					title: jQuery('#ProblemEntry').val(),
