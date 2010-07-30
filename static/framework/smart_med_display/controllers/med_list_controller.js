@@ -39,7 +39,7 @@ extend('SmartMedDisplay.Controllers.MedListController',
 			});	
 
 		$('#DeleteMedsButton').click(function() {
-			SmartMedDisplay.Models.Med.del(function(){
+			SmartMedDisplay.Models.Med.delete_all(function(){
 				_this.expand_list(false);	
 				$("#MedListTabs").tabs('select', 0);
 			});
@@ -103,7 +103,16 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		var $new_sel = $old_sel.prev();
 		this.moveSel($old_sel, $new_sel);	
 	},
-	
+	".delete_med click": function(el) {
+		var _this = this;
+		SmartMedDisplay.Models.Med.delete_one(
+				el.closest(".med").model().rdf.med.value.path,
+				function() {
+					_this.expand_list(false);	
+					$("#MedListTabs").tabs('select', 0);
+				});
+	},
+
 	moveSel : function($old_sel, $new_sel) {
 		if ($new_sel.length !== 0) {
 			$old_sel.removeClass("selected");
@@ -147,6 +156,21 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		return ret;
 		
 	},
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	earliestEvent : function(events) {
 		var d = new Date(); // start with today's date as the assumption to disprove.
 		for (var i = 0; i < events.length; i++ ) {

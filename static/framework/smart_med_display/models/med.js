@@ -17,12 +17,15 @@ extend('SmartMedDisplay.Models.Med',
 		SMART.MEDS_post(data, success);  
 	},
 	
-	del: function(success, error){
+	delete_all: function(success, error){
 		SMART.MEDS_delete(success);  
+	},
+	delete_one: function(uri, success, error){
+		SMART.MED_delete(uri, success);  
 	},
 
 
-	object_type: "med:medication",
+	object_type: "sp:medication",
 	instantiateByType: function() {
 		
 		if (this.rdf === undefined || !this.rdf instanceof jQuery.rdf)
@@ -30,7 +33,7 @@ extend('SmartMedDisplay.Models.Med',
 		
 		var ret = []
 		           
-		this.rdf.prefix("med","http://smartplatforms.org/med#");
+		this.rdf.prefix("med","http://smartplatforms.org/medication#");
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
 		       		
 		var r = this.rdf.where("?med rdf:type "+this.object_type);
@@ -57,12 +60,12 @@ extend('SmartMedDisplay.Models.Med',
 			ret.push(new SmartMedDisplay.Models.Med({
 				drug: m.medlabel.value,
 				dose: m.dose? m.dose.value :  "",
-				unit: m.doseUnits? m.doseUnits.value.fragment: "",
+				unit: m.doseUnits? m.doseUnits.value: "",
 				frequency: m.freq? m.freq.value: "",
-				route: m.route?m.route.value.fragment: "",
+				route: m.route?m.route.value: "",
 				strength: m.strength?m.strength.value: "",
-				strengthUnits:m.strengthUnits? m.strengthUnits.value.fragment: "",
-				form: m.form?m.form.value.fragment: "",
+				strengthUnits:m.strengthUnits? m.strengthUnits.value: "",
+				form: m.form?m.form.value: "",
 				notes: m.notes?m.notes.value: "",
 				cui: m.cui ? m.cui.value: "",
 				rdf : r[i],
@@ -105,14 +108,12 @@ extend('SmartMedDisplay.Models.Med',
 
 		if (params.details.sd)
 		{
-		var start = this.Class.rdf.where(params.details.sd.value + " dc:date ?start")[0].start.value;
-		this.start_date = Date.parse(start);
+		this.start_date = Date.parse(params.details.sd.value);
 		}
 		else this.start_date = null;
 		
 		if (params.details.ed){
-		var end = this.Class.rdf.where(params.details.ed.value + " dc:date ?end")[0].end.value;
-		this.end_date  = Date.parse(end);
+		this.end_date  = Date.parse(params.details.ed.value);
 		}
 		else this.end_date = null;
 

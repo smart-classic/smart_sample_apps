@@ -34,11 +34,7 @@ extend('SmartMedDisplay.Models.Problem',
 	},
 	
 	del: function(uri,success, error){
-		var pr = 'CONSTRUCT {?s ?p ?o }\
-			WHERE {?s ?p ?o\
-				       FILTER  (?s = <'+uri+'>)\
-				}';
-		SMART.PROBLEMS_delete(pr,success);  
+		SMART.PROBLEMS_delete(uri,success);  
 	},
 	
 	object_type: "sp:problem",

@@ -2,7 +2,7 @@
 <%  for (var i = 0; i < meds.length; i++)  {
          var m = meds[i];
 %>
-<tr <%= (i === 0) ? "class='selected'" : "" %>>
+<tr class='med' <%=m %> <%= (i === 0) ? "class='selected'" : "" %>>
   <td><%= (i === 0) ? ">" : ""%></td>
   <td><%= m.properName() %></td>
   <td><%= m.dose %></td>
@@ -10,6 +10,7 @@
   <td><%= m.route %></td>
   <td><%= m.frequency %></td>
   <td><%= m.notes %></td>
+  <td>[<a href="#" class='delete_med'>X</a>]</td>
 </tr>
 <%}%>
 </table>

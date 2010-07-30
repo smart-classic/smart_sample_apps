@@ -227,11 +227,11 @@ function randomUUID() {
  * end of randomUUID
  */
 
-SMART_CLIENT.prototype.MEDS_get_all = function(callback) {
+SMART_CLIENT.prototype.MEDS_get = function(callback) {
 	var _this = this;
 	this.api_call({method: 'GET', 
-		   url: "med_store/records/" + SMART.record_info.id + "/", 
-		   data: {}},
+		url: "/records/" + SMART.record_info.id + "/medications", 
+		data: {}},
 	function(contentType, data) {
 				var rdf = _this.process_rdf(contentType, data);
 				callback(rdf);
@@ -239,11 +239,12 @@ SMART_CLIENT.prototype.MEDS_get_all = function(callback) {
 	
 };
 
+SMART_CLIENT.prototype.MEDS_get_all = SMART_CLIENT.prototype.MEDS_get;
 
 SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
 	var _this = this;
 	this.api_call({method: 'POST', 
-				   url: "med_store/records/" + SMART.record_info.id + "/", 
+			url: "/records/" + SMART.record_info.id + "/medications", 
 				   contentType: 'application/rdf+xml', 
 				   data: data},
 			function(contentType, data) {
@@ -252,20 +253,11 @@ SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
 };
 
 
-SMART_CLIENT.prototype.MEDS_delete = function(callback) {
-	var _this = this;
-	this.api_call({method: 'DELETE', 
-				   url: "med_store/records/" + SMART.record_info.id + "/", 
-				   data: {}},
-			function(contentType, data) {
-				callback(data);
-			});
-};
 
 SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
 	var _this = this;
 	this.api_call({method: 'GET', 
-		   url: "problem_store/records/" + SMART.record_info.id + "/", 
+		   url: "/records/" + SMART.record_info.id + "/problems", 
 		   data: {}},
 	function(contentType, data) {
 				var rdf = _this.process_rdf(contentType, data);
@@ -275,32 +267,47 @@ SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
 
 SMART_CLIENT.prototype.PROBLEMS_put= function(data, callback) {
 	var _this = this;
-	this.api_call({method: 'PUT', 
-				   url: "problem_store/records/" + SMART.record_info.id + "/", 
+	this.api_call({method: 'POST', 
+			url: "/records/" + SMART.record_info.id + "/problems", 
 				   contentType: 'application/rdf+xml', 
 				   data: data},
 			function(contentType, data) {
 				callback(data);
 			});
 };
-SMART_CLIENT.prototype.PROBLEMS_delete = function(query, callback) {
+SMART_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback) {
 	var _this = this;
-	
-	if (arguments.length == 1) {
-		callback = query;
-		query = "";
-	}
-	
+		
 	this.api_call({method: 'DELETE', 
-				   url: "problem_store/records/" + SMART.record_info.id + "/", 
-				   contentType: "application/sparql",
-				   data: query},
+		   	url: problem_uri, 
+			data: {}
+			},
 			function(contentType, data) {
 				callback(data);
 			});
 };
 
 
+SMART_CLIENT.prototype.MEDS_delete = function(callback) {
+	var _this = this;
+	this.api_call({method: 'DELETE', 
+					url: "/records/" + SMART.record_info.id + "/medications", 
+				   data: {}},
+			function(contentType, data) {
+				callback(data);
+			});
+};
+
+
+SMART_CLIENT.prototype.MED_delete = function(uri, callback) {
+	var _this = this;
+	this.api_call({method: 'DELETE', 
+					url: uri, 
+				   data: {}},
+			function(contentType, data) {
+				callback(data);
+			});
+};
 
 
 
@@ -315,8 +322,9 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 
 	// Get the triples into jquery.rdf
 	var d = this.createXMLDocument(data);
-
+	
 	var rdf = jQuery.rdf();
+	rdf.base("");
 	
 	try {
 		rdf.load(d, {});
@@ -338,7 +346,7 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query,callback) {
 	var _this = this;
 	this.api_call({method: 'GET', 
-		   url: "codes/systems/"+system+"/query", 
+		   url: "/codes/systems/"+system+"/query", 
 		   data: {q : query}},
 	function(contentType, data) {
 			   var js =  JSON.parse(data);
@@ -358,10 +366,14 @@ SMART_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
 	return source;
 }
 
-
-
-
-
-
-
-
+SMART_CLIENT.prototype.SPARQL = function(query,callback) {
+	var _this = this;
+	this.api_call({
+		   method: 'GET', 
+		   url: "/records/"+SMART.record_info.id+"/sparql", 
+		   data: {q : query}},
+		   function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				callback(rdf);
+			});
+};

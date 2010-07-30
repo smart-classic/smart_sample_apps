@@ -44,11 +44,11 @@ jQuery.Controller.extend('SmartMedDisplay.Controllers.ProblemListController',
 	".delete_problem click": function(el) {
 		var _this = this;
 		SmartMedDisplay.Models.Problem.del(
-				el.closest(".problem").model().rdf.value._string,
+				el.closest(".problem").model().rdf.value.path,
 				_this.callback(_this.display_problems));
 	},
 	display_problems: function() {
-
+		
 		jQuery('#AddProblemForm').val("");
 		jQuery('#ProblemEntry').val("");
 		jQuery('#OnsetEntry').val("");
