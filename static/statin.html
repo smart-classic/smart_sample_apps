@@ -18,7 +18,7 @@
 		SMART.send_ready_message(function(record_info) {	
 			SMART.MEDS_get_all(function(meds) {
 			
-				var statin = meds.where("?m rdf:type med:medication")
+				var statin = meds.where("?m rdf:type sp:medication")
 								 .where("?m dcterms:title ?drugname");
 				
 				var answer = false;

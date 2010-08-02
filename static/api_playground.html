@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Playground</title>
+	<STYLE TYPE="text/css" MEDIA=screen>
+	<!--
+  	#API_Functions  { border: 1px solid grey;}
+  	#API_Functions UL {padding: 0px;}
+  	#API_Functions LI {list-style: none; margin: 0px; font-family: monospace; font-size: 0.9em; padding-bottom: .5em;}
+ 	#API_Functions LI BUTTON {margin: 0px; font-family: monospace; font-size: 0.9em;}
+ 	#Previous_Queries LI {cursor: pointer; }
+  	#URL_Parameters TEXTAREA { width: 500px; height: 300px;}
+ 	#Response {font-size: 0.7em; border: 1px solid grey;}
+ 	
+ 	.url_param INPUT[type='text'] {width: 24em;}
+ 	
+  	-->
+	</STYLE>
+	<link rel="stylesheet" type="text/css" href="/framework/smart_med_display/stylesheets/jquery-ui-1.8.2.custom.css">
+	
+	
+</head>
+
+  <body>
+	<h1>SMArt API Playground</h1>
+	Welcome to the SMArt API Playground!  To get started, choose an API call from the list below.  You can use automatically-supplied values for any required parameters; just click in the boxes as they appear, and choose from the provided list.
+	<div id="API_Functions">
+	<b>API Calls</b>
+	<ul>
+	</ul>
+	</div>
+	
+	<form id='API_Call'>
+	<table id='URL_Parameters'>
+	<tr class='msg_body'><td colspan='2'>Message body<br><textarea id='Message_Body'></textarea></td></tr>
+	<tr class='msg_response'><td colspan='2'>Response<br><div id='Response'></div></td></tr>
+	</table>
+	</form>
+	
+	<br clear='all'/>
+	<ol id='Previous_Queries'>
+	<b>Previous queries (click to run again):</b>
+	</ol>
+  </body> 
+  
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script  src='framework/smart_med_display/scripts/smart-api-client.js'></script> 
+	
+	<script>
+		SMART = new SMART_CLIENT(null, window.top);
+
+		var $table =jQuery('#URL_Parameters'); 
+		var $message_body =jQuery('#Message_Body'); 
+		var $previous_queries = jQuery('#Previous_Queries');
+		var $response = jQuery("#Response");
+		
+		$previous_queries.hide();
+		$response.parent().hide();
+		$message_body.closest("TR").hide();
+		
+		API = {};
+		API.url_param_reg = /\{.*?\}/g;
+		
+		API.record_id = [];
+		API.medication_id = [];
+		API.fulfillment_id = [];
+		API.prescription_id = [];
+		API.problem_id = [];
+		API.external_id = ['anything you like'];
+		API.$calls = jQuery('#API_Functions UL');
+		API.calls = [];
+
+var sample_problem_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
+<rdf:RDF\n\
+  xmlns:dcterms="http://purl.org/dc/terms/"\n\
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
+  xmlns:sp="http://smartplatforms.org/"\n\
+  xmlns:umls="http://www.nlm.nih.gov/research/umls/">\n\
+	<rdf:Description>\n\
+	   <rdf:type rdf:resource="http://smartplatforms.org/problem"/>\n\
+	   <umls:cui>C0231749</umls:cui>\n\
+	   <dcterms:title>Knee pain (finding)</dcterms:title>\n\
+	   <sp:onset>08/01/2010</sp:onset>\n\
+	   <sp:resolution></sp:resolution>\n\
+	   <sp:notes>Worst when descending stairs.</sp:notes>\n\
+	</rdf:Description>\n\
+</rdf:RDF>';
+
+API.calls.push({url: '/records/{record_id}/problems',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['POST', "application/rdf+xml"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						  	POST : sample_problem_rdf
+						}
+					});
+
+					
+API.calls.push({url: '/records/{record_id}/problems/{problem_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {}
+					});
+
+					
+
+
+API.calls.push({url: '/records/{record_id}/problems/external_id/{external_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['PUT',"application/rdf+xml"],
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						PUT : sample_problem_rdf
+						}
+					});
+					
+var sample_med_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
+  xmlns:med="http://smartplatforms.org/medication#"\n\
+  xmlns:dcterms="http://purl.org/dc/terms/"\n\
+  xmlns:rxcui="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/">\n\
+   <rdf:Description>\n\
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>\n\
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/856845"/>\n\
+      <dcterms:title>AMITRIPTYLINE HCL 50 MG TAB</dcterms:title>\n\
+      <med:strength>50</med:strength>\n\
+      <med:strengthUnits>mg</med:strengthUnits>\n\
+      <med:startDate>03/14/2007</med:startDate>\n\
+      <med:endDate>03/14/2007</med:endDate>\n\
+   </rdf:Description>\n\
+</rdf:RDF>';
+
+API.calls.push({url: '/records/{record_id}/medications',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['POST', "application/rdf+xml"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						  	POST : sample_med_rdf
+						}
+					});
+
+
+
+API.calls.push({url: '/records/{record_id}/medications/{medication_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"],  
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {}
+					});
+
+
+API.calls.push({url: '/records/{record_id}/medications/{medication_id}/external_id/{external_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['PUT', "application/rdf+xml"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						  	PUT : sample_med_rdf
+						}
+					});
+
+var sample_fill_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
+  xmlns:sp="http://smartplatforms.org/"\n\
+  xmlns:dc="http://purl.org/dc/elements/1.1/">\n\
+   <rdf:Description>\n\
+		<rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>\n\
+		<dc:date>2010-06-15T04:00:00Z</dc:date>\n\
+		<sp:PBM>T00000000001011</sp:PBM>\n\
+		<sp:pharmacy>1453478</sp:pharmacy>\n\
+		<sp:dispenseQuantity>30</sp:dispenseQuantity>\n\
+   </rdf:Description>\n\
+</rdf:RDF>';
+
+
+
+API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['POST', "application/rdf+xml"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						  	POST : sample_fill_rdf
+						}
+					});
+
+
+API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments/{fullfillment_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"],  
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {}
+					});
+
+
+API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments/external_id/{external_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['PUT', "application/rdf+xml"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						  	PUT : sample_fill_rdf
+						}
+					});
+
+
+
+var interpolate_url = function(url) {
+	var fields = url.match(API.url_param_reg);
+	for (var i = 0; i < fields.length; i++) {
+		var f = fields[i];
+		url = url.replace(f, $("#url_parameter_"+f.substring(1, f.length-1)).val());
+	}
+	return url;
+}
+
+var make_call = function(call_args) {							
+	SMART.api_call(call_args[0], call_args[1]);
+}
+
+var method_clicked = function(ev) {
+	var method = $(this).val();
+	var url = interpolate_url(API.current_call.url);
+	var contentType = jQuery.grep(API.current_call.methods, 
+						function(m) {return m[0]==method;})[0][1];
+
+	var call_args = [{
+		method: method, 
+		url: url, 
+		contentType: contentType, 
+		data: $message_body.val() || {}
+		}, function(contentType, data) {
+			
+			$response.text(data);
+			
+			$response.html($response.html()
+				.replace(/\n/g, "<br>")
+				.replace(/ /g, "&nbsp;"));
+			
+			$prev_q = jQuery('<li>'+method+' '+url+'...</li>');
+			$prev_q.data("call_args", call_args);
+			$prev_q.click(function(el) {
+				make_call(jQuery(this).data("call_args"));
+			});
+			
+			$previous_queries.append($prev_q);
+			$previous_queries.show();
+			$response.parent().show();
+			
+		}];
+		
+	make_call(call_args);
+	return false;
+}
+
+var call_clicked = function(ev) {
+    var call = $(this).data("call");
+    var method  = $(this).val();
+    
+    
+	var fields = call.url.match(API.url_param_reg);
+	$response.parent().hide();
+	
+	$message_body.val(call.sample_msg[method] || "");
+	if ($message_body.val())
+		$message_body.closest("TR").show();
+	else
+		$message_body.closest("TR").hide();
+		
+	$table.find('TR.url_param').remove();
+	for (var i = 0; i < fields.length; i++) {
+		var f = fields[i];
+		f = f.substring(1,f.length-1);
+		var $input = jQuery('<tr class="url_param"><td>{'+f+'}</td><td><input type="text" id="url_parameter_'+f+'"/></td></tr>');
+		jQuery('INPUT', $input).autocomplete(
+			{source: function(f) {return function(request, response) {response(API[f]);};}(f),
+			 minLength: 0, 
+			 delay: 0,
+			 close: function() {$(this).data("close_handled", false);}})
+			.focus(function () {					
+			 		var close_handled = $(this).data("close_handled");
+					if (close_handled) {
+					   $(this).keydown(); 
+					}					
+			 		$(this).data("close_handled", true);					
+
+			}).data("close_handled", true).val(API[f][0]);
+		
+		
+		
+		$table.append($input);	
+	}
+	
+	$table.find('TR.button_row').remove();
+	var $button_row = jQuery('<tr class="button_row"><td colspan="2"><button value="'+method+'">'+method+" " + call.url+'</button></td></tr>');
+	$button_row.find("BUTTON").click(method_clicked);
+	$table.append($button_row);
+	API.current_call = call;
+}
+
+for (var i = 0; i < API.calls.length; i++) {
+	var call = API.calls[i];
+	
+	var methods = '';
+	for (var j = 0; j < call.methods.length; j++) {
+		var m = call.methods[j][0];
+		methods += '<button value="'+m+'">'+m+'</button>';		
+	}
+	
+	var $new_call = jQuery('<li><span class="method_buttons">'+methods+' </span>'+call.url+':</li>');
+	$new_call.find("BUTTON").data("call", call).click(call_clicked);
+	
+	API.$calls.append($new_call);
+}
+		
+		SMART.send_ready_message(function(record_info) {	
+			
+			API.record_id.push(record_info.id);
+			
+			SMART.MEDS_get(function(meds) {
+				var vals = meds.where("?m rdf:type sp:medication");
+				for (var i = 0; i < vals.length; i++) {
+					var id = /\/medications\/([^/]*)/.exec(vals[i].m.value._string)[1];					
+					API.medication_id.push(id);
+				}								
+				
+				vals = meds.where("?m rdf:type sp:fulfillment");
+				for (var i = 0; i < vals.length; i++) {
+					var id = /\/fulfillments\/([^/]*)/.exec(vals[i].m.value._string)[1];					
+					API.fulfillment_id.push(id);
+				}								
+				
+				vals = meds.where("?m rdf:type sp:prescription");
+				for (var i = 0; i < vals.length; i++) {
+					var id = /\/prescriptions\/([^/]*)/.exec(vals[i].m.value._string)[1];					
+					API.prescriptions_id.push(id);
+				}								
+			});
+			
+			SMART.PROBLEMS_get(function(vals) {
+				var vals = vals.where("?m rdf:type sp:problem");
+				for (var i = 0; i < vals.length; i++) {
+					var id = /\/problems\/([^/]*)/.exec(vals[i].m.value._string)[1];			
+					API.problem_id.push(id);
+				}								
+				
+			});
+			
+			
+		});
+		
+  
+  	</script>
+  
+</html>
