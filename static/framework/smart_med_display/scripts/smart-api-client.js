@@ -230,7 +230,7 @@ function randomUUID() {
 SMART_CLIENT.prototype.MEDS_get = function(callback) {
 	var _this = this;
 	this.api_call({method: 'GET', 
-		url: "/records/" + SMART.record_info.id + "/medications", 
+		url: "/records/" + SMART.record_info.id + "/medications/", 
 		data: {}},
 	function(contentType, data) {
 				var rdf = _this.process_rdf(contentType, data);
@@ -244,7 +244,7 @@ SMART_CLIENT.prototype.MEDS_get_all = SMART_CLIENT.prototype.MEDS_get;
 SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
 	var _this = this;
 	this.api_call({method: 'POST', 
-			url: "/records/" + SMART.record_info.id + "/medications", 
+			url: "/records/" + SMART.record_info.id + "/medications/", 
 				   contentType: 'application/rdf+xml', 
 				   data: data},
 			function(contentType, data) {
@@ -255,7 +255,7 @@ SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
 SMART_CLIENT.prototype.MEDS_delete = function(callback) {
 	var _this = this;
 	this.api_call({method: 'DELETE', 
-					url: "/records/" + SMART.record_info.id + "/medications", 
+					url: "/records/" + SMART.record_info.id + "/medications/", 
 				   data: {}},
 			function(contentType, data) {
 				callback(data);
@@ -290,7 +290,7 @@ SMART_CLIENT.prototype.MED_put = function(data, external_id, callback) {
 SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
 	var _this = this;
 	this.api_call({method: 'GET', 
-		   url: "/records/" + SMART.record_info.id + "/problems", 
+		   url: "/records/" + SMART.record_info.id + "/problems/", 
 		   data: {}},
 	function(contentType, data) {
 				var rdf = _this.process_rdf(contentType, data);
@@ -301,7 +301,7 @@ SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
 SMART_CLIENT.prototype.PROBLEMS_post= function(data, callback) {
 	var _this = this;
 	this.api_call({method: 'POST', 
-			url: "/records/" + SMART.record_info.id + "/problems", 
+			url: "/records/" + SMART.record_info.id + "/problems/", 
 				   contentType: 'application/rdf+xml', 
 				   data: data},
 			function(contentType, data) {

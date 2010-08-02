@@ -86,7 +86,7 @@ var sample_problem_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
 	</rdf:Description>\n\
 </rdf:RDF>';
 
-API.calls.push({url: '/records/{record_id}/problems',
+API.calls.push({url: '/records/{record_id}/problems/',
 						methods: [['GET',"application/x-www-form-urlencoded"], 
 							      ['POST', "application/rdf+xml"], 
 							      ['DELETE', "application/x-www-form-urlencoded"]], 
@@ -133,7 +133,7 @@ var sample_med_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
    </rdf:Description>\n\
 </rdf:RDF>';
 
-API.calls.push({url: '/records/{record_id}/medications',
+API.calls.push({url: '/records/{record_id}/medications/',
 						methods: [['GET',"application/x-www-form-urlencoded"], 
 							      ['POST', "application/rdf+xml"], 
 							      ['DELETE', "application/x-www-form-urlencoded"]], 
@@ -178,7 +178,7 @@ var sample_fill_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
 
 
 
-API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments',
+API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments/',
 						methods: [['GET',"application/x-www-form-urlencoded"], 
 							      ['POST', "application/rdf+xml"], 
 							      ['DELETE', "application/x-www-form-urlencoded"]], 
