@@ -67,6 +67,8 @@
 		API.prescription_id = [];
 		API.problem_id = [];
 		API.external_id = ['anything_you_like'];
+		API.external_med_id = ['anything_you_like'];
+		API.external_fill_id = ['anything_you_like'];
 		API.$calls = jQuery('#API_Functions UL');
 		API.calls = [];
 
@@ -153,7 +155,7 @@ API.calls.push({url: '/records/{record_id}/medications/{medication_id}',
 					});
 
 
-API.calls.push({url: '/records/{record_id}/medications/{medication_id}/external_id/{external_id}',
+API.calls.push({url: '/records/{record_id}/medications/external_id/{external_id}',
 						methods: [['GET',"application/x-www-form-urlencoded"], 
 							      ['PUT', "application/rdf+xml"], 
 							      ['DELETE', "application/x-www-form-urlencoded"]], 
@@ -162,6 +164,7 @@ API.calls.push({url: '/records/{record_id}/medications/{medication_id}/external_
 						  	PUT : sample_med_rdf
 						}
 					});
+
 
 var sample_fill_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
@@ -196,8 +199,7 @@ API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillme
 						sample_msg: {}
 					});
 
-
-API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments/external_id/{external_id}',
+API.calls.push({url: '/records/{record_id}/medications/external_id/{external_med_id}/fulfillments/external_id/{external_fill_id}',
 						methods: [['GET',"application/x-www-form-urlencoded"], 
 							      ['PUT', "application/rdf+xml"], 
 							      ['DELETE', "application/x-www-form-urlencoded"]], 
@@ -206,8 +208,6 @@ API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillme
 						  	PUT : sample_fill_rdf
 						}
 					});
-
-
 
 var interpolate_url = function(url) {
 	var fields = url.match(API.url_param_reg);
@@ -289,8 +289,6 @@ var call_clicked = function(ev) {
 			 		$(this).data("close_handled", true);					
 
 			}).data("close_handled", true).val(API[f][0]);
-		
-		
 		
 		$table.append($input);	
 	}

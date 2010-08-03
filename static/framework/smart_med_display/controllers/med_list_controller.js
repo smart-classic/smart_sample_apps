@@ -96,7 +96,13 @@ extend('SmartMedDisplay.Controllers.MedListController',
     					this.meds = data;
  						var v = this.view('meds', {meds: data});
 						this.expandedElt.html(v).fadeIn(this.slideDelay);
+						
 						var $old_sel = $(".medtable tr.selected");
+				
+						if ($old_sel.length == 0) {
+							$old_sel = $(".medtable tr:first")
+						}
+						
 						this.moveSel($old_sel, $old_sel);
     			     }), 
     			     function(){alert("Error!");});
