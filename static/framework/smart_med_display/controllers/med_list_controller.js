@@ -155,7 +155,7 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		             
 		for (var i = 0; i < this.meds.length; i++) {
 			var med_events = this.meds[i].toTimelineEvents();
-			rownum++;
+			if (med_events.length > 0) rownum++;
 			for (var j = 0; j< med_events.length; j++)
 			{
 				if (med_events[j].instant === false) rownum++;
@@ -236,15 +236,17 @@ extend('SmartMedDisplay.Controllers.MedListController',
 
         var eventData = this.timelineData();
         
-        theme1.timeline_start = this.earliestEvent(eventData.events);//new Date(Date.UTC(2008, 0, 1));
-        theme1.timeline_stop  = this.latestEvent(eventData.events);//new Date(Date.UTC(2010, 0, 1));
+//      theme1.timeline_start = this.earliestEvent(eventData.events);//new Date(Date.UTC(2008, 0, 1));
+        //       theme1.timeline_stop  = this.latestEvent(eventData.events);//new Date(Date.UTC(2010, 0, 1));
+        var before_time = this.earliestEvent(eventData.events);//new Date(Date.UTC(2008, 0, 1));
+        var after_time= this.latestEvent(eventData.events);//new Date(Date.UTC(2010, 0, 1));
         
         this.replaceUndefinedDates(eventData.events);
         
         var one_day=1000*60*60*24;
-        var numDays =  (Date.parse(theme1.timeline_stop).getTime() - Date.parse(theme1.timeline_start).getTime()) / one_day;
+        var numDays =  (Date.parse(after_time).getTime() - Date.parse(before_time).getTime()) / one_day;
         
-        var middle = Date.parse(theme1.timeline_start).addDays(numDays / 2);
+        var middle = Date.parse(before_time).addDays(numDays / 2);
         var width = $(document).width() / numDays * 12;
         var bandInfos = [
             Timeline.createBandInfo({

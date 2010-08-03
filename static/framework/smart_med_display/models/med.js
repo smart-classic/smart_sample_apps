@@ -182,6 +182,10 @@ extend('SmartMedDisplay.Models.Med',
 			main_event.image = "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";		
 		}		
 		
+
+		if (main_event.start === undefined && main_event.end === undefined && dispenses.length == 0){
+			return [];
+		}
 		
 		if (main_event.start != main_event.end || dispenses.length == 0){
 			dispenses.push(main_event);
