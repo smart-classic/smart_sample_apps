@@ -172,7 +172,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		need_ui.url = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.js";
 
 		var need_rdf = function() {try {return (typeof(jQuery.rdf) === "undefined");} catch(e) {return true;}};
-		need_rdf.url = "http://smart.gping.org:8001/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js";
+		need_rdf.url = "http://sandbox.smartplatforms.org:8001/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js";
 		
 		var funcs = [need_jquery, need_ui, need_rdf];
 		
