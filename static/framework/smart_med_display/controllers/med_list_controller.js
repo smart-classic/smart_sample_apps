@@ -130,6 +130,21 @@ extend('SmartMedDisplay.Controllers.MedListController',
 					$("#MedListTabs").tabs('select', 0);
 				});
 	},
+	".spl click": function(el) {
+		var _this = this;
+		var med = el.closest(".med").model();
+		med.load_spl_rdf(
+				function(){
+					$("#image-overlay").html("");
+					for (var i =0 ; i < med.spl.images.length; i++)
+						$("#image-overlay").append("<img src='"+med.spl.images[i]+"'/>");
+					
+					$("#image-overlay").dialog({
+						width: "100%",
+						modal: true
+					});
+					});
+	},
 
 	moveSel : function($old_sel, $new_sel) {
 		if ($new_sel.length !== 0) {

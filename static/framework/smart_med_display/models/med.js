@@ -163,6 +163,30 @@ extend('SmartMedDisplay.Models.Med',
 		return ds;
 	},
 	
+	load_spl_rdf: function(callback ){
+		var rxn_cui = this.cui.path.split("/");
+		rxn_cui = rxn_cui[rxn_cui.length-1];
+		var _this = this;
+		SMART.SPL_get(rxn_cui, function(rdf) {
+			new_t = rdf.databank.triples();
+			for (var i = 0; i < new_t.length; i++)
+				_this.Class.rdf.databank.add(new_t[i]);
+
+			_this.spl = {};
+			var images = _this.Class.rdf
+		    .where("<"+_this.cui._string+"> <http://www.accessdata.fda.gov/spl/data> ?d")
+		    .where("?d <http://www.accessdata.fda.gov/spl/data/image> ?i");
+			
+			_this.spl.images = [];
+			for (var i = 0; i < images.length; i++)
+			{
+				_this.spl.images.push(images[i].i.value._string);
+			}
+
+			callback();
+		});
+	},
+	
 	toTimelineEvents : function() {
 		var dispenses = this.getDispenseEvents();
 		if (dispenses.length > 0)

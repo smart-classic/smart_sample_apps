@@ -381,6 +381,17 @@ SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query,callback) {
 			});
 }
 
+SMART_CLIENT.prototype.SPL_get = function(query, callback) {
+	var _this = this;
+	this.api_call({method: 'GET', 
+		   url: "/spl/for_rxnorm/"+query, 
+		   data: {}},
+	function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				callback(rdf);
+			});
+}
+
 
 SMART_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
 	var _this = this;
