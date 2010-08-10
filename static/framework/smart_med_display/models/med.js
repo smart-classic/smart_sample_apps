@@ -39,8 +39,10 @@ extend('SmartMedDisplay.Models.Med',
 		
 		var ret = []
 		           
+		this.rdf.prefix("sp","http://smartplatforms.org/");
 		this.rdf.prefix("med","http://smartplatforms.org/medication#");
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
+		this.rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 		       		
 		var r = this.rdf.where("?med rdf:type "+this.object_type);
 			
