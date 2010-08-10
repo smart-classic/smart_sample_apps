@@ -364,7 +364,8 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 		}
 	}
 	catch(err){ }
-	
+
+	rdf.prefix("sp","http://smartplatforms.org/");
 	// abstract method to instantiate a list of objects from the rdf store.
 	return rdf;
 }

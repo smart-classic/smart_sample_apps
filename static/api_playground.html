@@ -320,6 +320,7 @@ for (var i = 0; i < API.calls.length; i++) {
 			API.record_id.push(record_info.id);
 			
 			SMART.MEDS_get(function(meds) {
+			
 				var vals = meds.where("?m rdf:type sp:medication");
 				for (var i = 0; i < vals.length; i++) {
 					var id = /\/medications\/([^/]*)/.exec(vals[i].m.value._string)[1];					
