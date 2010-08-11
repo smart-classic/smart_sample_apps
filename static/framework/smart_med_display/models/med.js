@@ -59,7 +59,7 @@ extend('SmartMedDisplay.Models.Med',
 			 .optional(med+" med:dose ?dose")
 			 .optional(med+" med:doseUnits ?doseUnits")
 			 .optional(med+" med:route ?route")
-			 .optional(med+" med:notes ?notes")
+			 .optional(med+" med:instructions ?notes")
 			 .optional(med+" med:frequency ?freq")
 			 .optional(med+" med:startDate ?sd")
 			 .optional(med+" med:endDate ?ed")[0];
