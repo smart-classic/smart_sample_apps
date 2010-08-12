@@ -165,6 +165,9 @@ extend('SmartMedDisplay.Models.Med',
 	},
 	
 	load_spl_rdf: function(callback ){
+		// No need to load more than once...
+		if (typeof this.spl !== 'undefined') return;
+		
 		var rxn_cui = this.cui.path.split("/");
 		rxn_cui = rxn_cui[rxn_cui.length-1];
 		var _this = this;
@@ -218,7 +221,7 @@ extend('SmartMedDisplay.Models.Med',
 			main_event.instant = false;
 			main_event.start = this.start_date ;//"2008-08-05";
 			main_event.end = this.end_date;
-			main_event.image = "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";		
+//			main_event.image = "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";		
 		}		
 		
 

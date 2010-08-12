@@ -28,10 +28,21 @@ extend('SmartMedDisplay.Models.MedDetails',
 
 	var s = "<"+med.cui._string+"> "
 	var r = med.Class.rdf
-	 .where(s+ " ?p ?o");
+	 .where(s+ " ?p1 ?o1")
+	 .where(" ?o1 <http://pillbox.nlm.nih.gov/image> ?o ");
 	for (var i = 0; i < r.length; i++)
 	{
-		var field  = r[i].p.value._string;
+		var field  = "http://pillbox.nlm.nih.gov/image";
+		var value = r[i].o.value._string || r[i].o.value;
+		ret.push([field, value]);
+	}
+
+	r = med.Class.rdf
+	 .where(s+ " ?p1 ?o1")
+	 .where(" ?o1 <http://www.accessdata.fda.gov/spl/data/image> ?o ");
+	for (var i = 0; i < r.length; i++)
+	{
+		var field  = "http://www.accessdata.fda.gov/spl/data/image";
 		var value = r[i].o.value._string || r[i].o.value;
 		ret.push([field, value]);
 	}

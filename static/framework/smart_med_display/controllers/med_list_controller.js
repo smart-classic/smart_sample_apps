@@ -26,7 +26,7 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		}));
 		
 		if (this.expandedElt.length === 0) {
-			this.expandedElt = $("<div id='ExpandedMeds'></div>");
+			this.expandedElt = $("<div id='ExpandedMeds'><img src='/framework/smart_med_display/images/ajax-loader.gif'/></div>");
 			$("#ExpandMeds").parent().append(this.expandedElt);
 		}
 
@@ -85,7 +85,7 @@ extend('SmartMedDisplay.Controllers.MedListController',
 			$("#ExpandMeds").html("+");
 			$("#MedDetails").html("");
     	} else {
-			this.expandedElt.hide();
+			this.expandedElt.html("<img src='/framework/smart_med_display/images/ajax-loader.gif'/>");
 			$("#ExpandMeds").html("-");
 			$("#MedDetails").html("");
 
@@ -132,21 +132,41 @@ extend('SmartMedDisplay.Controllers.MedListController',
 	},
 	".spl click": function(el) {
 		var _this = this;
+		el = el.parent();
+		
 		var med = el.closest(".med").model();
+
+//		$("#image-overlay").dialog({
+//			width: "100%",
+//			modal: true,
+//			position: 'top'
+//		}).html("<img src='/framework/smart_med_display/images/ajax-loader.gif'/> Loading images...");
+
+		var _this = this;
+
+		_this.moveSel($(".medtable tr.selected"), 
+			      el.closest("TR"));
+
+		var pre_load_html = el.html();
+		el.html("<img src='/framework/smart_med_display/images/ajax-loader.gif'/>...");
+		
 		med.load_spl_rdf(
 				function(){
-					$("#image-overlay").html("");
+					el.html(pre_load_html);
+					_this.moveSel($(".medtable tr.selected"), 
+							      $(".medtable tr.selected"));
 					
-	        		
-					for (var i =0 ; i < med.spl.images.length; i++)
-						$("#image-overlay").append("<img src='"+med.spl.images[i]+"'/><br>");
-					
-					
-					$("#image-overlay").dialog({
-						width: "100%",
-						modal: true
+					var scroll_target = $('#FirstImage').offset().top;
+					window.scrollTo(0,scroll_target);
+//					$("#image-overlay").html("");
+//					
+//	        		
+//					for (var i =0 ; i < med.spl.images.length; i++)
+//						$("#image-overlay").append("<img src='"+med.spl.images[i]+"'/><br>");
+//										
 					});
-					});
+		
+		return false;		
 	},
 
 	moveSel : function($old_sel, $new_sel) {

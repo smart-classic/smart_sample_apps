@@ -1,11 +1,27 @@
 <table class='detailsTable'>
-<%  for (var d = 0; d < data.length;d++)  { 
+<%  
+var firstImage = true;
+for (var d = 0; d < data.length;d++)  { 
          var n = data[d][0];
          var v = data[d][1];
+         	
+         if (v.match(/(png|jpe?g|gif|svg)$/i) !== null) {
+           extra = firstImage?"<span id='FirstImage'></span><br>":"";
+           v = extra+"<img src='"+v+"'/>";
+           firstImage = false;
+         }
+         else if (v.match(/^http:\/\/www.accessdata.fda.gov\/spl\/.*xml$/)) {
+           v = "<a href='"+v+"' target='_new'>Product Label</a>";
+         }
+         else if (v.match(/^http/)) {
+           v = "<a href='"+v+"' target='_new'>"+v+"</a>";
+         }
 %>
 <tr >
   <td><%= n %></td>
-  <td><%= v %></td>
+  <td>
+  <%= v %>
+  </td>
 </tr>
 <% } %>
 </table>
