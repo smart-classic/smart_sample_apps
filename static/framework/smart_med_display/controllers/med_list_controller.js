@@ -136,8 +136,11 @@ extend('SmartMedDisplay.Controllers.MedListController',
 		med.load_spl_rdf(
 				function(){
 					$("#image-overlay").html("");
+					
+	        		
 					for (var i =0 ; i < med.spl.images.length; i++)
-						$("#image-overlay").append("<img src='"+med.spl.images[i]+"'/>");
+						$("#image-overlay").append("<img src='"+med.spl.images[i]+"'/><br>");
+					
 					
 					$("#image-overlay").dialog({
 						width: "100%",
@@ -234,6 +237,20 @@ extend('SmartMedDisplay.Controllers.MedListController',
 	updateTimeline : function() {
 		
         var tl_el = $("#tl").get(0);
+
+//        Timeline.DefaultEventSource.Event.prototype.fillInfoBubble = function(element, theme, labeller) {
+//        	var med = this._obj.med;
+//        	med.load_spl_rdf(function() {
+//        		var data = "Refill.";
+//        		if  (med.spl.pill_image!== undefined)
+//        			data += "<img src='"+med.spl.pill_image+"'/>";
+//        		jQuery(element).html(data)
+//        		
+//        	});
+//        	
+//          }
+
+        
         var eventSource1 = new Timeline.DefaultEventSource();
         
         var theme1 = Timeline.ClassicTheme.create();
@@ -249,6 +266,8 @@ extend('SmartMedDisplay.Controllers.MedListController',
                                  // Set autoWidth on the Timeline's first band's theme,
                                  // will affect all bands.
 
+
+        
         var eventData = this.timelineData();
         
 //      theme1.timeline_start = this.earliestEvent(eventData.events);//new Date(Date.UTC(2008, 0, 1));
@@ -281,10 +300,5 @@ extend('SmartMedDisplay.Controllers.MedListController',
         eventSource1.loadJSON(eventData, url);
         this.tl.layout();
 	}
-	
-	
 
-
-
-		
 });

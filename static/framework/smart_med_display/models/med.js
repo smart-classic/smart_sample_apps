@@ -148,6 +148,7 @@ extend('SmartMedDisplay.Models.Med',
 		{
 			var devent = {};
 
+			devent.med = this;
 			var d = Date.parse(fulfillments[i].d.value.substring(0,10));
 			
 			devent.title = fulfillments[i].q.value;
@@ -173,16 +174,27 @@ extend('SmartMedDisplay.Models.Med',
 				_this.Class.rdf.databank.add(new_t[i]);
 
 			_this.spl = {};
-			var images = _this.Class.rdf
-		    .where("<"+_this.cui._string+"> <http://www.accessdata.fda.gov/spl/data> ?d")
-		    .where("?d <http://www.accessdata.fda.gov/spl/data/image> ?i");
 			
 			_this.spl.images = [];
+			var images = _this.Class.rdf
+		    .where("<"+_this.cui._string+"> <http://www.accessdata.fda.gov/spl/data> ?d")
+		    .where("?d <http://pillbox.nlm.nih.gov/image> ?i");
+
 			for (var i = 0; i < images.length; i++)
 			{
 				_this.spl.images.push(images[i].i.value._string);
 			}
 
+			images = _this.Class.rdf
+		    .where("<"+_this.cui._string+"> <http://www.accessdata.fda.gov/spl/data> ?d")
+		    .where("?d <http://www.accessdata.fda.gov/spl/data/image> ?i");
+			
+			for (var i = 0; i < images.length; i++)
+			{
+				_this.spl.images.push(images[i].i.value._string);
+			}
+
+					
 			callback();
 		});
 	},
@@ -197,6 +209,7 @@ extend('SmartMedDisplay.Models.Med',
 		}
 		
 		var main_event = {};
+		main_event.med = this;
 		main_event.title = this.drug;
 		main_event.description = this.toString();
 		
