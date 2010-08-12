@@ -59,7 +59,10 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	this.receive_setup_message = function(message) {
 		this.credentials = message.credentials;
 		this.record_info = message.record_info;
-		this.ready_callback(this.record_info);
+		var _this = this;
+		this.CAPABILITIES_get(function() {
+			_this.ready_callback(_this.record_info);			
+		});
 	},
 
 	this.receive_apireturn_message = function(message) {
@@ -337,6 +340,72 @@ SMART_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
 
 
 
+
+SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query,callback) {
+	var _this = this;
+	this.api_call({method: 'GET', 
+		   url: "/codes/systems/"+system+"/query", 
+		   data: {q : query}},
+	function(contentType, data) {
+			   var js =  JSON.parse(data);
+				callback(js);
+			});
+}
+
+SMART_CLIENT.prototype.SPL_get = function(query, callback) {
+	var _this = this;
+	this.api_call({method: 'GET', 
+		   url: "/spl/for_rxnorm/"+query, 
+		   data: {}},
+	function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				callback(rdf);
+			});
+}
+
+SMART_CLIENT.prototype.CAPABILITIES_get = function(callback) {
+	var _this = this;
+	this.api_call({method: 'GET', 
+		   url: "/capabilities/", 
+		   data: {}},
+	function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				cs = rdf.where("?platform  rdf:type  <http://smartplatforms.org/container>")
+						.where("?platform   <http://smartplatforms.org/capability> ?cap");
+				
+				_this.capabilities = {}
+				for (var i = 0; i < cs.length; i++) {
+					_this.capabilities[cs[i].cap.value._string] = true;
+				}
+				
+				callback(rdf);
+			});
+}
+
+
+SMART_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
+	var _this = this;
+	var source = function(request, response) {
+		_this.CODING_SYSTEM_get(system, request.term, function(json) {
+			response(jQuery.map(json, function(item) {return {label: item.full_value, value: item.umls_code};}));
+		}) 
+	};
+	
+	return source;
+}
+
+SMART_CLIENT.prototype.SPARQL = function(query,callback) {
+	var _this = this;
+	this.api_call({
+		   method: 'GET', 
+		   url: "/records/"+SMART.record_info.id+"/sparql", 
+		   data: {q : query}},
+		   function(contentType, data) {
+				var rdf = _this.process_rdf(contentType, data);
+				callback(rdf);
+			});
+};
+
 SMART_CLIENT.prototype.createXMLDocument = function(string) {
 	return (new DOMParser()).parseFromString(string, 'text/xml');
 };
@@ -370,48 +439,3 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	return rdf;
 }
 
-SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query,callback) {
-	var _this = this;
-	this.api_call({method: 'GET', 
-		   url: "/codes/systems/"+system+"/query", 
-		   data: {q : query}},
-	function(contentType, data) {
-			   var js =  JSON.parse(data);
-				callback(js);
-			});
-}
-
-SMART_CLIENT.prototype.SPL_get = function(query, callback) {
-	var _this = this;
-	this.api_call({method: 'GET', 
-		   url: "/spl/for_rxnorm/"+query, 
-		   data: {}},
-	function(contentType, data) {
-				var rdf = _this.process_rdf(contentType, data);
-				callback(rdf);
-			});
-}
-
-
-SMART_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
-	var _this = this;
-	var source = function(request, response) {
-		_this.CODING_SYSTEM_get(system, request.term, function(json) {
-			response(jQuery.map(json, function(item) {return {label: item.full_value, value: item.umls_code};}));
-		}) 
-	};
-	
-	return source;
-}
-
-SMART_CLIENT.prototype.SPARQL = function(query,callback) {
-	var _this = this;
-	this.api_call({
-		   method: 'GET', 
-		   url: "/records/"+SMART.record_info.id+"/sparql", 
-		   data: {q : query}},
-		   function(contentType, data) {
-				var rdf = _this.process_rdf(contentType, data);
-				callback(rdf);
-			});
-};

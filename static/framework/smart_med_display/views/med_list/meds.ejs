@@ -10,7 +10,11 @@
   <td><%= m.route %></td>
   <td><%= m.frequency %></td>
   <td><%= m.notes %></td>
+  <% if (SMART.capabilities["http://smartplatforms.org/capability/SPL/lookup"] == true &&
+  		  SMART.capabilities["http://smartplatforms.org/capability/Pillbox/lookup"] == true) { %>
+  
   <td>[<a href="#spl" class='spl'>images</a>]</td>
+  <% } %>
   <td>[<a href="#" class='delete_med'>X</a>]</td>
 </tr>
 <%}%>
