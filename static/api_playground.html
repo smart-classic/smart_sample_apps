@@ -300,27 +300,35 @@ var call_clicked = function(ev) {
 	API.current_call = call;
 }
 
-for (var i = 0; i < API.calls.length; i++) {
-	var call = API.calls[i];
-	
-	var methods = '';
-	for (var j = 0; j < call.methods.length; j++) {
-		var m = call.methods[j][0];
-		methods += '<button value="'+m+'">'+m+'</button>';		
+var build_api = function() {
+	for (var i = 0; i < API.calls.length; i++) {
+		var call = API.calls[i];
+		
+		var methods = '';
+		for (var j = 0; j < call.methods.length; j++) {
+			var m = call.methods[j][0];
+			methods += '<button value="'+m+'">'+m+'</button>';		
+		}
+		
+		var $new_call = jQuery('<li><span name="'+call.url+'" class="method_buttons">'+methods+' </span>'+call.url+':</li>');
+		$new_call.find("BUTTON").data("call", call).click(call_clicked);
+		
+		API.$calls.append($new_call);
 	}
-	
-	var $new_call = jQuery('<li><span class="method_buttons">'+methods+' </span>'+call.url+':</li>');
-	$new_call.find("BUTTON").data("call", call).click(call_clicked);
-	
-	API.$calls.append($new_call);
-}
+};
+
+
 		
 		SMART.send_ready_message(function(record_info) {	
+			var loaded = 0;
+			var done_loading = function() {
+				loaded++;
+				if (loaded == 2) build_api();
+			}
 			
 			API.record_id.push(record_info.id);
 			
 			SMART.MEDS_get(function(meds) {
-			
 				var vals = meds.where("?m rdf:type sp:medication");
 				for (var i = 0; i < vals.length; i++) {
 					var id = /\/medications\/([^/]*)/.exec(vals[i].m.value._string)[1];					
@@ -337,7 +345,8 @@ for (var i = 0; i < API.calls.length; i++) {
 				for (var i = 0; i < vals.length; i++) {
 					var id = /\/prescriptions\/([^/]*)/.exec(vals[i].m.value._string)[1];					
 					API.prescriptions_id.push(id);
-				}								
+				}
+				done_loading();								
 			});
 			
 			SMART.PROBLEMS_get(function(vals) {
@@ -345,8 +354,9 @@ for (var i = 0; i < API.calls.length; i++) {
 				for (var i = 0; i < vals.length; i++) {
 					var id = /\/problems\/([^/]*)/.exec(vals[i].m.value._string)[1];			
 					API.problem_id.push(id);
-				}								
+				}	
 				
+				done_loading();
 			});
 			
 			
