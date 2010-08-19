@@ -14,5 +14,5 @@ steal.plugins('jquery/controller','jquery/controller/subscribe',
 	      .create_link('/framework/smart_med_display/stylesheets/med_display.css')
     .resources()
      .models('rdfObject', 'med', 'med_details', 'problem')
-     .controllers('keybind', 'med_list', 'problem_list', 'med_display')
+     .controllers('keybind', 'med_list', 'problem_list', 'med_display','timeline')
      .views();

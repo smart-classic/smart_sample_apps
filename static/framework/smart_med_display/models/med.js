@@ -128,7 +128,7 @@ extend('SmartMedDisplay.Models.Med',
 	},
 
     properName : function() {
-		return this.drug.toUpperCase();
+		return this.drug;
 	},
 	
 	
@@ -207,18 +207,20 @@ extend('SmartMedDisplay.Models.Med',
 		if (dispenses.length > 0)
 		{
 			this.start_date = this.Class.earlier(this.start_date,dispenses[0].start);
-			this.end_date = this.Class.later(this.end_date, dispenses[dispenses.length-1].start);
-			
+			this.end_date = this.Class.later(this.end_date, dispenses[dispenses.length-1].end);			
 		}
 		
 		var main_event = {};
 		main_event.med = this;
+		main_event.instant = true;
 		main_event.title = this.drug;
 		main_event.description = this.toString();
 		
 		if (this.start_date|| this.end_date)
 		{
-			main_event.instant = false;
+			if (this.start_date !== this.end_date)
+				main_event.instant = false;
+			
 			main_event.start = this.start_date ;//"2008-08-05";
 			main_event.end = this.end_date;
 //			main_event.image = "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";		
@@ -231,7 +233,8 @@ extend('SmartMedDisplay.Models.Med',
 		
 		if (main_event.start != main_event.end || dispenses.length == 0){
 			dispenses.push(main_event);
-		} else
+		} 
+		else
 		{
 			dispenses[0].title = main_event.title +": " + dispenses[0].title;
 			main_event.title = "";

@@ -472,7 +472,10 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	}
 
 	rdf.prefix("sp", "http://smartplatforms.org/");
+	rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 	rdf.prefix("dcterms", "http://purl.org/dc/terms/");
+	rdf.prefix("med","http://smartplatforms.org/medication#");
+
 	// abstract method to instantiate a list of objects from the rdf store.
 	return rdf;
 }
