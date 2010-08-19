@@ -44,8 +44,6 @@ extend('SmartMedDisplay.Models.Med',
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
 		this.rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 		       		
-		var t1 = new Date().getTime();
-
 		var r = this.rdf.where("?med rdf:type "+this.object_type)
 			 .where(" ?med dcterms:title ?medlabel")
 			 .optional(" ?med med:strength ?strength")
@@ -60,8 +58,6 @@ extend('SmartMedDisplay.Models.Med',
 			 .optional(" ?med med:startDate ?sd")
 			 .optional(" ?med med:endDate ?ed");
 		
-		var t2 = new Date().getTime();
-		alert("found all meds in " + (t2-t1) + ".");
 			
 		for (var i = 0; i < r.length; i++) {
 			
