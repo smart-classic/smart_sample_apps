@@ -89,9 +89,11 @@ extend('SmartMedDisplay.Models.Med',
 		if (b == null) return a;
 		return (a<b)? a : b;
 	},
-	later: function(a,b){
-		return this.earlier(b,a);
-	}
+	later: function(a,b)
+	{	if (a == null) return b;
+		if (b == null) return a;
+		return (a>b)? a : b;
+	},
 
 
 	
@@ -154,6 +156,7 @@ extend('SmartMedDisplay.Models.Med',
 			devent.title = fulfillments[i].q.value;
 			devent.description = d.toString('M/d/yyyy') + ": Dispensed " + fulfillments[i].q.value;
 			devent.start = d;
+			devent.end = d;
 
 			devent.instant = true;
 			ds.push(devent);
@@ -207,7 +210,7 @@ extend('SmartMedDisplay.Models.Med',
 		if (dispenses.length > 0)
 		{
 			this.start_date = this.Class.earlier(this.start_date,dispenses[0].start);
-			this.end_date = this.Class.later(this.end_date, dispenses[dispenses.length-1].end);			
+			this.end_date = this.Class.later(this.end_date, dispenses[dispenses.length-1].start);			
 		}
 		
 		var main_event = {};

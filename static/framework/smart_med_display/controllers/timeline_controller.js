@@ -11,7 +11,6 @@ extend('SmartMedDisplay.Controllers.TimelineController',
 	init: function() {
 
     },
-    
 	"timeline.view subscribe": function(called, meds) {
 		this.events = this.timelineData(meds);
 		this.updateTimeline();
@@ -100,9 +99,9 @@ extend('SmartMedDisplay.Controllers.TimelineController',
 	},
 	replaceUndefinedDates : function(events) {
 		for (var i = 0; i < events.length; i++ ) {
-			if (typeof(events[i].start)=="object")
+			if (typeof(events[i].start)=="object" && events[i].start !== null)
 				events[i].start=events[i].start.toISOString().substring(0,10);
-			if (typeof(events[i].end)=="object")
+			if (typeof(events[i].end)=="object"&& events[i].end !== null)
 				events[i].end=events[i].end.toISOString().substring(0,10);
 			
 		}
