@@ -459,7 +459,10 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	rdf.base("");
 
 	try {
+		var t1 = new Date().getTime();
 		rdf.load(d, {});
+		var t2 = new Date().getTime();
+//		alert("parsed in " + (t2-t1) + ".");
 		// Load all the namespaces from the xml+rdf into jquery.rdf
 		for ( var i = 0; i < d.firstChild.attributes.length; i++) {
 			a = d.firstChild.attributes[i];

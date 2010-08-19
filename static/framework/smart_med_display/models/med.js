@@ -44,27 +44,32 @@ extend('SmartMedDisplay.Models.Med',
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
 		this.rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 		       		
-		var r = this.rdf.where("?med rdf:type "+this.object_type);
+		var t1 = new Date().getTime();
+
+		var r = this.rdf.where("?med rdf:type "+this.object_type)
+			 .where(" ?med dcterms:title ?medlabel")
+			 .optional(" ?med med:strength ?strength")
+			 .optional(" ?med med:strengthUnits ?strengthUnits")
+			 .optional(" ?med med:form ?form")
+			 .optional(" ?med med:drug ?cui")
+			 .optional(" ?med med:dose ?dose")
+			 .optional(" ?med med:doseUnits ?doseUnits")
+			 .optional(" ?med med:route ?route")
+			 .optional(" ?med med:instructions ?notes")
+			 .optional(" ?med med:frequency ?freq")
+			 .optional(" ?med med:startDate ?sd")
+			 .optional(" ?med med:endDate ?ed");
+		
+		var t2 = new Date().getTime();
+		alert("found all meds in " + (t2-t1) + ".");
 			
 		for (var i = 0; i < r.length; i++) {
-		    var med = r[i].med.value;
-		    if (r[i].med.type === 'uri') med = "<"+med+">";
-
-			 var details = this.rdf
-			 .where( med+" dcterms:title ?medlabel")
-			 .optional(med+" med:strength ?strength")
-			 .optional(med+" med:strengthUnits ?strengthUnits")
-			 .optional(med+" med:form ?form")
-			 .optional(med+" med:drug ?cui")
-			 .optional(med+" med:dose ?dose")
-			 .optional(med+" med:doseUnits ?doseUnits")
-			 .optional(med+" med:route ?route")
-			 .optional(med+" med:instructions ?notes")
-			 .optional(med+" med:frequency ?freq")
-			 .optional(med+" med:startDate ?sd")
-			 .optional(med+" med:endDate ?ed")[0];
 			
-			var m = details;
+			var m = r[i];
+	        var med = r[i].med.value;
+	        if (med._string !== undefined)
+	        { med = "<"+med._string+">";}
+
 			ret.push(new SmartMedDisplay.Models.Med({
 				drug: m.medlabel.value,
 				dose: m.dose? m.dose.value :  "",
@@ -77,7 +82,7 @@ extend('SmartMedDisplay.Models.Med',
 				notes: m.notes?m.notes.value: "",
 				cui: m.cui ? m.cui.value: "",
 				rdf : r[i],
-					details: m,
+				details: m,
 				nodename: med
 			}));
 		}
