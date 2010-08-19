@@ -447,6 +447,12 @@ SMART_CLIENT.prototype.createXMLDocument = function(string) {
 	return (new DOMParser()).parseFromString(string, 'text/xml');
 };
 
+SMART_CLIENT.prototype.node_name = function(node) {
+	node = node.value;
+    if (node._string !== undefined)
+    { node = "<"+node._string+">";}
+    return node;
+};
 SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 
 	if (contentType !== "xml")

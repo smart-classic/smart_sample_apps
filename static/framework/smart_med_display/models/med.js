@@ -12,6 +12,8 @@ extend('SmartMedDisplay.Models.Med',
 					this.callback([this.saveRDF, success])
 				);  
 	},
+
+	
 	
 	post: function(data, success, error){
 		SMART.MEDS_post(data, success);  
@@ -62,9 +64,8 @@ extend('SmartMedDisplay.Models.Med',
 		for (var i = 0; i < r.length; i++) {
 			
 			var m = r[i];
-	        var med = r[i].med.value;
-	        if (med._string !== undefined)
-	        { med = "<"+med._string+">";}
+	        var med = r[i].med;
+	        med = SMART.node_name(med);
 
 			ret.push(new SmartMedDisplay.Models.Med({
 				drug: m.medlabel.value,
@@ -96,6 +97,43 @@ extend('SmartMedDisplay.Models.Med',
 		return (a>b)? a : b;
 	},
 
+	findDispenseEvents: function() {
+		var dispenses_by_med = {};
+
+		
+		var fulfillments = this.rdf
+		    .where("?med rdf:type sp:medication")
+		    .where("?med sp:fulfillment ?f")
+		    .where("?f dc:date ?d")
+		    .optional("?f sp:dispenseQuantity ?q");
+
+		for (var i = 0; i < fulfillments.length; i++)
+		{
+			var ds = [];
+
+			var devent = {};			
+			var d = Date.parse(fulfillments[i].d.value.substring(0,10));
+			
+			devent.title = fulfillments[i].q.value;
+			devent.description = d.toString('M/d/yyyy') + ": Dispensed " + fulfillments[i].q.value;
+			devent.start = d;
+			devent.end = d;
+
+			devent.instant = true;
+			m = SMART.node_name(fulfillments[i].med);
+			if (dispenses_by_med[m] === undefined )
+				dispenses_by_med[m] = [];
+			
+			dispenses_by_med[m].push(devent);
+		}
+		 
+		var sort_ds = function(a,b){return (a.start>b.start)-(a.start<b.start);};
+		jQuery.each(dispenses_by_med, function(k, v) {
+			dispenses_by_med[k].sort(sort_ds)
+		});
+	
+		this.dispenses_by_med = dispenses_by_med;
+	},
 
 	
 },
@@ -138,35 +176,7 @@ extend('SmartMedDisplay.Models.Med',
 	toString: function() {
 		 return this.dose + " " + this.unit + " " + this.route + " " + this.frequency;	
 	},
-	getDispenseEvents: function() {
-		var ds = [];
-
-
-		var fulfillments = this.Class.rdf
-		    .where(this.nodename+" sp:fulfillment ?f")
-		    .where("?f dc:date ?d")
-		    .optional("?f sp:dispenseQuantity ?q");
-
-		for (var i = 0; i < fulfillments.length; i++)
-		{
-			var devent = {};
-
-			devent.med = this;
-			var d = Date.parse(fulfillments[i].d.value.substring(0,10));
-			
-			devent.title = fulfillments[i].q.value;
-			devent.description = d.toString('M/d/yyyy') + ": Dispensed " + fulfillments[i].q.value;
-			devent.start = d;
-			devent.end = d;
-
-			devent.instant = true;
-			ds.push(devent);
-		}
-		
-		ds.sort(function(a,b){return (a.start>b.start)-(a.start<b.start);});
-
-		return ds;
-	},
+	
 	
 	load_spl_rdf: function(callback ){
 		// No need to load more than once...
@@ -207,7 +217,7 @@ extend('SmartMedDisplay.Models.Med',
 	},
 	
 	toTimelineEvents : function() {
-		var dispenses = this.getDispenseEvents();
+		var dispenses = this.Class.dispenses_by_med[this.nodename] || [];
 		if (dispenses.length > 0)
 		{
 			this.start_date = this.Class.earlier(this.start_date,dispenses[0].start);
@@ -215,7 +225,6 @@ extend('SmartMedDisplay.Models.Med',
 		}
 		
 		var main_event = {};
-		main_event.med = this;
 		main_event.instant = true;
 		main_event.title = this.drug;
 		main_event.description = this.toString();

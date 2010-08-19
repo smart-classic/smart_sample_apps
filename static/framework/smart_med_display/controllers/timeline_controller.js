@@ -55,9 +55,13 @@ extend('SmartMedDisplay.Controllers.TimelineController',
 	},
 
 	timelineData : function(meds) {
+		if (meds.length === 0) return;
+		
 		var events = [];
 		var rownum=-1;
 		             
+		meds[0].Class.findDispenseEvents();
+		
 		for (var i = 0; i < meds.length; i++) {
 			var med_events = meds[i].toTimelineEvents();
 			if (med_events.length > 0) rownum++;
