@@ -66,7 +66,8 @@ def get_property(model, s, p, raw_statement=False):
     r = list(r)
     assert len(r) <= 1, "Expect at most one %s on subject %s; got %s"%(p, s, len(r))
 
-    
+    if len(r) == 0: return None
+
     node = r[0].object
 
     if (node.is_resource()):
