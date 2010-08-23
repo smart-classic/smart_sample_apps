@@ -3,7 +3,7 @@
  * Wraps backend med services.  Enables 
  * [SmartMedDisplay.Models.Med.static.findAll retrieving],
  */
-SmartMedDisplay.Models.rdfObject.
+SmartMedDisplay.Models.RdfObject.
 extend('SmartMedDisplay.Models.Med',
 /* @Static */
 {

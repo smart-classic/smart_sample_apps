@@ -1,3 +1,9 @@
+/**
+ * @class steal.dev
+ * @parent stealtools
+ * Provides helper functions for development that get removed when put in production mode.
+ * This is under development.
+ */
 steal.dev = {
 	regexps : {
         colons : /::/,
@@ -18,16 +24,26 @@ steal.dev = {
 		//make sure parts in name match
 		var parts = name.split('.')
 		for(var i =0; i < parts.length && path.length; i++){
-			if(parts[i].toLowerCase() != path[i] && this.underscore(parts[i]) !=  path[i]){
+			if(parts[i].toLowerCase() != path[i] && 
+				this.underscore(parts[i]) !=  path[i] &&
+				this.underscore(parts[i]) !=  path[i].replace(/_controller/,"")){
 				this.warn("Are you sure "+name+" belongs in "+steal.current.path)
 			}
 		}
 	},
+	/**
+	 * 
+	 * @param {Object} out
+	 */
 	warn : function(out){
 		if(window.console && console.log){
 			console.log("steal.js WARNING: "+out)
 		}
 	},
+	/**
+	 * 
+	 * @param {Object} out
+	 */
 	log : function(out){
 		if(window.console && console.log){
 			console.log("steal.js INFO: "+out)

@@ -4,6 +4,3 @@ steal
  .plugins('funcunit/qunit')  //load qunit
  .then("list_test")
  
-if(steal.browser.rhino){
-  steal.plugins('funcunit/qunit/env')
-}

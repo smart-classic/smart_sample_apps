@@ -1,4 +1,4 @@
-steal(function(){
+steal.then(function(){
 	if (navigator.userAgent.match(/Rhino/) && FuncUnit.browsers !== undefined) {
 
 		// configuration defaults
@@ -6,6 +6,9 @@ steal(function(){
 		FuncUnit.serverPort = FuncUnit.serverPort || 4444;
 		if(!FuncUnit.browsers){
 			if(FuncUnit.jmvcRoot)
+				// run all browsers if you supply a jmvcRoot
+				// this is because a jmvcRoot means you're not running from filesystem, 
+				// so safari and chrome will work correctly 
 				FuncUnit.browsers = ["*firefox", "*iexplore", "*safari", "*googlechrome"]
 			else {
 				FuncUnit.browsers = ["*firefox"]
@@ -20,7 +23,6 @@ steal(function(){
 			var browser = 0;
 			//convert spaces to %20.
 			var location = /file:/.test(window.location.protocol) ? window.location.href.replace(/ /g,"%20") : window.location.href;
-			
 			QUnit.done = function(failures, total){
 				FuncUnit.selenium.close();
 				FuncUnit.selenium.stop();
@@ -61,7 +63,7 @@ steal(function(){
 				}, 1000)
 			};
 			var convertToJson = function(arg){
-				return arg === FuncUnit.window ? "selenium.browserbot.getCurrentWindow()" : jQuery.toJSON(arg)
+				return arg === FuncUnit.window ? "selenium.browserbot.getCurrentWindow()" : FuncUnit.jquery.toJSON(arg)
 				
 			}
 			FuncUnit.prompt = function(answer){
@@ -80,12 +82,13 @@ steal(function(){
 			}
 			FuncUnit.$ = function(selector, context, method){
 				var args = FuncUnit.makeArray(arguments);
+				var callbackPresent = false;
 				for (var a = 0; a < args.length; a++) {
 					if (a == 1) { //context
 						if (args[a] == FuncUnit.window.document) {
 							args[a] = "_doc()"
 						}
-						else 
+						else {
 							if (typeof args[a] == "number") {
 								args[a] = "_win()[" + args[a] + "].document"
 							}
@@ -93,12 +96,30 @@ steal(function(){
 								if (typeof args[a] == "string") {
 									args[a] = "_win()['" + args[a] + "'].document"
 								}
+						}
 					}
-					else 
-						args[a] = convertToJson(args[a]);
+					else {
+						if (args[a] == FuncUnit.window.document) {
+							args[a] = "_doc()"
+						}
+						else if (args[a] == FuncUnit.window) {
+							args[a] = "_win()"
+						}
+						else if (typeof args[a] == "function") {
+							callbackPresent = true;
+							var callback = args[a];
+							args[a] = "Selenium.resume";
+						}
+						else 
+							args[a] = convertToJson(args[a]);
+					}
 				}
 				var response = FuncUnit.selenium.getEval("jQuery.wrapped(" + args.join(',') + ")");
-				return eval("(" + response + ")")//  q[method].apply(q, args);
+				if(callbackPresent){
+					return callback( eval("(" + response + ")") )
+				} else {
+					return eval("(" + response + ")")//  q[method].apply(q, args);
+				}
 			}
 			
 			

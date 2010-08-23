@@ -353,6 +353,9 @@ DocumentationController.Helpers = {
             length: newIndent, name: right_res.join(".")
         }
     },
+	normalizeName: function( name ) {
+		return name.replace(/&gt;/,"_gt_").replace(/\*/g,"_star_");
+	},
     linkTags : function(tags){
         var res = [];
         for(var i =0; i < tags.length; i++)

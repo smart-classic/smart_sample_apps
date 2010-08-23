@@ -5,8 +5,9 @@
     <% for(var i =0; i < selected.length; i++){%>
 		<%  current = selected[i];
  			title = (current.title ? current.title: current.name);
-			res = calculateDisplay(previous, title)%>
-	    <a href="#&who=<%=current.name%>" class='selected choice <%=current.shortName%>' style="padding-left: <%= res.length * 20%>px">
+			res = calculateDisplay(previous, title);
+			name = normalizeName(current.name) %>
+	    <a href="#&who=<%=name%>" class='selected choice <%=current.shortName%>' style="padding-left: <%= res.length * 20%>px">
 	    	<span class='remove' title="close"></span>
 			<%=res.name.replace("jQuery","$")%>
 			
@@ -21,8 +22,9 @@
 		<% current = list[i];
 		   if(current.hide){ continue; }
 		   title = (current.title ? current.title: current.name);
-           res = calculateDisplay(previous, title)%>
-	    <a href="<%=current.shortName == 'prototype' || current.shortName == 'static' ? 'javascript://': '#&who='+current.name%>" class='result choice <%=current.shortName%>' style="padding-left: <%= res.length * 20%>px">
+           res = calculateDisplay(previous, title);
+		   name = normalizeName(current.name) %>
+	    <a href="<%=current.shortName == 'prototype' || current.shortName == 'static' ? 'javascript://': '#&who='+name%>" class='result choice <%=current.shortName%>' style="padding-left: <%= res.length * 20%>px">
 	    	<%=res.name.replace("jQuery","$")%>
 		</a>
 		<% previous = title%>

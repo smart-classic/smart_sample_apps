@@ -1,6 +1,6 @@
-steal(function() {
+steal.then(function() {
 	var readystate = document.readyState;
-	$(window).load(function(){
+	FuncUnit.jquery(window).load(function(){
 		if(document.readyState != readystate)
 			FuncUnit.support.readystate = true;
 	})
@@ -44,7 +44,7 @@ steal(function() {
 					ls();
 				}
 			}, 0);
-			Synthetic.removeEventListener(FuncUnit._window, "load", onload);
+			Syn.unbind(FuncUnit._window, "load", onload);
 		},
 		onunload = function(){
 			removeListeners();
@@ -52,17 +52,17 @@ steal(function() {
 			
 		},
 		removeListeners = function(){
-			Synthetic.removeEventListener(FuncUnit._window, "unload", onunload);
-			Synthetic.removeEventListener(FuncUnit._window, "load", onload);
+			Syn.unbind(FuncUnit._window, "unload", onunload);
+			Syn.unbind(FuncUnit._window, "load", onload);
 		}
 	unloadLoader = function(){
 		if(!firstLoad) // dont remove the first run, fixes issue in FF 3.6
 			removeListeners();
 		
-		Synthetic.addEventListener(FuncUnit._window, "load", onload);
+		Syn.bind(FuncUnit._window, "load", onload);
 		
 		//listen for unload to re-attach
-		Synthetic.addEventListener(FuncUnit._window, "unload", onunload)
+		Syn.bind(FuncUnit._window, "unload", onunload)
 	}
 	
 	//check for window location change, documentChange, then readyState complete -> fire load if you have one
@@ -127,29 +127,37 @@ steal(function() {
 			args[i] = args[i] === FuncUnit.window ? FuncUnit._window : args[i]
 		}
 		
-		var selector = args.shift(), context = args.shift(), method = args.shift(), q;
+		var selector = args.shift(), 
+			context = args.shift(), 
+			method = args.shift(), 
+			q;
 		
 		//convert context	
 		if (context == FuncUnit.window.document) {
 			context = FuncUnit._window.document
+		}else if(context === FuncUnit.window){
+			context = FuncUnit._window;
+		}else if (typeof context == "number" || typeof context == "string") {
+			context = FuncUnit._window.frames[context].document;
 		}
-		else 
-			if (typeof context == "number" || typeof context == "string") {
-				context = FuncUnit._window.frames[context].document;
-			}
-		
-		
-		if (FuncUnit._window.jQuery && parseFloat(FuncUnit._window.jQuery().jquery) >= 1.3) {
-			q = jQuery(FuncUnit._window.jQuery(selector, context).get());
+		if (selector == FuncUnit.window.document) {
+			selector = FuncUnit._window.document
+		}else if(selector === FuncUnit.window){
+			selector = FuncUnit._window;
 		}
-		else {
-			q = jQuery(selector, context);
-		}
+	
+		//the following 	
+		//if the page has jQuery, use its jQuery b/c it is faster.
+		//if (FuncUnit._window.jQuery && parseFloat(FuncUnit._window.jQuery().jquery) >= 1.3) {
+		//	q = jQuery(FuncUnit._window.jQuery(selector, context).get());
+		//} else {
+		q = FuncUnit.jquery(selector, context);
+		//}
 		
 		return q[method].apply(q, args);
 	}
 	
-	$(window).unload(function(){
+	FuncUnit.jquery(window).unload(function(){
 		if (FuncUnit._window) 
 			FuncUnit._window.close();
 	})

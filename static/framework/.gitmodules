@@ -28,5 +28,7 @@
 	update = merge
 [submodule "envjs"]
 	path = envjs
+
 	url = git://github.com/pinhook/env-js.git
+
 	update = merge

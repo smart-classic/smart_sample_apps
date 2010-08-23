@@ -32,9 +32,7 @@ var weird = /button|select/i, //margin is inside border
         oldOuterHeight: $.fn.outerHeight,
         oldOuterWidth: $.fn.outerWidth,
         oldInnerWidth: $.fn.innerWidth,
-        oldInnerHeight: $.fn.innerHeight,
-		oldHeight : $.fn.height,
-		oldWidth: $.fn.width
+        oldInnerHeight: $.fn.innerHeight
     };
 /**
  *  @add jQuery.fn
@@ -112,7 +110,7 @@ height:
         } else {
             return checks["oldOuter" + Upper].call(this, v)
         }
-    };
+    }
     $.fn["inner" + Upper] = function(v) {
         if (typeof v == 'number') {
             this[lower](v - getBoxes[lower](this[0], { padding: true }))
@@ -120,14 +118,7 @@ height:
         } else {
             return checks["oldInner" + Upper].call(this, v)
         }
-    };
-	$.fn[lower] = function(v){
-		if(v === undefined && this[0] !== window){
-			 return this[0] ? this[0]["offset"+Upper] -  getBoxes[lower](this[0], {padding: true, border: true}) : 0;
-		}else{
-			return checks["old" + Upper].call(this, v)	
-		}
-	};
+    }
     //provides animations
 	var animate = function(boxes){
 		return function(fx){

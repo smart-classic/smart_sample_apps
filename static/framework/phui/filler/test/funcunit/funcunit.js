@@ -1,3 +1,1 @@
-steal
- .plugins("steal/test/funcunit")  //load funcunit
- .then("filler_test")       //load your tests
+steal.plugins("funcunit").then("filler_tests"/*, "filler3_tests"*/);

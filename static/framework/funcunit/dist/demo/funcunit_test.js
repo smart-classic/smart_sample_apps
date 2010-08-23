@@ -1,19 +1,20 @@
-module("funcunit test")
+module("myapp",{
+	setup : function(){
+		S.open("myapp.html")
+	}
+})
 
 test("Copy Test", function(){
-        S.open("demo/myapp.html", null, 10000);
-        
-		S("#typehere").type("javascriptmvc")
-		
-		S("#seewhatyoutyped").text(function(val){
-			equals(val, "typed javascriptmvc","typing");
-		})
-		S.wait(1000)
-		S("#copy").click();
-		S("#seewhatyoutyped").text(function(val){
-			equals(val, "copied javascriptmvc","copy");
-		})
-		S("#typehere").offset(function(offset){
-			ok(offset.top,"has values")
-		})
+	S("#typehere").type("javascript1mvc[left][left][left]\b", function(){
+		equals(S("#seewhatyoutyped").text(), "typed javascriptmvc","typing");
+	})
+	S("#copy").click(function(){
+		equals(S("#seewhatyoutyped").text(), "copied javascriptmvc","copy");
+	})
+})
+
+test("Drag Test", function(){
+	S("#drag").drag("#drop", function(){
+		equals(S("#drop").text(), "Drags 1", 'drag worked correctly')
+	})
 })

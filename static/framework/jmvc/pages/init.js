@@ -5,7 +5,7 @@
  * containing the best ideas in enterprise JavaScript development. 
  * It <span class='highlight'>guides</span> you to successfully completed projects by promoting best practices, 
  * maintainability, and convention over configuration.</p>
- *  <a class="big_button floatLeft" id="download" href="http://github.com/downloads/pinhook/framework/javascriptmvc-3.0.0_alpha7.zip"><span>Download JavaScriptMVC</span><span class="label">3.0 Alpha 7 (10.3 MB)</span></a>
+ *  <a class="big_button floatLeft" id="download" href="http://github.com/downloads/pinhook/framework/javascriptmvc-3.0.0_alpha10.zip"><span>Download JavaScriptMVC</span><span class="label">3.0 Alpha 10 (10.3 MB)</span></a>
  <a href='http://cdn.javascriptmvc.com/videos/2_0/2_0_demo.htm' id='video' class='big_button floatLeft'>
      <span>Watch</span>
      <span class='label'>2.0 Video</span>
@@ -39,7 +39,7 @@
  *     <li>[http://socialcollider.net/ SocialCollider]</li>
  * </ul>
  */
-steal('getstarted','api','download','learn','why','selenium','follow','contribute','help','generators')
+steal('getstarted','api','download','learn','why','selenium','follow','contribute','help','generators','//steal/rhino/docs')
 
 
 

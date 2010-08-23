@@ -21,20 +21,29 @@
 //put everything in function to keep space clean
 (function(){
 
-if(typeof steal != 'undefined' && steal.nodeType)
-	throw("Include is defined as function or an element's id!");
+if(typeof steal != 'undefined' && steal.nodeType){
+	throw("steal is defined an element's id!");
+}
 
-
-
-
-
-
-var oldsteal = window.steal;
+	// keep a reference to the old steal
+var oldsteal = window.steal,
+	// returns the document head (creates one if necessary)
+	head = function(){
+		var d = document, 
+			de = d.documentElement,
+			heads = d.getElementsByTagName("head");
+		if (heads.length > 0) {
+			return heads[0];
+		}
+		var head = d.createElement('head');
+		de.insertBefore(head, de.firstChild);
+		return head;
+	};
 
 
 /**
  * @class steal
- * @tag core
+ * @parent stealtools
  * <p>Steal does JavaScript dependency management and compression super easy.</p>
  * <p>This page details the use of the steal script (<code>steal/steal.js</code>), 
  * which is the primary tool used to load files into your page.  Here's a quick example:</p>
@@ -274,26 +283,21 @@ steal.fn = steal.prototype = {
 				options(steal.send || window.jQuery || steal); //should return what was steald before 'then'
 			};
 			this.options = options;
-		} else if(options.type) { 
-			extend( this, options)
-			this.path = options.src;
-			this.type = options.type;
-			this.options = options;
-		} else { //something we are going to steal and run
-			
-			if(typeof options == 'string' ){
-				this.path = /\.js$/ig.test(options) ? options : options+'.js'
-			}else {
-				extend( this, options);
-				this.options = options;
-			}
-			this.originalPath = this.path;
-			//get actual path
-			var pathFile = new File(this.path);
-			this.path = pathFile.normalize();
-			this.absolute = pathFile.relative() ? pathFile.joinFrom(steal.getAbsolutePath(), true) : this.path;
-			this.dir = new File(this.path).dir();
+			return;
 		}
+		if(typeof options == 'string') { 
+			options = {path: /\.js$/ig.test(options) ? options : options+'.js'}
+		}
+		extend(this, options)
+		this.options = options; //TODO: needed?
+		
+		this.originalPath = this.path;
+		//get actual path
+		var pathFile = new File(this.path);
+		this.path = pathFile.normalize();
+		this.absolute = pathFile.relative() ? pathFile.joinFrom(steal.getAbsolutePath(), true) : this.path;
+		this.dir = new File(this.path).dir();
+
 		
 	},
 	/**
@@ -302,13 +306,12 @@ steal.fn = steal.prototype = {
 	 */
 	run : function(){
 		steal.current = this;		
-		var isProduction = (steal.options.env == "production");
-		
-		var options = extend({
-			type: "text/javascript",
-			compress: "true",
-			"package": "production.js"
-		}, extend({src: this.path}, this.options));
+		var isProduction = (steal.options.env == "production"),
+			options = extend({
+				type: "text/javascript",
+				compress: "true",
+				"package": "production.js"
+			}, extend({src: this.path}, this.options));
 		
 		if(this.func){
 			//run function and continue to next steald
@@ -333,7 +336,7 @@ steal.fn = steal.prototype = {
 		steal.setCurrent(this.path);
 		
 		return browser.rhino ? load(this.path) : 
-					steal.insert_head( steal.root.join(this.path) );
+					steal.insertHead( steal.root.join(this.path) );
 	}
 	
 }
@@ -341,9 +344,8 @@ steal.fn.init.prototype = steal.fn;
 
 
 var extend = function(d, s) { for (var p in s) d[p] = s[p]; return d;},
-	getLastPart = function(p){ return p.match(/[^\/]+$/)[0]};
-steal.extend = extend;
-var browser = {
+	getLastPart = function(p){ return p.match(/[^\/]+$/)[0]},
+	browser = {
 		msie:     !!(window.attachEvent && !window.opera),
 		opera:  !!window.opera,
 		safari: navigator.userAgent.indexOf('AppleWebKit/') > -1,
@@ -351,15 +353,16 @@ var browser = {
 		mobilesafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/),
 		rhino : navigator.userAgent.match(/Rhino/) && true
 	}
-	steal.browser = browser;
-var random = ""+parseInt(Math.random()*100)
+	steal.browser = browser,
+	random = ""+parseInt(Math.random()*100),
+	factory = function(){ return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();};
 
 
 steal.root = null;
 steal.pageDir = null;
+steal.extend = extend;
 
 
-var factory = function(){ return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();};
 
 
 
@@ -643,12 +646,15 @@ extend(steal,
 		for(var i=0; i<scripts.length; i++) {
 			var src = scripts[i].src;
 			if(src && src.match(/steal\.js/)){  //if script has steal.js
-				var mvc_root = new File( new File(src).joinFrom( steal.pageDir ) ).dir();
-				var loc = mvc_root.match(/\.\.$/) ?  mvc_root+'/..' : mvc_root.replace(/steal$/,'');
-				if(loc.match(/.+\/$/)) loc = loc.replace(/\/$/, '');
-
+				var mvc_root = new File( new File(src).joinFrom( steal.pageDir ) ).dir(),
+					loc = mvc_root.match(/\.\.$/) ?  mvc_root+'/..' : mvc_root.replace(/steal$/,'');
+				if (loc.match(/.+\/$/)) {
+					loc = loc.replace(/\/$/, '');
+				}
 				steal.root = new File(loc);
-				if(src.indexOf('?') != -1) scriptOptions = src.split('?')[1];
+				if (src.indexOf('?') != -1) {
+					scriptOptions = src.split('?')[1];
+				}
 			}
 		
 		}
@@ -701,8 +707,10 @@ extend(steal,
 			steal.options.production = steal.root.join(  new File(steal.options.startFile).dir()+ '/production')
 
 		}
-		if(steal.options.production)
+		if(steal.options.production){
 			steal.options.production = steal.options.production+(steal.options.production.indexOf('.js') == -1 ? '.js' : '' );
+		}
+			
 		
 		//start loading stuff
 		//steal.plugins('jquery'); //always load jQuery
@@ -721,23 +729,17 @@ extend(steal,
 			first = false; //makes it so we call close after
 			steal(steal.options.startFile);
 		}
-		if(steal.options.env == 'test')  {
-			steal.plugins('test');
-			if(steal.options.documentLocation) 
-				steal.plugins('dom/fixtures/overwrite');
-			if(steal.options.startFile){ //load test file in same directory
-				 steal( new File(steal.options.startFile).dir()+"/test/unit.js");
-			}
-		}
+		
 
 		if(steal.options.env == 'production' && steal.options.loadProduction){
 			steal.end()
 			document.write('<script type="text/javascript" src="'+steal.options.production+'"></script>' );
-			return
 		}
 			
 			
-		if(steal.options.startFile) steal.start();
+		if(steal.options.startFile){
+			steal.start();
+		}
 	},
 	/**
 	 * Gets the current directory your relative steals will reference.
@@ -792,9 +794,10 @@ extend(steal,
 	},
 	//
 	should_add : function(inc){
-		var path = inc.absolute || inc.path;
-		for(var i = 0; i < total.length; i++) if(total[i].absolute == path) return false;
-		for(var i = 0; i < current_steals.length; i++) if(current_steals[i].absolute == path) return false;
+		var path = inc.absolute || inc.path,
+			i;
+		for(i = 0; i < total.length; i++) if(total[i].absolute == path) return false;
+		for(i = 0; i < current_steals.length; i++) if(current_steals[i].absolute == path) return false;
 		return true;
 	},
 	done : function(){
@@ -852,60 +855,61 @@ extend(steal,
 		if(func) func.func();
 	},
 	/**
-	 * Includes CSS from the stylesheets directory.
-	 * @hide
-	 * @param {String} css the css file's name to load, steal will add .css.
+	 * Creates css links from the given relative path.
+	 * @param {String} relative URL(s) to stylesheets
+	 * @return {steal} steal for chaining
 	 */
 	css: function(){
-		var arg;
-		for(var i=0; i < arguments.length; i++){
-			arg = arguments[i];
-			steal.css_rel('../../stylesheets/'+arg);
+		//if production, 
+		if(steal.options.env == 'production'){
+			if(steal.loadedProductionCSS){
+				return;
+			}else{
+				steal.createLink( steal.options.production.replace(".js",".css")  );
+				loadedProductionCSS = true;
+				return;
+			}
 		}
-	},
-	/**
-	 * Creates css links from the given relative path.
-	 * @hide
-	 * @param {String} relative URL(s) to stylesheets
-	 */
-	css_rel: function(){
-		var arg;
+		var current;
 		for(var i=0; i < arguments.length; i++){
-			arg = arguments[i];
-			var current = new File(arg+".css").joinCurrent();
-			steal.create_link( steal.root.join(current)  );
+			current = new File(arguments[i]+".css").joinCurrent();
+			steal.createLink( steal.root.join(current)  );
 		}
+		return this;
 	},
 	/**
 	 * Creates a css link and appends it to head.
 	 * @hide
 	 * @param {Object} location
+	 * @return {HTMLLinkElement}
 	 */
-	create_link: function(location){
+	createLink: function(location, options){
+		options = options || {};
 		var link = document.createElement('link');
-		link.rel = "stylesheet";
+		link.rel = options.rel || "stylesheet";
 		link.href =  location;
-		link.type = 'text/css';
+		link.type = options.type || 'text/css';
 		head().appendChild(link);
-		return steal;
+		return link;
 	},	
 	/**
-	 * Synchronously requests a file.
+	 * @hide
+	 * Synchronously requests a file.  This is here to read a file for other types.	 * 
 	 * @param {String} path path of file you want to load
 	 * @param {optional:String} content_type optional content type
 	 * @return {String} text of file
 	 */
 	request: function(path, content_type){
-	   var contentType = content_type || "application/x-www-form-urlencoded; charset="+steal.options.encoding
-	   var request = factory();
-	   request.open("GET", path, false);
-	   request.setRequestHeader('Content-type', contentType)
-	   if(request.overrideMimeType) request.overrideMimeType(contentType);
-
-	   try{request.send(null);}
-	   catch(e){return null;}
-	   if ( request.status == 500 || request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
-	   return request.responseText;
+		var contentType = content_type || "application/x-www-form-urlencoded; charset="+steal.options.encoding,
+			request = factory();
+		request.open("GET", path, false);
+		request.setRequestHeader('Content-type', contentType)
+		if(request.overrideMimeType) request.overrideMimeType(contentType);
+		
+		try{request.send(null);}
+		catch(e){return null;}
+		if ( request.status == 500 || request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
+		return request.responseText;
 	},
 	/**
 	 * Inserts a script tag in head with the encoding.
@@ -913,7 +917,7 @@ extend(steal,
 	 * @param {Object} src
 	 * @param {Object} encode
 	 */
-	insert_head: function(src, encode, type, text, id){
+	insertHead: function(src, encode, type, text, id){
 		encode = encode || "UTF-8";
 		var script= script_tag();
 		src && (script.src= src);
@@ -975,8 +979,7 @@ steal.plugin = steal.resetApp(function(p){return p+'/'+getLastPart(p)})
  *  steal.plugins('jquery/controller',
  *                'jquery/controller/view',
  *                'jquery/view',
- *                'jquery/model',
- *                'steal/openajax')
+ *                'jquery/model')
  * @codeend 
  */
 steal.plugins = steal.callOnArgs(steal.plugin);
@@ -1084,7 +1087,7 @@ steal.views = function(){
 steal.timerCount = 0;
 steal.view = function(path){
 	var type = path.match(/\.\w+$/gi)[0].replace(".","");
-	steal({src: path, type: "text/"+type, compress: "false"});    
+	steal({path: path, type: "text/"+type, compress: "false"});    
 	return steal;
 };
 steal.timers = {}; //tracks the last script
@@ -1100,64 +1103,74 @@ steal.loadErrorTimer = function(options){
 	},5000);
 	return "onLoad='steal.ct("+count+")' "
 }
+steal.cleanId = function(id){
+	return id.replace(/[\/\.]/g, "_")
+}
+//for integration with other build types
+steal.build || (steal.build = {types: {}});
 var script_tag = function(){
 	var start = document.createElement('script');
 	start.type = 'text/javascript';
 	return start;
 };
-
+steal.loadedProductionCSS = false;
 var insert = function(options){
 	// source we need to know how to get to steal, then load 
 	// relative to path to steal
 
 	options = extend({
-		id: options.src && options.src.replace(/[\/\.]/g, "_")
+		id: options.src && steal.cleanId(options.src)
 	}, options);
-	var start= options.src
+	var start= options.src,
+		text = "",
+		scriptTag = '<script ',
+		bodyText;
 	if(options.src){
 		var src_file = new File(options.src);
 		if(!src_file.isLocalAbsolute() && !src_file.isDomainAbsolute())
 			options.src = steal.root.join(options.src);
 	}
 
-	var text = "";
-	if(options.type && options.type != 'text/javascript' && !browser.rhino){
+
+	if(options.type && options.process){
+		text = steal.request(options.src);
+		if(!text)
+			throw "steal.js there is nothing at "+options.src;
+		bodyText = options.process(text);
+		options.type = 'text/javascript'
+		delete options.process;
+		delete options.src;
+		
+	}else if(options.type && options.type != 'text/javascript' && !browser.rhino){
 		text = steal.request(options.src);
 		if(!text)
 			throw "steal.js there is nothing at "+options.src;
 		options.text = text;
 		delete options.src;
 	}
-
-	var scriptTag = '<script ';
+	
 	for(var attr in options){
 		scriptTag += attr + "='" + options[attr] + "' ";
 	}
-	if(steal.support.load && !steal.browser.rhino){
+	if(steal.support.load && !steal.browser.rhino && !bodyText){
 		scriptTag += steal.loadErrorTimer(options)
 	}
-	scriptTag += '></script>';
+	scriptTag += '>'+(bodyText ||'')+'</script>';
 	if(steal.support.load){
-		scriptTag +='<script type="text/javascript">steal.end()</script>'
+		scriptTag +='<script type="text/javascript"'+ 
+			'>steal.end()</script>'
 	}
 	else
 	{
 		scriptTag += '<script type="text/javascript" src="'+steal.root.join('steal/end.js')+'"></script>'
 	}
 	document.write(
-		(options.src? scriptTag : '') 
+		(options.src || bodyText ? scriptTag : '') 
 	);
 };
 
 
-var head = function(){
-	var d = document, de = d.documentElement;
-	var heads = d.getElementsByTagName("head");
-	if(heads.length > 0 ) return heads[0];
-	var head = d.createElement('head');
-	de.insertBefore(head, de.firstChild);
-	return head;
-};
+
 
 steal.init();
 })();

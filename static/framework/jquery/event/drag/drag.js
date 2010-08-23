@@ -102,24 +102,24 @@ steal.plugins('jquery/event','jquery/lang/vector','jquery/event/livehack').then(
 			selector = ev.handleObj.selector,
 			self = this;
 			this.current = drag;
+
 			drag.setup({
 				element: element,
 				delegate: ev.liveFired || element,
 				selector: ev.handleObj.selector,
 				moved: false,
 				callbacks: {
-					dragdown: event.find(delegate, ["dragdown"], selector)[0],
-					draginit: event.find(delegate, ["draginit"], selector)[0],
-					dragover: event.find(delegate, ["dragover"], selector)[0],
-					dragmove: event.find(delegate, ["dragmove"], selector)[0],
-					dragout: event.find(delegate, ["dragout"], selector)[0],
-					dragend: event.find(delegate, ["dragend"], selector)[0]
+					dragdown: event.find(delegate, ["dragdown"], selector),
+					draginit: event.find(delegate, ["draginit"], selector),
+					dragover: event.find(delegate, ["dragover"], selector),
+					dragmove: event.find(delegate, ["dragmove"], selector),
+					dragout: event.find(delegate, ["dragout"], selector),
+					dragend: event.find(delegate, ["dragend"], selector)
 				},
 				destroyed : function(){
 					self.current = null;
 				}
 			}, ev)
-		   		   
 		}
 	})
 	
@@ -144,7 +144,7 @@ steal.plugins('jquery/event','jquery/lang/vector','jquery/event/livehack').then(
 			this._mouseup = mouseup;
 			$(document).bind('mousemove' ,mousemove);
 			$(document).bind('mouseup',mouseup);
-			this.callDown(this.element, ev)
+			this.callEvents('down',this.element, ev)
 		},
 		/**
 		 * Unbinds listeners and allows other drags ...
@@ -203,8 +203,9 @@ steal.plugins('jquery/event','jquery/lang/vector','jquery/event/livehack').then(
 			 */
 			this.mouseElementPosition = this.mouseStartPosition.minus( this.element.offsetv() ); //where the mouse is on the Element
 	
-			this.callStart(element, event);
-	
+			//this.callStart(element, event);
+			this.callEvents('init',element, event)
+			
 			//Check what they have set and respond accordingly
 			//  if they canceled
 			if(this._cancelled == true) return;
@@ -213,17 +214,16 @@ steal.plugins('jquery/event','jquery/lang/vector','jquery/event/livehack').then(
 			this.startPosition = startElement != this.movingElement ? this.movingElement.offsetv() : this.currentDelta();
 	
 			this.movingElement.makePositioned();
+			this.oldZIndex = this.movingElement.css('zIndex');
 			this.movingElement.css('zIndex',1000);
 			if(!this._only && this.constructor.responder)
 				this.constructor.responder.compile(event, this);
 		},
-		callDown : function(element, event){
-			if(this.callbacks[this.constructor.lowerName+"down"]) 
-				this.callbacks[this.constructor.lowerName+"down"].call(element, event, this  );
-		},
-		callStart : function(element, event){
-			if(this.callbacks[this.constructor.lowerName+"init"]) 
-				this.callbacks[this.constructor.lowerName+"init"].call(element, event, this  );
+		callEvents : function(type, element, event, drop){
+			var cbs = this.callbacks[this.constructor.lowerName+type];
+			for(var i=0; i  < cbs.length; i++){
+				cbs[i].call(element, event, this, drop)
+			}
 		},
 		/**
 		 * Returns the position of the movingElement by taking its top and left.
@@ -279,17 +279,13 @@ steal.plugins('jquery/event','jquery/lang/vector','jquery/event/livehack').then(
 			}
 		},
 		move : function(event){
-			if(this.callbacks[this.constructor.lowerName+"move"]) this.callbacks[this.constructor.lowerName+"move"].call(this.element, event, this  );
+			this.callEvents('move',this.element, event)
 		},
 		over : function(event, drop){
-			if(this.callbacks[this.constructor.lowerName+"over"]) {
-				this.callbacks[this.constructor.lowerName+"over"].call(this.element, event, this, drop  );
-			}
+			this.callEvents('over',this.element, event, drop)
 		},
 		out : function(event, drop){
-			if(this.callbacks[this.constructor.lowerName+"out"]) {
-				this.callbacks[this.constructor.lowerName+"out"].call(this.element, event, this, drop  );
-			}
+			this.callEvents('out',this.element, event, drop)
 		},
 		/**
 		 * Called on drag up
@@ -301,8 +297,7 @@ steal.plugins('jquery/event','jquery/lang/vector','jquery/event/livehack').then(
 			if(!this._only && this.constructor.responder)
 				this.constructor.responder.end(event, this);
 	
-			if(this.callbacks[this.constructor.lowerName+"end"])
-				this.callbacks[this.constructor.lowerName+"end"].call(this.element, event, this  );
+			this.callEvents('end',this.element, event)
 	
 			if(this._revert){
 				var self= this;
@@ -324,7 +319,7 @@ steal.plugins('jquery/event','jquery/lang/vector','jquery/event/livehack').then(
 		 * @hide
 		 */
 		cleanup : function(){
-			this.movingElement.css({zIndex: ""})
+			this.movingElement.css({zIndex: this.oldZIndex});
 			if (this.movingElement[0] !== this.element[0])
 				this.movingElement.css({ display: 'none' });
 			if(this._removeMovingElement)

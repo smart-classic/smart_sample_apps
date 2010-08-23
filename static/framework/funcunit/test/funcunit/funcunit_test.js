@@ -1,84 +1,87 @@
-module("funcunit test")
-
-test("Back to back opens", function(){
-	S.open("test/myotherapp.html", null, 10000);
-	
-	S.open("test/myapp.html", null, 10000);
-
-	S("#changelink").click().text(function(t){
-		equals(t, "Changed","href javascript run")
-	})
+module("funcunit - jQuery API",{
+	setup : function(){
+		var self = this;
+		S.open("test/myapp.html", function(){
+			self.pageIsLoaded = true;
+		}, 10000)
+	}
 })
 
-test("Copy Test", function(){
 
-	S.open("test/myapp.html", null, 10000);
-	
-	S("#typehere").type("javascriptmvc")
-	
-	S("#seewhatyoutyped").text(function(val){
-		equals(val, "typed javascriptmvc","typing");
-	})
-	
-	S.wait(1000)
-	
-	S("#copy").click();
-	
-	S("#seewhatyoutyped").text(function(val){
-		equals(val, "copied javascriptmvc","copy");
-	})
-	S("#typehere").offset(function(offset){
-		ok(offset.top,"has values")
-	})
+
+test("qUnit module setup works async", function(){
+	ok(this.pageIsLoaded, "page is loaded set before")
 })
 
-test("drag test", function(){
-	S("#drag").dragTo("#drop")
-	S("#drop").waitHasClass("dropover", true)
+test("Iframe access", function(){
 	
-	S("#drag").dragTo({ x: 500, y: 500 })
-	S("#drop").waitHasClass("dropout", true)
-	
-	S.wait(2000)
-	S("#drag").dragTo({ x: "+100", y: "-100" })
-})
-
-test("iframe", function(){
-	
-	S("h2",0).text(function(text){
-		equals(text, "Goodbye World", "text of iframe")
-	})
-})
-test("waitHtml", function(){
-	S("#clickToChange").click().waitHtml(function(html){
-		return html == "changed"
-	}).html(function(html){
-		equals(html,"changed","wait actually waits")
-	})
+	equals(S("h2",0).text(), "Goodbye World", "text of iframe")
 	
 })
 
-test("Next Test", function(){
-
-	S.open("test/myotherapp.html", null, 10000);
+test("html with function", 1, function(){
+	S("#clickToChange").click()
+		.html(function(html){
+			return html == "changed"
+		}, function(){
+			equals(S("#clickToChange").html(),"changed","wait actually waits")
+		})
 	
-	S.wait(1000,function(){
-		ok('coolness')
+})
+test("Html with value", 1, function(){
+	S("#clickToChange").click()
+	
+		.html("changed", function(){
+			equals(S("#clickToChange").html(),"changed","wait actually waits")
+		})
+	
+})
+
+test("Wait", function(){
+	var before,
+		after
+	setTimeout(function(){
+		before = true;
+	},2)
+	setTimeout(function(){
+		after = true
+	},1000)
+	S.wait(20,function(){
+		ok(before, 'after 2 ms')
+		ok(!after, 'before 1000ms')
+		
 	})
 })
 
-test("URL Test", function(){
-	var path;
+test("hasClass", function(){
+	var fast
 	
-	path = FuncUnit.getAbsolutePath("http://foo.com")
-	equals(path, "http://foo.com", "paths match");
+	S("#hasClass").click();
+	setTimeout(function(){
+		fast = true
+	},50)
+	S("#hasClass").hasClass("someClass",true, function(){
+		ok(fast,"waited until it has a class exists")
+	});
+})
+
+test("Exists", function(){
+	var fast
 	
-	FuncUnit.jmvcRoot = "http://localhost/"
-	path = FuncUnit.getAbsolutePath("//myapp/mypage.html")
-	equals(path, "http://localhost/myapp/mypage.html", "paths match");
-	
-	FuncUnit.jmvcRoot = null
-	path = FuncUnit.getAbsolutePath("//myapp/mypage.html")
-	equals(path, "../myapp/mypage.html", "paths match");
+	S("#exists").click();
+	setTimeout(function(){
+		fast = true
+	},50)
+	S("#exists p").exists(function(){
+		ok(fast,"waited until it exists")
+	});
 	
 })
+test("Accessing the window", function(){
+	ok(S(S.window).width()> 20, "I can get the window's width")
+})
+test("Accessing the document", function(){
+	ok(S(S.window.document).width()> 20, "I can get the document's width")
+})
+
+

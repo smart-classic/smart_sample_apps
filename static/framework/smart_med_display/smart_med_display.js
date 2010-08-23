@@ -10,9 +10,8 @@ steal.plugins('jquery/controller','jquery/controller/subscribe',
 	      .then('scripts/jquery.hotkeys')
 	      .then('scripts/jquery.addons')
 	      .then('scripts/date')
-    .create_link('/framework/smart_med_display/stylesheets/jquery-ui-1.8.2.custom.css')// this is bad, need good path interp.
-	      .create_link('/framework/smart_med_display/stylesheets/med_display.css')
-    .resources()
-     .models('rdfObject', 'med', 'med_details', 'problem')
+    .css('stylesheets/jquery-ui-1.8.2.custom')
+    .css('stylesheets/med_display')
+     .models('rdf_object', 'med', 'med_details', 'problem')
      .controllers('keybind', 'med_list', 'problem_list', 'med_display','timeline')
      .views();

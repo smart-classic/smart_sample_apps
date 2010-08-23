@@ -1,22 +1,58 @@
-module("jquery/model/list",{
+
+module("jquery/model/list", {
 	setup : function(){
-		$.Model.extend("MyTest.Items");		
+		$.Model.extend("Person")
+	
+		$.Model.List.extend("Person.List",{
+			destroy : function(){
+				equals(this.length, 20,  "Got 20 people")
+			}
+		});
+		var people = []
+		for(var i =0; i < 20; i++){
+			people.push( new Person({id: "a"+i}) )
+		}
+		this.people = new $.Model.List(people);
 	}
 })
 
-test("list testing works with other array like items other than Array", function(){
-	var items = MyTest.Items.wrapMany([
-		{id: 1, value: 1, text: "Chicago"},
-		{id: 2, value: 2, text: "Porto"},
-		{id: 3, value: 3, text: "San Francisco"},
-		{id: 4, value: 4, text: "New York"},
-		{id: 5, value: 5, text: "Seattle"},
-		{id: 6, value: 6, text: "Portland"},
-		{id: 7, value: 7, text: "Detroit"} ])
-		
-	// wrapMany returns a $.Model.List - items not a pure Array
-    var list = new $.Model.List( items );
+test("hookup with list", function(){
+	
+	
+	
+	var div = $("<div>")
+	
+	for(var i =0; i < 20 ; i ++){
+		var child = $("<div>");
+		var p = new Person({foo: "bar"+i, id: i});
+		p.hookup( child[0] );
+		div.append(child)
+	}
+	var models = div.children().models();
+	ok(models.Class === Person.List, "correct type");
+	models.destroy();
 
-	equals( list.length, 7, "list successfully created" );
-	equals( list.match("value", 2)[0].attr("text"), "Porto", "list match was successfull" );
+})
+
+test("create", function(){
+	
+	equals(this.people.length, 20)
+	
+	equals(this.people.get("a2")[0].id,"a2" , "get works")
+})
+
+
+test("splice", function(){
+	ok(this.people.get("a1").length,"something where a1 is")
+	this.people.splice(1,1)
+	equals(this.people.length, 19)
+	ok(!this.people.get("a1").length,"nothing where a1 is")
+	
+})
+
+test("remove", function(){
+	var res = this.people.remove("a1")
+	ok(!this.people.get("a1").length,"nothing where a1 is")
+	ok(res.length, "got something array like")
+	equals(res[0].id, "a1")
 })
