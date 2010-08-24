@@ -180,6 +180,7 @@ class SmartClient(OAuthClient):
         print "Total fills: ", len(med_count.keys())
         
     def put_med_helper(self, g, med_uri, record_id):
+        print "putting med", med_uri
         external_id = med_external_id(g, med_uri)
         med = get_medication_model(g, med_uri)
         self.smart_med_put(record_id, external_id, serialize_rdf(med))    
@@ -195,10 +196,13 @@ class SmartClient(OAuthClient):
 
     def smart_med_put(self, record_id, external_id, data):
         try:
-            if (self.saved_ids[record_id][external_id]): return
+            if (self.saved_ids[record_id][external_id]): 
+                print "Already existed."
+                return
         except KeyError:
             if (record_id not in self.saved_ids):
                 self.saved_ids[record_id] = {}
+            print "Adding new."
             self.saved_ids[record_id][external_id]  = True
         
         return self.put("/records/%s/medications/external_id/%s"%(record_id, external_id), data, "application/rdf+xml")
