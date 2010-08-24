@@ -1,0 +1,11 @@
+*.cfg
+*.log
+*.pyc
+*.tmproj
+*~
+settings.py
+.project
+.pydevproject
+*#
+sessions/*
+session/*
