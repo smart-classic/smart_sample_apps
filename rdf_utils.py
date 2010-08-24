@@ -91,6 +91,7 @@ def get_medication_uris(g):
 def get_medication_model(g,med_uri):
     properties = [NS['dcterms']['title'], 
                   NS['med']['drug'],
+                  NS['med']['notes'],
                   NS['med']['strength'],
                   NS['med']['strengthUnits'],
                   NS['med']['dose'],
