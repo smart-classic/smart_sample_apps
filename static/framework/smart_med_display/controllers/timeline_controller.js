@@ -69,7 +69,6 @@ extend('SmartMedDisplay.Controllers.TimelineController',
 			{
 				if (med_events[j].instant === false) rownum++;
 				med_events[j].trackNum = ""+rownum;
-				med_events[j].description += "And tracknum "+rownum;
 				events.push(med_events[j]);	
 			}
 		}
