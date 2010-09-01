@@ -17,19 +17,8 @@ extend('SmartMedDisplay.Models.Problem',
 		SMART.PROBLEMS_put(data, external_id, success);  
 	},
 
-	post: function(data, success, error){
-		var pr = '<?xml version="1.0" encoding="utf-8"?>\
-			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sp="http://smartplatforms.org/" xmlns:umls="http://www.nlm.nih.gov/research/umls/">\
-	        <rdf:Description rdf:about="http://smartplatforms.org/problem/'+randomUUID()+'">\
-	           <rdf:type rdf:resource="http://smartplatforms.org/problem"/>\
-	           <umls:cui>'+data.cui+'</umls:cui>\
-	           <dcterms:title>'+data.title+'</dcterms:title>\
-	           <sp:onset>'+data.onset+'</sp:onset>\
-	           <sp:resolution>'+data.resolution+'</sp:resolution>\
-	           <sp:notes>'+data.notes+'</sp:notes>\
-	        </rdf:Description>\
-            </rdf:RDF>';
-		SMART.PROBLEMS_post(pr, success);  
+	post: function(problem, success, error){
+		SMART.PROBLEMS_post(problem.toRDFXML(), success);  
 	},
 	
 	del: function(uri,success, error){
@@ -88,9 +77,13 @@ extend('SmartMedDisplay.Models.Problem',
 		  .prefix('sp', 'http://smartplatforms.org/')
 		  .prefix('dc', 'http://purl.org/dc/elements/1.1/')
 		  .prefix('dcterms', 'http://purl.org/dc/terms/')
-		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+		  .prefix('umls', 'http://www.nlm.nih.gov/research/umls/');
 
 		rdf.add('_:m rdf:type sp:problem .');
+		
+		if (this.cui)
+			rdf.add('_:m umls:cui "'+this.cui+'" .');
 		
 		if (this.title)
 			rdf.add('_:m dcterms:title "'+this.title+'" .');

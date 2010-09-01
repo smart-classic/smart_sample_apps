@@ -157,7 +157,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
         					matcher: function(l) {return l.match(/^Condition Name: (.*)$/);}, 
         					action: function(l) {
         						var p = new SmartMedDisplay.Models.Problem(null);
-        						p.title = l;
+        						p.title = this.matcher(l)[1];
         						this.parser.problems.push(p);
         						this.parser.current = p;
         					}
@@ -240,15 +240,13 @@ saveMeds: function() {
 
 saveProblems: function() {
     for (var i = 0; i < this.problems.length; i++) {
-    	var xml = this.problems[i].toRDFXML();
-    	var pname = this.problems[i].title;
-    	(function(xml, pname) {
-    	SmartMedDisplay.Models.Problem.post(xml, function(){
+    	(function(problem) {
+    	SmartMedDisplay.Models.Problem.post(problem, function(){
         	var h = $('#interact').html();
-    		h  = h +  "Added Problem: " + pname+"<br>\n";
+    		h  = h +  "Added Problem: " + problem.title+"<br>\n";
     		$('#interact').html(h);
     		});
-    	}(xml, pname));
+    	}(this.problems[i]));
     }
 },
 

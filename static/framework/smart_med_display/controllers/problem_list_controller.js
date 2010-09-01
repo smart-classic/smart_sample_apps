@@ -26,15 +26,15 @@ jQuery.Controller.extend('SmartMedDisplay.Controllers.ProblemListController',
 		jQuery('#OnsetEntry').datepicker();
 		jQuery('#ResolutionEntry').datepicker();
 		form.submit(function() {
-			SmartMedDisplay.Models.Problem.post(
-					{
-					cui: form.data("problem_code"),
-					title: jQuery('#ProblemEntry').val(),
-					onset: jQuery('#OnsetEntry').val(),
-					resolution: jQuery('#ResolutionEntry').val(),
-					notes: jQuery('#NotesEntry').val()},
-					_this.callback(_this.display_problems)
-			);
+			var p = new SmartMedDisplay.Models.Problem(null);
+			
+			p.cui =  form.data("problem_code");
+			p.title =  jQuery('#ProblemEntry').val();
+			p.onset = jQuery('#OnsetEntry').val();
+			p.resolution = jQuery('#ResolutionEntry').val();
+			p.notes = jQuery('#NotesEntry').val();			
+			SmartMedDisplay.Models.Problem.post(p, _this.callback(_this.display_problems));
+			
 			return false;
 		});
 		
