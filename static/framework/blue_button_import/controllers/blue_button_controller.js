@@ -55,7 +55,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
         					matcher: function(l) {return l.match(/^Instructions: (.*)/);}, 
         					action: function(l) {
 	        					var sig = this.matcher(l)[1];
-	        					this.parser.current.notes = sig;
+	        					this.parser.current.instructions = sig;
         					}
         			}));
 
