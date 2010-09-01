@@ -140,6 +140,8 @@ extend('SmartMedDisplay.Models.Med',
 /* @Prototype */
 {	
 	init: function(params) {
+		if (params === null) return;
+		
 		this.drug = params.drug;
 		this.dose = params.dose;
 		this.unit = !params.strength ? "" : 
@@ -150,7 +152,7 @@ extend('SmartMedDisplay.Models.Med',
 				")";
 		this.route = params.route;
 		this.frequency = params.frequency||"";
-		this.notes = params.notes || "";	
+		this.instructions = params.notes || "";	
 		this.cui = params.cui;
 		this.rdf = params.rdf;
 		this.nodename = params.nodename;
@@ -175,6 +177,45 @@ extend('SmartMedDisplay.Models.Med',
 	
 	toString: function() {
 		 return this.dose + " " + this.unit + " " + this.route + " " + this.frequency;	
+	},
+	
+	toRDFXML: function() {
+		
+		var rdf = $.rdf()
+		  .prefix('sp', 'http://smartplatforms.org/')
+		  .prefix('med', "http://smartplatforms.org/medication#")
+		  .prefix('dc', 'http://purl.org/dc/elements/1.1/')
+		  .prefix('dcterms', 'http://purl.org/dc/terms/')
+		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+
+		rdf.add('_:m rdf:type sp:medication .');
+		
+		if (this.drug)
+		rdf.add('_:m dcterms:title "'+this.drug+'" .');
+		
+		if (this.dose)
+		rdf.add('_:m med:dose "'+this.dose+'" .');
+		
+		if (this.dose_units)
+		rdf.add('_:m med:doseUnits "'+this.dose_units+'" .');
+		
+		if (this.strength)
+			rdf.add('_:m med:strength "'+this.strength+'" .');
+		
+		if (this.strength_units)
+		rdf.add('_:m med:strengthUnits "'+this.strength_units+'" .');
+		
+		if (this.instructions)
+		rdf.add('_:m med:instructions "'+this.instructions+'" .');
+		
+		if (this.frequency)
+		rdf.add('_:m med:frequency "'+this.frequency+'" .');
+		
+		if (this.route)
+		rdf.add('_:m med:route "'+this.route+'" .');
+
+		return jQuery.rdf.dump(rdf.databank.triples(), {format:'application/rdf+xml', serialize: true});
+		
 	},
 	
 	
@@ -256,6 +297,8 @@ extend('SmartMedDisplay.Models.Med',
 		
 		return dispenses;
 	}
+	
+	
 	
 	
 });

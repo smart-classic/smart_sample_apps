@@ -1,0 +1,648 @@
+------------------ MY HEALTHEVET PERSONAL HEALTH INFORMATION ------------
+                     *************CONFIDENTIAL*************
+                           Produced by the Blue Button (v1.0)
+                              08/23/2010 09:31
+
+Name: MHVVETERAN, ONE A                         Date of Birth: 03/01/1948
+
+--------------------- MY HEALTHEVET ACCOUNT SUMMARY ---------------------
+
+Source: VA
+
+Authentication Status: Authenticated
+Authentication Date: 08/19/2010
+Authentication Facility ID: 979
+Authentication Facility Name: SLC10 TEST LAB
+
+   VA Treating Facility                     Type
+   ----------------------------            -----------  
+   AUSTIN PSIM                             OTHER
+   DAYT29                                  M&ROC
+
+----------------------------- DEMOGRAPHICS ----------------------------
+
+Source: Self-Entered
+
+First Name: ONE
+Middle Initial: A
+Last Name: MHVVETERAN
+Suffix: 
+Alias: MHVVET
+Relationship to VA: Patient
+
+Gender: Male   Blood Type: AB+         Organ Donor: Yes
+
+Date of Birth: 03/01/1948
+Marital Status: Married
+Current Occupation: Truck Driver
+
+Mailing Address: 123 Anywhere Road
+Mailing Address2: Apartment 123
+Mailing City: Anywhere
+Mailing State: DC
+Mailing Country: United States
+Mailing Province: 
+Mailing Zip/Postal Code: 00001
+
+Alternate Address: 
+Alternate Address2: 
+Alternate City: 
+Alternate State: 
+Alternate Country: 
+Alternate Province: 
+Alternate Zip/Postal Code: 
+
+Home Phone Number: 000-010-0101
+Work Phone Number: 000-020-0202
+Pager Number: 000-030-0303
+Cell Phone Number: 000-040-0404
+FAX Number: 000-050-0505
+Email Address: mhvveteran@emailaddress.com
+Preferred Method of Contact: Email
+
+EMERGENCY CONTACTS
+
+Contact First Name: Two
+Contact Last Name: MHVVeteran
+Relationship: 
+Home Phone Number: 000-010-0101
+Work Phone Number: 000-060-0606  Extension: 
+Cell Phone Number: 000-070-0707
+Address Line 1: 123 Anywhere Road
+Address Line 2: Apartment 123
+City: Anywhere
+State: DC
+Country: United States
+Province: 
+Zip/Post Code: 00001
+Email Address: twomhvveteran@domain.com
+
+Contact First Name: Three
+Contact Last Name: MHVVeteran
+Relationship: 
+Home Phone Number: 000-010-0101
+Work Phone Number: 000-080-0808  Extension: 
+Cell Phone Number: 000-090-0909
+Address Line 1: 123 Anywhere Road
+Address Line 2: Apartment 123
+City: Anywhere
+State: DC
+Country: United States
+Province: 
+Zip/Post Code: 00001
+Email Address: threemhvveteran@domain.com
+
+
+-------------------------- ALLERGIES/ADVERSE REACTIONS ---------------------
+
+Source: Self-Entered
+
+
+Allergy Name: Pollen
+Date:         03/18/2010
+Severity:     Mild
+Diagnosed:    Yes
+
+Reaction: Watery eyes, itchy nose 
+
+Comments: Took an over the counter antihistamine 
+
+Allergy Name: Peanuts
+Date:         08/01/1980
+Severity:     Moderate
+Diagnosed:    Yes
+
+Reaction: Hives 
+
+Comments: Avoid peanuts and peanut based foods.  Foods cooked with peanut oil 
+also cause the reaction 
+
+
+------------------------------ MEDICAL EVENTS -------------------------------
+
+Source: Self-Entered
+
+Medical Event:   Colonoscopy
+Start Date:      03/18/2000
+Stop Date:       03/18/2000
+
+Response: Colonoscopy went well 
+
+Comments: Polyps were removed.  Doctor said these were benign 
+
+Medical Event:   Broken right arm
+Start Date:      01/04/2010
+Stop Date:       02/17/2010
+
+Response: Placed in cast from my hand to my elbow 
+
+Comments: Went to community hospital emergency room since I was on vacation.  
+Followed up with my VA doctor when I returned home. 
+
+
+----------------------------- IMMUNIZATIONS ---------------------------------
+
+Source: Self-Entered
+
+Immunization: Tetanus
+Other: none 
+Method: Injection
+Date Received: 07/18/2010
+
+Reactions:
+---------------------------------
+Pain
+
+Comments: stepped on a rusty nail 
+
+Immunization: Flu
+Other: H1N1 
+Method: Inhalant
+Date Received: 09/01/2009
+
+Reactions:
+---------------------------------
+
+Comments: Had no reaction 
+
+Immunization: Measles + Rubella (German Measles)
+Other: none 
+Method: Injection
+Date Received: 03/01/1950
+
+Reactions:
+---------------------------------
+Pain
+
+Comments: Received as a child 
+
+
+-------------------------- FAMILY HEALTH HISTORY ----------------------------
+
+Source: Self-Entered
+
+Relationship: Self
+First Name: ONE
+Last Name: MHVVETERAN
+Health Issues: 
+-----------------------------
+Back Pain
+Insomnia
+>1 beer/wine a day
+Hearing Loss
+Pneumonia
+Smoking >1 pack/day
+Allergies
+Chicken Pox
+Current Smoker
+Diabetics Type 2
+Overweight
+High Blood Pressure
+Depression
+High Blood Cholesterol
+Stomach/Bowel Other
+Smoking >20 Years
+
+Other Health Issues: 
+-----------------------------
+trouble sleeping
+
+Comments: I sometimes have trouble sleeping when stress is high at work 
+
+Relationship: Mother
+First Name: Four
+Last Name: MHVVeteranMother
+Health Issues: 
+-----------------------------
+Cancer Other
+Diabetics Type 2
+Overweight
+Joint Pain
+Stroke
+
+Other Health Issues: 
+-----------------------------
+Chronic joint pain
+
+Comments: Mother died of cancer at age 40 
+
+
+--------------------------- MILITARY HEALTH HISTORY -------------------------
+
+Source: Self-Entered
+
+Event Title: Overseas Deployment
+Event Date: 04/07/2002
+Service Branch: Army                             Rank: Captain
+Exposures: Yes
+Location of Service: Overseas            Onboard Ship: No
+Military Occupational Specialty: Infantry
+Assignment: 1st Recon 
+
+Exposures: Iraq: Exposed to burning chemicals 
+
+Military Service Description: Unit was in charge of security 
+
+
+-------------------------- VA MEDICATION HISTORY ----------------------
+
+Source: VA
+
+Medication: AMLODIPINE BESYLATE 10MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH TAKE ONE-HALF TABLET FOR 1 DAY --AVOID 
+Status: Active
+Refills Remaining: 3
+Last Filled On: 08/20/2010
+Initially Ordered On: 08/13/2010
+Quantity: 45
+Days Supply: 90
+Pharmacy: DAYTON
+Prescription Number: 2718953
+
+Medication: FREESTYLE (GLUCOSE) TEST STRIP 
+Instructions: USE AS DIRECTED FOR TESTING AS DIRECTED AS DIRECTED FOR 50 DAYS 
+USE 1 
+Status: Active
+Refills Remaining: 2
+Last Filled On: 08/20/2010
+Initially Ordered On: 07/01/2010
+Quantity: 200
+Days Supply: 50
+Pharmacy: DAYTON
+Prescription Number: 2718959
+
+Medication: IBUPROFEN 600MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH FOUR TIMES A DAY FOR 60 DAYS TAKE ONE 
+TABLET 
+Status: Active
+Refills Remaining: 3
+Last Filled On: 08/20/2010
+Initially Ordered On: 07/01/2010
+Quantity: 240
+Days Supply: 60
+Pharmacy: DAYTON
+Prescription Number: 2718960
+
+Medication: INSULIN,GLARGINE,HUMAN 100 UNT/ML INJ 
+Instructions: INJECT 10 ML VIAL UNDER THE SKIN AS DIRECTED FOR 28 DAYS INJECT 
+25 
+Status: Active
+Refills Remaining: 3
+Last Filled On: 08/20/2010
+Initially Ordered On: 07/01/2010
+Quantity: 30
+Days Supply: 30
+Pharmacy: DAYTON
+Prescription Number: 2718956
+
+Medication: LISINOPRIL 10MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH DAILY FOR 1 DAY 
+Status: Active
+Refills Remaining: 3
+Last Filled On: 08/20/2010
+Initially Ordered On: 07/01/2010
+Quantity: 90
+Days Supply: 90
+Pharmacy: DAYTON
+Prescription Number: 2718954
+
+Medication: METFORMIN HCL 1000MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH TWICE DAILY FOR 90 DAYS TAKE ONE TABLET 
+BY 
+Status: Active
+Refills Remaining: 3
+Last Filled On: 08/20/2010
+Initially Ordered On: 07/01/2010
+Quantity: 180
+Days Supply: 90
+Pharmacy: DAYTON
+Prescription Number: 2718955
+
+Medication: SIMVASTATIN 20MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH AT BEDTIME FOR 90 DAYS TAKE ONE TABLET 
+BY 
+Status: Active
+Refills Remaining: 3
+Last Filled On: 08/20/2010
+Initially Ordered On: 07/01/2010
+Quantity: 90
+Days Supply: 90
+Pharmacy: DAYTON
+Prescription Number: 2718957
+
+Medication: TERAZOSIN HCL 2MG CAP 
+Instructions: TAKE ONE CAPSULE BY MOUTH THREE TIMES A DAY AND AT BEDTIME FOR 90 
+DAYS 
+Status: Active
+Refills Remaining: 2
+Last Filled On: 08/20/2010
+Initially Ordered On: 07/01/2010
+Quantity: 270
+Days Supply: 90
+Pharmacy: DAYTON
+Prescription Number: 2718958
+
+Medication: COLON ELECTROLYTE LAVAGE PWD FOR SOLN 
+Instructions: TAKE 1 CONTAINER MOUTH AS DIRECTED FOR 1 DAY DISSOLVE 1 BOTTLE BY 
+Status: Expired
+Refills Remaining: 0
+Last Filled On: 07/01/2010
+Initially Ordered On: 07/01/2010
+Quantity: 1
+Days Supply: 2
+Pharmacy: DAYTON
+Prescription Number: 2718961
+
+Medication: TABLET CUTTER 
+Instructions: USE AS DIRECTED MOUTH AS DIRECTED FOR 3 DAYS USE AS DIRECTED TO 
+SPLIT 
+Status: Expired
+Refills Remaining: 0
+Last Filled On: 05/24/2010
+Initially Ordered On: 05/24/2010
+Quantity: 1
+Days Supply: 30
+Pharmacy: DAYTON
+Prescription Number: 2718963
+
+Medication: SODIUM CHLORIDE 0.65% SOLN NASAL SPRAY 
+Instructions: SPRAY 2 SPRAYS IN MOUTH MINUTE FOR 30 DAYS 
+Status: Refill in Process
+Refills Remaining: 3
+Last Filled On: 10/01/2009
+Initially Ordered On: 09/11/2009
+Quantity: 10
+Days Supply: 30
+Pharmacy: DAYTON
+Prescription Number: 2718884
+
+Medication: PSEUDOEPHEDRINE 60MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH MINUTE 
+Status: Unknown
+Refills Remaining: 3
+Last Filled On: 09/23/2009
+Initially Ordered On: 09/23/2009
+Quantity: 30
+Days Supply: 30
+Pharmacy: DAYTON
+Prescription Number: 2718912
+
+Medication: NAPROXEN 500MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH MINUTE FOR 30 DAYS --TAKE WITH FOOD IF 
+GI 
+Status: Unknown
+Refills Remaining: 2
+Last Filled On: 09/12/2009
+Initially Ordered On: 09/12/2009
+Quantity: 60
+Days Supply: 90
+Pharmacy: DAYTON
+Prescription Number: 2718886
+
+Medication: BACITRACIN 500 UNIT/GM OINT 30GM 
+Instructions: APPLY SMALL AMOUNT TO AFFECTED AREA 2-3 TIMES A DAY FOR 30 DAYS 
+Status: Unknown
+Refills Remaining: 1
+Last Filled On: 09/11/2009
+Initially Ordered On: 09/11/2009
+Quantity: 10
+Days Supply: 45
+Pharmacy: DAYTON
+Prescription Number: 2718880
+
+Medication: FAMOTIDINE 20MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH FIVE TIMES DAILY --MAY TAKE WITH 
+FOOD/AVOID 
+Status: Unknown
+Refills Remaining: 3
+Last Filled On: 09/11/2009
+Initially Ordered On: 09/11/2009
+Quantity: 180
+Days Supply: 30
+Pharmacy: DAYTON
+Prescription Number: 2718879
+
+Medication: ESOMEPRAZOLE MAGNESIUM 40MG SA CAP 
+Instructions: TAKE ONE CAPSULE BY MOUTH MINUTE FOR 45 DAYS 
+Status: Unknown
+Refills Remaining: 2
+Last Filled On: 09/11/2009
+Initially Ordered On: 09/11/2009
+Quantity: 1
+Days Supply: 30
+Pharmacy: DAYTON
+Prescription Number: 2718881
+
+Medication: ATORVASTATIN CALCIUM 10MG TAB 
+Instructions: TAKE ONE TABLET BY MOUTH DAILY FOR 90 DAYS --AVOID GRAPEFRUIT 
+Status: Unknown
+Refills Remaining: 3
+Last Filled On: 09/11/2009
+Initially Ordered On: 09/11/2009
+Quantity: 90
+Days Supply: 90
+Pharmacy: DAYTON
+Prescription Number: 2718882
+
+Medication: OXYCODONE 5MG/ACETAMINOPHEN 325MG TAB 
+Instructions: TAKE 1 TO 2 TABLETS BY MOUTH EVERY SIX HOURS 
+Status: Expired
+Refills Remaining: 0
+Last Filled On: 07/06/2000
+Initially Ordered On: 07/06/2000
+Quantity: 30
+Days Supply: 7
+Pharmacy: DAYTON
+Prescription Number: 800097347
+
+
+-------------------------- MEDICATIONS AND SUPPLEMENTS ----------------------
+
+Source: Self-Entered
+
+Category: RX Medication
+Drug Name: Aspirin EC
+Prescription Number: 010101B
+Strength: 81mg
+Dose: 1 tab
+Frequency: daily
+Start Date: 06/15/2005                          Stop Date:  
+Pharmacy Name: My Local Drugstore               Pharmacy Phone: 000-010-0000
+
+Reason for taking: Daily regimen for heart health 
+
+Comments:  
+
+Category: OTC
+Drug Name: Cough Medicine
+Prescription Number:  
+Strength: 1000mg
+Dose: 2 TBS
+Frequency: morning and night
+Start Date: 02/01/2010                          Stop Date: 02/21/2010
+Pharmacy Name: My Local Drugstore               Pharmacy Phone: 000-010-0000
+
+Reason for taking: Cough was keeping me up at night 
+
+Comments: Cleared up after a few weeks 
+
+Category: Herbal
+Drug Name: Ginkgo biloba
+Prescription Number:  
+Strength:  
+Dose: 2 capsules
+Frequency: once a day
+Start Date: 03/08/2008                          Stop Date:  
+Pharmacy Name: My Local Drugstore               Pharmacy Phone: 000-010-0000
+
+Reason for taking: Wife suggested to improve concentration 
+
+Comments: Take in the morning with breakfast 
+
+Category: Supplement
+Drug Name: Multi-vitamin
+Prescription Number:  
+Strength: 100% RDA
+Dose: 1 tablet daily
+Frequency: morning
+Start Date: 03/18/2010                          Stop Date:  
+Pharmacy Name: My Local Drugstore               Pharmacy Phone: 000-010-0000
+
+Reason for taking: To stay healthy 
+
+Comments: Feeling more energetic since I started taking vitamin 
+
+---------------------------- VA WELLNESS REMINDERS -------------------------
+
+Source: VA
+
+Wellness Reminder                  Due Date    Last Completed   Location
+----------------------------------------------------------------------------
+Body Mass >25 Alert                DUE NOW     UNKNOWN          DAYT29      
+Colon Cancer Screening             8/13/2010   8/13/2009        DAYT29      
+Influenza Vaccination              8/13/2011   8/13/2010        DAYT29      
+Elevated Cholesterol Alert         8/13/2012   8/13/2010        DAYT29      
+Eye Exam For Diabetes              8/13/2011   8/13/2010        DAYT29      
+Foot Exam For Diabetes             8/13/2011   8/13/2010        DAYT29      
+HbA1c for Diabetes                 8/13/2011   8/13/2010        DAYT29      
+Elevated Blood Pressure Alert      DUE NOW     8/13/2009        DAYT29      
+Lipid Measurement (Cholesterol)    8/13/2011   8/13/2009        DAYT29      
+Pneumonia Vaccine                  DUE NOW     UNKNOWN          DAYT29      
+
+Note: Learn more about these Wellness Reminders by visiting My HealtheVet.
+Please contact your health care team with any questions about your VA
+Wellness Reminders.
+
+
+
+----------------------------- VITALS AND READINGS ---------------------------
+
+Source: Self-Entered
+
+================================================================================
+Measurement Type: Blood pressure
+Date: 08/02/2010
+Time: 17:30
+Systolic: 132
+Diastolic: 76
+
+Comments: BP taken standing.  PB continues at goal.  Doctor says to continue BP 
+medications as directed 
+================================================================================
+Measurement Type: Blood pressure
+Date: 08/02/2010
+Time: 17:20
+Systolic: 130
+Diastolic: 76
+
+Comments: BP taken lying down 
+================================================================================
+Measurement Type: Heart rate 
+Date: 06/02/2010
+Time: 17:20
+Heart Rate: 160
+
+Comments: Started taking Beta-Blockers after visit with physician 
+================================================================================
+Measurement Type: Body weight
+Date: 06/02/2010
+Time: 17:20
+Body Weight: 242
+Measure: Pounds
+
+Comments: still walking when I have time off from work 
+================================================================================
+Measurement Type: Body weight
+Date: 05/02/2010
+Time: 17:20
+Body Weight: 244
+Measure: Pounds
+
+Comments: Lost a few pounds and feel better.  Walking daily 
+================================================================================
+Measurement Type: Body weight
+Date: 04/02/2010
+Time: 17:20
+Body Weight: 246
+Measure: Pounds
+
+Comments: Talk to provider about weight management program at next visit 
+================================================================================
+Measurement Type: Body temperature
+Date: 03/02/2010
+Time: 17:20
+Body temperature: 98.5
+Measure: Fahrenheit
+Method: Mouth
+
+Comments: I wasn't feeling well but temperature is normal 
+================================================================================
+Measurement Type: Pain
+Date: 01/01/2010
+Time: 17:20
+Pain Level: 7
+
+Comments: Lower back pain - took 1 Ibuprofen with food for pain 
+================================================================================
+Measurement Type: Blood sugar
+Date: 01/02/2010
+Time: 17:20
+Method: Sterile Lancet
+Blood sugar count: 166
+
+Comments: BS taken before meal 
+================================================================================
+Measurement Type: Cholesterol
+Date: 08/15/2010
+Time: 
+Total cholesterol: 142
+HDL: 45
+LDL: 
+
+Comments: Lab result from community health fair. 
+
+
+----------------------------- LABS AND TESTS --------------------------------
+
+Source: Self-Entered
+
+Test Name: Blood Test
+Date: 06/06/2010
+Location performed: Community Center
+Provider: Red Cross Blood Drive
+
+Results: Was not able to donate blood because iron was low 
+
+Comments: Will ask doctor at next visit 
+
+Test Name: Colonoscopy
+Date: 07/01/2010
+Location performed: VAMC
+Provider: Provider One
+
+Results: No new polyps 
+
+Comments: Keep high fiber diet 
+
+
+-------------- END MY HEALTHEVET PERSONAL HEALTH INFORMATION ------------
