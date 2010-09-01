@@ -145,7 +145,9 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
     						parser: this, 
         					matcher: function(l) {return this.parser.current === "problems" && !l.match(/^-*$/);}, 
         					action: function(l) {
-        						this.parser.problems.push({title: l});
+        						var p = new SmartMedDisplay.Models.Problem(null);
+        						p.title = l;
+        						this.parser.problems.push(p);
         					}
         			}));
 
@@ -154,7 +156,8 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
     						parser: this, 
         					matcher: function(l) {return l.match(/^Condition Name: (.*)$/);}, 
         					action: function(l) {
-        						var p = {title: this.matcher(l)[1]};
+        						var p = new SmartMedDisplay.Models.Problem(null);
+        						p.title = l;
         						this.parser.problems.push(p);
         						this.parser.current = p;
         					}
@@ -166,7 +169,8 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
         					matcher: function(l) {return l.match(/^Medical Condition Start Date: (.*)$/);}, 
         					action: function(l) {
         						var sd = Date.parse(this.matcher(l)[1]);
-        						this.parser.current.onset = sd;
+        						if (sd !== null)	
+        							this.parser.current.onset = sd.toISOString();
         					}
         			}));
 
@@ -177,7 +181,8 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
         					matcher: function(l) {return l.match(/^Medical Condition End Date: (.*)$/);}, 
         					action: function(l) {
         						var ed = Date.parse(this.matcher(l)[1]);
-        						this.parser.current.resolution = ed;
+        						if (ed !== null)
+        							this.parser.current.resolution = ed.toISOString();;
         					}
         			}));
 	
@@ -215,18 +220,35 @@ parse: function() {
     
     this.render();
     this.saveMeds();
+    this.saveProblems();
 },
 
 saveMeds: function() {
     for (var i = 0; i < this.meds.length; i++) {
     	var xml = this.meds[i].toRDFXML();
-    	var dname = this.meds[i].drug;
+		var dname = this.meds[i].drug;
+
+		(function(xml, dname) {
     	SmartMedDisplay.Models.Med.post(xml, function(){
-    		var h = $('#interact').html();
-    		h  = h +  "Added " + dname+"<br>\n";
+    	    var h = $('#interact').html();
+    		h  = h +  "Added Med: " + dname+"<br>\n";
     		$('#interact').html(h);
     		});
-    	
+		}(xml, dname));
+    }
+},
+
+saveProblems: function() {
+    for (var i = 0; i < this.problems.length; i++) {
+    	var xml = this.problems[i].toRDFXML();
+    	var pname = this.problems[i].title;
+    	(function(xml, pname) {
+    	SmartMedDisplay.Models.Problem.post(xml, function(){
+        	var h = $('#interact').html();
+    		h  = h +  "Added Problem: " + pname+"<br>\n";
+    		$('#interact').html(h);
+    		});
+    	}(xml, pname));
     }
 },
 
@@ -240,14 +262,8 @@ parseLine: function(l) {
 },
 
 render: function() {        
-		ret += '\n**Problems: \n';
-        for (var i = 0; i < this.problems.length; i++) {
-        	ret += this.problems[i].title+'\n';
-        	if (this.problems[i].onset) ret += this.problems[i].onset+'\n';
-        	if (this.problems[i].resolution) ret += this.problems[i].resolution+'\n';
-        }
  
-        $('#interact').html('Adding '+ this.meds.length + ' meds... \n<br>');
+        $('#interact').html('Adding '+ this.meds.length + ' meds and '+this.problems.length+' problems... \n<br>');
 }
 
 });
