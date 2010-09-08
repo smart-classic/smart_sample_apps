@@ -47,7 +47,7 @@ init: function(el, meds) {
 		return;
 
 	// Spawn two fetch "threads"
-	this.request_queue.shift().fetch();
+		this.request_queue.shift().fetch();
 	this.request_queue.shift().fetch();
 
 	

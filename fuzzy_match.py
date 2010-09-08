@@ -30,11 +30,11 @@ def fuzzy_match_rdf(results):
         i += 1
         s = RDF.Statement(n, sp['fuzzy_match_rxnorm'], b)
         m.append(s)
-        s = RDF.Statement(b, dcterms['title'],r['str'])
+        s = RDF.Statement(b, dcterms['title'],r['str'].encode())
         m.append(s)
-        s = RDF.Statement(b, rxn['RXCUI'], rxcui["%s"%r['rxcui']]) 
+        s = RDF.Statement(b, rxn['RXCUI'], rxcui["%s"%r['rxcui'].encode()]) 
         m.append(s)
-        s = RDF.Statement(b, rxn['TTY'], tty["%s"%r['tty']]) 
+        s = RDF.Statement(b, rxn['TTY'], tty["%s"%r['tty'].encode()]) 
         m.append(s)
     return m
         
