@@ -135,6 +135,18 @@ var sample_med_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
    </rdf:Description>\n\
 </rdf:RDF>';
 
+var sample_med_post = function() { 
+return '<?xml version="1.0" encoding="utf-8"?>\n\
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
+  xmlns:med="http://smartplatforms.org/medication#"\n\
+  xmlns:dcterms="http://purl.org/dc/terms/"\n\
+  xmlns:rxcui="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/">\n\
+   <rdf:Description rdf:about="http://smartplatforms.org'+interpolate_url(API.current_call.url)+'">\n\
+      <dcterms:title>An Updated, Catchier Title</dcterms:title>\n\
+   </rdf:Description>\n\
+</rdf:RDF>';
+};
+
 API.calls.push({url: '/records/{record_id}/medications/',
 						methods: [['GET',"application/x-www-form-urlencoded"], 
 							      ['POST', "application/rdf+xml"], 
@@ -148,10 +160,11 @@ API.calls.push({url: '/records/{record_id}/medications/',
 
 
 API.calls.push({url: '/records/{record_id}/medications/{medication_id}',
-						methods: [['GET',"application/x-www-form-urlencoded"],  
+						methods: [['GET',"application/x-www-form-urlencoded"],
+								  ['POST',"application/rdf+xml"],   
 							      ['DELETE', "application/x-www-form-urlencoded"]], 
 						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
-						sample_msg: {}
+						sample_msg: {POST: sample_med_post}
 					});
 
 
@@ -264,12 +277,7 @@ var call_clicked = function(ev) {
     
 	var fields = call.url.match(API.url_param_reg);
 	$response.parent().hide();
-	
-	$message_body.val(call.sample_msg[method] || "");
-	if ($message_body.val())
-		$message_body.closest("TR").show();
-	else
-		$message_body.closest("TR").hide();
+
 		
 	$table.find('TR.url_param').remove();
 	for (var i = 0; i < fields.length; i++) {
@@ -292,12 +300,18 @@ var call_clicked = function(ev) {
 		
 		$table.append($input);	
 	}
-	
+	API.current_call = call;
+		
+	$message_body.val(call.sample_msg[method] || "");
+	if ($message_body.val())
+		$message_body.closest("TR").show();
+	else
+		$message_body.closest("TR").hide();
+		
 	$table.find('TR.button_row').remove();
 	var $button_row = jQuery('<tr class="button_row"><td colspan="2"><button value="'+method+'">'+method+" " + call.url+'</button></td></tr>');
 	$button_row.find("BUTTON").click(method_clicked);
 	$table.append($button_row);
-	API.current_call = call;
 }
 
 var build_api = function() {

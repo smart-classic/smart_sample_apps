@@ -385,7 +385,20 @@ SMART_CLIENT.prototype.SPL_get = function(query, callback) {
 		var rdf = _this.process_rdf(contentType, data);
 		callback(rdf);
 	});
-}
+};
+
+SMART_CLIENT.prototype.intent = function(intent_name, data, callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/intent/"+intent_name,
+		data : data
+		}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+};
+
 
 SMART_CLIENT.prototype.CAPABILITIES_get = function(callback) {
 	var _this = this;
