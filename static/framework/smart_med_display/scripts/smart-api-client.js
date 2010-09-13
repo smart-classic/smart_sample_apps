@@ -36,6 +36,11 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 				if (parsed_message.type == 'apireturn') {
 					this.receive_apireturn_message(parsed_message);
 				}
+				
+				// api return
+				if (parsed_message.type == 'activityreturn') {
+					this.receive_activityreturn_message(parsed_message);
+				}
 			},
 
 			this.send_ready_message = function(ready_callback) {
@@ -54,16 +59,18 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		this.frame.postMessage(JSON.stringify( {
 			'type' : 'ready'
 		}), '*');
-	},
+	};
 
 	this.receive_setup_message = function(message) {
 		this.credentials = message.credentials;
 		this.record_info = message.record_info;
+		this.activity_id = message.activity_id;
+		
 		var _this = this;
 		this.CAPABILITIES_get(function() {
 			_this.ready_callback(_this.record_info);
 		});
-	},
+	};
 
 	this.receive_apireturn_message = function(message) {
 		var callback = this.active_calls[message.uuid];
@@ -81,27 +88,64 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
 		// clear out the callback
 		this.active_calls[message.uuid] = null;
-	},
+	};
 
+	this.receive_activityreturn_message = function(message) {
+		this.receive_apireturn_message(message);
+	};
+
+	
 	// generic api_call function
 			// api calls have a function name and named variables
 			// we have to track the calls because asynchronicity might
 			// make the results come back in a different order
-			this.api_call = function(options, callback) {
-				var call_uuid = randomUUID();
-				this.active_calls[call_uuid] = callback;
+	this.api_call = function(options, callback) {
+		var call_uuid = randomUUID();
+		this.active_calls[call_uuid] = callback;
 
-				this.frame.postMessage(JSON.stringify( {
-					'type' : 'apicall',
-					'uuid' : call_uuid,
-					'func' : options.url,
-					'method' : options.method,
-					'params' : options.data,
-					'contentType' : options.contentType
-							|| "application/x-www-form-urlencoded"
-				}), this.smart_server_origin);
-			}
+		this.frame.postMessage(JSON.stringify( {
+			'activity_id': this.activity_id,
+			'type' : 'apicall',
+			'uuid' : call_uuid,
+			'func' : options.url,
+			'method' : options.method,
+			'params' : options.data,
+			'contentType' : options.contentType
+					|| "application/x-www-form-urlencoded"
+		}), this.smart_server_origin);
+	};
 
+	this.start_activity = function(activity_name, app_id, callback) {
+		if (arguments.length == 2) {
+			return this.start_activity(activity_name, null, app_id);
+		}
+		
+		var call_uuid = randomUUID();
+		this.active_calls[call_uuid] = callback;
+
+		this.frame.postMessage(JSON.stringify( {
+			'activity_id': this.activity_id,
+			'type' : 'start_activity',
+			'uuid' : call_uuid,
+			'name' : activity_name,
+			'app' : app_id
+		}), this.smart_server_origin);
+	};
+
+	
+	this.end_activity = function(response, callback) {
+		var call_uuid = randomUUID();
+		this.active_calls[call_uuid] = null;
+
+		this.frame.postMessage(JSON.stringify( {
+			'activity_id': this.activity_id,
+			'type' : 'end_activity',
+			'uuid' : call_uuid,
+			'response': response
+		}), this.smart_server_origin);
+	};
+
+	
 	var _this = this;
 
 	this.init = function() {
@@ -387,11 +431,11 @@ SMART_CLIENT.prototype.SPL_get = function(query, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.intent = function(intent_name, data, callback) {
+SMART_CLIENT.prototype.webhook = function(webhook_name, data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
-		url : "/intent/"+intent_name,
+		url : "/webhook/"+webhook_name,
 		data : data
 		}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);

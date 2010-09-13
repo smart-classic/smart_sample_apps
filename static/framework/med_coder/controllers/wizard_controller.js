@@ -29,7 +29,7 @@ init: function(el, meds) {
 	for (var i = 0; i < this.uncoded.length; i++) {
 		this.request_queue.push({id: i, fetch: (function(i, one_med) {
 		return function() {
-		SMART.intent('fuzzy_match_rxnorm', {q: one_med.drug}, 
+		SMART.webhook('fuzzy_match_rxnorm', {q: one_med.drug}, 
 				function(rdf) {
 					var choices = rdf.where("?q <http://smartplatforms.org/fuzzy_match_rxnorm> ?m ")
 									 .where("?m <http://purl.org/dc/terms/title> ?t ")
@@ -47,8 +47,8 @@ init: function(el, meds) {
 		return;
 
 	// Spawn two fetch "threads"
+	for (var i = 0; i < Math.min(2, this.request_queue.length); i++)
 		this.request_queue.shift().fetch();
-	this.request_queue.shift().fetch();
 
 	
 	this.update_view();
@@ -142,7 +142,9 @@ update_view: function() {
 },
 
 finish_screen: function() {
-	$('#wizard').html(this.view('finished'));
+	SMART.end_activity({custom: "All set!"}, function(){	
+								$('#wizard').html(this.view('finished'));
+							});
 }
 
 });

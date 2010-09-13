@@ -219,32 +219,47 @@ parse: function() {
     }
     
     this.render();
+    this.done = 0;
     this.saveMeds();
     this.saveProblems();
 },
+receivedOne: function() {
+	if (++this.done >= (this.meds.length + this.problems.length)) {
+		SMART.start_activity("reconcile_medications", function(ct, msg){
+    		$('#interact').html("THANK YOU FOR CLEANING UP YOUR MEDS! Custom msg: " + msg.custom);
+		});
+	}
 
+},
 saveMeds: function() {
-    for (var i = 0; i < this.meds.length; i++) {
+	var _this = this;
+
+	for (var i = 0; i < this.meds.length; i++) {
     	var xml = this.meds[i].toRDFXML();
 		var dname = this.meds[i].drug;
-
+		
 		(function(xml, dname) {
     	SmartMedDisplay.Models.Med.post(xml, function(){
     	    var h = $('#interact').html();
     		h  = h +  "Added Med: " + dname+"<br>\n";
     		$('#interact').html(h);
+    		_this.receivedOne();
+    		
     		});
 		}(xml, dname));
     }
 },
 
-saveProblems: function() {
+saveProblems: function() {	
+	var _this = this;
     for (var i = 0; i < this.problems.length; i++) {
     	(function(problem) {
     	SmartMedDisplay.Models.Problem.post(problem, function(){
         	var h = $('#interact').html();
     		h  = h +  "Added Problem: " + problem.title+"<br>\n";
     		$('#interact').html(h);
+    		_this.receivedOne();
+
     		});
     	}(this.problems[i]));
     }

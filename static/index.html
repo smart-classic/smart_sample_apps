@@ -1,12 +1,53 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Problem List</title>
-	<script type='text/javascript' src='framework/steal/steal.js?smart_med_display,development'></script>
-  </head>
+<!DOCTYPE HTML>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
-  <body>
-	<em id="UserDisplay">SMArt Problem List (loading...)</em>
-	<div id="ProblemList"></div>
-  </body>
-</html>
+  
+    <title>Got Statins?</title>
+  <script src="statin_files/jquery.js" type="text/javascript"></script><script src="statin_files/jquery-ui.js" type="text/javascript"></script><script src="statin_files/jquery_002.js" type="text/javascript"></script></head><body>
+
+  <h1 style="font-family: Arial,sans-serif;">Got Statins?</h1>
+  <a id="TheAnswer" style="font-weight: bold; font-size: 120pt; font-family: Arial,sans-serif; text-decoration: none; color: black;">No.</a> 
+  
+	
+	<script src="statin_files/smart-api-client.js"></script><div firebugversion="1.5.4" style="display: none;" id="_firebugConsole"></div>
+	<script>
+		SMART = new SMART_CLIENT(null, window.top);
+		
+		SMART.send_ready_message(function(record_info) {	
+			SMART.MEDS_get_all(function(meds) {
+			
+				var statin = meds.where("?m rdf:type sp:medication")
+								 .where("?m dcterms:title ?drugname");
+				
+				var answer = false;
+								 
+				for (var i = 0; i < statin.length; i++) {
+					if (is_a_statin(statin[i].drugname.value))
+						answer = true;
+				}								 
+				
+				document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "No.";
+			});
+		});
+		
+		var is_a_statin = function(drug) {
+		
+			if (drug.match(/statin$/i)) return true;
+			if (drug.match(/Advicor/i)) return true;
+			if (drug.match(/Altoprev/i)) return true;
+			if (drug.match(/Caduet/i)) return true;
+			if (drug.match(/Crestor/i)) return true;
+			if (drug.match(/Lescol/i)) return true;
+			if (drug.match(/Lipitor/i)) return true;
+			if (drug.match(/Mevacor/i)) return true;
+			if (drug.match(/Pravachol/i)) return true;
+			if (drug.match(/Simcor/i)) return true;
+			if (drug.match(/Vytorin/i)) return true;
+			if (drug.match(/Zocor/i)) return true;
+			
+			return false;
+	    }
+		
+	</script>
+  </body></html>
