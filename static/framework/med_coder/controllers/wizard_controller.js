@@ -10,9 +10,10 @@ jQuery.Controller.extend('MedCoder.Controllers.WizardController',
 {
 
 init: function(el, meds) {
-	this.meds = meds;
-	this.current = 0;
 
+	this.meds = SmartMedDisplay.Models.Med.from_rdf_array(meds);
+
+	this.current = 0;
 	this.uncoded  = $.grep(this.meds, function(med, i) {
 		var ret = (typeof(med.cui) === 'undefined' 
 			|| ! med.cui 
@@ -46,8 +47,10 @@ init: function(el, meds) {
 	if (this.request_queue.length === 0)
 		return;
 
-	// Spawn two fetch "threads"
-	for (var i = 0; i < Math.min(2, this.request_queue.length); i++)
+	// Spawn up to fetch "threads"
+	var MAX_FETCH_THREADS = 2;
+	for (var i = 0; i < Math.min(MAX_FETCH_THREADS, 
+								 this.request_queue.length); i++)
 		this.request_queue.shift().fetch();
 
 	
@@ -75,7 +78,7 @@ update_choices_view: function() {
 
 	if (choice !== null && choice !== "null") {
 		var m = this.uncoded[this.current];
-		m.update_attribute("http://smartplatforms.org/medication#drug", choice, function(){});
+		m.cui = choice;
 	}
 
 	$("#next").click();	
@@ -141,21 +144,21 @@ update_view: function() {
 	this.update_view();
 },
 
-finish_screen: function() {
-	SMART.end_activity({custom: "All set!"}, function(){	
-								$('#wizard').html(this.view('finished'));
-							});
+finish_screen: function() {	
+	SMART.end_activity(
+			SmartMedDisplay.Models.Med.to_rdf_array(this.meds), 
+			function(){	
+					$('#wizard').html(this.view('finished'));
+				});
 }
 
 });
 
 jQuery.fn.flash = function( color, duration )
 {
-
     var fgcurrent = this.css( 'color' );
     var bgcurrent = this.css( 'background' );
 
     this.animate( { color: 'rgb(' + color + ')', background: 'rgb(' + color + ')'}, duration / 2 );
     this.animate( { color: fgcurrent, background: bgcurrent}, duration / 2 );
-
 };

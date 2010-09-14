@@ -14,8 +14,13 @@ jQuery.Controller.extend('MedCoder.Controllers.MedCoderController',
 		FRAME = window.top;
 	
 		SMART = new SMART_CLIENT(ORIGIN, FRAME);
-		SMART.send_ready_message(this.callback(function(record_info) {
-			SmartMedDisplay.Models.Med.get(this.init_wizard);			
+		SMART.send_ready_message(this.callback(function(record_info, med_xml) {
+			if (med_xml) {
+				this.init_wizard(med_xml);
+			}
+			else
+				alert("Don't launch med coder directly.");
+//				SmartMedDisplay.Models.Med.get(this.init_wizard);			
 		}));	
 	},
 

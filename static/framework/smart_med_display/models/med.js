@@ -7,6 +7,27 @@ SmartMedDisplay.Models.RdfObject.
 extend('SmartMedDisplay.Models.Med',
 /* @Static */
 {
+	
+	from_rdf_array: function(meds) {
+		var ret = [];
+		for (var i = 0; i < meds.length; i++) {
+			var rdf = SMART.process_rdf("xml", meds[i]);
+			var one_chunk =SmartMedDisplay.Models.Med.saveRDF(rdf)[0];
+			for (var j = 0; j < one_chunk.length; j++)
+				ret.push(one_chunk[j]);
+		}
+		return ret;
+	},
+	
+	to_rdf_array: function(meds) {
+		var ret = [];
+		for (var i = 0; i < meds.length; i++) {
+			ret.push(meds[i].toRDFXML());
+		}
+		return ret;
+	},
+
+	
 	get: function(success, error){
 		SMART.MEDS_get_all(	
 					this.callback([this.saveRDF, success])
@@ -188,6 +209,9 @@ extend('SmartMedDisplay.Models.Med',
 		
 		if (this.drug)
 		rdf.add('_:m dcterms:title "'+this.drug+'" .');
+
+		if (this.cui)
+			rdf.add('_:m med:drug <'+this.cui+'> .');
 		
 		if (this.dose)
 		rdf.add('_:m med:dose "'+this.dose+'" .');

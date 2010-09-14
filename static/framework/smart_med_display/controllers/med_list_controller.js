@@ -9,6 +9,15 @@ extend('SmartMedDisplay.Controllers.MedListController',
 /* @Prototype */
 {
 	init: function() {
+	
+		SMART.message_receivers = {
+			foreground: function() {
+			$("#TheList").click();		
+			$("#TheList").click();		
+			}
+		};
+
+	
 		var v = this.view('init', {} );
 		this.element.html(v);
 		this.expanded = false;

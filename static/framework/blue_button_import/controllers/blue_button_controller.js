@@ -15,7 +15,11 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
 	FRAME = window.top;
 
 	SMART = new SMART_CLIENT(ORIGIN, FRAME);
-	
+	SMART.message_receivers = {
+		foreground: function() {
+			window.location.reload();
+		}
+	};
 	SMART.send_ready_message(function(record_info) {});
 	
 
@@ -218,19 +222,46 @@ parse: function() {
     	this.parseLine(lines[i]);
     }
     
-    this.render();
     this.done = 0;
-    this.saveMeds();
-    this.saveProblems();
+    this.medication_xml_pre = this.med_xml();
+    $('#home_screen').html("Cleaning up med list...");
+    
+    var _this = this;
+	SMART.start_activity("reconcile_medications", 
+						this.medication_xml_pre, 
+						function(ct, meds){
+							_this.meds = SmartMedDisplay.Models.Med.from_rdf_array(meds); 
+							$('#header').html("<h1>Thanks for adding drug codes!</h1>");
+							$('#home_screen').html("");
+							_this.saveMeds();							
+	});    
 },
+
+med_xml: function() {
+	var _this = this;
+	var xmls = [];
+	
+	for (var i = 0; i < this.meds.length; i++) {
+    	var xml = this.meds[i].toRDFXML();
+		xmls.push(xml);
+    }
+	
+	return xmls;
+},
+
 receivedOne: function() {
-	if (++this.done >= (this.meds.length + this.problems.length)) {
-		SMART.start_activity("reconcile_medications", function(ct, msg){
-    		$('#interact').html("THANK YOU FOR CLEANING UP YOUR MEDS! Custom msg: " + msg.custom);
+	if (++this.done >= this.meds.length) {
+		var $view_meds = $('<a href="#">View your med list!</a>');
+		$view_meds.click(function() {
+			SMART.start_activity("view_medications");			
 		});
+		
+		$('#interact').append('<br>');
+		$('#interact').append($view_meds);
 	}
 
 },
+
 saveMeds: function() {
 	var _this = this;
 
@@ -244,7 +275,6 @@ saveMeds: function() {
     		h  = h +  "Added Med: " + dname+"<br>\n";
     		$('#interact').html(h);
     		_this.receivedOne();
-    		
     		});
 		}(xml, dname));
     }
@@ -274,9 +304,5 @@ parseLine: function(l) {
 	}
 },
 
-render: function() {        
- 
-        $('#interact').html('Adding '+ this.meds.length + ' meds and '+this.problems.length+' problems... \n<br>');
-}
 
 });

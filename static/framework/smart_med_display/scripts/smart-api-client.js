@@ -9,74 +9,101 @@
  */
 
 var SMART_CLIENT = function(smart_server_origin, frame) {
+	var _this = this;
 
-	// a message received from the SMArt container
-			this.receive_message = function(event) {
-				// only listen for events from the SMArt container origin
-				if (this.smart_server_origin != null
-						&& event.origin != this.smart_server_origin)
-					return;
+	this.init = function() {
+		// the init code has moved down here...
+		this.smart_server_origin = smart_server_origin;
+		this.frame = frame;
 
-				// parse message
-				var parsed_message = JSON.parse(event.data);
+		this.active_calls = {};
 
-				// setup message with credentials and initial data
-				if (parsed_message.type == 'setup') {
-					// FIXME: for now we are binding this client when it
-					// receives the setup message.
-					// easier for development, may need some work
-					this.smart_server_origin = event.origin;
-					if (this.smart_server_origin === "null")
-						this.smart_server_origin = "*";
+		// register the message receiver
+		// wrap in a function because of "this" binding
 
-					this.receive_setup_message(parsed_message);
-				}
+		window.addEventListener("message", function(message) {
+			_this.receive_message(message);
+		}, false);
 
-				// api return
-				if (parsed_message.type == 'apireturn') {
-					this.receive_apireturn_message(parsed_message);
-				}
-				
-				// api return
-				if (parsed_message.type == 'activityreturn') {
-					this.receive_activityreturn_message(parsed_message);
-				}
-			},
+	}
+	
+	this.init();
 
-			this.send_ready_message = function(ready_callback) {
-				loadJQuery(function() {
-					_this.send_ready_message_after(ready_callback)
-				});
-			};
-
-	this.send_ready_message_after = function(ready_callback) {
-
-		this.ready_callback = ready_callback;
-
-		// FIXME: we are not setting a destination constraint here to make it
-		// easier to develop
-		// but we may need to do that eventually... it's not clear
-		this.frame.postMessage(JSON.stringify( {
-			'type' : 'ready'
-		}), '*');
+	this.send_ready_message = function(ready_callback) {
+		loadJQuery(function() {
+			var call_uuid = randomUUID();
+			_this.active_calls[call_uuid] = ready_callback;
+			
+			// FIXME: we are not setting a destination constraint here
+			_this.frame.postMessage(
+					JSON.stringify({
+							'type' : 'ready',
+							'call_uuid': call_uuid}), 
+					'*');
+		});
 	};
 
+    // a message received from the SMArt container
+	this.receive_message = function(event) {
+		// only listen for events from the SMArt container origin
+		if (this.smart_server_origin != null
+				&& event.origin != this.smart_server_origin)
+			return;
+
+		// parse message
+		var parsed_message = JSON.parse(event.data);
+
+		// setup message with credentials and initial data
+		if (parsed_message.type == 'setup') {
+			// FIXME: for now we are binding this client when it
+			// receives the setup message.
+			// easier for development, may need some work
+			this.smart_server_origin = event.origin;
+			if (this.smart_server_origin === "null")
+				this.smart_server_origin = "*";
+
+			this.receive_setup_message(parsed_message);
+		}
+
+		// api return
+		if (parsed_message.type == 'apireturn') {
+			this.receive_apireturn_message(parsed_message);
+		}
+		
+		// api return
+		if (parsed_message.type == 'activityreturn') {
+			this.receive_activityreturn_message(parsed_message);
+		}
+		// api return
+		if (parsed_message.type == 'activitybackground') {
+			this.message_receivers.background();
+		}
+		// api return
+		if (parsed_message.type == 'activityforeground') {
+			this.message_receivers.foreground();
+		}
+	},
+
 	this.receive_setup_message = function(message) {
+		var ready_callback = this.active_calls[message.call_uuid];
+		if (!ready_callback)
+			return;
+		
 		this.credentials = message.credentials;
 		this.record_info = message.record_info;
 		this.activity_id = message.activity_id;
+		this.ready_data = message.ready_data;
 		
 		var _this = this;
 		this.CAPABILITIES_get(function() {
-			_this.ready_callback(_this.record_info);
+			ready_callback(_this.record_info, _this.ready_data);
 		});
 	};
 
 	this.receive_apireturn_message = function(message) {
-		var callback = this.active_calls[message.uuid];
+		var callback = this.active_calls[message.call_uuid];
 
 		if (callback == null) {
-			alert('no callback for ' + message.uuid);
 			return;
 		}
 
@@ -87,7 +114,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		// content type.
 
 		// clear out the callback
-		this.active_calls[message.uuid] = null;
+		this.active_calls[message.call_uuid] = null;
 	};
 
 	this.receive_activityreturn_message = function(message) {
@@ -106,7 +133,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		this.frame.postMessage(JSON.stringify( {
 			'activity_id': this.activity_id,
 			'type' : 'apicall',
-			'uuid' : call_uuid,
+			'call_uuid' : call_uuid,
 			'func' : options.url,
 			'method' : options.method,
 			'params' : options.data,
@@ -115,9 +142,9 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		}), this.smart_server_origin);
 	};
 
-	this.start_activity = function(activity_name, app_id, callback) {
-		if (arguments.length == 2) {
-			return this.start_activity(activity_name, null, app_id);
+	this.start_activity = function(activity_name, app_id, ready_data, callback) {
+		if (arguments.length < 4) {
+			return this.start_activity(activity_name, null,  app_id, ready_data);
 		}
 		
 		var call_uuid = randomUUID();
@@ -126,9 +153,10 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		this.frame.postMessage(JSON.stringify( {
 			'activity_id': this.activity_id,
 			'type' : 'start_activity',
-			'uuid' : call_uuid,
+			'call_uuid' : call_uuid,
 			'name' : activity_name,
-			'app' : app_id
+			'app' : app_id,
+			'ready_data': ready_data
 		}), this.smart_server_origin);
 	};
 
@@ -140,116 +168,12 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		this.frame.postMessage(JSON.stringify( {
 			'activity_id': this.activity_id,
 			'type' : 'end_activity',
-			'uuid' : call_uuid,
+			'call_uuid' : call_uuid,
 			'response': response
 		}), this.smart_server_origin);
 	};
 
-	
-	var _this = this;
 
-	this.init = function() {
-		// the init code has moved down here...
-		this.smart_server_origin = smart_server_origin;
-		this.frame = frame;
-
-		this.active_calls = {};
-
-		// register the message receiver
-		// wrap in a function because of "this" binding
-
-		window.addEventListener("message", function(message) {
-			_this.receive_message(message);
-		}, false);
-
-	}
-
-	var loadJQuery = function(callback) {
-		var load = function(filenames) {
-			load.getScripts(filenames);
-		}
-
-		load.getScripts = function(filenames) {
-			if (filenames.length === 0)
-				return callback();
-
-			if (filenames.length > 1) {
-				load.callback = function() {
-					load.getScripts(filenames.slice(1))
-				};
-			}
-
-			else
-				load.callback = callback;
-			load.getScript(filenames[0]);
-		};
-
-		// dynamically load any javascript file.
-		load.getScript = function(filename) {
-			var script = document.createElement('script');
-			script.setAttribute("type", "text/javascript");
-			script.setAttribute("src", filename.url);
-			load.filename = filename;
-			if (typeof script !== "undefined")
-				document.getElementsByTagName("head")[0].appendChild(script);
-			load.tryReady(0);
-		};
-
-		load.tryReady = function(time_elapsed) {
-			// Continually polls to see if jQuery is loaded.
-			if (load.filename()) { // if jQuery isn't loaded yet...
-				if (time_elapsed <= 10000) { // and we havn't given up
-					// trying...
-					setTimeout(function() {
-						load.tryReady(time_elapsed + 200);
-					}, 200); // set a timer to check again in 200 ms.
-				} else {
-					alert("Timed out while loading jQuery: "
-							+ load.filename.url);
-				}
-			} else {
-				load.callback();
-			}
-		};
-
-		var filenames = [];
-		var need_rest = false;
-
-		var need_jquery = function() {
-			return (typeof (jQuery) === "undefined" || typeof (jQuery.fn) === "undefined");
-		};
-		need_jquery.url = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js";
-
-		var need_ui = function() {
-			try {
-				return (typeof (jQuery.fn.autocomplete) === "undefined");
-			} catch (e) {
-				return true;
-			}
-		};
-		need_ui.url = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.js";
-
-		var need_rdf = function() {
-			try {
-				return (typeof (jQuery.rdf) === "undefined");
-			} catch (e) {
-				return true;
-			}
-		};
-		need_rdf.url = "http://sandbox.smartplatforms.org:8001/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js";
-
-		var funcs = [ need_jquery, need_ui, need_rdf ];
-
-		for ( var i = 0; i < funcs.length; i++)
-			if (funcs[i]())
-				filenames.push(funcs[i]);
-
-		load(filenames);
-	};
-
-	this.init();
-
-};
 
 /*
  * randomUUID.js - Version 1.0
@@ -545,3 +469,88 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	// abstract method to instantiate a list of objects from the rdf store.
 	return rdf;
 }
+
+
+var loadJQuery = function(callback) {
+	var load = function(filenames) {
+		load.getScripts(filenames);
+	}
+
+	load.getScripts = function(filenames) {
+		if (filenames.length === 0)
+			return callback();
+
+		if (filenames.length > 1) {
+			load.callback = function() {
+				load.getScripts(filenames.slice(1))
+			};
+		}
+
+		else
+			load.callback = callback;
+		load.getScript(filenames[0]);
+	};
+
+	// dynamically load any javascript file.
+	load.getScript = function(filename) {
+		var script = document.createElement('script');
+		script.setAttribute("type", "text/javascript");
+		script.setAttribute("src", filename.url);
+		load.filename = filename;
+		if (typeof script !== "undefined")
+			document.getElementsByTagName("head")[0].appendChild(script);
+		load.tryReady(0);
+	};
+
+	load.tryReady = function(time_elapsed) {
+		// Continually polls to see if dependency is loaded.
+		if (load.filename()) { // if dependency isn't loaded yet...
+			if (time_elapsed <= 10000) { // and we havn't given up///
+				setTimeout(function() {
+					load.tryReady(time_elapsed + 200);
+				}, 200); // set a timer to check again in 200 ms.
+			} else {
+				alert("Timed out while loading dependency: "+ load.filename.url);
+			}
+		} else {
+			load.callback();
+		}
+	};
+
+	var filenames = [];
+	var need_rest = false;
+
+	var need_jquery = function() {
+		return (typeof (jQuery) === "undefined" || typeof (jQuery.fn) === "undefined");
+	};
+	need_jquery.url = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js";
+
+	var need_ui = function() {
+		try {
+			return (typeof (jQuery.fn.autocomplete) === "undefined");
+		} catch (e) {
+			return true;
+		}
+	};
+	need_ui.url = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.js";
+
+	var need_rdf = function() {
+		try {
+			return (typeof (jQuery.rdf) === "undefined");
+		} catch (e) {
+			return true;
+		}
+	};
+	need_rdf.url = "http://sandbox.smartplatforms.org:8001/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js";
+
+	var funcs = [ need_jquery, need_ui, need_rdf ];
+
+	for ( var i = 0; i < funcs.length; i++)
+		if (funcs[i]())
+			filenames.push(funcs[i]);
+
+	load(filenames);
+};
+
+
+};

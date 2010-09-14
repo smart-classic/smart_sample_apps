@@ -16,16 +16,22 @@ rxn = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/')
 rxcui = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXCUI/')
 tty = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/TTY/')
 
+def confident_match_request(request):
+    results = fuzzy_match(request.GET['q'])
+    s = RDF.Serializer()
+    return HttpResponse(s.serialize_model_to_string(fuzzy_match_rdf(results,1)), mimetype="application/rdf+xml")
+
 def fuzzy_match_request(request):
     results = fuzzy_match(request.GET['q'])
     s = RDF.Serializer()
     return HttpResponse(s.serialize_model_to_string(fuzzy_match_rdf(results)), mimetype="application/rdf+xml")
     
-def fuzzy_match_rdf(results):
+def fuzzy_match_rdf(results,maxhits=10):
     m = RDF.Model()
     n = RDF.Node(blank_identiefier='q')
     i=0
-    for r in results:
+    
+    for r in results[:maxhits]:
         b = RDF.Node(blank_ideitifier="result_%s"%i)
         i += 1
         s = RDF.Statement(n, sp['fuzzy_match_rxnorm'], b)
