@@ -5,7 +5,7 @@ sys.stdout = sys.stderr
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../')
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'smart_meds_app.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'smart_sample_apps.settings'
 
 class AdjEnvironMiddleware:
 
