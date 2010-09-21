@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>SMArt Container Example</title>
+    <STYLE TYPE="text/css" MEDIA=screen>
+    <!--
+    IFRAME {width: 100%; height: 33%;}   
+    -->
+    </STYLE>
+</head>
+<body>
+
+<input type="submit" value="Got Statins?" onclick="javascript:clicked('got-statins@apps.smart.org');"/><input type="submit" value="MedList" onclick="javascript:clicked('medlist@apps.smart.org');"/><br>
+
+
+<script type="text/javascript" 
+        src="http://sandbox.smartplatforms.org/static/resources/js/class.js"></script>
+<script type="text/javascript" 
+        src="http://sandbox.smartplatforms.org/static/resources/js/smart-api-container.js"></script>
+
+<script type="text/javascript" 
+        src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script>
+var SMART_HELPER = {};
+
+SMART_HELPER.handle_record_info = function(app, callback) {
+    callback({
+            'record_info' : {
+                'full_name' : 'John Smith',
+                'id' : '123456'
+                 }
+    });
+};
+
+
+app_lookup = {
+  'medlist@apps.smart.org' : 'http://sample-apps.smartplatforms.org/meds.html',
+  'smart-problems@apps.smart.org' : 'http://sample-apps.smartplatforms.org/problems.html',
+  'got-statins@apps.smart.org' : 'http://sample-apps.smartplatforms.org/statin.html'
+};
+
+SMART_HELPER.handle_start_activity = function(activity, callback) {
+
+  if (activity.name !== "main")
+  {
+    alert("Sample start_activity only known how to launch main activity.");
+  }
+
+  if (activity.app === null)
+  {
+     alert("Sample start_activity requires that you specify an app.");
+  }
+
+  var url = app_lookup[activity.app];
+  var frame_id = "app_content_iframe_"+randomUUID();
+  var frame = $('<iframe src="'+url+'" id="'+frame_id+'"> </iframe><br>')
+  $('body').append(frame);
+  callback(frame[0]);
+
+};
+
+
+SMART_HELPER.handle_api = function(activity, api_call, callback)
+{
+      if (api_call.method=="GET" && api_call.func.match(/^\/capabilities\/$/))
+      {
+        callback("<?xml version='1.0'?>\
+                   <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' >\
+                  </rdf:RDF>");
+      }
+
+      // Return a fake medication list containing just simvastatin...
+      else if (api_call.method=="GET" && api_call.func.match(/^.*\/medications\/$/))
+         callback("<?xml version='1.0'?>\
+                          <rdf:RDF\
+                           xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'\
+                           xmlns:sp='http://smartplatforms.org/'\
+                           xmlns:dcterms='http://purl.org/dc/terms/'>\
+                            <rdf:Description>\
+                              <rdf:type rdf:resource='http://smartplatforms.org/medication'/>\
+                              <dcterms:title>simvastatin</dcterms:title>\
+                            </rdf:Description>\
+                          </rdf:RDF>");
+
+     else
+        alert("Function " + api_call.func + " not implemented yet.");
+
+};
+
+SMART = new SMART_CONTAINER(SMART_HELPER);
+
+var clicked = function(app_id) {
+  SMART.start_activity("main", app_id);
+};
+</script>
+
+</body>
+</html>
+
