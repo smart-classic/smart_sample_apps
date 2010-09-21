@@ -20,7 +20,7 @@ jQuery.Controller.extend('MedCoder.Controllers.MedCoderController',
 			}
 			else
 				alert("Don't launch med coder directly.");
-//				SmartMedDisplay.Models.Med.get(this.init_wizard);			
+//				Smart.Models.Med.get(this.init_wizard);			
 		}));	
 	},
 

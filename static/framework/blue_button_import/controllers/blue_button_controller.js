@@ -33,7 +33,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
         					action: function(l) {
 	        					var name = this.matcher(l)[1];
 	        					
-	        					var new_med = new SmartMedDisplay.Models.Med(null);
+	        					var new_med = new Smart.Models.Med(null);
 	        					new_med.drug = name;
 	        					this.parser.current = new_med;
 	        					this.parser.meds.push(new_med);
@@ -46,7 +46,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
         					matcher: function(l) {return l.match(/^Medication: (.*)/);}, 
         					action: function(l) {
 	        					var name = this.matcher(l)[1];
-	        					var new_med = new SmartMedDisplay.Models.Med(null);
+	        					var new_med = new Smart.Models.Med(null);
 	        					new_med.drug = name;
 	        					this.parser.current = new_med;
 	        					this.parser.meds.push(new_med);
@@ -149,7 +149,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
     						parser: this, 
         					matcher: function(l) {return this.parser.current === "problems" && !l.match(/^-*$/);}, 
         					action: function(l) {
-        						var p = new SmartMedDisplay.Models.Problem(null);
+        						var p = new Smart.Models.Problem(null);
         						p.title = l;
         						this.parser.problems.push(p);
         					}
@@ -160,7 +160,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
     						parser: this, 
         					matcher: function(l) {return l.match(/^Condition Name: (.*)$/);}, 
         					action: function(l) {
-        						var p = new SmartMedDisplay.Models.Problem(null);
+        						var p = new Smart.Models.Problem(null);
         						p.title = this.matcher(l)[1];
         						this.parser.problems.push(p);
         						this.parser.current = p;
@@ -230,7 +230,7 @@ parse: function() {
 	SMART.start_activity("reconcile_medications", 
 						this.medication_xml_pre, 
 						function(ct, meds){
-							_this.meds = SmartMedDisplay.Models.Med.from_rdf_array(meds); 
+							_this.meds = Smart.Models.Med.from_rdf_array(meds); 
 							$('#header').html("<h1>Thanks for adding drug codes!</h1>");
 							$('#home_screen').html("");
 							_this.saveMeds();							
@@ -270,7 +270,7 @@ saveMeds: function() {
 		var dname = this.meds[i].drug;
 		
 		(function(xml, dname) {
-    	SmartMedDisplay.Models.Med.post(xml, function(){
+    	Smart.Models.Med.post(xml, function(){
     	    var h = $('#interact').html();
     		h  = h +  "Added Med: " + dname+"<br>\n";
     		$('#interact').html(h);
@@ -284,7 +284,7 @@ saveProblems: function() {
 	var _this = this;
     for (var i = 0; i < this.problems.length; i++) {
     	(function(problem) {
-    	SmartMedDisplay.Models.Problem.post(problem, function(){
+    	Smart.Models.Problem.post(problem, function(){
         	var h = $('#interact').html();
     		h  = h +  "Added Problem: " + problem.title+"<br>\n";
     		$('#interact').html(h);

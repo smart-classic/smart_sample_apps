@@ -11,7 +11,7 @@ jQuery.Controller.extend('MedCoder.Controllers.WizardController',
 
 init: function(el, meds) {
 
-	this.meds = SmartMedDisplay.Models.Med.from_rdf_array(meds);
+	this.meds = Smart.Models.Med.from_rdf_array(meds);
 
 	this.current = 0;
 	this.uncoded  = $.grep(this.meds, function(med, i) {
@@ -146,7 +146,7 @@ update_view: function() {
 
 finish_screen: function() {	
 	SMART.end_activity(
-			SmartMedDisplay.Models.Med.to_rdf_array(this.meds), 
+			Smart.Models.Med.to_rdf_array(this.meds), 
 			function(){	
 					$('#wizard').html(this.view('finished'));
 				});

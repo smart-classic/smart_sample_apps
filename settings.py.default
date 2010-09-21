@@ -2,7 +2,7 @@
 
 ## PARAMETERS TO REVIEW
 
-APP_HOME = "/web/smart_meds_app"
+APP_HOME = "/web/smart_sample_apps"
 
 ####
 #### Below here probably doesn't need modification
@@ -70,10 +70,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'smart_meds_app.middlewares.exception.ExceptionMiddleware'
+    'smart_sample_apps.middlewares.exception.ExceptionMiddleware'
 )
 
-ROOT_URLCONF = 'smart_meds_app.urls'
+ROOT_URLCONF = 'smart_sample_apps.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
