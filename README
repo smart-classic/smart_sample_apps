@@ -1,0 +1,16 @@
+SMArt Sample Apps
+Joshua dot Mandel at childrens.harvard.edu
+
+This repository contains a collection of sample SMArt Connect Apps:
+ 
+ * API Playground 
+ * Got Statins
+ * Med List
+ * Problem List
+ * Blue Button Import (+ Med Coder to clean up imported data)
+
+Most of these apps were built using the JavascriptMVC framework.
+There's a shared library of data models and common code in
+static/framework/smart, and individual application code resides in
+subdirectories of static/framework
+(e.g. static/framework/problem_list).
