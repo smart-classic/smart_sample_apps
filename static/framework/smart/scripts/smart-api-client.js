@@ -541,7 +541,7 @@ var loadJQuery = function(callback) {
 			return true;
 		}
 	};
-	need_rdf.url = "http://sample-apps.smartplatforms.org:80/framework/smart_med_display/scripts/jquery.rdfquery.core-1.0.js";
+	need_rdf.url = "http://sample-apps.smartplatforms.org:80/framework/smart/scripts/jquery.rdfquery.core-1.0.js";
 
 	var funcs = [ need_jquery, need_ui, need_rdf ];
 
