@@ -11,28 +11,29 @@
 	
 	<script  src='framework/smart/scripts/smart-api-client.js'></script>
 	<script>
-		SMART = new SMART_CLIENT(null, window.top);
+	SMART = new SMART_CLIENT(null, window.top);
+	
+	SMART.send_ready_message(function(record_info) {	
+		SMART.MEDS_get_all(function(data) {
 		
-		SMART.send_ready_message(function(record_info) {	
-			SMART.MEDS_get_all(function(data) {
+			var js = data.to_json();
+			var meds = js["http://smartplatforms.org/medication"];
 			
-		
-                data.prefix("med","http://smartplatforms.org/medication#");
+			for (var i = 0; i < meds.length; i++) {
+				var med = meds[i];
+				var fills = med["http://smartplatforms.org/fulfillment"];
+				
+				for (var j = 0; j < fills.length; j++) {
+					var fill = fills[j];
+					var dq = fill["http://smartplatforms.org/dispenseQuantity"][0];
+					var du = fill["http://smartplatforms.org/dispenseUnits"][0];
+					var mt = med["http://purl.org/dc/terms/title"][0];
 
-                var meds = data.where("?med rdf:type sp:medication")
-                .where("?med dcterms:title ?medname")
-                .optional("?med med:instructions ?sig")
-                .where("?med sp:fulfillment ?fill")
-                .where("?fill sp:dispenseQuantity ?quant")
-                .where("?fill sp:dispenseUnits ?units");
-
-                for (var i = 0; i < meds.length; i++) {
-				    $('BODY').append("<p>For " + meds[i].medname.value + " you were given " + meds[i].quant.value + " " + meds[i].units.value+"</p>");
-		}
-		});
-		});
-		
-		
+				    $('BODY').append( "<p>For " + mt + " you got " + dq + " " + du + ".</p>" );
+				}
+			}
+	    });
+	});
 	</script>
   </body>
 </html>

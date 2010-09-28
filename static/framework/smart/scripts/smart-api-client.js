@@ -434,6 +434,47 @@ SMART_CLIENT.prototype.node_name = function(node) {
     { node = "<"+node._string+">";}
     return node;
 };
+
+SMART_CLIENT.prototype.to_json = function(rdf) {
+
+	var triples = rdf.where("?s ?p ?o");
+	var resources = {};
+	
+	for (var i = 0; i < triples.length; i++) {
+	
+		var t = triples[i];
+		var s = t.s;
+		var p = t.p;
+		var o = t.o;
+		
+		if (resources[s.value._string] === undefined)
+			resources[s.value._string] = {};
+
+		if (resources[s.value._string][p.value._string] === undefined)
+			resources[s.value._string][p.value._string] = [];
+		
+		
+		if (p.value._string === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" )
+		{
+			if (resources[o.value._string] === undefined)
+				resources[o.value._string] = [];
+			
+			resources[o.value._string].push(resources[s.value._string]);
+		}
+
+		if (o.type !== "literal" && resources[o.value._string] === undefined )
+			resources[o.value._string] = {};
+
+		if (t.o.type === "literal")
+			resources[s.value._string][p.value._string].push(o.value);
+		else
+			resources[s.value._string][p.value._string].push(resources[o.value._string]);
+		
+	}
+	
+	return resources;	
+},
+
 SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 
 	if (contentType !== "xml")
@@ -467,6 +508,11 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	rdf.prefix("med","http://smartplatforms.org/medication#");
 
 	// abstract method to instantiate a list of objects from the rdf store.
+	var _this = this;
+	rdf.to_json = function() {
+		return _this.to_json(rdf);
+	};
+	
 	return rdf;
 }
 
