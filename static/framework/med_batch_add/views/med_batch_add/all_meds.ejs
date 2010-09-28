@@ -1,0 +1,16 @@
+Please choose which medications to add:
+
+
+<span 	class="select_all change_selection">all</span> | <span 	class="select_none change_selection">none</span>
+<ul>
+<% for (var i = 0; i < meds.length; i++ ) {
+   var med = meds[i]; 
+%>
+
+<li class='one_med_review'  <%=med %>> [med here] </li>
+<% } %>
+</ul>
+
+
+<br><br>
+<button	class="submit_all">Add Checked Meds to Record</button>
