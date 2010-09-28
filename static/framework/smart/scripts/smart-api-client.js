@@ -453,7 +453,6 @@ SMART_CLIENT.prototype.to_json = function(rdf) {
 		if (resources[s.value._string][p.value._string] === undefined)
 			resources[s.value._string][p.value._string] = [];
 		
-		
 		if (p.value._string === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" )
 		{
 			if (resources[o.value._string] === undefined)
@@ -512,7 +511,7 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	rdf.to_json = function() {
 		return _this.to_json(rdf);
 	};
-	
+	rdf.source_xml = data;
 	return rdf;
 }
 
