@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<input type="submit" value="Got Statins?" onclick="javascript:clicked('got-statins@apps.smart.org');"/><input type="submit" value="MedList" onclick="javascript:clicked('medlist@apps.smart.org');"/><br>
+<input type="submit" value="Got Statins?" onclick="javascript:clicked('got-statins@apps.smart.org');"/><input type="submit" value="MedList" onclick="javascript:clicked('medlist@apps.smart.org');"/><input type="submit" value="Filler" onclick="javascript:clicked('filler@apps.smart.org');"/><br>
 
 
 <script type="text/javascript" 
@@ -36,7 +36,8 @@ SMART_HELPER.handle_record_info = function(app, callback) {
 app_lookup = {
   'medlist@apps.smart.org' : 'http://sample-apps.smartplatforms.org/meds.html',
   'smart-problems@apps.smart.org' : 'http://sample-apps.smartplatforms.org/problems.html',
-  'got-statins@apps.smart.org' : 'http://sample-apps.smartplatforms.org/statin.html'
+  'got-statins@apps.smart.org' : 'http://sample-apps.smartplatforms.org/statin.html',
+  'filler@apps.smart.org' : 'http://sample-apps.smartplatforms.org/filler.html'
 };
 
 SMART_HELPER.handle_start_activity = function(activity, callback) {
@@ -71,17 +72,23 @@ SMART_HELPER.handle_api = function(activity, api_call, callback)
 
       // Return a fake medication list containing just simvastatin...
       else if (api_call.method=="GET" && api_call.func.match(/^.*\/medications\/$/))
-         callback("<?xml version='1.0'?>\
-                          <rdf:RDF\
-                           xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'\
-                           xmlns:sp='http://smartplatforms.org/'\
-                           xmlns:dcterms='http://purl.org/dc/terms/'>\
-                            <rdf:Description>\
-                              <rdf:type rdf:resource='http://smartplatforms.org/medication'/>\
-                              <dcterms:title>simvastatin</dcterms:title>\
-                            </rdf:Description>\
-                          </rdf:RDF>");
-
+         callback('<?xml version="1.0"?>\
+ <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sp="http://smartplatforms.org/" xmlns:med="http://smartplatforms.org/medication#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">\
+  <rdf:Description rdf:about="http://smartplatforms.org/records/1/medications/drug_0">\
+    <rdf:type rdf:resource="http://smartplatforms.org/medication"/>\
+    <dcterms:title>LISINOPRIL</dcterms:title>\
+    <med:instructions>TAKE 1 TABLET BY MOUTH DAILY</med:instructions>\
+   <sp:fulfillment>\
+     <rdf:Description rdf:about="http://smartplatforms.org/records/1/medications/drug_0/fulfillments/fill_1">\
+      <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>\
+      <dc:date>2009-09-30T04:00:00Z</dc:date>\
+      <sp:pharmacy>PRIMARY CARE</sp:pharmacy>\
+      <sp:dispenseQuantity>30.0</sp:dispenseQuantity>\
+      <sp:dispenseUnits>tabs</sp:dispenseUnits>\
+     </rdf:Description>\
+   </sp:fulfillment>\
+ </rdf:Description>\
+</rdf:RDF>');
      else
         alert("Function " + api_call.func + " not implemented yet.");
 
