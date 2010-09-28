@@ -21,32 +21,14 @@
 
                 var meds = data.where("?med rdf:type sp:medication")
                 .where("?med dcterms:title ?medname")
-                .optional("?med med:instructions ?sig");
+                .optional("?med med:instructions ?sig")
+                .where("?med sp:fulfillment ?fill")
+                .where("?fill sp:dispenseQuantity ?quant")
+                .where("?fill sp:dispenseUnits ?units");
 
-                var fills = {};
                 for (var i = 0; i < meds.length; i++) {
-							fills[nodename] = [];
-                                    var med = meds[i];
-                                    var sig = "";
-                                    sig = med.sig? med.sig.value : " [no instructions ]";
-				    
-                                    //alert("You should take "+ med.medname.value+" "  +  sig);
-                                    var drugs = new Object();
-                                    drugs.name = med.medname.value;
-                                    drugs.sig = sig;
-				    
-                                    var nodename = "<"+med.med.value+">";
-                                    var cnt = 0;
-                                    var fulfillments = data
-                                    .where(nodename+" <http://smartplatforms.org/fulfillment> ?fill")
-                                    .where("?fill ?f_field ?f_detail");
-
-                                    for (var j = 0; j < fulfillments.length; j++) {
-							alert("A fill value for " + nodename + " -- " + fulfillments[j].f_field.value + " : "  +fulfillments[j].f_detail.value);
-                                   }
-							
+				    $('BODY').append("<p>For " + meds[i].medname.value + " you were given " + meds[i].quant.value + " " + meds[i].units.value+"</p>");
 		}
-	        alert("For " + meds.length + " meds we found " + fills);
 		});
 		});
 		
