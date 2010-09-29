@@ -28,7 +28,7 @@ def extract_meds(request):
     c = d.xpathNewContext()
     c.xpathRegisterNs("mayo", "http:///edu/mayo/bmi/uima/core/type.ecore")
     c.xpathRegisterNs("xmi", "http://www.omg.org/XMI")
-    meds_found  = c.xpathEval('//mayo:NamedEntity[@typeID="0"]/@ontologyConceptArr')
+    meds_found  = c.xpathEval('//mayo:NamedEntity[@typeID="0"][@certainty!="-1"]/@ontologyConceptArr')
 
     conn = psycopg2.connect("dbname='%s' user='%s' password='%s'" % 
                               (settings.DATABASE_RXN,
