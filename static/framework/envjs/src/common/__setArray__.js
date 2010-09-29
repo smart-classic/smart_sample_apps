@@ -8,4 +8,4 @@ function __setArray__( target, array ) {
     // is a super-fast way to populate an object with array-like properties
     target.length = 0;
     Array.prototype.push.apply( target, array );
-};
+}

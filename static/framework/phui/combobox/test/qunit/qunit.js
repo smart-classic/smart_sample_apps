@@ -1,3 +1,4 @@
 steal
-  .plugins("funcunit/qunit", "archer/ui/combobox")
-  .then("basic_test")
+ .plugins("phui/combobox")  //load your app
+ .plugins("funcunit/qunit")
+ .then("combobox_tests")

@@ -1,5 +1,4 @@
 
-
 /**
  * @name UIEvent
  * @param {Object} options
@@ -9,7 +8,7 @@ UIEvent = function(options) {
     this._detail = 0;
 };
 
-UIEvent.prototype = new Event;
+UIEvent.prototype = new Event();
 __extend__(UIEvent.prototype,{
     get view(){
         return this._view;
@@ -27,5 +26,4 @@ __extend__(UIEvent.prototype,{
 var $onblur,
     $onfocus,
     $onresize;
-    
-    
+

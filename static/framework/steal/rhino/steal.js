@@ -31,6 +31,7 @@
 	steal.isArray = function(arr){
   	  return Object.prototype.toString.call(arr) === "[object Array]"
     }
+	steal.then = steal;
 	steal.inArray = function(item, arr){
 		var len = arr.length;
 		for(var i =0; i < len; i++){
@@ -39,7 +40,10 @@
 			}
 		}
 		return -1;
-	}
+	};
+	steal.cleanId = function( id ) {
+		return id.replace(/[\/\.]/g, "_");
+	};
 	steal.win = oldWindow;
 	if(oldSteal){
 		steal._steal = oldSteal;

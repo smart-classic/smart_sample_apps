@@ -12,7 +12,7 @@ CDATASection = function(ownerDocument) {
     Text.apply(this, arguments);
     this.nodeName = '#cdata-section';
 };
-CDATASection.prototype = new Text;
+CDATASection.prototype = new Text();
 __extend__(CDATASection.prototype,{
     get nodeType(){
         return Node.CDATA_SECTION_NODE;

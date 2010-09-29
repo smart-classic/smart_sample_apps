@@ -3,15 +3,15 @@
 var __supportedMutations__ = /DOMSubtreeModified|DOMNodeInserted|DOMNodeRemoved|DOMAttrModified|DOMCharacterDataModified/;
 
 var __fireMutationEvents__ = Aspect.before({
-    target: EventTarget, 
+    target: EventTarget,
     method: 'addEventListener'
 }, function(target, type){
     if(type && type.match(__supportedMutations__)){
         //unweaving removes the __addEventListener__ aspect
         __fireMutationEvents__.unweave();
         // These two methods are enough to cover all dom 2 manipulations
-        Aspect.around({ 
-            target: Node,  
+        Aspect.around({
+            target: Node,
             method:"removeChild"
         }, function(invocation){
             var event,
@@ -20,17 +20,17 @@ var __fireMutationEvents__ = Aspect.before({
             event.initEvent('DOMNodeRemoved', true, false, node.parentNode, null, null, null, null);
             node.dispatchEvent(event, false);
             return invocation.proceed();
-            
-        }); 
-        Aspect.around({ 
-            target: Node,  
+
+        });
+        Aspect.around({
+            target: Node,
             method:"appendChild"
         }, function(invocation) {
             var event,
                 node = invocation.proceed();
             event = node.ownerDocument.createEvent('MutationEvents');
             event.initEvent('DOMNodeInserted', true, false, node.parentNode, null, null, null, null);
-            node.dispatchEvent(event, false); 
+            node.dispatchEvent(event, false);
             return node;
         });
     }
@@ -45,7 +45,7 @@ MutationEvent = function(options) {
     this._timeStamp = 0;
 };
 
-MutationEvent.prototype = new Event;
+MutationEvent.prototype = new Event();
 __extend__(MutationEvent.prototype,{
     get relatedNode(){
         return this._relatedNode;
@@ -62,7 +62,7 @@ __extend__(MutationEvent.prototype,{
     get attrChange(){
         return this._attrChange;
     },
-    initMutationEvent: function( type, bubbles, cancelable, 
+    initMutationEvent: function( type, bubbles, cancelable,
             relatedNode, prevValue, newValue, attrName, attrChange ){
         this._relatedNode = relatedNode;
         this._prevValue = prevValue;

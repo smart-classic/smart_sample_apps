@@ -1,7 +1,7 @@
 //what we need from javascriptmvc or other places
 steal.plugins('funcunit/qunit',
 	'funcunit/qunit/rhino')
-	.then('resources/jquery','resources/json')
+	.then('resources/jquery','resources/json','resources/selector')
 	.plugins('funcunit/synthetic')
 //Now describe FuncUnit
 .then(function(){
@@ -18,7 +18,7 @@ var window = (function(){return this }).call(null),
  * @constructor FuncUnit
  * @tag core
  * @test test.html
- * @download http://github.com/downloads/pinhook/funcunit/funcunit-beta-4.zip
+ * @download http://github.com/downloads/jupiterjs/funcunit/funcunit-beta-4.zip
  * FuncUnit provides powerful functional testing as an add on to [http://docs.jquery.com/QUnit QUnit].  
  * The same tests can be run 
  * in the browser, or with Selenium.  It also lets you automate basic 
@@ -30,7 +30,7 @@ var window = (function(){return this }).call(null),
  * you turn off your popup blocker!).
 @codestart
 module("autosuggest",{
-  setup : function(){
+  setup: function() {
     S.open('autosuggest.html')
   }
 });
@@ -83,7 +83,7 @@ test("JavaScript results",function(){
  * 	<li>Create a JS file (<code>pages/mypage_test.js</code>) for your tests.  The skeleton should like:
 @codestart
 module("APPNAME", {
-  setup : function(){
+  setup: function() {
     // opens the page you want to test
     $.open("myPage.html");
   }
@@ -401,6 +401,10 @@ Slow mode is useful while debugging.</p>
  * document.frames array to use as the context of the selector.
  */
 FuncUnit = function(selector, context){
+	// if someone wraps a funcunit selector
+	if(selector && selector.funcunit === true){
+		return selector;
+	}
 	if(typeof selector == "function"){
 		return FuncUnit.wait(0, selector)
 	}
@@ -494,28 +498,33 @@ S.open("//app/app.html")
  * @param {Function} callback
  * @param {Number} timeout
  */
-open : function(path, callback, timeout){
+open: function( path, callback, timeout ) {
 	var fullPath = FuncUnit.getAbsolutePath(path), 
 	temp;
 	if(typeof callback != 'function'){
 		timeout = callback;
 		callback = undefined;
 	}
-	FuncUnit.add(function(success, error){ //function that actually does stuff, if this doesn't call success by timeout, error will be called, or can call error itself
-		steal.dev.log("Opening "+path)
-		FuncUnit._open(fullPath, error);
-		FuncUnit._onload(function(){
-			FuncUnit._opened();
-			success()
-		}, error);
-	}, callback, "Page " + path + " not loaded in time!", timeout || 30000);
+	FuncUnit.add({
+		method: function(success, error){ //function that actually does stuff, if this doesn't call success by timeout, error will be called, or can call error itself
+			steal.dev.log("Opening " + path)
+			FuncUnit._open(fullPath, error);
+			FuncUnit._onload(function(){
+				FuncUnit._opened();
+				success()
+			}, error);
+		},
+		callback: callback,
+		error: "Page " + path + " not loaded in time!",
+		timeout: timeout || 30000
+	});
 },
 /**
  * @hide
  * Gets a path, will use steal if present
  * @param {String} path
  */
-getAbsolutePath : function(path){
+getAbsolutePath: function( path ) {
 	if(typeof(steal) == "undefined"){
 		return path;
 	}
@@ -554,7 +563,7 @@ support : {},
 window : {
 	document: {}
 },
-_opened : function(){}
+_opened: function() {}
 });
 
 
@@ -570,33 +579,25 @@ _opened : function(){}
 	FuncUnit.
 	/**
 	 * @hide
-	 * Adds a function to be called in the queue.
-	 * @param {Function} f The function to be called.  It will be provided a success and error function.
-	 * @param {Function} callback a callback to be called after the function is done
-	 * @param {Object} error an error statement if the command fails
-	 * @param {Object} timeout the length of time until success should be called.
+	 * Adds a function to the queue.  The function is passed within an object that
+	 * can have several other properties:
+	 * method : the method to be called.  It will be provided a success and error function to call
+	 * callback : an optional callback to be called after the function is done
+	 * error : an error message if the command fails
+	 * timeout : the time until success should be called
+	 * bind : an object that will be 'this' of the success
+	 * stop : 
 	 */
-	add = function(f, callback, error, timeout, stopper){
+	add = function(handler){
 		
 		//if we are in a callback, add to the current position
 		if (incallback) {
-			queue.splice(currentPosition,0,{
-				method: f,
-				callback: callback,
-				error: error,
-				timeout: timeout,
-				stop : stopper
-			})
+			queue.splice(currentPosition,0,handler)
 			currentPosition++;
 		}
 		else {
 			//add to the end
-			queue.push({
-				method: f,
-				callback: callback,
-				error: error,
-				timeout: timeout
-			});
+			queue.push(handler);
 		}
 		//if our queue has just started, stop qunit
 		//call done to call the next command
@@ -642,7 +643,7 @@ _opened : function(){}
 						
 						incallback = true;
 						if (next.callback) 
-							next.callback.apply(null, arguments);
+							next.callback.apply(next.bind || null, arguments);
 						incallback = false;
 						
 						
@@ -682,10 +683,15 @@ _opened : function(){}
 			time = undefined;
 		}
 		time = time != null ? time : 5000
-		FuncUnit.add(function(success, error){
-			steal.dev.log("Waiting "+time)
-			setTimeout(success, time)
-		}, callback, "Couldn't wait!", time + 1000);
+		FuncUnit.add({
+			method : function(success, error){
+				steal.dev.log("Waiting "+time)
+				setTimeout(success, time)
+			},
+			callback : callback,
+			error : "Couldn't wait!",
+			timeout : time + 1000
+		});
 		return this;
 	}
 	/**
@@ -701,27 +707,34 @@ _opened : function(){}
 				stopped = true;
 			};
 
-		FuncUnit.add(function(success, error){
-			interval = setTimeout(function(){
+		FuncUnit.add({
+			method : function(success, error){
+				interval = setTimeout(function(){
+					
+					var result = null;
+					try {
+						result = checker()
+					} 
+					catch (e) {
+						//should we throw this too error?
+					}
+					
+					if (result) {
+						success();
+					}else if(!stopped){
+						interval = setTimeout(arguments.callee, 10)
+					}
+					
+				}, 10);
 				
-				var result = null;
-				try {
-					result = checker()
-				} 
-				catch (e) {
-					//should we throw this too error?
-				}
 				
-				if (result) {
-					success();
-				}else if(!stopped){
-					interval = setTimeout(arguments.callee, 10)
-				}
-				
-			}, 10);
-			
-			
-		}, callback, error, timeout, stop)
+			},
+			callback : callback,
+			error : error,
+			timeout : timeout,
+			stop : stop
+		});
+		
 	}
 	
 	
@@ -774,6 +787,7 @@ FuncUnit.init = function(s, c){
 	this.context = c == null ? FuncUnit.window.document : c;
 }
 FuncUnit.init.prototype = {
+	funcunit : true,
 	/**
 	 * Types text into an element.  This makes use of [Syn.prototype.type] and works in 
 	 * a very similar way.
@@ -805,13 +819,18 @@ FuncUnit.init.prototype = {
 	 * @param {Function} [callback] a callback that is run after typing, but before the next action.
 	 * @return {FuncUnit} returns the funcUnit for chaining.
 	 */
-	type: function(text, callback){
+	type: function( text, callback ) {
 		var selector = this.selector, 
 			context = this.context;
-		FuncUnit.add(function(success, error){
-			steal.dev.log("Typing "+text+" on "+selector)
-			FuncUnit.$(selector, context, "triggerSyn", "_type", text, success)
-		}, callback, "Could not type " + text + " into " + this.selector);
+		FuncUnit.add({
+			method : function(success, error){
+				steal.dev.log("Typing "+text+" on "+selector)
+				FuncUnit.$(selector, context, "triggerSyn", "_type", text, success)
+			},
+			callback : callback,
+			error : "Could not type " + text + " into " + this.selector,
+			bind : this
+		});
 		return this;
 	},
 	/**
@@ -823,7 +842,7 @@ FuncUnit.init.prototype = {
 	 * @param {Function} [callback] a callback that is run after the selector exists, but before the next action.
 	 * @return {FuncUnit} returns the funcUnit for chaining. 
 	 */
-	exists : function(callback){
+	exists: function( callback ) {
 		if(true){
 			return this.size(function(size){
 				return size > 0;
@@ -841,7 +860,7 @@ FuncUnit.init.prototype = {
 	 * @param {Function} [callback] a callback that is run after the selector exists, but before the next action
 	 * @return {FuncUnit} returns the funcUnit for chaining. 
 	 */
-	missing : function(callback){
+	missing: function( callback ) {
 		return this.size(0, callback)
 	},
 	/**
@@ -853,7 +872,7 @@ FuncUnit.init.prototype = {
 	 * @param {Function} [callback] a callback that runs after the funcUnit is visible, but before the next action.
 	 * @return [funcUnit] returns the funcUnit for chaining.
 	 */
-	visible : function(callback){
+	visible: function( callback ) {
 		var self = this,
 			sel = this.selector,
 			ret;
@@ -881,7 +900,7 @@ FuncUnit.init.prototype = {
 	 * @param {Function} [callback] a callback that runs after the selector is invisible, but before the next action.
 	 * @return [funcUnit] returns the funcUnit selector for chaining.
 	 */
-	invisible : function(callback){
+	invisible: function( callback ) {
 		var self = this,
 			sel = this.selector,
 			ret;
@@ -932,7 +951,7 @@ FuncUnit.init.prototype = {
 	 * @param {Function} [callback] a callback that runs after the drag, but before the next action.
 	 * @return {funcUnit} returns the funcunit selector for chaining.
 	 */
-	drag: function( options, callback){
+	drag: function( options, callback ) {
 		if(typeof options == 'string'){
 			options = {to: options}
 		}
@@ -940,10 +959,15 @@ FuncUnit.init.prototype = {
 
 		var selector = this.selector, 
 			context = this.context;
-		FuncUnit.add(function(success, error){
-			steal.dev.log("dragging "+selector)
-			FuncUnit.$(selector, context, "triggerSyn", "_drag", options, success)
-		}, callback, "Could not drag " + this.selector)
+		FuncUnit.add({
+			method: function(success, error){
+				steal.dev.log("dragging " + selector)
+				FuncUnit.$(selector, context, "triggerSyn", "_drag", options, success)
+			},
+			callback: callback,
+			error: "Could not drag " + this.selector,
+			bind: this
+		})
 		return this;
 	},
 		/**
@@ -981,7 +1005,7 @@ FuncUnit.init.prototype = {
 	 * @param {Function} [callback] a callback that runs after the drag, but before the next action.
 	 * @return {funcUnit} returns the funcunit selector for chaining.
 	 */
-	move: function(options, callback){
+	move: function( options, callback ) {
 		if(typeof options == 'string'){
 			options = {to: options}
 		}
@@ -989,10 +1013,15 @@ FuncUnit.init.prototype = {
 
 		var selector = this.selector, 
 			context = this.context;
-		FuncUnit.add(function(success, error){
-			steal.dev.log("moving "+selector)
-			FuncUnit.$(selector, context, "triggerSyn", "_move", options, success)
-		}, callback, "Could not move " + this.selector)
+		FuncUnit.add({
+			method: function(success, error){
+				steal.dev.log("moving " + selector)
+				FuncUnit.$(selector, context, "triggerSyn", "_move", options, success)
+			},
+			callback: callback,
+			error: "Could not move " + this.selector,
+			bind: this
+		});
 		return this;
 	},
 	/**
@@ -1001,15 +1030,20 @@ FuncUnit.init.prototype = {
 	 * @param {Number} amount number of pixels to scroll
 	 * @param {Function} callback
 	 */
-	scroll : function(direction, amount, callback){
+	scroll: function( direction, amount, callback ) {
 		var selector = this.selector, 
 			context = this.context,
 			direction = /left|right|x/i.test(direction)? "Left" : "Right";
-		FuncUnit.add(function(success, error){
-			steal.dev.log("setting "+selector+ " scroll"+direction+" "+amount+" pixels")
-			FuncUnit.$(selector, context, "scroll"+direction, amount)
-			success();
-		}, callback, "Could not scroll " + this.selector)
+		FuncUnit.add({
+			method: function(success, error){
+				steal.dev.log("setting " + selector + " scroll" + direction + " " + amount + " pixels")
+				FuncUnit.$(selector, context, "scroll" + direction, amount)
+				success();
+			},
+			callback: callback,
+			error: "Could not scroll " + this.selector,
+			bind: this
+		});
 		return this;
 	},
 	/**
@@ -1018,10 +1052,38 @@ FuncUnit.init.prototype = {
 	 * @param {Number} [timeout]
 	 * @param {Object} callback
 	 */
-	wait : function(timeout, callback){
+	wait: function( timeout, callback ) {
 		FuncUnit.wait(timeout, callback)
+	},
+	/**
+	 * Returns a FuncUnit wrapped selector with 
+	 * selector appended to the current selector.
+	 * @codestart
+	 * S('#foo').find(".bar") //-> S("#foo .bar")
+	 * @codeend
+	 * @param {String} selector
+	 * @return {FuncUnit} the funcunit wrapped selector.
+	 */
+
+	find : function(selector){
+		return FuncUnit(this.selector+" "+selector, this.context);
 	}
 };
+//do traversers
+var traversers = ["closest",
+
+
+"next","prev","siblings","last","first"],
+	makeTraverser = function(name){
+		FuncUnit.init.prototype[name] = function(selector){
+			return FuncUnit( FuncUnit.$(this.selector, this.context, name+"Selector", selector) )
+		}
+	};
+for(var i  =0; i < traversers.length; i++){
+	makeTraverser(traversers[i]);
+}
+
+// do clicks
 var clicks = [
 /**
  * @function click
@@ -1079,11 +1141,16 @@ var clicks = [
 			}
 			var selector = this.selector, 
 				context = this.context;
-			FuncUnit.add(function(success, error){
-				options = options || {}
-				steal.dev.log("Clicking "+selector)
-				FuncUnit.$(selector, context, "triggerSyn", "_"+name, options, success)
-			}, callback, "Could not "+name+" " + this.selector)
+			FuncUnit.add({
+				method: function(success, error){
+					options = options || {}
+					steal.dev.log("Clicking " + selector)
+					FuncUnit.$(selector, context, "triggerSyn", "_" + name, options, success)
+				},
+				callback: callback,
+				error: "Could not " + name + " " + this.selector,
+				bind: this
+			});
 			return this;
 		}
 	}

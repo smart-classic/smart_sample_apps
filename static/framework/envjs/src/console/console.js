@@ -2,13 +2,15 @@
 /**
  * @author envjs team
  * borrowed 99%-ish with love from firebug-lite
+ *
+ * http://wiki.commonjs.org/wiki/Console
  */
 Console = function(module){
     var $level,
-        $logger,
-        $null = function(){};
-    
-    
+    $logger,
+    $null = function(){};
+
+
     if(Envjs[module] && Envjs[module].loglevel){
         $level = Envjs.module.loglevel;
         $logger = {
@@ -28,7 +30,7 @@ Console = function(module){
                 logFormatted(arguments, (module)+" error");
             }
         };
-    }else{
+    } else {
         $logger = {
             log: function(level){
                 logFormatted(arguments, "");
@@ -39,12 +41,12 @@ Console = function(module){
             error: $null
         };
     }
-   
+
     return $logger;
-};       
+};
 
 console = new Console("console",1);
-    
+
 function logFormatted(objects, className)
 {
     var html = [];
@@ -67,21 +69,23 @@ function logFormatted(objects, className)
             var object = objects[++objIndex];
             part.appender(object, html);
         }
-        else
+        else {
             appendText(part, html);
+	}
     }
 
     for (var i = objIndex+1; i < objects.length; ++i)
     {
         appendText(" ", html);
-        
+
         var object = objects[i];
-        if (typeof(object) == "string")
+        if (typeof(object) == "string") {
             appendText(object, html);
-        else
+        } else {
             appendObject(object, html);
+	}
     }
-    
+
     Envjs.log(html.join(' '));
 }
 
@@ -89,7 +93,7 @@ function parseFormat(format)
 {
     var parts = [];
 
-    var reg = /((^%|[^\\]%)(\d+)?(\.)([a-zA-Z]))|((^%|[^\\]%)([a-zA-Z]))/;    
+    var reg = /((^%|[^\\]%)(\d+)?(\.)([a-zA-Z]))|((^%|[^\\]%)([a-zA-Z]))/;
     var appenderMap = {s: appendText, d: appendInteger, i: appendInteger, f: appendFloat};
 
     for (var m = reg.exec(format); m; m = reg.exec(format))
@@ -111,7 +115,7 @@ function parseFormat(format)
 
 function escapeHTML(value)
 {
-   return value;
+    return value;
 }
 
 function objectToString(object)
@@ -165,46 +169,48 @@ function appendObject(object, html)
 {
     try
     {
-        if (object == undefined)
+        if (object == undefined) {
             appendNull("undefined", html);
-        else if (object == null)
+        } else if (object == null) {
             appendNull("null", html);
-        else if (typeof object == "string")
+        } else if (typeof object == "string") {
             appendString(object, html);
-        else if (typeof object == "number")
+	} else if (typeof object == "number") {
             appendInteger(object, html);
-        else if (typeof object == "function")
+	} else if (typeof object == "function") {
             appendFunction(object, html);
-        else if (object.nodeType == 1)
+        } else if (object.nodeType == 1) {
             appendSelector(object, html);
-        else if (typeof object == "object")
+        } else if (typeof object == "object") {
             appendObjectFormatted(object, html);
-        else
+        } else {
             appendText(object, html);
+	}
     }
     catch (exc)
     {
     }
 }
-    
+
 function appendObjectFormatted(object, html)
 {
     var text = objectToString(object);
     var reObject = /\[object (.*?)\]/;
 
     var m = reObject.exec(text);
-    html.push( m ? m[1] : text)
+    html.push( m ? m[1] : text);
 }
 
 function appendSelector(object, html)
 {
 
     html.push(escapeHTML(object.nodeName.toLowerCase()));
-    if (object.id)
+    if (object.id) {
         html.push(escapeHTML(object.id));
-    if (object.className)
+    }
+    if (object.className) {
         html.push(escapeHTML(object.className));
-
+    }
 }
 
 function appendNode(node, html)
@@ -216,23 +222,24 @@ function appendNode(node, html)
         for (var i = 0; i < node.attributes.length; ++i)
         {
             var attr = node.attributes[i];
-            if (!attr.specified)
+            if (!attr.specified) {
                 continue;
-            
-            html.push( attr.nodeName.toLowerCase(),escapeHTML(attr.nodeValue))
+	    }
+
+            html.push( attr.nodeName.toLowerCase(),escapeHTML(attr.nodeValue));
         }
 
         if (node.firstChild)
         {
-            for (var child = node.firstChild; child; child = child.nextSibling)
+            for (var child = node.firstChild; child; child = child.nextSibling) {
                 appendNode(child, html);
-                
+	    }
+
             html.push( node.nodeName.toLowerCase());
         }
     }
-    else if (node.nodeType == 3)
+    else if (node.nodeType === 3)
     {
         html.push(escapeHTML(node.nodeValue));
     }
 };
-

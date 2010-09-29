@@ -4,7 +4,7 @@
     <head>
         <title>combobox</title>
         <style type='text/css'>
-            body {font-family: verdana}
+            body {font-family: verdana; margin: 0px; padding: 0px;}
             .error {border: solid 1px red;}
             .error_text { color: red; font-size: 10px;}
             td {padding: 3px;}
@@ -14,19 +14,50 @@
 			.color4 { background-color: #aabbbb; padding-left: 10px; margin: 1px; }
 			.color5 { background-color: #778877; padding-left: 10px; margin: 1px; }
 			.text { margin-left: 5px; }
+			.item-match {
+				font-weight: bold;
+			}
+			#selectable {
+				overflow: auto;
+				height: 100px;
+				width: 200px;
+			}
+			.selectable {
+				display: block;
+				width: 100%;
+				margin:0;
+				padding: 3px 0;
+				border-bottom: 1px solid #cccccc;
+			    cursor: pointer;
+			}
+			.selected {
+				background-color: orange;
+			}
         </style>    
         <link type="text/css" href="combobox.css" rel="stylesheet" />
 		<!--<link type="text/css" href="StyleResourceHandler.css" rel="stylesheet" /> -->
     </head>
     <body>
-    	
+    	<h3>Selectable</h3>
+		<a href="javascript://" id='select_next'>select next</a>
+		<a href="javascript://" id='select_prev'>select prev</a>
+		<div id='selectable'>
+			<ul>
+				<li class='selectable'>First</li><li class='selectable'>First</li><li class='selectable'>First</li>
+				<li class='selectable'>First</li><li class='selectable'>First</li><li class='selectable'>First</li>
+				<li class='selectable'>First</li><li class='selectable'>First</li><li class='selectable'>First</li>
+				<li class='selectable'>First</li><li class='selectable'>First</li><li class='selectable'>First</li>
+				<li class='selectable'>First</li><li class='selectable'>First</li><li class='selectable'>First</li>
+			</ul>
+		</div>
 		<h3>Select Combobox Demo</h3>
         <select id='expirationBehavior' name='forum[expirationBehavior]'>
 			<option value='0' selected='true'>archive</option>
 			<option value='1'>delete</option>
 			<option value='2'>none</option>
 		</select>
-			
+		<h4>Change Event Counter</h4>
+		<div class='change_count'>0</div>
 		<br/>				
         <h3>Nested Data Demo (Text Mode)</h3>
         <input id="combobox_demo" type="text" name="myname" />
@@ -43,7 +74,13 @@
             <button id="getValue">Get Value</button>
             <button id="query">Query</button>
             <button id="enable">Enable</button>
-            <button id="disable">Disable</button>                        
+            <button id="disable">Disable</button>     
+            <button id="showItem">Show Item</button>
+            <button id="hideItem">Hide Item</button>   			   
+			<button id="select">Select</button>     
+			<button id="getItem">Get Item</button>                
+			<button id="clearSelection">Clear Selection</button>
+			<button id="getItems">Get Items</button>			                
         </div>		
 		
 		<br/>
@@ -53,8 +90,29 @@
 		
 		<br/>
 		<h3>Ajax Combobox Demo</h3>
-        <input id="ajax_demo" name="ajax_demo" />		
+		<div id="ajax_container" style="width:400px;height:100px;overflow:auto;">
+			<input id="ajax_someValue" />
+			<button id="populateItems" >Populate Items</button>
+            <button id="ajax_showItem" >Show Item</button>
+            <button id="ajax_hideItem" >Hide Item</button>   			   
+			<button id="ajax_select" >Select</button>                     
+			<button id="ajax_clearSelection" >Clear Selection</button>
+			<button id="ajax_getItems">Get Items</button>			                			
+        	<input id="ajax_demo"  name="ajax_demo" />
+		</div>
+					
 
+		<br/>
+		
+		<br/>
+		<h3>Preloaded Ajax Combobox Demo</h3>
+		<div id="preloaded_ajax_container" style="width:1000px">                			
+        	<input id="preloaded_ajax_demo" style="float:left" name="preloaded_ajax_demo" />
+		</div>		
+		
+		<h3>Slow</h3>
+		<input id="combobox_slow" type="text" name="myname" />
+		
 		<div>abc</div>
 		<br/>
 		<div>abc</div>
@@ -85,6 +143,7 @@
 		<br/>
 		<div>abc</div>
 		<br/>
+			
         <script type='text/javascript' 
                 src='../../steal/steal.js'>   
         </script>
@@ -97,13 +156,22 @@
                 // SELECT COMBOBOX DEMO								
 			    $("#expirationBehavior").phui_combobox_select();                 
 				 
-
-
+				 $("#expirationBehavior").change(function(){
+				 	var el = $('.change_count'),
+						num = parseInt(el.text(), 10);
+						
+					el.html(num+1)
+				 })
+				
+				var data = [];
+				for(var i =0; i < 1000; i++){
+					data.push({value: i, text: "item"+i})
+				}
+				data[0].selected = true;
 				 
-                /*$("#combobox_demo").phui_combobox({
-                    items: [{value: 1, text: "archive", selected: true}, 
-                            {value: 2, text: "delete"},
-                            {value: 3, text: "none"}] });*/
+                $("#combobox_slow").phui_combobox({
+                    items: data,
+					maxHeight: 300 });
 
 
 
@@ -149,10 +217,42 @@
                     var value = $("#someValue").val();
                     $("#combobox_demo").controller().disable(value);
                 });    
+				
+                $("#showItem").click( function(ev) {
+                    var value = $("#someValue").val();
+                    $("#combobox_demo").controller().showItem( value );
+                });
+                $("#hideItem").click( function(ev){
+                    var value = $("#someValue").val();
+                    $("#combobox_demo").controller().hideItem( value );
+                });				
+                $("#select").bind("click", function(ev) {
+                    var value = $("input#someValue").val();
+                    $("#combobox_demo").controller().select( value );
+                });
+                $("#getItem").bind("click", function(ev) {
+                    var value = $("input#someValue").val();
+                    var item = $("#combobox_demo").controller().getItem( value );
+                    $("#log2").html("<span>" + item.text + "</span>");
+                });								
+				$("#clearSelection").bind("click", function(ev) {
+                    var value = $("input#someValue").val();
+                    $("#combobox_demo").controller().clearSelection();
+                });
+				
+				$("#getItems").bind("click", function(ev) {
+                    var items = $("#combobox_demo").controller().getItems();
+					var html = [];
+					for(var i=0;i<items.length;i++) {
+						html.push( items[i].text );
+					}
+					$("#log").html("<div>" + html.join(", ") + "</div>");
+                });				
                 
                 // event API for when a value is selected demo
                 $("#combobox_demo").bind("change", function(ev, value) {
-                    $("#log3").text(value);
+                    console.log("changed "+value)
+					$("#log3").text(value);
                 });   
                 
                 // event API for when the dropdown is opened
@@ -173,21 +273,9 @@
                             var html = [];
 							for (var i = 0; i < item.colors.length; i++) {
 								var color = item.colors[i];
-								if (color == 1) {
-									html.push("<span class='color1'>&nbsp;</span>");
-								}
-								if (color == 2) {
-									html.push("<span class='color2'>&nbsp;</span>");
-								}	
-								if (color == 3) {
-									html.push("<span class='color3'>&nbsp;</span>");
-								}	
-								if (color == 4) {
-									html.push("<span class='color4'>&nbsp;</span>");
-								}	
-								if (color == 5) {
-									html.push("<span class='color5'>&nbsp;</span>");
-								}																																
+									
+								html.push("<span class='color"+color+"'>&nbsp;</span>");
+																																					
 							}
 							html.push("<span class='text'>" + item.text + "</span>");
                             return html.join(" ");
@@ -207,7 +295,7 @@
 				
 				// AJAX COMBOBOX DEMO
                 // fixture that simulate nested data sent by the server
-                $.fixture.make(["items", "item"], 200, function(num, items) {
+                $.fixture.make(["items", "item"], 100, function(num, items) {
                    
                         var itemId = parseInt(Math.random() * num);
                         var item = items[itemId];
@@ -216,7 +304,7 @@
                             return {
                                 "value": num,
                                 "text": "dir" + num,
-                                "enabled": experiment > 3 ? true : false,
+                                "enabled": num < 5 ? true : experiment > 3 ? true : false,
                                 "parentId": null,
                                 children: []
                             }
@@ -252,7 +340,8 @@
                 // by value in combobox input (autocomplete)
                 var oldFixture1 = $.fixture["-items"]; 
                 $.fixture["-items"] = function(settings){
-                    
+					
+                    settings.data = "loadOnDemand"
                     var items = oldFixture1(settings)[0].data;
                     
                     // make a clone of the data so that changes
@@ -269,7 +358,7 @@
                     if(settings.data == "loadOnDemand") {
                         return [{
                             "count": clonedItems.length,
-                            "data" : clonedItems
+                            "d" : clonedItems
                         }]                        
                     }
                     
@@ -286,9 +375,63 @@
                 
  
                 $("#ajax_demo").phui_combobox_ajax({
-                    maxHeight: "320px",
                     url: "/Archer/Service/DiscussionForumServiceJS.svc/GetForumsForCommunity"
+                });	
+				
+				$("#populateItems").bind("click", function(ev) {
+                    $("#ajax_demo").controller().populateItems( function( items ) {
+						var html = [];
+						for(var i=0;i<items.length;i++) {
+							html.push( items[i].text );
+						}
+						$("<div id='ajax_demo_output' />").appendTo("#ajax_container");
+						$("#ajax_demo_output").html("<div>" + html.join(", ") + "</div>");
+					} );
+                });
+				
+                $("#ajax_showItem").click( function(ev) {
+                    var value = $("#ajax_someValue").val();
+                    $("#ajax_demo").controller().showItem( value );
+                });
+                $("#ajax_hideItem").click( function(ev){
+                    var value = $("#ajax_someValue").val();
+                    $("#ajax_demo").controller().hideItem( value );
                 });				
+                $("#ajax_select").bind("click", function(ev) {
+                    var value = $("input#ajax_someValue").val();
+                    $("#ajax_demo").controller().select( value );
+                });
+				$("#ajax_clearSelection").bind("click", function(ev) {
+                    var value = $("input#ajax_someValue").val();
+                    $("#ajax_demo").controller().clearSelection();
+                });
+				
+				$("#ajax_getItems").bind("click", function(ev) {
+                    var items = $("#ajax_demo").controller().getItems();
+					var html = [];
+					for(var i=0;i<items.length;i++) {
+						html.push( items[i].text );
+					}
+					$("<div id='ajax_demo_output2' />").appendTo("#ajax_container");
+					$("#ajax_demo_output2").html("<div>" + html.join(", ") + "</div>");
+                });		
+				
+				
+				/*
+				 *  Pre-loaded Ajax Demo
+				 */
+               $("#preloaded_ajax_demo").phui_combobox_ajax({
+			   		items: [{ value: "0", text: "dir0", selected: true}],
+                    url: "/Archer/Service/DiscussionForumServiceJS.svc/GetForumsForCommunity"
+                });		
+				
+				$("#selectable").phui_combobox_selectable()					
+				$("#select_next").click(function(){
+					$("#selectable").phui_combobox_selectable("selectNext")
+				})
+				$("#select_prev").click(function(){
+					$("#selectable").phui_combobox_selectable("selectPrev")
+				})
             });
 			
 			

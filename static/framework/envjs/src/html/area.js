@@ -1,11 +1,14 @@
 
-/* 
+/*
  * HTMLAreaElement - DOM Level 2
+ *
+ * HTML5: 4.8.13 The area element
+ * http://dev.w3.org/html5/spec/Overview.html#the-area-element
  */
 HTMLAreaElement = function(ownerDocument) {
     HTMLElement.apply(this, arguments);
 };
-HTMLAreaElement.prototype = new HTMLElement;
+HTMLAreaElement.prototype = new HTMLElement();
 __extend__(HTMLAreaElement.prototype, {
     get accessKey(){
         return this.getAttribute('accesskey');
@@ -14,7 +17,7 @@ __extend__(HTMLAreaElement.prototype, {
         this.setAttribute('accesskey',value);
     },
     get alt(){
-        return this.getAttribute('alt');
+        return this.getAttribute('alt') || '';
     },
     set alt(value){
         this.setAttribute('alt',value);
@@ -26,7 +29,7 @@ __extend__(HTMLAreaElement.prototype, {
         this.setAttribute('coords',value);
     },
     get href(){
-        return this.getAttribute('href');
+        return this.getAttribute('href') || '';
     },
     set href(value){
         this.setAttribute('href',value);
@@ -39,20 +42,23 @@ __extend__(HTMLAreaElement.prototype, {
         return 0;
     },
     /*get tabIndex(){
-        return this.getAttribute('tabindex');
-    },
-    set tabIndex(value){
-        this.setAttribute('tabindex',value);
-    },*/
+      return this.getAttribute('tabindex');
+      },
+      set tabIndex(value){
+      this.setAttribute('tabindex',value);
+      },*/
     get target(){
         return this.getAttribute('target');
     },
     set target(value){
         this.setAttribute('target',value);
     },
-    toString: function(){
-        return '[object HTMLAreaElement]';
+
+    /**
+     * toString like <a>, returns the href
+     */
+    toString: function() {
+        return this.href;
     }
 });
 
-			

@@ -1,11 +1,11 @@
 
 /**
- * @class  Text  
- *      The Text interface represents the textual content (termed 
+ * @class  Text
+ *      The Text interface represents the textual content (termed
  *      character data in XML) of an Element or Attr.
- *      If there is no markup inside an element's content, the text is 
- *      contained in a single object implementing the Text interface that 
- *      is the only child of the element. If there is markup, it is 
+ *      If there is no markup inside an element's content, the text is
+ *      contained in a single object implementing the Text interface that
+ *      is the only child of the element. If there is markup, it is
  *      parsed into a list of elements and Text nodes that form the
  *      list of children of the element.
  * @extends CharacterData
@@ -15,18 +15,18 @@ Text = function(ownerDocument) {
     CharacterData.apply(this, arguments);
     this.nodeName  = "#text";
 };
-Text.prototype = new CharacterData;
+Text.prototype = new CharacterData();
 __extend__(Text.prototype,{
     get localName(){
         return null;
     },
     // Breaks this Text node into two Text nodes at the specified offset,
-    // keeping both in the tree as siblings. This node then only contains 
-    // all the content up to the offset point.  And a new Text node, which 
-    // is inserted as the next sibling of this node, contains all the 
+    // keeping both in the tree as siblings. This node then only contains
+    // all the content up to the offset point.  And a new Text node, which
+    // is inserted as the next sibling of this node, contains all the
     // content at and after the offset point.
     splitText : function(offset) {
-        var data, 
+        var data,
             inode;
         // test for exceptions
         if (__ownerDocument__(this).implementation.errorChecking) {
@@ -62,6 +62,6 @@ __extend__(Text.prototype,{
         return __escapeXML__(""+ this.nodeValue);
     },
     toString: function(){
-        return "[object Text]";    
+        return "[object Text]";
     }
 });

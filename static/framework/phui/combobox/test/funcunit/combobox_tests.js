@@ -4,14 +4,23 @@ module("combobox test", {
 	}
 })
 
+
+test("Test change is only called once.", function() {
+	S("#expirationBehavior .phui_combobox_select").click();
+	S(".phui_combobox_dropdown .dropdown_2").visible();
+	S(".phui_combobox_dropdown .dropdown_2").click();
+	
+	S("#populateItems").click(function(){
+		equals("1", S('.change_count').text())
+	});
+});
+
 test("Test clicking combobox view in text mode and verify the dropdown opens.", function() {
 	S("#expirationBehavior .phui_combobox_select").exists(function(){
 		var val = S("#expirationBehavior input[type=text]").val();
 		ok(/archive/.test(val), "Item #1 (archive) is selected by default.");	
 		var hiddenVal = S("#expirationBehavior input[type=hidden]").val();
 		ok(/0/.test(hiddenVal), "Hidden input has the correct value.");
-		
-		
 	});
 
 	
@@ -68,5 +77,12 @@ test("Test that change event is triggered when the combobox value is changed.", 
 	
 });
 
-
-
+/* Combobox API Test Cases */
+test("Testing populateItems.", function() {
+	S("#ajax_demo").exists();
+	S("#populateItems").exists();
+	S("#populateItems").click();
+	S("#ajax_demo_output").exists( function() {
+		ok(/dir0,/.test(S("#ajax_demo_output").text()), "populateItems successfully called.");
+	} );
+});

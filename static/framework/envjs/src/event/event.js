@@ -18,7 +18,7 @@ Event = function(options){
     this._stopPropogation = false;
 };
 
-__extend__(Event.prototype,{       
+__extend__(Event.prototype,{
     get bubbles(){return this._bubbles;},
     get cancelable(){return this._cancelable;},
     get currentTarget(){return this._currentTarget;},

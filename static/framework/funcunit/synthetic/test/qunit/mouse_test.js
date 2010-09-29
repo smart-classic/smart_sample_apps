@@ -1,5 +1,5 @@
 module("funcunit/synthetic/mouse",{
-	setup : function(){
+	setup: function() {
 		st.g("qunit-test-area").innerHTML = "<form id='outer'><div id='inner'>"+
 			"<input type='checkbox' id='checkbox'/>"+
 			"<input type='radio' name='radio' value='radio1' id='radio1'/>"+
@@ -196,6 +196,23 @@ test("Click away causes Blur", function(){
 			equals(change, 1 , "Change called once");
 		})
 	
+});
+
+test("Click HTML causes blur", function(){
+	st.g("qunit-test-area").innerHTML = "<input id='one'/><input id='two'/>";
+	
+	var change = 0;
+	st.binder("one","change",function(){
+		change++;
+	} );
+	
+	stop();
+	Syn.click({},"one")
+		.key("a")
+		.click({},document.documentElement, function(){
+			start()
+			equals(change, 1 , "Change called once");
+		})
 })
 test("Right Click", function(){
 	st.g("qunit-test-area").innerHTML = "<div id='one'>right click me</div>";

@@ -15,7 +15,7 @@ MouseEvent = function(options) {
     this._button= null;
     this._relatedTarget= null;
 };
-MouseEvent.prototype = new UIEvent;
+MouseEvent.prototype = new UIEvent();
 __extend__(MouseEvent.prototype,{
     get screenX(){
         return this._screenX;

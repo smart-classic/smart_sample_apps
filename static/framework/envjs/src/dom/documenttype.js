@@ -8,7 +8,7 @@ DocumentType = function(ownerDocument) {
     this.systemId = null;
     this.publicId = null;
 };
-DocumentType.prototype = new Node;
+DocumentType.prototype = new Node();
 __extend__({
     get name(){
         return this.nodeName;

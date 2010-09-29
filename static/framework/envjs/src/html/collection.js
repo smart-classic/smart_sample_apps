@@ -1,42 +1,40 @@
-
 /*
-* HTMLCollection - DOM Level 2
-* Implementation Provided by Steven Wood
-*/
-HTMLCollection = function(nodelist, type){
+ * HTMLCollection
+ *
+ * HTML5 -- 2.7.2.1 HTMLCollection
+ * http://dev.w3.org/html5/spec/Overview.html#htmlcollection
+ * http://dev.w3.org/html5/spec/Overview.html#collections
+ */
+HTMLCollection = function(nodelist, type) {
 
     __setArray__(this, []);
+    var n;
     for (var i=0; i<nodelist.length; i++) {
         this[i] = nodelist[i];
-        if('name' in nodelist[i]){
-            this[nodelist[i].name] = nodelist[i];
+        n = nodelist[i].name;
+        if (n) {
+            this[n] = nodelist[i];
+        }
+        n = nodelist[i].id;
+        if (n) {
+            this[n] = nodelist[i];
         }
     }
-    
+
     this.length = nodelist.length;
-
-}
-
-HTMLCollection.prototype = {
-        
-    item : function (idx) {
-        var ret = null;
-        if ((idx >= 0) && (idx < this.length)) { 
-            ret = this[idx];                    
-        }
-    
-        return ret;   
-    },
-    
-    namedItem : function (name) {
-        if(name in this){
-            return this[name];
-        }
-        return null;
-    }
 };
 
+HTMLCollection.prototype = {
 
+    item: function (idx) {
+        return  ((idx >= 0) && (idx < this.length)) ? this[idx] : null;
+    },
 
+    namedItem: function (name) {
+        return this[name] || null;
+    },
 
-	
+    toString: function() {
+        return '[object HTMLCollection]';
+    }
+};

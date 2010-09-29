@@ -1,13 +1,56 @@
+/**
+ * @add steal static
+ */
 steal({path: "less_engine.js",ignore: true},function(){
 	
-	
+	/**
+	 * @function less
+	 * @plugin steal/less
+	 * <p>Lets you build and compile [http://lesscss.org/ Less ] css styles.</p>
+	 * <p>Less is an extension of CSS that adds variables, mixins, and quite a bit more.
+	 * You can write css like:
+	 * </p>
+	 * @codestart css
+	 * @@brand_color: #4D926F;
+	 * #header {
+	 *   color: @@brand_color;
+	 * }
+	 * h2 {
+	 *   color: @@brand_color;
+	 * }
+	 * @codeend
+	 * <h2>Use</h2>
+	 * <p>First, create a less file like:</p>
+	 * @codestart css
+	 * @@my_color red
+	 * 
+	 * body { color:  @@my_color; }
+	 * @codeend
+	 * <p>Save this in a file named <code>red.less</code>.</p>
+	 * <p>Next, you have to require the <code>steal/less</code> plugin and then use
+	 * steal.less to load your less style:
+	 * </p>
+	 * @codestart
+	 * steal.plugins('steal/less').then(function(){
+	 *   steal.less('red');
+	 * });
+	 * @codeend
+	 *
+	 * Loads Less files relative to the current file.  It's expected that all
+	 * Less files end with <code>less</code>.
+	 * @param {String+} path the relative path from the current file to the less file.
+	 * You can pass multiple paths.
+	 * @return {steal} returns the steal function.
+	 */
 	steal.less = function(){
 		//if production, 
 		if(steal.options.env == 'production'){
 			if(steal.loadedProductionCSS){
 				return steal;
 			}else{
-				steal.createLink( steal.options.production.replace(".js",".css")  );
+				var productionCssPath = steal.File( steal.options.production.replace(".js", ".css") ).normalize();
+				productionCssPath = steal.root.join( productionCssPath );
+				steal.createLink( productionCssPath );
 				loadedProductionCSS = true;
 				return steal;
 			}
@@ -59,7 +102,7 @@ steal({path: "less_engine.js",ignore: true},function(){
 	}
 	//@steal-remove-start
 	steal.build.types['text/less'] =  function(script, loadScriptText){
-		var text =  loadScriptText(script.href, script),
+		var text =   script.text || loadScriptText(script.href, script),
 			styles;
 		new (less.Parser)({
 	                optimization: less.optimization,

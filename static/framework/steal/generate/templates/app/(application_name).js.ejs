@@ -1,12 +1,10 @@
-steal.plugins(	'jquery/controller','jquery/controller/subscribe',
-				'jquery/view/ejs',
-				'jquery/model/store',
-				'jquery/model',
-				'jquery/dom/fixture',
-				'jquery/dom/form_params')
-	.css('<%= application_name %>')
-	.resources()
-	.models()
-	.controllers()
-	.views()
+steal( 'resources/example' )				// Loads 'resources/example.js'
+	.css( '<%= application_name %>' )			// Loads '<%= application_name %>.css'
+	.plugins(
+		'steal/less',
+		'steal/coffee' )					// Loads 'steal/less/less.js' and 'steal/coffee/coffee.js'
+	.then(function(){						// Adds a function to be called back once all prior files have been loaded and run 
+		steal.coffee('resources/example')	// Loads 'resources/example.coffee'
+			.less('resources/example');		// Loads 'resources/example.less'
+	});
 	 

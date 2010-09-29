@@ -1,8 +1,8 @@
 
 /**
- * @class  DOMImplementation - 
+ * @class  DOMImplementation -
  *      provides a number of methods for performing operations
- *      that are independent of any particular instance of the 
+ *      that are independent of any particular instance of the
  *      document object model.
  *
  * @author Jon van Noort (jon@webarcana.com.au)
@@ -40,14 +40,14 @@ __extend__(DOMImplementation.prototype,{
         return doctype;
     },
     createDocument : function(nsuri, qname, doctype){
-        
+
         var doc = null, documentElement;
-            
+
         doc = new Document(this, null);
         if(doctype){
             doc.doctype = doctype;
         }
-        
+
         if(nsuri && qname){
             documentElement = doc.createElementNS(nsuri, qname);
         }else if(qname){
@@ -157,7 +157,7 @@ __extend__(DOMImplementation.prototype,{
 function __isNamespaceDeclaration__(attributeName) {
   // test if attributeName is 'xmlns'
   return (attributeName.indexOf('xmlns') > -1);
-};
+}
 
 /**
  * @method DOMImplementation._isIdDeclaration - Return true, if attributeName is an id declaration
@@ -168,7 +168,7 @@ function __isNamespaceDeclaration__(attributeName) {
 function __isIdDeclaration__(attributeName) {
   // test if attributeName is 'id' (case insensitive)
   return attributeName?(attributeName.toLowerCase() == 'id'):false;
-};
+}
 
 /**
  * @method DOMImplementation._isValidName - Return true,
@@ -180,7 +180,7 @@ function __isIdDeclaration__(attributeName) {
 function __isValidName__(name) {
   // test if name contains only valid characters
   return name.match(re_validName);
-};
+}
 var re_validName = /^[a-zA-Z_:][a-zA-Z0-9\.\-_:]*$/;
 
 /**
@@ -195,7 +195,7 @@ var re_validName = /^[a-zA-Z_:][a-zA-Z0-9\.\-_:]*$/;
 function __isValidString__(name) {
   // test that string does not contains invalid characters
   return (name.search(re_invalidStringChars) < 0);
-};
+}
 var re_invalidStringChars = /\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x0B|\x0C|\x0E|\x0F|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1A|\x1B|\x1C|\x1D|\x1E|\x1F|\x7F/;
 
 /**
@@ -211,7 +211,7 @@ var re_invalidStringChars = /\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x0B|\x0C|\
 function __parseNSName__(qualifiedName) {
     var resultNSName = {};
     // unless the qname has a namespaceName, the prefix is the entire String
-    resultNSName.prefix          = qualifiedName;  
+    resultNSName.prefix          = qualifiedName;
     resultNSName.namespaceName   = "";
     // split on ':'
     var delimPos = qualifiedName.indexOf(':');
@@ -222,7 +222,7 @@ function __parseNSName__(qualifiedName) {
         resultNSName.namespaceName = qualifiedName.substring(delimPos +1, qualifiedName.length);
     }
     return resultNSName;
-};
+}
 
 /**
  * @method DOMImplementation._parseQName - parse the qualified name
@@ -233,7 +233,7 @@ function __parseNSName__(qualifiedName) {
 function __parseQName__(qualifiedName) {
     var resultQName = {};
     // unless the qname has a prefix, the local name is the entire String
-    resultQName.localName = qualifiedName; 
+    resultQName.localName = qualifiedName;
     resultQName.prefix    = "";
     // split on ':'
     var delimPos = qualifiedName.indexOf(':');
@@ -244,11 +244,4 @@ function __parseQName__(qualifiedName) {
         resultQName.localName = qualifiedName.substring(delimPos +1, qualifiedName.length);
     }
     return resultQName;
-};
-
-    
-// Local Variables:
-// espresso-indent-level:4
-// c-basic-offset:4
-// tab-width:4
-// End:
+}

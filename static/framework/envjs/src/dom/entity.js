@@ -3,8 +3,8 @@
  * @author envjs team
  */
 
-Entity = function() { 
-    throw new Error("Entity Not Implemented" ); 
+Entity = function() {
+    throw new Error("Entity Not Implemented" );
 };
 
 Entity.constants = {

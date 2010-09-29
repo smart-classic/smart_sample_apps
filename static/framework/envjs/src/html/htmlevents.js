@@ -1,9 +1,21 @@
 
 /**
  * @name HTMLEvents
- * @w3c:domlevel 2 
+ * @w3c:domlevel 2
  * @uri http://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html
  */
+
+var __eval__ = function(script, node){
+    if (!script == "" && Envjs.scriptTypes['']){
+        // don't assemble environment if no script...
+        try{
+            Envjs.eval(node.ownerDocument.ownerWindow, script, script+" ("+node+")");
+        }catch(e){
+            console.log('error evaluating %s', e);
+        }
+    }
+};
+
 var HTMLEvents= function(){};
 HTMLEvents.prototype = {
     onload: function(event){
@@ -46,20 +58,6 @@ HTMLEvents.prototype = {
     }
 };
 
-
-var __eval__ = function(script, node){
-    if (!script == ""){
-        // don't assemble environment if no script...
-        try{
-            eval(script);
-        }catch(e){
-            console.log('error evaluating %s', e);
-        }               
-    }
-};
-
-
-
 //HTMLDocument, HTMLFramesetElement, HTMLObjectElement
 var  __load__ = function(element){
     var event = new Event('HTMLEvents');
@@ -84,7 +82,7 @@ var  __abort__ = function(element){
     return event;
 };
 
-//HTMLFramesetElement, HTMLObjectElement, HTMLBodyElement 
+//HTMLFramesetElement, HTMLObjectElement, HTMLBodyElement
 var  __error__ = function(element){
     var event = new Event('HTMLEvents');
     event.initEvent("error", true, false);

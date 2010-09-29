@@ -38,7 +38,7 @@ h5 {
     background-color: white;
     margin-right: 0px;
 }
-#doc {
+#doc, #disqus_thread {
     padding: 20px;
 }
 #left {
@@ -58,7 +58,7 @@ h5 {
     outline: none;
 }
 
-#results .highlight {
+#results .highlight, #page_results .highlight {
     background-color: #3C3D32;
 }
 
@@ -87,7 +87,7 @@ h5 {
     height: 18px;
     background-image: url('images/close.png');
 }
-#left #results a.picked {
+#left #results a.picked, #left #page_results a.picked {
 	background-color: #9C6854 /*#434538*/;
 }
 #doc .type {
@@ -130,7 +130,10 @@ pre {
     color: /*#9C6854*/ #96A84A;
 }
 
-            
+.param {
+	text-indent: -48px;
+	margin-left: 48px;
+}        
             
 .param label, .return label {
     color:#808080;

@@ -1,17 +1,20 @@
 
-/** 
- * HTMLParamElement - DOM Level 2
+/**
+ * HTMLParamElement
+ *
+ * HTML5: 4.8.6 The param element
+ * http://dev.w3.org/html5/spec/Overview.html#the-param-element
  */
 HTMLParamElement = function(ownerDocument) {
     HTMLElement.apply(this, arguments);
 };
-HTMLParamElement.prototype = new HTMLElement;
+HTMLParamElement.prototype = new HTMLElement();
 __extend__(HTMLParamElement.prototype, {
-    get name(){
-        return this.getAttribute('name');
+    get name() {
+        return this.getAttribute('name') || '';
     },
-    set name(value){
-        this.setAttribute('name',value);
+    set name(value) {
+        this.setAttribute('name', value);
     },
     get type(){
         return this.getAttribute('type');
@@ -31,6 +34,8 @@ __extend__(HTMLParamElement.prototype, {
     set valueType(value){
         this.setAttribute('valuetype',value);
     },
+    toString: function() {
+        return '[object HTMLParamElement]';
+    }
 });
 
-		

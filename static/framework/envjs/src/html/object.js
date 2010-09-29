@@ -1,11 +1,13 @@
 
 /**
  * HTMLObjectElement - DOM Level 2
+ * HTML5: 4.8.5 The object element
+ * http://dev.w3.org/html5/spec/Overview.html#the-object-element
  */
 HTMLObjectElement = function(ownerDocument) {
     HTMLElement.apply(this, arguments);
 };
-HTMLObjectElement.prototype = new HTMLElement;
+HTMLObjectElement.prototype = new HTMLElement();
 __extend__(HTMLObjectElement.prototype, {
     get code(){
         return this.getAttribute('code');
@@ -56,11 +58,11 @@ __extend__(HTMLObjectElement.prototype, {
         this.setAttribute('standby',value);
     },
     /*get tabIndex(){
-        return this.getAttribute('tabindex');
-    },
-    set tabIndex(value){
-        this.setAttribute('tabindex',value);
-    },*/
+      return this.getAttribute('tabindex');
+      },
+      set tabIndex(value){
+      this.setAttribute('tabindex',value);
+      },*/
     get type(){
         return this.getAttribute('type');
     },
@@ -81,7 +83,12 @@ __extend__(HTMLObjectElement.prototype, {
     },
     get contentDocument(){
         return this.ownerDocument;
+    },
+    toString: function() {
+        return '[object HTMLObjectElement]';
     }
 });
 
-			
+// Named Element Support
+HTMLElement.registerSetAttribute('OBJECT', 'name',
+                                 __updateFormForNamedElement__);

@@ -10,10 +10,10 @@
  * 
  * requires Envjs.wait, Envjs.sleep, Envjs.WAIT_INTERVAL
  */
-
-//Make these global to avoid namespace pollution in tests.
-/*var setTimeout,
+var setTimeout,
     clearTimeout,
     setInterval,
-    clearInterval;*/
+    clearInterval;
+
+
     

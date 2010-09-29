@@ -128,7 +128,7 @@ Continue to [creating Creating Cookbook].
 navigate to your public directory. Run:
 </p>
 @codestart text
-> js steal\generate\app cookbook
+> js jquery\generate\app cookbook
 @codeend
 
 <p>This script creates an application folder and files. 
@@ -173,7 +173,7 @@ Here's what each file does:</p>
 If you need to make another page for your app you can generate it:
 </p>
 @codestart text
-> js steal\generate\page index cookbook
+> js jquery\generate\page index cookbook
 Generating ... index.html
 @codeend
 Or you add the steal script to an existing page 
@@ -190,7 +190,7 @@ For our cookbook app, we want to make recipes.
 To scaffold recipes run the following in a console:
 </p>
 @codestart text
-> js steal\generate\scaffold Cookbook.Models.Recipe
+> js jquery\generate\scaffold Cookbook.Models.Recipe
 @codeend
 <p>Here's what each part does:</p>
 <DL>
@@ -235,14 +235,14 @@ the most common MVC components and a few other useful plugins.
 @codestart
 steal
   .plugins("funcunit/qunit", "cookbook")
-  .then("cookbook_test",<u><b>"recipe_controller_test"</b></u>)
+  .then("cookbook_test",<u><b>"recipe_test"</b></u>)
 @codeend
 <div class='whisper'>P.S. qunit.js describes what scripts are loaded into qunit.html</div>
 <p><b>cookbook/test/funcunit/funcunit.js</b></p>
 @codestart
 steal
  .plugins("funcunit")
- .then("cookbook_test",<u><b>"recipe_test"</b></u>)
+ .then("cookbook_test",<u><b>"recipe_controller_test"</b></u>)
 @codeend
 <div class='whisper'>P.S. funcunit.js describes what scripts are loaded into funcunit.html</div>
 <h2>Run Cookbook</h2>
@@ -652,7 +652,7 @@ Server side compression makes it simple to concatenate and compress your code in
 <p>To compress your application, run the following command from a console:
 </p>
 @codestart
-C:\workspace\Cookbook>js cookbook\scripts\compress.js
+C:\workspace\Cookbook>js cookbook\scripts\build.js
    steal/steal.js
    ...
    ignore ../steal/dev/dev.js

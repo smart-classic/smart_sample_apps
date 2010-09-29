@@ -1,6 +1,6 @@
 /**
  * @author envjs team
- * @class XMLSerializer 
+ * @class XMLSerializer
  */
 
 XMLSerializer = function() {};

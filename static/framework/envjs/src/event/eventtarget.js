@@ -1,18 +1,18 @@
 
 /**
- * @name EventTarget 
- * @w3c:domlevel 2 
+ * @name EventTarget
+ * @w3c:domlevel 2
  * @uri -//TODO: paste dom event level 2 w3c spc uri here
  */
 EventTarget = function(){};
-EventTarget.prototype.addEventListener = function(type, fn, phase){ 
-    __addEventListener__(this, type, fn, phase); 
+EventTarget.prototype.addEventListener = function(type, fn, phase){
+    __addEventListener__(this, type, fn, phase);
 };
-EventTarget.prototype.removeEventListener = function(type, fn){ 
-    __removeEventListener__(this, type, fn); 
+EventTarget.prototype.removeEventListener = function(type, fn){
+    __removeEventListener__(this, type, fn);
 };
-EventTarget.prototype.dispatchEvent = function(event, bubbles){ 
-    __dispatchEvent__(this, event, bubbles); 
+EventTarget.prototype.dispatchEvent = function(event, bubbles){
+    __dispatchEvent__(this, event, bubbles);
 };
 
 __extend__(Node.prototype, EventTarget.prototype);
@@ -38,16 +38,15 @@ function __addEventListener__(target, type, fn, phase){
         };
     }
     if ( $events[target.uuid][type][phase].indexOf( fn ) < 0 ){
-        //console.log('adding event listener %s %s %s %s %s %s', target, target.uuid, type, phase, 
+        //console.log('adding event listener %s %s %s %s %s %s', target, target.uuid, type, phase,
         //    $events[target.uuid][type][phase].length, $events[target.uuid][type][phase].indexOf( fn ));
         //console.log('creating listener for function: %s %s %s', target, target.uuid, phase);
         $events[target.uuid][type][phase].push( fn );
-        //console.log('adding event listener %s %s %s %s %s %s', target, target.uuid, type, phase, 
+        //console.log('adding event listener %s %s %s %s %s %s', target, target.uuid, type, phase,
         //    $events[target.uuid][type][phase].length, $events[target.uuid][type][phase].indexOf( fn ));
     }
     //console.log('registered event listeners %s', $events.length);
-};
-
+}
 
 function __removeEventListener__(target, type, fn, phase){
 
@@ -62,7 +61,6 @@ function __removeEventListener__(target, type, fn, phase){
         //used to clean all event listeners for a given node
         //console.log('cleaning all event listeners for node %s %s',target, target.uuid);
         delete $events[target.uuid];
-        $events[target.uuid] = null;
         return;
     }else if ( !$events[target.uuid][type] ){
         return;
@@ -72,35 +70,37 @@ function __removeEventListener__(target, type, fn, phase){
         //console.log('removing event listener %s %s %s %s', target, type, phase, fn);
         return f != fn;
     });
-};
+}
 
 var __eventuuid__ = 0;
 function __dispatchEvent__(target, event, bubbles){
 
-    if(!event.uuid)
+    if (!event.uuid) {
         event.uuid = __eventuuid__++;
+    }
     //the window scope defines the $event object, for IE(^^^) compatibility;
     //$event = event;
     //console.log('dispatching event %s', event.uuid);
-    if (bubbles == undefined || bubbles == null)
+    if (bubbles === undefined || bubbles === null) {
         bubbles = true;
+    }
 
     if (!event.target) {
         event.target = target;
     }
-    
+
     //console.log('dispatching? %s %s %s', target, event.type, bubbles);
     if ( event.type && (target.nodeType || target === window )) {
 
         //console.log('dispatching event %s %s %s', target, event.type, bubbles);
         __captureEvent__(target, event);
-        
+
         event.eventPhase = Event.AT_TARGET;
         if ( target.uuid && $events[target.uuid] && $events[target.uuid][event.type] ) {
             event.currentTarget = target;
-            //console.log('dispatching %s %s %s %s', target, event.type, 
+            //console.log('dispatching %s %s %s %s', target, event.type,
             //  $events[target.uuid][event.type]['CAPTURING'].length);
-            $events[target.uuid][event.type]['CAPTURING'].forEach(function(fn){
+            $events[target.uuid][event.type].CAPTURING.forEach(function(fn){
                 //console.log('AT_TARGET (CAPTURING) event %s', fn);
                 var returnValue = fn( event );
                 //console.log('AT_TARGET (CAPTURING) return value %s', returnValue);
@@ -108,9 +108,9 @@ function __dispatchEvent__(target, event, bubbles){
                     event.stopPropagation();
                 }
             });
-            //console.log('dispatching %s %s %s %s', target, event.type, 
+            //console.log('dispatching %s %s %s %s', target, event.type,
             //  $events[target.uuid][event.type]['BUBBLING'].length);
-            $events[target.uuid][event.type]['BUBBLING'].forEach(function(fn){
+            $events[target.uuid][event.type].BUBBLING.forEach(function(fn){
                 //console.log('AT_TARGET (BUBBLING) event %s', fn);
                 var returnValue = fn( event );
                 //console.log('AT_TARGET (BUBBLING) return value %s', returnValue);
@@ -141,12 +141,12 @@ function __dispatchEvent__(target, event, bubbles){
     }else{
         throw new EventException(EventException.UNSPECIFIED_EVENT_TYPE_ERR);
     }
-};
+}
 
 function __captureEvent__(target, event){
     var ancestorStack = [],
         parent = target.parentNode;
-        
+
     event.eventPhase = Event.CAPTURING_PHASE;
     while(parent){
         if(parent.uuid && $events[parent.uuid] && $events[parent.uuid][event.type]){
@@ -157,7 +157,7 @@ function __captureEvent__(target, event){
     while(ancestorStack.length && !event.cancelled){
         event.currentTarget = ancestorStack.pop();
         if($events[event.currentTarget.uuid] && $events[event.currentTarget.uuid][event.type]){
-            $events[event.currentTarget.uuid][event.type]['CAPTURING'].forEach(function(fn){
+            $events[event.currentTarget.uuid][event.type].CAPTURING.forEach(function(fn){
                 var returnValue = fn( event );
                 if(returnValue === false){
                     event.stopPropagation();
@@ -165,7 +165,7 @@ function __captureEvent__(target, event){
             });
         }
     }
-};
+}
 
 function __bubbleEvent__(target, event){
     var parent = target.parentNode;
@@ -173,7 +173,7 @@ function __bubbleEvent__(target, event){
     while(parent){
         if(parent.uuid && $events[parent.uuid] && $events[parent.uuid][event.type] ){
             event.currentTarget = parent;
-            $events[event.currentTarget.uuid][event.type]['BUBBLING'].forEach(function(fn){
+            $events[event.currentTarget.uuid][event.type].BUBBLING.forEach(function(fn){
                 var returnValue = fn( event );
                 if(returnValue === false){
                     event.stopPropagation();
@@ -182,5 +182,5 @@ function __bubbleEvent__(target, event){
         }
         parent = parent.parentNode;
     }
-};
+}
 

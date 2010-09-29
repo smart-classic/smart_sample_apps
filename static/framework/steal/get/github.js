@@ -14,7 +14,7 @@ steal.get.github = function(url, where, options , level){
 
 steal.get.github.prototype = new steal.get.getter();
 steal.extend(steal.get.github.prototype,{
-	init : function(url, where, options, level){
+	init: function( url, where, options, level ) {
 
 		steal.get.getter.prototype.init.apply(this,arguments);
 		this.orig_cwd = this.cwd;
@@ -28,15 +28,15 @@ steal.extend(steal.get.github.prototype,{
 		this.project = split[4];
 		this.branch = options.tag || "master";
 	},
-	get_latest_commit: function(){
-	    // http://github.com/api/v2/json/commits/list/pinhook/steal/master
+	get_latest_commit: function() {
+	    // http://github.com/api/v2/json/commits/list/jupiterjs/steal/master
 		var latestCommitUrl = "http://github.com/api/v2/json/commits/list/"+this.username+"/"+this.project+"/"+this.branch,
 			commitsText = readUrl(latestCommitUrl)
 		eval("var c = "+commitsText);
 		var commitId = c.commits[0].tree
 		return commitId;
 	},
-	ls_top: function(link){
+	ls_top: function( link ) {
 		var id = this.get_latest_commit(),
 			browseUrl = "http://github.com/api/v2/json/tree/show/"+this.username+"/"+this.project+"/"+id,
 			browseText = readUrl(browseUrl)
@@ -55,7 +55,7 @@ steal.extend(steal.get.github.prototype,{
 		return urls;
 	},
 	//links are relative
-	links: function(base_url, contents){
+	links: function( base_url, contents ) {
 	    var links = [], 
 			newLink,
 			anchors = contents.match(/href\s*=\s*\"*[^\">]*/ig),
@@ -69,10 +69,10 @@ steal.extend(steal.get.github.prototype,{
 	    })
 	    return links;
 	},
-	download: function(link){
+	download: function( link ) {
 		// get real download link
-		// http://github.com/pinhook/funcunit/qunit/qunit.js  -->
-		// http://github.com/pinhook/steal/raw/master/test/qunit/qunit.js
+		// http://github.com/jupiterjs/funcunit/qunit/qunit.js  -->
+		// http://github.com/jupiterjs/steal/raw/master/test/qunit/qunit.js
 		var rawUrl = this.url+"raw/"+this.branch+"/"+link.replace(this.url, ""),
 			bn = new steal.File(link).basename(),
 			f = new steal.File(this.cwd).join(bn);
@@ -109,7 +109,7 @@ steal.extend(steal.get.github.prototype,{
 	    }
 	    tmp.remove();
 	},
-	fetch_dir: function(url){
+	fetch_dir: function( url ) {
 		this.level++;
 	    if (this.level > 0) {
 			this.push_d(new steal.File(url).basename());
@@ -118,8 +118,8 @@ steal.extend(steal.get.github.prototype,{
 			this.fetch(this.ls_top())
 		} else{
 			// change to the raw url
-			// http://github.com/pinhook/javascriptmvc/
-			// http://github.com/pinhook/javascriptmvc/tree/master/controller?raw=true
+			// http://github.com/jupiterjs/javascriptmvc/
+			// http://github.com/jupiterjs/javascriptmvc/tree/master/controller?raw=true
 			var rawUrl = this.url+"tree/"+this.branch+"/"+url.replace(this.url, "")+"?raw=true",
 				contents = readUrl(rawUrl)
 	        this.fetch(this.links(url, contents));

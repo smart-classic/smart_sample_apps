@@ -23,6 +23,8 @@ var extend = function(d, s) { for (var p in s) d[p] = s[p]; return d;},
 	unbind,
 	key = /keypress|keyup|keydown/,
 	page = /load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll/,
+	//this is maintained so we can click on html and blur the active element
+	activeElement,
 
 /**
  * @constructor Syn
@@ -172,7 +174,7 @@ extend(Syn,{
 	 * @param {Object} element
 	 * @param {Object} callback
 	 */
-	init : function(type, options, element, callback){
+	init: function( type, options, element, callback ) {
 		var args = Syn.args(options,element, callback),
 			self = this;
 		this.queue = [];
@@ -189,7 +191,7 @@ extend(Syn,{
 			args.callback && args.callback.call(this, args.element, this.result);
 		}
 	},
-	jquery : function(el, fast){
+	jquery: function( el, fast ) {
 		if(window.FuncUnit && window.FuncUnit.jquery){
 			return window.FuncUnit.jquery
 		} if (el){
@@ -204,7 +206,7 @@ extend(Syn,{
 	 * @hide
 	 * @return {Object}
 	 */
-	args : function(){
+	args: function() {
 		var res = {}
 		for(var i=0; i < arguments.length; i++){
 			if(typeof arguments[i] == 'function'){
@@ -222,7 +224,7 @@ extend(Syn,{
 		}
 		return res;
 	},
-	click : function( options, element, callback){
+	click: function( options, element, callback ) {
 		Syn('click!',options,element, callback);
 	},
 	/**
@@ -233,13 +235,15 @@ extend(Syn,{
 	 * and the next event will happen on that element.
 	 */
 	defaults : {
-		focus : function(){
+		focus: function() {
 			if(!Syn.support.focusChanges){
 				var element = this,
 					nodeName = element.nodeName.toLowerCase();
 				Syn.data(element,"syntheticvalue", element.value)
 				
-				if(nodeName == "input"){
+				//TODO, this should be textarea too
+				//and this might be for only text style inputs ... hmmmmm ....
+				if(nodeName == "input" && nodeName == "textarea"){ 
 					
 					bind(element, "blur", function(){
 						
@@ -253,7 +257,7 @@ extend(Syn,{
 				}
 			}
 		},
-		submit : function(){
+		submit: function() {
 			Syn.onParents(this, function(el){
 				if( el.nodeName.toLowerCase() == 'form'){
 					el.submit()
@@ -262,7 +266,7 @@ extend(Syn,{
 			});
 		}
 	},
-	changeOnBlur : function(element, prop, value){
+	changeOnBlur: function( element, prop, value ) {
 		
 		bind(element, "blur", function(){		
 			if( value !=  element[prop]){
@@ -278,7 +282,7 @@ extend(Syn,{
 	 * @param {Object} el
 	 * @param {Object} type
 	 */
-	closest : function(el, type){
+	closest: function( el, type ) {
 		while(el && el.nodeName.toLowerCase() != type.toLowerCase()){
 			el = el.parentNode
 		}
@@ -291,7 +295,7 @@ extend(Syn,{
 	 * @param {Object} key
 	 * @param {Object} value
 	 */
-	data : function(el, key, value){
+	data: function( el, key, value ) {
 		var d;
 		if(!el[expando]){
 			el[expando] = id++;
@@ -313,7 +317,7 @@ extend(Syn,{
 	 * @param {Object} el
 	 * @param {Object} func
 	 */
-	onParents : function(el, func){
+	onParents: function( el, func ) {
 		var res;
 		while(el && res !== false){
 			res = func(el)
@@ -328,7 +332,7 @@ extend(Syn,{
 	 * @hide
 	 * @param {Object} elem
 	 */
-	isFocusable : function(elem){
+	isFocusable: function( elem ) {
 		var attributeNode;
 		return ( this.focusable.test(elem.nodeName) || (
 			(attributeNode = elem.getAttributeNode( "tabIndex" )) && attributeNode.specified ) )
@@ -339,7 +343,7 @@ extend(Syn,{
 	 * @hide
 	 * @param {Object} elem
 	 */
-	isVisible : function(elem){
+	isVisible: function( elem ) {
 		return (elem.offsetWidth && elem.offsetHeight) || (elem.clientWidth && elem.clientHeight)
 	},
 	/**
@@ -347,7 +351,7 @@ extend(Syn,{
 	 * @hide
 	 * @param {Object} elem
 	 */
-	tabIndex : function(elem){
+	tabIndex: function( elem ) {
 		var attributeNode = elem.getAttributeNode( "tabIndex" );
 		return attributeNode && attributeNode.specified && ( parseInt( elem.getAttribute('tabIndex') ) || 0 )
 	},
@@ -357,7 +361,7 @@ extend(Syn,{
 	//some generic helpers
 	helpers : {
 		createEventObject : createEventObject,
-		createBasicStandardEvent : function(type, defaults){
+		createBasicStandardEvent: function( type, defaults ) {
 			var event;
 			try {
 				event = document.createEvent("Events");
@@ -369,7 +373,7 @@ extend(Syn,{
 			}
 			return event;
 		},
-		inArray : function(item, array){
+		inArray: function( item, array ) {
 			for(var i =0; i < array.length; i++){
 				if(array[i] == item){
 					return i;
@@ -377,11 +381,11 @@ extend(Syn,{
 			}
 			return -1;
 		},
-		getWindow : function(element){
+		getWindow: function( element ) {
 			return element.ownerDocument.defaultView || element.ownerDocument.parentWindow
 		},
 		extend:  extend,
-		scrollOffset : function(win){
+		scrollOffset: function( win ) {
 			var doc = win.document.documentElement,
 				body = win.document.body;
 			return {
@@ -390,7 +394,7 @@ extend(Syn,{
 			}
 				
 		},
-		addOffset : function(options, el){
+		addOffset: function( options, el ) {
 			var jq = Syn.jquery(el)
 			if(typeof options == 'object' &&
 			   options.clientX === undefined &&
@@ -466,11 +470,19 @@ extend(Syn,{
 		},
 		// unique events
 		focus : {
-			event : function(type, options, element){
+			event: function( type, options, element ) {
 				Syn.onParents(element, function(el){
 					if( Syn.isFocusable(el)){
+						
 						if(el.nodeName.toLowerCase() != 'html'){
 							el.focus();
+							activeElement = el;
+						}else if(activeElement){
+							// TODO: The HTML element isn't focasable in IE, but it is
+							// in FF.  We should detect this and do a true focus instead
+							// of just a blur
+							activeElement.blur();
+							activeElement = null;
 						}
 						return false
 					}
@@ -508,7 +520,8 @@ extend(Syn,{
 		mouseDownUpClicks : false,
 		tabKeyTabs : false,
 		keypressOnAnchorClicks : false,
-		optionClickBubbles : false
+		optionClickBubbles : false,
+		ready : 0
 	},
 	/**
 	 * Creates a synthetic event and dispatches it on the element.  
@@ -519,7 +532,7 @@ extend(Syn,{
 	 * @param {HTMLElement} element
 	 * @return {Boolean} true if default events were run, false if otherwise.
 	 */
-	trigger : function(type, options, element){
+	trigger: function( type, options, element ) {
 		options || (options = {});
 		
 		var create = Syn.create,
@@ -536,7 +549,7 @@ extend(Syn,{
 				dispatchEl = element;
 		
 		//any setup code?
-		Syn.support.ready && setup && setup(type, options, element);
+		Syn.support.ready == 2 && setup && setup(type, options, element);
 		
 		
 		//get kind
@@ -561,7 +574,7 @@ extend(Syn,{
 		}
 		
 		//run default behavior
-		ret && Syn.support.ready 
+		ret && Syn.support.ready == 2
 			&& Syn.defaults[type] 
 			&& Syn.defaults[type].call(element, options, autoPrevent);
 		return ret;
@@ -608,7 +621,7 @@ extend(Syn.init.prototype,{
 	 * @param {String|HTMLElement} [element] A element's id or an element.  If undefined, defaults to the previous element.
 	 * @param {Function} [callback] A function to callback after the action has run, but before any future chained actions are run.
 	 */
-	then : function(type, options, element, callback){
+	then: function( type, options, element, callback ) {
 		if(Syn.autoDelay){
 			this.delay();
 		}
@@ -640,7 +653,7 @@ extend(Syn.init.prototype,{
 	 * @param {Number} [timeout]
 	 * @param {Function} [callback]
 	 */
-	delay : function(timeout, callback){
+	delay: function( timeout, callback ) {
 		if(typeof timeout == 'function'){
 			callback = timeout;
 			timeout = null;
@@ -655,7 +668,7 @@ extend(Syn.init.prototype,{
 		})
 		return this;
 	},
-	done : function( defaults, el){
+	done: function( defaults, el ) {
 		el && (this.element = el);;
 		if(this.queue.length){
 			this.queue.pop().call(this, this.element, defaults);
@@ -689,7 +702,7 @@ extend(Syn.init.prototype,{
 	 * @param {HTMLElement} element
 	 * @param {Function} callback
 	 */
-	"_click" : function(options, element, callback, force){
+	"_click" : function( options, element, callback, force ) {
 		Syn.helpers.addOffset(options, element);
 		Syn.trigger("mousedown", options, element);
 		
@@ -717,7 +730,7 @@ extend(Syn.init.prototype,{
 	 * @param {Object} element
 	 * @param {Object} callback
 	 */
-	"_rightClick" : function(options, element, callback){
+	"_rightClick" : function( options, element, callback ) {
 		Syn.helpers.addOffset(options, element);
 		var mouseopts =  extend( extend({},Syn.mouse.browser.right.mouseup ), options)
 		
@@ -746,7 +759,7 @@ extend(Syn.init.prototype,{
 	 * @param {HTMLElement} element
 	 * @param {Function} callback
 	 */
-	"_dblclick" : function(options, element, callback){
+	"_dblclick" : function( options, element, callback ) {
 		Syn.helpers.addOffset(options, element);
 		var self = this;
 		this._click(options, element, function(){

@@ -4,7 +4,21 @@
  *
  *  the hierarchy of related HTML elements and their members is as follows:
  *
+ * Condensed Version
  *
+ *  HTMLInputCommon
+ *     * legent (no value attr)
+ *     * fieldset (no value attr)
+ *     * label (no value attr)
+ *     * option (custom value)
+ *  HTMLTypeValueInputs (extends InputCommon)
+ *     * select  (custom value)
+ *     * button (just sets value)
+ *  HTMLInputAreaCommon (extends TypeValueIput)
+ *     * input  (custom)
+ *     * textarea (just sets value)
+ *
+ * -----------------------
  *    HTMLInputCommon:  common to all elements
  *       .form
  *
@@ -33,7 +47,7 @@
  *       .selected
  *       .text
  *       .value   // unique implementation, not duplicated
- *
+ *       .form    // unique implementation, not duplicated
  *  ****
  *
  *    HTMLTypeValueInputs:  common to remaining elements
@@ -124,7 +138,7 @@ var inputElements_status = {};
 
 var inputElements_onchange = {
     onchange: function(event){
-        __eval__(this.getAttribute('onchange')||'', this)
+        __eval__(this.getAttribute('onchange')||'', this);
     }
 };
 
@@ -160,11 +174,13 @@ var inputElements_focusEvents = {
 var HTMLInputCommon = function(ownerDocument) {
     HTMLElement.apply(this, arguments);
 };
-HTMLInputCommon.prototype = new HTMLElement;
+HTMLInputCommon.prototype = new HTMLElement();
 __extend__(HTMLInputCommon.prototype, {
-    get form(){
+    get form() {
+        // parent can be null if element is outside of a form
+        // or not yet added to the document
         var parent = this.parentNode;
-        while(parent.nodeName.toLowerCase() != 'form'){
+        while (parent && parent.nodeName.toLowerCase() !== 'form') {
             parent = parent.parentNode;
         }
         return parent;
@@ -182,7 +198,7 @@ __extend__(HTMLInputCommon.prototype, {
         this.setAttribute('access', value);
     },
     get disabled(){
-        return (this.getAttribute('disabled')=='disabled');
+        return (this.getAttribute('disabled') === 'disabled');
     },
     set disabled(value){
         this.setAttribute('disabled', (value ? 'disabled' :''));
@@ -196,54 +212,22 @@ __extend__(HTMLInputCommon.prototype, {
 * HTMLTypeValueInputs - convenience class, not DOM
 */
 var HTMLTypeValueInputs = function(ownerDocument) {
-    
+
     HTMLInputCommon.apply(this, arguments);
 
     this._oldValue = "";
 };
-HTMLTypeValueInputs.prototype = new HTMLInputCommon;
+HTMLTypeValueInputs.prototype = new HTMLInputCommon();
 __extend__(HTMLTypeValueInputs.prototype, inputElements_size);
 __extend__(HTMLTypeValueInputs.prototype, inputElements_status);
 __extend__(HTMLTypeValueInputs.prototype, inputElements_dataProperties);
 __extend__(HTMLTypeValueInputs.prototype, {
-    get defaultValue(){
-        return this.getAttribute('defaultValue');
-    },
-    set defaultValue(value){
-        this.setAttribute('defaultValue', value);
-    },
     get name(){
         return this.getAttribute('name')||'';
     },
     set name(value){
         this.setAttribute('name',value);
     },
-    get type(){
-        return this.getAttribute('type');
-    },
-    set type(type){
-        return this.setAttribute('type', type);
-    },
-    get value(){
-        return this.getAttribute('value')||'';
-    },
-    set value(newValue){
-        this.setAttribute('value',newValue);
-    },
-    setAttribute: function(name, value){
-        //console.log('setting defaultValue (NS)');
-        if(name == 'value' && !this.defaultValue){
-            this.defaultValue = value;
-        }
-        HTMLElement.prototype.setAttribute.apply(this, [name, value]);
-    },
-    setAttributeNS: function(uri, name, value){
-        //console.log('setting defaultValue (NS)');
-        if(name == 'value' && !this.defaultValue){
-            this.defaultValue = value;
-        }
-        HTMLElement.prototype.setAttributeNS.apply(this, [uri, name, value]);
-    }
 });
 
 
@@ -253,7 +237,7 @@ __extend__(HTMLTypeValueInputs.prototype, {
 var HTMLInputAreaCommon = function(ownerDocument) {
     HTMLTypeValueInputs.apply(this, arguments);
 };
-HTMLInputAreaCommon.prototype = new HTMLTypeValueInputs;
+HTMLInputAreaCommon.prototype = new HTMLTypeValueInputs();
 __extend__(HTMLInputAreaCommon.prototype, inputElements_focusEvents);
 __extend__(HTMLInputAreaCommon.prototype, inputElements_onchange);
 __extend__(HTMLInputAreaCommon.prototype, {
@@ -269,3 +253,11 @@ __extend__(HTMLInputAreaCommon.prototype, {
     }
 });
 
+
+var __updateFormForNamedElement__ = function(node, value) {
+    if (node.form) {
+        // to check for ID or NAME attribute too
+        // not, then nothing to do
+        node.form._updateElements();
+    }
+};

@@ -1,12 +1,12 @@
 /*
-*	timer.js
+*       timer.js
 *   implementation provided by Steven Parkes
 */
 
 //private
 var $timers = [],
     EVENT_LOOP_RUNNING = false;
-    
+
 $timers.lock = function(fn){
     Envjs.sync(fn)();
 };
@@ -17,9 +17,9 @@ var Timer = function(fn, interval){
     this.interval = interval;
     this.at = Date.now() + interval;
     // allows for calling wait() from callbacks
-    this.running = false; 
+    this.running = false;
 };
-  
+
 Timer.prototype.start = function(){};
 Timer.prototype.stop = function(){};
 
@@ -29,15 +29,15 @@ Timer.normalize = function(time) {
     if ( isNaN(time) || time < 0 ) {
         time = 0;
     }
-    
+
     if ( EVENT_LOOP_RUNNING && time < Timer.MIN_TIME ) {
         time = Timer.MIN_TIME;
     }
     return time;
 };
-// html5 says this should be at least 4, but the parser is using 
+// html5 says this should be at least 4, but the parser is using
 // a setTimeout for the SAX stuff which messes up the world
-Timer.MIN_TIME = /* 4 */ 0; 
+Timer.MIN_TIME = /* 4 */ 0;
 
 /**
  * @function setTimeout
@@ -53,7 +53,8 @@ setTimeout = function(fn, time){
         if (typeof fn == 'string') {
             tfn = function() {
                 try {
-                    eval(fn);
+                    // eval in global scope
+                    eval(fn, null);
                 } catch (e) {
                     console.log('timer error %s %s', fn, e);
                 } finally {
@@ -90,10 +91,10 @@ setInterval = function(fn, time){
         time = 10;
     }
     if (typeof fn == 'string') {
-        var fnstr = fn; 
-        fn = function() { 
+        var fnstr = fn;
+        fn = function() {
             eval(fnstr);
-        }; 
+        };
     }
     var num;
     $timers.lock(function(){
@@ -117,15 +118,15 @@ clearInterval = clearTimeout = function(num){
             delete $timers[num];
         }
     });
-};	
+};
 
-// wait === null/undefined: execute any timers as they fire, 
+// wait === null/undefined: execute any timers as they fire,
 //  waiting until there are none left
-// wait(n) (n > 0): execute any timers as they fire until there 
-//  are none left waiting at least n ms but no more, even if there 
+// wait(n) (n > 0): execute any timers as they fire until there
+//  are none left waiting at least n ms but no more, even if there
 //  are future events/current threads
 // wait(0): execute any immediately runnable timers and return
-// wait(-n): keep sleeping until the next event is more than n ms 
+// wait(-n): keep sleeping until the next event is more than n ms
 //  in the future
 //
 // TODO: make a priority queue ...
@@ -135,26 +136,31 @@ Envjs.wait = function(wait) {
     var delta_wait,
         start = Date.now(),
         was_running = EVENT_LOOP_RUNNING;
-    
+
     if (wait < 0) {
         delta_wait = -wait;
         wait = 0;
     }
-    EVENT_LOOP_RUNNING = true; 
+    EVENT_LOOP_RUNNING = true;
     if (wait !== 0 && wait !== null && wait !== undefined){
         wait += Date.now();
     }
-    
+
     var earliest,
         timer,
         sleep,
         index,
         goal,
         now,
-        nextfn;
-        
+        nextfn,
+		commandline;
+
     for (;;) {
-        //console.log('timer loop');
+        /*console.log('timer loop');
+		try{
+		commandline = Envjs.shell.next(' ');
+		}catch(e){console.log(e);}
+	    console.log('commandline %s', commandline);*/
         earliest = sleep = goal = now = nextfn = null;
         $timers.lock(function(){
             for(index in $timers){
@@ -171,10 +177,11 @@ Envjs.wait = function(wait) {
         });
         //next sleep time
         sleep = earliest && earliest.at - Date.now();
+		/*console.log('timer loop earliest %s sleep %s', earliest, sleep);*/
         if ( earliest && sleep <= 0 ) {
             nextfn = earliest.fn;
             try {
-                //console.log('running stack %s', nextfn.toString().substring(0,64));
+                /*console.log('running stack %s', nextfn.toString().substring(0,64));*/
                 earliest.running = true;
                 nextfn();
             } catch (e) {
@@ -196,7 +203,7 @@ Envjs.wait = function(wait) {
         if ( !earliest ) {
             // no events in the queue (but maybe XHR will bring in events, so ...
             if ( !wait || wait < Date.now() ) {
-                // Loop ends if there are no events and a wait hasn't been 
+                // Loop ends if there are no events and a wait hasn't been
                 // requested or has expired
                 break;
             }
@@ -204,11 +211,11 @@ Envjs.wait = function(wait) {
         } else {
             // there are events in the queue, but they aren't firable now
             /*if ( delta_wait && sleep <= delta_wait ) {
-                //TODO: why waste a check on a tight 
+                //TODO: why waste a check on a tight
                 // loop if it just falls through?
             // if they will happen within the next delta, fall through to sleep
             } else */if ( wait === 0 || ( wait > 0 && wait < Date.now () ) ) {
-                // loop ends even if there are events but the user 
+                // loop ends even if there are events but the user
                 // specifcally asked not to wait too long
                 break;
             }
@@ -222,7 +229,7 @@ Envjs.wait = function(wait) {
         }
         //console.log('sleeping %s', sleep);
         Envjs.sleep(sleep);
-        
+
     }
     EVENT_LOOP_RUNNING = was_running;
 };

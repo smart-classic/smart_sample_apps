@@ -10,10 +10,10 @@ KeyboardEvent = function(options) {
     this._altKey = false;
     this._metaKey = false;
 };
-KeyboardEvent.prototype = new UIEvent;
+KeyboardEvent.prototype = new UIEvent();
 
 __extend__(KeyboardEvent.prototype,{
-        
+
     get ctrlKey(){
         return this._ctrlKey;
     },
@@ -35,7 +35,7 @@ __extend__(KeyboardEvent.prototype,{
     getModifiersState: function(keyIdentifier){
 
     },
-    initMouseEvent: function(type, bubbles, cancelable, windowObject, 
+    initMouseEvent: function(type, bubbles, cancelable, windowObject,
             keyIdentifier, keyLocation, modifiersList, repeat){
         this.initUIEvent(type, bubbles, cancelable, windowObject, 0);
         this._keyIdentifier = keyIdentifier;

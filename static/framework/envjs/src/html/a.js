@@ -1,87 +1,98 @@
 
 /**
  * HTMLAnchorElement - DOM Level 2
+ *
+ * HTML5: 4.6.1 The a element
+ * http://dev.w3.org/html5/spec/Overview.html#the-a-element
  */
 HTMLAnchorElement = function(ownerDocument) {
     HTMLElement.apply(this, arguments);
 };
-HTMLAnchorElement.prototype = new HTMLElement;
+HTMLAnchorElement.prototype = new HTMLElement();
 __extend__(HTMLAnchorElement.prototype, {
-	get accessKey() { 
-	    return this.getAttribute("accesskey")||''; 
+    get accessKey() {
+        return this.getAttribute("accesskey")||'';
     },
-	set accessKey(val) { 
-	    return this.setAttribute("accesskey",val); 
+    set accessKey(val) {
+        return this.setAttribute("accesskey",val);
     },
-	get charset() { 
-	    return this.getAttribute("charset")||''; 
+    get charset() {
+        return this.getAttribute("charset")||'';
     },
-	set charset(val) { 
-	    return this.setAttribute("charset",val); 
+    set charset(val) {
+        return this.setAttribute("charset",val);
     },
-	get coords() { 
-	    return this.getAttribute("coords")||''; 
+    get coords() {
+        return this.getAttribute("coords")||'';
     },
-	set coords(val) { 
-	    return this.setAttribute("coords",val);
+    set coords(val) {
+        return this.setAttribute("coords",val);
     },
-	get href() { 
-        var location = this.ownerDocument.location+'';
-	    return (location?location.substring(0, location.lastIndexOf('/')):'')+
-            (this.getAttribute("href")||'');
+    get href() {
+        var link = this.getAttribute('href');
+        if (!link) {
+            return '';
+        }
+        return Envjs.uri(link, this.ownerDocument.location.toString());
     },
-	set href(val) { 
-	    return this.setAttribute("href",val);
+    set href(val) {
+        return this.setAttribute("href", val);
     },
-	get hreflang() { 
-	    return this.getAttribute("hreflang")||'';
+    get hreflang() {
+        return this.getAttribute("hreflang")||'';
     },
-	set hreflang(val) { 
-	    this.setAttribute("hreflang",val);
+    set hreflang(val) {
+        this.setAttribute("hreflang",val);
     },
-	get name() { 
-	    return this.getAttribute("name")||'';
+    get name() {
+        return this.getAttribute("name")||'';
     },
-	set name(val) { 
-	    this.setAttribute("name",val);
+    set name(val) {
+        this.setAttribute("name",val);
     },
-	get rel() { 
-	    return this.getAttribute("rel")||''; 
+    get rel() {
+        return this.getAttribute("rel")||'';
     },
-	set rel(val) { 
-	    return this.setAttribute("rel", val); 
+    set rel(val) {
+        return this.setAttribute("rel", val);
     },
-	get rev() { 
-	    return this.getAttribute("rev")||'';
+    get rev() {
+        return this.getAttribute("rev")||'';
     },
-	set rev(val) { 
-	    return this.setAttribute("rev",val);
+    set rev(val) {
+        return this.setAttribute("rev",val);
     },
-	get shape() { 
-	    return this.getAttribute("shape")||'';
+    get shape() {
+        return this.getAttribute("shape")||'';
     },
-	set shape(val) { 
-	    return this.setAttribute("shape",val);
+    set shape(val) {
+        return this.setAttribute("shape",val);
     },
-	get target() { 
-	    return this.getAttribute("target")||'';
+    get target() {
+        return this.getAttribute("target")||'';
     },
-	set target(val) { 
-	    return this.setAttribute("target",val);
+    set target(val) {
+        return this.setAttribute("target",val);
     },
-	get type() { 
-	    return this.getAttribute("type")||'';
+    get type() {
+        return this.getAttribute("type")||'';
     },
-	set type(val) { 
-	    return this.setAttribute("type",val);
+    set type(val) {
+        return this.setAttribute("type",val);
     },
-	blur:function(){
-	    __blur__(this);
+    blur: function() {
+        __blur__(this);
     },
-	focus:function(){
-	    __focus__(this);
+    focus: function() {
+        __focus__(this);
     },
-    toString: function(){
-        return '[object HTMLAnchorElement]';
+	click: function(){
+		__click__(this);
+	},
+    /**
+     * Unlike other elements, toString returns the href
+     */
+    toString: function() {
+        return this.href;
     }
 });

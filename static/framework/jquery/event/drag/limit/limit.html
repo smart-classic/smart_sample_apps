@@ -44,7 +44,7 @@
                 compress='false'>   
         </script>
 		<script type='text/javascript'>
-			$("#ondoc .handle").live("dragstart", function(ev, drag){
+			$("#ondoc .handle").live("draginit", function(ev, drag){
 				drag.limit($("#ondoc"))
 			})
 			$("#ondoc .handle").live("dragmove", function(ev, drag){

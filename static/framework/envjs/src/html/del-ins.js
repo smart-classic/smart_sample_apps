@@ -1,11 +1,12 @@
 
-/* 
-* HTMLModElement - DOM Level 2
-*/
+/*
+ * HTMLModElement - DOM Level 2
+ * http://dev.w3.org/html5/spec/Overview.html#htmlmodelement
+ */
 HTMLModElement = function(ownerDocument) {
     HTMLElement.apply(this, arguments);
 };
-HTMLModElement.prototype = new HTMLElement;
+HTMLModElement.prototype = new HTMLElement();
 __extend__(HTMLModElement.prototype, {
     get cite(){
         return this.getAttribute('cite');
@@ -18,5 +19,8 @@ __extend__(HTMLModElement.prototype, {
     },
     set dateTime(value){
         this.setAttribute('datetime', value);
+    },
+    toString: function() {
+        return '[object HTMLModElement]';
     }
 });

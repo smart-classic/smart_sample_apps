@@ -1,9 +1,9 @@
- 
+
 /**
- * @class  ProcessingInstruction - 
- *      The ProcessingInstruction interface represents a 
- *      "processing instruction", used in XML as a way to 
- *      keep processor-specific information in the text of 
+ * @class  ProcessingInstruction -
+ *      The ProcessingInstruction interface represents a
+ *      "processing instruction", used in XML as a way to
+ *      keep processor-specific information in the text of
  *      the document
  * @extends Node
  * @author Jon van Noort (jon@webarcana.com.au)
@@ -12,7 +12,7 @@
 ProcessingInstruction = function(ownerDocument) {
     Node.apply(this, arguments);
 };
-ProcessingInstruction.prototype = new Node;
+ProcessingInstruction.prototype = new Node();
 __extend__(ProcessingInstruction.prototype, {
     get data(){
         return this.nodeValue;

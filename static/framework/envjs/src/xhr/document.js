@@ -13,12 +13,11 @@ __extend__(Document.prototype,{
         }
     },
     get location(){
-        return new Location(this.documentURI, this);
+        return this.ownerWindow.location;
     },
     set location(url){
         //very important or you will go into an infinite
         //loop when creating a xml document
-        if(url)
-            this.location.replace(url);
+        this.ownerWindow.location = url;
     }
 });

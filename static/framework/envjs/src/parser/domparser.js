@@ -22,7 +22,7 @@ XMLParser.parseDocument = function(xmlstring, xmldoc, mimetype){
         parent,
         importedNode,
         tmpNode;
-        
+
     if(mimetype && mimetype == 'text/xml'){
         //console.log('mimetype: text/xml');
         tmpdoc.baseURI = 'http://envjs.com/xml';
@@ -31,25 +31,21 @@ XMLParser.parseDocument = function(xmlstring, xmldoc, mimetype){
                 +xmlstring+
             '</envjs_1234567890>'+
         '</body></html>';
-        Envjs.parseHtmlDocument(xmlstring, tmpdoc, false, null, null);  
+        Envjs.parseHtmlDocument(xmlstring, tmpdoc, false, null, null);
         parent = tmpdoc.getElementsByTagName('envjs_1234567890')[0];
     }else{
-        Envjs.parseHtmlDocument(xmlstring, tmpdoc, false, null, null);  
+        Envjs.parseHtmlDocument(xmlstring, tmpdoc, false, null, null);
         parent = tmpdoc.documentElement;
     }
-    
+
     while(xmldoc.firstChild != null){
-        tmpNode = xmldoc.removeChild( xmldoc.firstChild );
-        delete tmpNode;
+        xmldoc.removeChild( xmldoc.firstChild );
     }
     while(parent.firstChild != null){
         tmpNode  = parent.removeChild( parent.firstChild );
         importedNode = xmldoc.importNode( tmpNode, true);
         xmldoc.appendChild( importedNode );
-        delete tmpNode;
     }
-    delete tmpdoc,
-           xmlstring;
     return xmldoc;
 };
 
@@ -59,8 +55,9 @@ var __fragmentCache__ = {length:0},
 HTMLParser.parseDocument = function(htmlstring, htmldoc){
     //console.log('HTMLParser.parseDocument %s', htmldoc.async);
     htmldoc.parsing = true;
-    Envjs.parseHtmlDocument(htmlstring, htmldoc, htmldoc.async, null, null);  
-    //Envjs.wait(-1);
+    Envjs.parseHtmlDocument(htmlstring, htmldoc, htmldoc.async, null, null);
+    //Envjs.wait();
+    //console.log('Finished HTMLParser.parseDocument %s', htmldoc.async);
     return htmldoc;
 };
 HTMLParser.parseFragment = function(htmlstring, element){
@@ -80,6 +77,16 @@ HTMLParser.parseFragment = function(htmlstring, element){
     }else{
         //console.log('parsing html fragment \n%s', htmlstring);
         tmpdoc = new HTMLDocument(new DOMImplementation());
+
+
+        // Need some indicator that this document isn't THE document
+        // to fire off img.src change events and other items.
+        // Otherwise, what happens is the tmpdoc fires and img.src
+        // event, then when it's all imported to the original document
+        // it happens again.
+
+        tmpdoc.fragment = true;
+
         //preserves leading white space
         docstring = '<html><head></head><body>'+
             '<envjs_1234567890 xmlns="envjs_1234567890">'
@@ -96,31 +103,28 @@ HTMLParser.parseFragment = function(htmlstring, element){
             tmpdoc.cached = false;
         }
     }
-    
+
     //parent is envjs_1234567890 element
     parent = tmpdoc.body.childNodes[0];
     while(element.firstChild != null){
         //zap the elements children so we can import
-        tmpNode = element.removeChild( element.firstChild );
-        delete tmpNode;
+        element.removeChild( element.firstChild );
     }
+
     if(tmpdoc.cached){
         length = parent.childNodes.length;
         for(i=0;i<length;i++){
             importedNode = element.importNode( parent.childNodes[i], true );
-            element.appendChild( importedNode );  
+            element.appendChild( importedNode );
         }
     }else{
         while(parent.firstChild != null){
             tmpNode  = parent.removeChild( parent.firstChild );
             importedNode = element.importNode( tmpNode, true);
             element.appendChild( importedNode );
-            delete tmpNode;
         }
-        delete tmpdoc;
-        delete htmlstring;
     }
-    
+
     // console.log('finished fragment: %s', element.outerHTML);
     return element;
 };

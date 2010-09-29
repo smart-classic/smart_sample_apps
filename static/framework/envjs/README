@@ -16,14 +16,15 @@ http://groups.google.com/group/envjs
 Lighthouse (Bug Tracking):
 http://envjs.lighthouseapp.com/
 
-Build Status:
-http://runcoderun.com/thatcher/env-js
-
 Original blog post:
 http://ejohn.org/projects/bringing-the-browser-to-the-server/
 
 Rhino (Java-based JavaScript engine)
 http://www.mozilla.org/rhino/
+
+= Guides and Apis =
+http://www.envjs.com/doc/guides
+http://www.envjs.com/doc/apis
 
 Getting the code:
 
@@ -83,12 +84,12 @@ Getting the code:
    
 == contributing tests with patches ==
     
-    Each module has a spec in env-js/test/spec.  Most tests will run whether you 
+    Each module has a spec in env-js/specs.  Most tests will run whether you
     load them in the file:, http:, or https:, though once you get to xhr.js 
     the tests will fail for the 'file:' protocol in firefox because of 
     permissions.  To run xhr.js and window.js specs, copy settings.js to 
-    local_settings.js and run a local server to satisfy those urls included in
-    the spec.js;
+    local_settings.js, update it, and run a local server to satisfy
+    those urls included in the spec.js;
     
     
 == platforms ==
@@ -98,51 +99,53 @@ Getting the code:
  or as a github plugin.
     
 Installing:
+0) common usage - all you need is env.rhino.js and rhino js.jar
+     java -jar js.jar -opt -1 myscript.js
+
 1) Include the proper env.js file for your platform.
      load('env.rhino.js'); //if in a Rhino script
 
 2) Tell env.js to load an HTML file from your file system that it should model:
-     Envjs("some/file.html");
-       or
+     
      var someWindow = window.open("some/file.html");
        or
      window.location = "some/file.html";
 
    Optionally you can turn on/off settings by passing an options object:
-     Envjs("some/file.html", {log: function(msg){ console.debug(msg) }});
+     Envjs({
+        scriptTypes: {
+            "": true,
+            "text/javascript": true
+        }
+    });
 
-3) Optionally trigger "document ready" events in one of these ways:
 
-4) Start processing of window(s)' event queue:
-     Envjs.wait();
 
 All together, the steps could be:
 
    a) simplest method:
      load('env.rhino.js');
-     Envjs("some/file.html");
-     Envjs.wait();
+     window.location = "some/file.html";
 
    b) jQuery ready method:
      load('env.rhino.js');
-     load('jquery-1.3.2.js');
-     Envjs("some/file.html");
+     load('jquery.js');
+     window.location = "some/file.html";
      load('some-code-that-sets-up-jquery-onready-behaviors.js')
      jQuery.ready();
-     Envjs.wait();
 
    c) Other JavaScript frameworks have their own methods of setup, but the general pattern is:
      // step 1: load env.js
      // optionally: load your framework(s)
      // step 2: tell env.js the base DOM to model
-     // optionally: run any setup code for your framework(s0
+     // optionally: run any setup code for your framework
      // step 3: tell the framework that the document is loaded
-     // step 4: Envjs.wait();
 
-Note that env.js is currently limited to loading a single HTML page
-from the original window.  If you are going to load multiple pages in
-succession into the same window, load the first into a new window
-object using window.open().
+Note:
+    The window object can be re-used, for example when crawling
+    
+    window.location = "http://www.envjs.com/";
+    window.location = "http://www.envjs.com/news";
 
 Testing jQuery Compatibility:
 * run ./bin/test-jquery.sh #runs 1.4.1 by default
@@ -159,7 +162,7 @@ Testing jQuery Compatibility:
     organize the code into more independent areas, provide behavior driven testing
     with tests that run on firefox for each module and it's dependencies.
     
-    Java command line:
+    Java command line in 1.1:
 
     env.rhino.js can be run either with a "generic" version of the Rhino
     library (js.jar), or with the repackaged/extended version of Rhino

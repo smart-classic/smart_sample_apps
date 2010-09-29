@@ -5,5 +5,5 @@
  * @copyright 2008-2010
  * @license MIT
  */
-
-})();
+//CLOSURE_END
+}());

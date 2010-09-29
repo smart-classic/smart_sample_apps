@@ -1,32 +1,52 @@
 
-__extend__(HTMLDocument.prototype,{
 
-    open : function(){ 
-        //console.log('opening doc for write.'); 
-        this._open = true;  
-        this._writebuffer = [];
+__extend__(HTMLDocument.prototype, {
+
+    open : function() {
+        //console.log('opening doc for write.');
+        if (! this._writebuffer) {
+            this._writebuffer = [];
+        }
     },
-    close : function(){
-        //console.log('closing doc.'); 
-        if(this._open){
-            HTMLParser.parseDocument(this._writebuffer.join('\n'), this);
-            this._open = false;
+    close : function() {
+		var text;
+        //console.log('closing doc.');
+        if (this._writebuffer) {
+			text = this._writebuffer.join('');
+            //HTMLParser.parseDocument(this._writebuffer.join(''), this);
+			Envjs.exchangeHTMLDocument(this, text, this.location);
             this._writebuffer = null;
             //console.log('finished writing doc.');
         }
     },
-    write: function(htmlstring){ 
-        //console.log('writing doc.'); 
-        if(this._open)
-            this._writebuffer = [htmlstring];
+
+    /**
+     * http://dev.w3.org/html5/spec/Overview.html#document.write
+     */
+    write: function(htmlstring) {
+        //console.log('writing doc.');
+        this.open();
+        this._writebuffer.push(htmlstring);
     },
-    writeln: function(htmlstring){ 
-        if(this.open)
-            this._writebuffer.push(htmlstring); 
+
+    /**
+     * http://dev.w3.org/html5/spec/Overview.html#dom-document-writeln
+     */
+    writeln: function(htmlstring) {
+        this.open();
+        this._writebuffer.push(htmlstring + '\n');
     }
-    
 });
 
+/**
+ * elementPopped is called by the parser in two cases
+ *
+ * - an 'tag' is * complete (all children process and end tag, real or
+ *   implied is * processed)
+ * - a replaceElement happens (this happens by making placeholder
+ *   nodes and then the real one is swapped in.
+ *
+ */
 var __elementPopped__ = function(ns, name, node){
     //console.log('popped html element %s %s %s', ns, name, node);
     var doc = node.ownerDocument,
@@ -44,16 +64,17 @@ var __elementPopped__ = function(ns, name, node){
                 case '[object HTMLDocument]':
                     switch(node.namespaceURI){
                         case "http://n.validator.nu/placeholder/":
-                            //console.log('got script during parsing %s', node.textContent);
+                            //console.log('got holder script during parsing %s', node.textContent);
                             break;
                         case null:
                         case "":
                         case "http://www.w3.org/1999/xhtml":
                             switch(name.toLowerCase()){
                                 case 'script':
+		                            //console.log('got actual script during parsing %s', node.textContent);
                                     try{
                                         okay = Envjs.loadLocalScript(node, null);
-                                        // console.log('loaded script? %s %s', node.uuid, okay);
+                                        //console.log('loaded script? %s %s', node.src, okay);
                                         // only fire event if we actually had something to load
                                         if (node.src && node.src.length > 0){
                                             event = doc.createEvent('HTMLEvents');
@@ -66,6 +87,7 @@ var __elementPopped__ = function(ns, name, node){
                                     break;
                                 case 'frame':
                                 case 'iframe':
+									//console.log('popped frame');
                                     node.contentWindow = { };
                                     node.contentDocument = new HTMLDocument(new DOMImplementation(), node.contentWindow);
                                     node.contentWindow.document = node.contentDocument;
@@ -81,7 +103,7 @@ var __elementPopped__ = function(ns, name, node){
                                     try{
                                         if (node.src && node.src.length > 0){
                                             //console.log("getting content document for (i)frame from %s", node.src);
-                                            Envjs.loadFrame(node, Envjs.uri(node.src));
+                                            Envjs.loadFrame(node, Envjs.uri(node.src, node.ownerDocument.location+''));
                                             event = node.contentDocument.createEvent('HTMLEvents');
                                             event.initEvent("load", false, false);
                                             node.dispatchEvent( event, false );
@@ -116,19 +138,16 @@ var __elementPopped__ = function(ns, name, node){
                                     }*/
                                     break;
                                 case 'link':
-                                    if (node.href && node.href.length > 0){
-                                        // don't actually load anything, so we're "done" immediately:
-                                        event = doc.createEvent('HTMLEvents');
-                                        event.initEvent("load", false, false);
-                                        node.dispatchEvent( event, false );
+                                    if (node.href) {
+                                        __loadLink__(node, node.href);
                                     }
                                     break;
+                                case 'option':
+                                    node._updateoptions();
+                                    break;
                                 case 'img':
-                                    if (node.src && node.src.length > 0){
-                                        // don't actually load anything, so we're "done" immediately:
-                                        event = doc.createEvent('HTMLEvents');
-                                        event.initEvent("load", false, false);
-                                        node.dispatchEvent( event, false );
+                                    if (node.src){
+                                        __loadImage__(node, node.src);
                                     }
                                     break;
                                 case 'html':
@@ -136,6 +155,9 @@ var __elementPopped__ = function(ns, name, node){
                                     doc.parsing = false;
                                     //DOMContentLoaded event
                                     try{
+										if (Envjs.fireLoad === false) {
+											return;
+										}
                                         if(doc.createEvent){
                                             event = doc.createEvent('Events');
                                             event.initEvent("DOMContentLoaded", false, false);
@@ -153,7 +175,7 @@ var __elementPopped__ = function(ns, name, node){
                                     }catch(e){
                                         console.log('%s', e);
                                     }
-                                    
+
                                     try{
                                         if(doc.parentWindow){
                                             event = doc.createEvent('HTMLEvents');
@@ -189,7 +211,7 @@ var __elementPopped__ = function(ns, name, node){
                             break;
                     }//switch on ns
                     break;
-                default: 
+                default:
                     console.log('element popped: %s %s', ns, name, node.ownerDocument+'');
             }//switch on doc type
         default:

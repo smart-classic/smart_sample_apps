@@ -1,6 +1,6 @@
 
 /**
- * @class  Attr 
+ * @class  Attr
  *      The Attr interface represents an attribute in an Element object
  * @extends Node
  * @param  ownerDocument : The Document object associated with this node.
@@ -12,7 +12,7 @@ Attr = function(ownerDocument) {
     //TODO: our implementation of Attr is incorrect because we don't
     //      treat the value of the attribute as a child text node.
 };
-Attr.prototype = new Node;
+Attr.prototype = new Node();
 __extend__(Attr.prototype, {
     // the name of this attribute
     get name(){
@@ -37,19 +37,20 @@ __extend__(Attr.prototype, {
         this.nodeValue = newText;
     },
     get specified(){
-        return (this!==null&&this!=undefined);
+        return (this !== null && this !== undefined);
     },
     get nodeType(){
         return Node.ATTRIBUTE_NODE;
     },
-    get xml(){
-        if(this.nodeValue)
+    get xml() {
+        if (this.nodeValue) {
             return  __escapeXML__(this.nodeValue+"");
-        else
+        } else {
             return '';
+        }
     },
-    toString : function(){
-        return "[object Attr]";
+    toString : function() {
+        return '[object Attr]';
     }
 });
 
