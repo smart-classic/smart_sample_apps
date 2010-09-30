@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blue Button Import</title>
+<STYLE TYPE="text/css" MEDIA=screen>
+<!--
+FORM {
+	margin-top: 1em;
+}
+
+#bb_paste {
+	width: 40em;
+	height: 10em;
+}
+-->
+</STYLE>
+</head>
+
+<body>
+<div id="header">
+<h1>Blue Button Import</h1>
+This app helps you import medications and problems from your <b>Medicare</b>
+or <b>Department of Veterans Affairs</b> "Blue Button" profile. To
+obtain your Blue Button profile, visit your Medicare or VA online health
+record and click the Blue Button.</div>
+<div id="home_screen">
+<form id='bb_file_form' method='POST' action='/echo_file'
+	enctype='multipart/form-data'><input type="hidden"
+	name="MAX_FILE_SIZE" value="100000" /> Upload your Blue Button
+profile: <br>
+<input type="file" id='bb_upload' name="bb_upload" /> <span
+	id='upload_status'></span></form>
+
+<form id='bb_parse_form'>Or paste text below: <br>
+<textarea id='bb_paste'></textarea> <br>
+<br>
+<input type='submit' value='Submit my Blue Button Profile' /></form>
+</div>
+
+<div id='interact'></div>
+<script type='text/javascript'
+	src='../steal/steal.js?blue_button_import,development'></script>
+</body>
+</html>

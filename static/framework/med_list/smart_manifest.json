@@ -1,0 +1,17 @@
+{
+  "name" : "Med List",
+  "description" : "Display medications in a table or timeline view",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "med-list@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "base_url" : "http://localhost:8001",
+  "activities" : {
+    "main" :              "$base_url/framework/med_list/med_list.html",
+    "view_medications" :  "$base_url/framework/med_list/med_list.html"
+  },
+	
+  "web_hooks" : { },
+
+  "icon" :  "$base_url/framework/med_list/icon.png"
+}

@@ -1,0 +1,17 @@
+{
+  "name" : "Problems",
+  "description" : "Display problems in a table view",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "problem-list@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "base_url" : "http://localhost:8001",
+  "activities" : {
+    "main" :              "$base_url/framework/problem_list/problem_list.html",
+    "view_medications" :  "$base_url/framework/problem_list/problem_list.html"
+  },
+	
+  "web_hooks" : { },
+
+  "icon" :  "$base_url/framework/problem_list/icon.png"
+}

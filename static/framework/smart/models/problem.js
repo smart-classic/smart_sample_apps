@@ -40,7 +40,8 @@ extend('Smart.Models.Problem',
 		var r = this.rdf.where("?problem rdf:type "+this.object_type);
 			
 		for (var i = 0; i < r.length; i++) {
-		    var p = new Smart.Models.Problem(r[i].problem);
+		    var p = new Smart.Models.Problem(null);//r[i].problem);
+		    p.init(r[i].problem);
 		    ret.push(p);
 		}
 		

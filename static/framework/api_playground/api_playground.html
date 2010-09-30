@@ -1,52 +1,92 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>API Playground</title>
-	<STYLE TYPE="text/css" MEDIA=screen>
-	<!--
-  	#API_Functions  { border: 1px solid grey;}
-  	#API_Functions UL {padding: 0px;}
-  	#API_Functions LI {list-style: none; margin: 0px; font-family: monospace; font-size: 0.9em; padding-bottom: .5em;}
- 	#API_Functions LI BUTTON {margin: 0px; font-family: monospace; font-size: 0.9em;}
- 	#Previous_Queries LI {cursor: pointer; }
-  	#URL_Parameters TEXTAREA { width: 500px; height: 300px;}
- 	#Response {font-size: 0.7em; border: 1px solid grey;}
- 	
- 	.url_param INPUT[type='text'] {width: 24em;}
- 	
-  	-->
-	</STYLE>
-	<link rel="stylesheet" type="text/css" href="/framework/med_list/stylesheets/jquery-ui-1.8.2.custom.css">
-	
-	
+<head>
+<title>API Playground</title>
+<STYLE TYPE="text/css" MEDIA=screen>
+<!--
+#API_Functions {
+	border: 1px solid grey;
+}
+
+#API_Functions UL {
+	padding: 0px;
+}
+
+#API_Functions LI {
+	list-style: none;
+	margin: 0px;
+	font-family: monospace;
+	font-size: 0.9em;
+	padding-bottom: .5em;
+}
+
+#API_Functions LI BUTTON {
+	margin: 0px;
+	font-family: monospace;
+	font-size: 0.9em;
+}
+
+#Previous_Queries LI {
+	cursor: pointer;
+}
+
+#URL_Parameters TEXTAREA {
+	width: 500px;
+	height: 300px;
+}
+
+#Response {
+	font-size: 0.7em;
+	border: 1px solid grey;
+}
+
+.url_param INPUT[type='text'] {
+	width: 24em;
+}
+-->
+</STYLE>
+<link rel="stylesheet" type="text/css"
+	href="/framework/med_list/stylesheets/jquery-ui-1.8.2.custom.css">
+
+
 </head>
 
-  <body>
-	<h1>SMArt API Playground</h1>
-	Welcome to the SMArt API Playground!  To get started, choose an API call from the list below.  You can use automatically-supplied values for any required parameters; just click in the boxes as they appear, and choose from the provided list.
-	<div id="API_Functions">
-	<b>API Calls</b>
-	<ul>
-	</ul>
-	</div>
-	
-	<form id='API_Call'>
-	<table id='URL_Parameters'>
-	<tr class='msg_body'><td colspan='2'>Message body<br><textarea id='Message_Body'></textarea></td></tr>
-	<tr class='msg_response'><td colspan='2'>Response<br><div id='Response'></div></td></tr>
-	</table>
-	</form>
-	
-	<br clear='all'/>
-	<ol id='Previous_Queries'>
+<body>
+<h1>SMArt API Playground</h1>
+Welcome to the SMArt API Playground! To get started, choose an API call
+from the list below. You can use automatically-supplied values for any
+required parameters; just click in the boxes as they appear, and choose
+from the provided list.
+<div id="API_Functions"><b>API Calls</b>
+<ul>
+</ul>
+</div>
+
+<form id='API_Call'>
+<table id='URL_Parameters'>
+	<tr class='msg_body'>
+		<td colspan='2'>Message body<br>
+		<textarea id='Message_Body'></textarea></td>
+	</tr>
+	<tr class='msg_response'>
+		<td colspan='2'>Response<br>
+		<div id='Response'></div>
+		</td>
+	</tr>
+</table>
+</form>
+
+<br clear='all' />
+<ol id='Previous_Queries'>
 	<b>Previous queries (click to run again):</b>
-	</ol>
-  </body> 
-  
- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script  src='framework/smart/scripts/smart-api-client.js'></script> 
-	
-	<script>
+</ol>
+</body>
+
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src='../smart/scripts/smart-api-client.js'></script>
+
+<script>
 		SMART = new SMART_CLIENT(null, window.top);
 
 		var $table =jQuery('#URL_Parameters'); 
@@ -378,5 +418,5 @@ var build_api = function() {
 		
   
   	</script>
-  
+
 </html>

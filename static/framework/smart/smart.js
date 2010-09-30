@@ -1,8 +1,10 @@
-steal.plugins('jquery/controller','jquery/controller/subscribe',
-			  'jquery/view/ejs',
-			  'jquery/model',
-			  'jquery/dom/fixture',
-	      'jquery/dom/form_params' 		)
+steal.plugins(  
+	      'jquery/controller',                    // a widget factory
+	      'jquery/controller/subscribe',  // subscribe to OpenAjax.hub
+	      'jquery/view/ejs',                              // client side templates
+	      'jquery/model',                                 // Ajax wrappers
+	      'jquery/dom/fixture',                   // simulated Ajax requests
+	      'jquery/dom/form_params')               // form data helper
 	      .then('scripts/class')
 	      .then('scripts/json2')
 	      .then('scripts/smart-api-client')

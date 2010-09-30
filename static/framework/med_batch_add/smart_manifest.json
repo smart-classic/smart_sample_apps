@@ -1,0 +1,14 @@
+{
+  "name" : "Med Adder",
+  "description" : "Add a group of medications all at once",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "med-adder@apps.smartplatforms.org",
+  "version" : ".1a",
+  "base_url" : "http://localhost:8001",
+
+  "activities" : {
+    "batch_add_medications" :     "$base_url/framework/med_batch_add/med_batch_add.html"
+  },
+	
+  "icon" :  "$base_url/framework/med_batch_add/icon.png"
+}

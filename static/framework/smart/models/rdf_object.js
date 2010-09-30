@@ -23,8 +23,8 @@ $.Model.extend('Smart.Models.RdfObject',
 
     nodeName: function() {
 	var p = this.rdf.value;
-    if (this.rdf.type === 'uri') p= "<"+p+">";
-    return p;
+	if (this.rdf.type === 'uri') p= "<"+p+">";
+	return p;
 	}
 
 });
