@@ -1,7 +1,7 @@
 /**
  * @tag controllers, home
  */
-jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
+jQuery.Controller.extend('NlpImport.Controllers.NlpImportController',
 /* @Static */
 {
 	onDocument: true
@@ -49,7 +49,7 @@ apply_nlp: function() {
     	position: 'absolute', top: '0px', left: '0px',
     	background: 'grey'});
 
-    SMART.webhook('extract_meds_from_plaintext', {q: note_text}, 
+    SMART.webhook_post('extract_meds_from_plaintext', note_text, 
 	  function(rdf) {
     	SMART.start_activity("batch_add_medications", rdf.source_xml);
     	});

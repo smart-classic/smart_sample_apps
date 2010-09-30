@@ -355,7 +355,22 @@ SMART_CLIENT.prototype.SPL_get = function(query, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.webhook = function(webhook_name, data, callback) {
+
+SMART_CLIENT.prototype.webhook_post = function(webhook_name, data, callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'POST',
+		contentType : 'application/rdf+xml',
+		url : "/webhook/"+webhook_name,
+		data : data
+		}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+};
+
+
+SMART_CLIENT.prototype.webhook_get = function(webhook_name, data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -367,6 +382,7 @@ SMART_CLIENT.prototype.webhook = function(webhook_name, data, callback) {
 	});
 };
 
+SMART_CLIENT.prototype.webhook = SMART_CLIENT.prototype.webhook_get;
 
 SMART_CLIENT.prototype.CAPABILITIES_get = function(callback) {
 	var _this = this;
