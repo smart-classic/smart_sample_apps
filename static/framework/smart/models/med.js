@@ -1,7 +1,6 @@
 /**
- * @tag models, home
- * Wraps backend med services.  Enables 
- * [Smart.Models.Med.static.findAll retrieving],
+ * @tag models, home Wraps backend med services. Enables
+ *      [Smart.Models.Med.static.findAll retrieving],
  */
 Smart.Models.RdfObject.
 extend('Smart.Models.Med',
@@ -84,7 +83,7 @@ extend('Smart.Models.Med',
 	        var med = r[i].med;
 	        med = SMART.node_name(med);
 
-			ret.push(new Smart.Models.Med({
+			ret.push(new Smart.Models.Med({params: {
 				drug: m.medlabel.value,
 				dose: m.dose? m.dose.value :  "",
 				unit: m.doseUnits? m.doseUnits.value: "",
@@ -98,7 +97,7 @@ extend('Smart.Models.Med',
 				rdf : r[i],
 				details: m,
 				nodename: med
-			}));
+			}}));
 		}
 		
 		return ret;
@@ -156,8 +155,9 @@ extend('Smart.Models.Med',
 },
 /* @Prototype */
 {	
-	init: function(params) {
-		if (params === null) return;
+	init: function() {
+		if (!this.params) return;
+		var params = this.params;
 		
 		this.drug = params.drug;
 		this.dose = params.dose;
@@ -165,7 +165,7 @@ extend('Smart.Models.Med',
 				params.unit+ " ("+
 				params.strength+" " + 
 				params.strengthUnits+ 
-				//params.form+
+				// params.form+
 				")";
 		this.route = params.route;
 		this.frequency = params.frequency||"";
@@ -295,9 +295,10 @@ extend('Smart.Models.Med',
 			if (this.start_date !== this.end_date)
 				main_event.instant = false;
 			
-			main_event.start = this.start_date ;//"2008-08-05";
+			main_event.start = this.start_date ;// "2008-08-05";
 			main_event.end = this.end_date;
-//			main_event.image = "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";		
+// main_event.image =
+// "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";
 		}		
 		
 

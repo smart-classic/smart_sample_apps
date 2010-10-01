@@ -40,8 +40,7 @@ extend('Smart.Models.Problem',
 		var r = this.rdf.where("?problem rdf:type "+this.object_type);
 			
 		for (var i = 0; i < r.length; i++) {
-		    var p = new Smart.Models.Problem(null);//r[i].problem);
-		    p.init(r[i].problem);
+		    var p = new Smart.Models.Problem({rdf: r[i].problem});
 		    ret.push(p);
 		}
 		
@@ -51,10 +50,9 @@ extend('Smart.Models.Problem',
 },
 /* @Prototype */
 {	
-	init: function(rdf) {
-		if (rdf === null) return;
-		this.rdf = rdf;
-
+	init: function() {
+		if (!this.rdf) return;
+		
 		var p = Smart.Models.Problem.rdf
 		.optional(this.nodeName() + " dcterms:title ?title")
 		.optional(this.nodeName() + " sp:notes ?notes")

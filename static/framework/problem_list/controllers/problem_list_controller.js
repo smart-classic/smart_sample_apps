@@ -26,7 +26,7 @@ jQuery.Controller.extend('ProblemList.Controllers.ProblemListController',
 		jQuery('#OnsetEntry').datepicker();
 		jQuery('#ResolutionEntry').datepicker();
 		form.submit(function() {
-			var p = new Smart.Models.Problem(null);
+			var p = new Smart.Models.Problem();
 			
 			p.cui =  form.data("problem_code");
 			p.title =  jQuery('#ProblemEntry').val();

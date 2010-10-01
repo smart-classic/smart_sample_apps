@@ -33,7 +33,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
         					action: function(l) {
 	        					var name = this.matcher(l)[1];
 	        					
-	        					var new_med = new Smart.Models.Med(null);
+	        					var new_med = new Smart.Models.Med();
 	        					new_med.drug = name;
 	        					this.parser.current = new_med;
 	        					this.parser.meds.push(new_med);
@@ -46,7 +46,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
         					matcher: function(l) {return l.match(/^Medication: (.*)/);}, 
         					action: function(l) {
 	        					var name = this.matcher(l)[1];
-	        					var new_med = new Smart.Models.Med(null);
+	        					var new_med = new Smart.Models.Med();
 	        					new_med.drug = name;
 	        					this.parser.current = new_med;
 	        					this.parser.meds.push(new_med);
@@ -149,7 +149,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
     						parser: this, 
         					matcher: function(l) {return this.parser.current === "problems" && !l.match(/^-*$/);}, 
         					action: function(l) {
-        						var p = new Smart.Models.Problem(null);
+        						var p = new Smart.Models.Problem();
         						p.title = l;
         						this.parser.problems.push(p);
         					}
@@ -160,7 +160,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
     						parser: this, 
         					matcher: function(l) {return l.match(/^Condition Name: (.*)$/);}, 
         					action: function(l) {
-        						var p = new Smart.Models.Problem(null);
+        						var p = new Smart.Models.Problem();
         						p.title = this.matcher(l)[1];
         						this.parser.problems.push(p);
         						this.parser.current = p;

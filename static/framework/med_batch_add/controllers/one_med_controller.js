@@ -8,7 +8,6 @@ jQuery.Controller.extend('MedBatchAdd.Controllers.OneMedController',
 /* @Prototype */
 {
   init: function(elt) {
-		this.element = $(elt);
 		var med = this.element.data("models").med;
 		this.med = med;
 		this.element.html(this.view('one_med', {med: med}));
