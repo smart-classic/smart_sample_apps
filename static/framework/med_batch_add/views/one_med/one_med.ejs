@@ -1,1 +1,14 @@
-<input type='checkbox' CHECKED> <%= med.drug %> (code: <%=med.cui.path%>) 
+	<td><input type='checkbox' CHECKED></td>
+	<td><input class='drug' type='text' value='<%= med.drug %>'></td>
+	<td><input class='strength' type='text' size='3'></td> 
+	<td>
+		<select class='strengthUnits'>
+			<option value=''></option>
+			<option value='mg'>mg</option>
+			<option value='mcg'>mcg</option>
+			<option value='mL'>mL</option>
+			<option value='puff'>puff</option>
+		</select>
+	</td>
+	<td><input class='instructions' size='10'></td>
+	<td>(code: <%=med.cui.path%>)</td>

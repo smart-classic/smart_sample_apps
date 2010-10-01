@@ -29,6 +29,11 @@ jQuery.Controller.extend('MedBatchAdd.Controllers.OneMedController',
 		var cb = $("INPUT[type='checkbox']", this.element);
 		cb.attr('checked', checked);
 		this.med.checked = checked;
+	},
+	update_med: function() {
+		this.med.strength = 		$('.strength', this.element).val();
+		this.med.strength_units  =  $('.strengthUnits', this.element).val();
+		this.med.instructions =     $('.instructions', this.element).val();		
 	}
 	
 	});

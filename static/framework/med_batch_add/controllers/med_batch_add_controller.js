@@ -37,6 +37,11 @@ jQuery.Controller.extend('MedBatchAdd.Controllers.MedBatchAddController',
 	 },
 	
 	save_meds: function() {
+		  	$(".one_med_review").each(function() {
+		  		$(this).controller().update_med();		  		
+		  	});
+
+		 
 		for (var i = 0; i < this.meds.length; i++) {
   		  if (this.meds[i].checked === false)
 			continue;
