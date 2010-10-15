@@ -23,3 +23,4 @@ urlpatterns = patterns('',
     (r'^webhook/extract_meds_from_plaintext$', extract_meds),
     (r'^(?P<path>.*)$', 'django.views.static.serve', {'document_root': '%s/static/'%settings.APP_HOME})
 )
+

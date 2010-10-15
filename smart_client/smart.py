@@ -5,8 +5,8 @@ Connect to the SMArt API
 import urllib, uuid
 import httplib
 from oauth import *
-from rdf_utils import *
 import time
+from rdf_utils import *
 import RDF
     
 class SmartClient(OAuthClient):
@@ -124,6 +124,12 @@ class SmartClient(OAuthClient):
         token = OAuthToken.from_string(self.access_resource(req, oauth_parameters={'oauth_verifier' : verifier}))
         self.set_token(token)
         return token
+
+    def get_notes(self, record_id):
+        result = self.get("/records/%s/notes/"%record_id)
+        notes = RDF.Model()
+        parse_rdf(result, notes)
+        return notes
 
     def get_record(self):
         result = self.get("/record_by_token/", None)

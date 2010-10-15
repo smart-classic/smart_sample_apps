@@ -93,9 +93,9 @@ def get_medication_model(g,med_uri):
                   NS['med']['drug'],
                   NS['med']['instructions'],
                   NS['med']['strength'],
-                  NS['med']['strengthUnits'],
+                  NS['med']['strengthUnit'],
                   NS['med']['dose'],
-                  NS['med']['doseUnits'],
+                  NS['med']['doseUnit'],
                   NS['med']['startDate'],
                   NS['med']['endDate'],
                   NS['rdf']['type']]
@@ -160,3 +160,5 @@ def xslt_ccr_to_rdf(source, stylesheet):
 def apply_xslt(sourceDOM, stylesheetDOM):
     style = libxslt.parseStylesheetDoc(stylesheetDOM)
     return style.applyStylesheet(sourceDOM, None).serialize()
+
+

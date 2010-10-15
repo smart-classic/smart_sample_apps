@@ -329,6 +329,57 @@ SMART_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
 	});
 };
 
+SMART_CLIENT.prototype.NOTES_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record_info.id + "/notes/",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+};
+
+SMART_CLIENT.prototype.NOTES_post = function(data, callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'POST',
+		url : "/records/" + _this.record_info.id + "/notes/",
+		contentType : 'application/rdf+xml',
+		data : data
+	}, function(contentType, data) {
+		callback(data);
+	});
+};
+
+SMART_CLIENT.prototype.NOTES_delete = function(note_uri, callback) {
+	var _this = this;
+
+	this.api_call( {
+		method : 'DELETE',
+		url : note_uri,
+		data : {}
+	}, function(contentType, data) {
+		callback(data);
+	});
+};
+
+SMART_CLIENT.prototype.NOTE_put = function(data, external_id, callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'PUT',
+		url : "/records/" + _this.record_info.id + "/notes/external_id/"
+				+ external_id,
+		contentType : 'application/rdf+xml',
+		data : data
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+};
+
+
 SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
 	var _this = this;
 	this.api_call( {

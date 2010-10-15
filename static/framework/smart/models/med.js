@@ -65,11 +65,11 @@ extend('Smart.Models.Med',
 		var r = this.rdf.where("?med rdf:type "+this.object_type)
 			 .where(" ?med dcterms:title ?medlabel")
 			 .optional(" ?med med:strength ?strength")
-			 .optional(" ?med med:strengthUnits ?strengthUnits")
+			 .optional(" ?med med:strengthUnit ?strengthUnit")
 			 .optional(" ?med med:form ?form")
 			 .optional(" ?med med:drug ?cui")
 			 .optional(" ?med med:dose ?dose")
-			 .optional(" ?med med:doseUnits ?doseUnits")
+			 .optional(" ?med med:doseUnit ?doseUnit")
 			 .optional(" ?med med:route ?route")
 			 .optional(" ?med med:instructions ?notes")
 			 .optional(" ?med med:frequency ?freq")
@@ -86,11 +86,11 @@ extend('Smart.Models.Med',
 			ret.push(new Smart.Models.Med({params: {
 				drug: m.medlabel.value,
 				dose: m.dose? m.dose.value :  "",
-				unit: m.doseUnits? m.doseUnits.value: "",
+				doseUnit: m.doseUnit? m.doseUnit.value: "",
 				frequency: m.freq? m.freq.value: "",
 				route: m.route?m.route.value: "",
 				strength: m.strength?m.strength.value: "",
-				strengthUnits:m.strengthUnits? m.strengthUnits.value: "",
+				strengthUnit:m.strengthUnit? m.strengthUnit.value: "",
 				form: m.form?m.form.value: "",
 				notes: m.notes?m.notes.value: "",
 				cui: m.cui ? m.cui.value: "",
@@ -161,12 +161,10 @@ extend('Smart.Models.Med',
 		
 		this.drug = params.drug;
 		this.dose = params.dose;
-		this.unit = !params.strength ? "" : 
-				params.unit+ " ("+
-				params.strength+" " + 
-				params.strengthUnits+ 
-				// params.form+
-				")";
+		this.doseUnit = params.doseUnit;
+		this.strength= params.strength;
+		this.strengthUnit = params.strengthUnit;
+		
 		this.route = params.route;
 		this.frequency = params.frequency||"";
 		this.instructions = params.notes || "";	

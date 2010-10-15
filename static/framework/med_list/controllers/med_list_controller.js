@@ -113,7 +113,7 @@ extend('MedList.Controllers.MedListController',
 					this.view('table',
 					{
 						data: Smart.Models.MedDetails.
-							getDetails(this.meds[this.selectedRow])
+							getDetails(this.meds[this.selectedRow-1])
 					}));
 			
 		}

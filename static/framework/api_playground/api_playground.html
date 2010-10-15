@@ -106,12 +106,20 @@ from the provided list.
 		API.fulfillment_id = [];
 		API.prescription_id = [];
 		API.problem_id = [];
+		API.note_id = [];
 		API.external_id = ['anything_you_like'];
 		API.external_med_id = ['anything_you_like'];
 		API.external_fill_id = ['anything_you_like'];
+
 		API.$calls = jQuery('#API_Functions UL');
 		API.calls = [];
 
+
+	
+/* 
+ *  Problems
+ */
+ 
 var sample_problem_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
 <rdf:RDF\n\
   xmlns:dcterms="http://purl.org/dc/terms/"\n\
@@ -158,7 +166,65 @@ API.calls.push({url: '/records/{record_id}/problems/external_id/{external_id}',
 						PUT : sample_problem_rdf
 						}
 					});
+
+	
+/* 
+ *  Notes
+ */
+ 
+ var sample_note_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
+<rdf:RDF\n\
+  xmlns:dcterms="http://purl.org/dc/terms/"\n\
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
+  xmlns:sp="http://smartplatforms.org/"\n\
+  xmlns:foaf="http://xmlns.com/foaf/0.1/">\n\
+	<rdf:Description>\n\
+	   <rdf:type rdf:resource="http://smartplatforms.org/note"/>\n\
+           <sp:dateOfVisit>2010-08-01</sp:dateOfVisit>\n\
+	   <sp:provider>\n\
+	   	  <rdf:Description>\n\
+             <foaf:Person><rdf:Description><foaf:name>Joshua Mandel</foaf:name></rdf:Description></foaf:Person>\n\
+             <foaf:Organization><rdf:Description><foaf:name>Children\'s Hospital Boston</foaf:name></rdf:Description></foaf:Organization>\n\
+	   	  </rdf:Description>\n\
+  	   </sp:provider>\n\
+	   <sp:notes>\n\
+                Patient presented to the clinic with one week history of increasing left knee pain.  The pain started after an unusually long jog, one week prior to today\'s visit.  At that time ibuprofen and tylenol provided moderate relief.  Naproxen was not tried.\n\
+	   </sp:notes>\n\
+	</rdf:Description>\n\
+</rdf:RDF>';
+
+API.calls.push({url: '/records/{record_id}/notes/',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['POST', "application/rdf+xml"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						  	POST : sample_note_rdf
+						}
+					});
+
 					
+API.calls.push({url: '/records/{record_id}/notes/{note_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {}
+					});
+
+API.calls.push({url: '/records/{record_id}/notes/external_id/{external_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['PUT',"application/rdf+xml"],
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						PUT : sample_note_rdf
+						}
+					});
+
+		
+/* 
+ *  Meds
+ */			
 var sample_med_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
   xmlns:med="http://smartplatforms.org/medication#"\n\
@@ -375,9 +441,11 @@ var build_api = function() {
 		
 		SMART.send_ready_message(function(record_info) {	
 			var loaded = 0;
+			var need_to_load = 3;
+			
 			var done_loading = function() {
 				loaded++;
-				if (loaded == 2) build_api();
+				if (loaded == need_to_load) build_api();
 			}
 			
 			API.record_id.push(record_info.id);
@@ -408,6 +476,16 @@ var build_api = function() {
 				for (var i = 0; i < vals.length; i++) {
 					var id = /\/problems\/([^/]*)/.exec(vals[i].m.value._string)[1];			
 					API.problem_id.push(id);
+				}	
+				
+				done_loading();
+			});
+			
+			SMART.NOTES_get(function(vals) {
+				var vals = vals.where("?m rdf:type sp:note");
+				for (var i = 0; i < vals.length; i++) {
+					var id = /\/notes\/([^/]*)/.exec(vals[i].m.value._string)[1];			
+					API.note_id.push(id);
 				}	
 				
 				done_loading();

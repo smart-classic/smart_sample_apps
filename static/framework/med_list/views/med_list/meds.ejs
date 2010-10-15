@@ -1,15 +1,27 @@
 <table class='medtable'>
+<tr>
+<th></th>
+<th>Medication</th>
+<th colspan='1'>Strength</th>
+<th colspan='1'>Dose</th>
+<th colspan='1'>Instructions</th>
+  <% if (SMART.capabilities["http://smartplatforms.org/capability/SPL/lookup"] == true &&
+  		  SMART.capabilities["http://smartplatforms.org/capability/Pillbox/lookup"] == true) { %>
+  
+  <th></th>
+  <% } %>
+  <th></th>
+</tr>
+
 <%  for (var i = 0; i < meds.length; i++)  {
          var m = meds[i];
 %>
-<tr class='med' <%=m %> <%= (i === 0) ? "class='selected'" : "" %>>
+<tr class='med <%=((i === 0) ? "selected" : "") %>' <%=m  %>>
   <td><%= (i === 0) ? ">" : ""%></td>
   <td><%= m.properName() %></td>
-  <td><%= m.dose %></td>
-  <td><%= m.unit %></td>
-  <td><%= m.route %></td>
-  <td><%= m.frequency %></td>
-  <td><%= m.instructions %></td>
+  <td><%= m.strength %> <%= m.strengthUnit %></td>  
+  <td><%= m.dose %> <%= m.doseUnit %></td>
+  <td><%= m.route %> <%= m.frequency %>  <%= m.instructions %></td>
   <% if (SMART.capabilities["http://smartplatforms.org/capability/SPL/lookup"] == true &&
   		  SMART.capabilities["http://smartplatforms.org/capability/Pillbox/lookup"] == true) { %>
   

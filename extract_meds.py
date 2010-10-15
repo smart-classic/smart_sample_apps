@@ -44,11 +44,8 @@ def extract_meds(request):
         print "Found %s"%med_array
         for med in med_array.content.split(" "):
             rxn_cui = c.xpathEval("//*[@codingScheme='RXNORM'][@xmi:id='%s']"%med)[0].xpathEval("@code")[0].content
-            print "looking up %s"%rxn_cui
             cur.execute(q, (rxn_cui,))
             medname = cur.fetchall()[0][0]   
-            print "name: ", medname
-            print "cui ", rxn_cui
             if (rxn_cui not in cuis_added):
                 add_med(model, str(rxn_cui), medname)
                 cuis_added.append(rxn_cui)
