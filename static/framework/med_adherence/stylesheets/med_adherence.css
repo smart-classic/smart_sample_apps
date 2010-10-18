@@ -25,11 +25,21 @@ body {
     font-family:"Graublau Web Bold";
     font-size:36px;
     font-weight:normal;
-    line-height:36px;
 }
 
 #chronic-div ul a {
     color:#aBaBaB;
+}
+
+
+#chronic-div div#explanation {
+    color:#2B333B;
+    font-family:"Graublau Web";
+    font-size: .5em;
+    font-weight:normal;
+    width: 300px;
+    margin-top: 1em;
+
 }
 
 p {
@@ -37,12 +47,11 @@ p {
     padding: 0px;
 }
 
-#adherence-view p.summary {
-//border-bottom: 1px dashed black;
-//margin-bottom: 3em;
+#adherence-view span {
+    margin-top: -.5em;
 }
 
-#adherence-view b {
+b {
     font-family: "Graublau Web Bold";
 }
 

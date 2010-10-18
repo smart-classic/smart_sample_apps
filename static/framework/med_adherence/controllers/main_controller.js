@@ -77,12 +77,12 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
        var rval = blocks.mprs[blocks.mprs.length-1];
        rval = Math.round(rval * 100)+"%";
 
-       var scores = $("<span class='lscore'>"+lval+"</span><span class='rscore'>"+rval+"</span>");
-       var dates = $("<p>"+d1+"&mdash;" + d2+"</p>");
+       var dates= $("<br clear='all'/><span class='lscore'>"+d1+"<br />"+lval+"</span><span class='rscore'>"+d2+"<br />"+rval+"</span>");
+       //       var dates = $("<p class='date_range'>"+d1+"&mdash;" + d2+"</p>");
        var summary = $("<p class='summary'>&nbsp;</p>");
-       a.append(scores);
-       a.append(summary);
+       //       a.append(scores);
        a.append(canvas);
+
        this.draw_blocks(blocks, canvas);
 
        var v = parseInt(rval);
@@ -93,6 +93,7 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
        this.addTimer(function() {
 	       summary.html(medname+" Adherence:  <b>"+v+"</b>");
 	       a.append(dates);
+	       a.append(summary);
 
 	   }, 500);
    },
@@ -108,8 +109,13 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
        canvas.attr("height", height);
 
        var avd = canvas.parent();
-       $(".lscore", avd).css("top", (11+height*(1-blocks.mprs[0]))+"px");
-       $(".rscore", avd).css("top", (11+height*(1-blocks.mprs[blocks.mprs.length-1]))+"px");
+       //              $(".lscore", avd).css("top", (height*(1-blocks.mprs[0]))+"px");
+       //      $(".rscore", avd).css("top", (height*(1-blocks.mprs[blocks.mprs.length-1]))+"px");
+	      // $(".lscore", avd).css("top", (height*(1))+"px");
+       //       $(".rscore", avd).css("top", (height*(1))+"px");
+
+       var xdelta = blocks.starts[blocks.starts.length-2];
+       //              $(".rscore", avd).css("right", (width-xdelta*ppd)+"px");
 
        canvas = canvas[canvas.length - 1];
        
@@ -150,7 +156,6 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 	       ctx.lineTo(x*ppd, height -2);
 	   }
 	   ctx.stroke();
-	   */
 
 
 	   ctx.strokeStyle='rgba(0,0,0,1)';
@@ -161,13 +166,22 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 	       var x= blocks.starts[i+1];
 	       var x2= blocks.starts[i];
 	       var m2 = Math.min(blocks.mprs[i+1]);
-	   ctx.beginPath();
+	       ctx.beginPath();
 	       
 	       ctx.lineTo(x*ppd, height * (1 - m2*(1-reserve)));;
 	       ctx.lineTo(x2*ppd, height * (1 - m2*(1-reserve)));
-	   ctx.stroke();
-
+	       ctx.stroke();
 	   }
+	   */
+
+
+	   ctx.strokeStyle='rgba(0,0,0,1)';
+	   ctx.lineWidth=1;
+	   ctx.beginPath();
+	   var x= blocks.starts[blocks.starts.length-1];
+	   ctx.moveTo(0, height);
+	   ctx.lineTo(x*ppd, height);
+	   ctx.stroke();
 
        }
        canvas = $(canvas);
