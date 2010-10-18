@@ -515,7 +515,7 @@ SMART_CLIENT.prototype.to_json = function(rdf) {
 		var o = t.o;
 		
 		if (resources[s.value._string] === undefined)
-			resources[s.value._string] = {};
+			resources[s.value._string] = {uri: this.node_name(s)};
 
 		if (resources[s.value._string][p.value._string] === undefined)
 			resources[s.value._string][p.value._string] = [];
@@ -529,7 +529,7 @@ SMART_CLIENT.prototype.to_json = function(rdf) {
 		}
 
 		if (o.type !== "literal" && resources[o.value._string] === undefined )
-			resources[o.value._string] = {};
+			resources[o.value._string] = {uri: this.node_name(o)};
 
 		if (t.o.type === "literal")
 			resources[s.value._string][p.value._string].push(o.value);

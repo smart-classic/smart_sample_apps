@@ -130,7 +130,8 @@ extend('Smart.Models.Med',
 			var devent = {};			
 			var d = Date.parse(fulfillments[i].d.value.substring(0,10));
 			
-			devent.title = fulfillments[i].q.value;
+			devent.quantity = fulfillments[i].q.value;
+			devent.title = devent.title;
 			devent.description = d.toString('M/d/yyyy') + ": Dispensed " + fulfillments[i].q.value;
 			devent.start = d;
 			devent.end = d;

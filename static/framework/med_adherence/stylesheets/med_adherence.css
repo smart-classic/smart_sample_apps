@@ -1,0 +1,99 @@
+body {
+    background: white;
+}
+@font-face {
+    font-family: "Graublau Web";
+    src: url("GraublauWeb.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Graublau Web Bold";
+    font-weight: bold;
+    src: url("GraublauWebBold.woff") format("woff");
+}
+
+
+.s {
+    color:#8B838B;
+    font-family:"Graublau Web Bold";
+    font-weight: bold;
+}
+
+#chronic-div {
+    float: right;
+    color:#2B333B;
+    font-family:"Graublau Web Bold";
+    font-size:36px;
+    font-weight:normal;
+    line-height:36px;
+}
+
+#chronic-div ul a {
+    color:#aBaBaB;
+}
+
+p {
+    margin: 0px;
+    padding: 0px;
+}
+
+#adherence-view p.summary {
+//border-bottom: 1px dashed black;
+//margin-bottom: 3em;
+}
+
+#adherence-view b {
+    font-family: "Graublau Web Bold";
+}
+
+#adherence-view {
+    display: inline-block;
+    font-family:"Graublau Web";
+    font-size:1.5em;
+    text-align: center;
+    
+}
+
+#adherence-view span.lscore {
+    font-size:0.8em;
+    position: relative;
+    float: left;
+}
+
+#adherence-view span.rscore {
+    font-size:0.8em;
+    position: relative;
+    float: right;
+}
+
+.selected {
+    background: #2B333B;
+}
+
+#chronic-div ul {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+#chronic-div li {
+    font-size: .5em;
+    font-weight:normal;
+}
+
+
+
+
+#TheList {cursor: pointer; vertical-align: top; }
+#ExpandMeds {margin-top: -.35em;  text-decoration: none; ouine: none; width: .5em; display: inline-block;}
+#MedList{ margin: 0px; border: 0px; padding: 0px;}
+.medtable, #MedDetails {border-collapse: collapse; font-size: .8em; font-family: Garamond,"Times New Roman"}
+.medtable TD {padding:0.5em;}
+.medtable TR {cursor: pointer;}
+.medtable TR:nth-child(even) {background:none repeat scroll 0 0 #EEEEEE;}
+.medtable TR:nth-child(odd) {background:none repeat scroll 0 0 #CCCCCC;}
+.medtable TR.selected {background:none repeat scroll 0 0 #AAC0CC;}
+.ui-widget{ font-size:1em; }
+.ui-autocomplete { height: 228px; overflow-y: scroll; overflow-x: hidden; font-size: 10px;}
+.delete_problem  {font-size: .8em; font-weight: bold; color: #222222; text-decoration: none;}
+.delete_med {font-size: .8em; font-weight: bold; color: #222222; text-decoration: none;}
