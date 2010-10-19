@@ -86,16 +86,14 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
        this.draw_blocks(blocks, canvas);
 
        var v = parseInt(rval);
-       if (v > 80) v = "Good";
-       else if (v > 50) v = "Fair";
+       if (v >= 80) v = "Good";
+       else if (v >= 50) v = "Fair";
        else v = "Poor";
        var medname = m.properName().split(" ")[0];
-       this.addTimer(function() {
 	       summary.html(medname+" Adherence:  <b>"+v+"</b>");
 	       a.append(dates);
 	       a.append(summary);
 
-	   }, 500);
    },
 
        draw_blocks: function(blocks, canvas) {
@@ -172,7 +170,10 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 	       ctx.lineTo(x2*ppd, height * (1 - m2*(1-reserve)));
 	       ctx.stroke();
 	   }
-	   */
+	   ctx.font = "20px Graublau Web";
+	   ctx.fillStyle = "Black";
+	   ctx.fillText("Sample String", 5, 30);
+*/
 
 
 	   ctx.strokeStyle='rgba(0,0,0,1)';
@@ -185,7 +186,7 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 
        }
        canvas = $(canvas);
-              canvas.show("slide", {direction: "left"}, 300);
+       canvas.show();//"slide", {direction: "left"}, 300);
 
    },
 
