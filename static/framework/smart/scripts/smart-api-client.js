@@ -523,7 +523,10 @@ SMART_CLIENT.prototype.to_json = function(rdf) {
 		if (p.value._string === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" )
 		{
 			if (resources[o.value._string] === undefined)
+			{
 				resources[o.value._string] = [];
+				resources[o.value._string].uri = this.node_name(o);
+			}
 			
 			resources[o.value._string].push(resources[s.value._string]);
 		}
@@ -533,8 +536,10 @@ SMART_CLIENT.prototype.to_json = function(rdf) {
 
 		if (t.o.type === "literal")
 			resources[s.value._string][p.value._string].push(o.value);
-		else
+		else if (p.value._string !== "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" )
 			resources[s.value._string][p.value._string].push(resources[o.value._string]);
+		else // avoid circular structures to maintain JSON.stringify-ability.
+			resources[s.value._string][p.value._string].push(o.value._string);
 		
 	}
 	

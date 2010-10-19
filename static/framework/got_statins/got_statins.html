@@ -16,16 +16,10 @@
 SMART = new SMART_CLIENT(null, window.top);
 SMART.send_ready_message(function(record_info) {
   SMART.MEDS_get_all(function(rdf) {
-     var fill_dates = rdf.where("?m rdf:type sp:medication")
-	                   .where("?m dcterms:title ?t")
-	                   .where("?m sp:fulfillment ?fill")
-	                   .where("?fill dc:date ?fill_date")
-                           .filter(function() {
-                              return Date.parse(this.fill_date.value) > Date.parse("2010-01-01T00:00:00Z");
-                            });
-
-   alert("# fils his year: " + fill_dates.length);
-   });
+  var all_meds = rdf.to_json();
+  var all_meds_json = JSON.stringify(all_meds);
+  alert(all_meds_json);
+});
 });
 
 		
