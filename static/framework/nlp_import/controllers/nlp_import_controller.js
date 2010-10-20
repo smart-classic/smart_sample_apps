@@ -42,17 +42,48 @@ jQuery.Controller.extend('NlpImport.Controllers.NlpImportController',
 },
 
 apply_nlp: function() {
-    var note_text = $('#bb_paste').val();
+    var note_text = $($('#bb_paste').val()).text();
+
+    SMART.webhook_post('extract_meds_from_plaintext', note_text, 
+	  function(rdf) {
+    	clearInterval(loading_animation);
+    	SMART.start_activity("batch_add_medications", rdf.source_xml);
+    	});
     
-    $('#upload_status').html('Applying NLP....\n[please wait].\n\n'+note_text).
+    var tago = "<span>", tagc="</span>";
+    var note_tagged = tago+(note_text.split(/\s+/g)).join(tagc+' '+tago)+tagc;
+    
+    $('#upload_status').html('Applying NLP....\n[please wait].\n\n<div id="note_tagged">'+note_tagged+'</div>').
     css({width: '100%', height: '100%', 
     	position: 'absolute', top: '0px', left: '0px',
     	background: 'grey'});
 
-    SMART.webhook_post('extract_meds_from_plaintext', note_text, 
-	  function(rdf) {
-    	SMART.start_activity("batch_add_medications", rdf.source_xml);
-    	});
+    
+    $('#note_tagged span:first').addClass('selected_word');
+    var forward = true;
+    var loading_animation = setInterval(function() {
+    	 var next_tag = $('#note_tagged .selected_word:first');
+    	 var two_out;
+    	 
+    	 if (forward)
+    	 {
+    		 next_tag = next_tag.next();
+    		 two_out = next_tag.next();
+    	 }
+    	 else {
+    		 next_tag = next_tag.prev();
+    		 two_out = next_tag.prev();
+    	 }
+
+    	 if (!two_out.is("span") || two_out.length === 0)
+    	 {
+    		 forward = !forward;
+    	 }
+    	 
+    	 $('#note_tagged .selected_word').removeClass('selected_word');
+    	 next_tag.addClass('selected_word')
+    }, 30);
+    
     }
 
 });
