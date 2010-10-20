@@ -42,7 +42,8 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
     },
  
    ".chronic_med click" : function(el) {
-       $(".selected").removeClass("selected");
+    	$('#explanation').show();
+    	$(".selected").removeClass("selected");
        el.addClass("selected");
        var m = el.model();
        this.view_one_med(m);

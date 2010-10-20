@@ -32,7 +32,13 @@ body {
 }
 
 
-#chronic-div div#explanation {
+#explanation i {
+    color:#8B838B;
+	font-family: "Graublau Web Bold";
+}
+
+
+#explanation {
     color:#2B333B;
     font-family:"Graublau Web";
     font-size: .5em;
