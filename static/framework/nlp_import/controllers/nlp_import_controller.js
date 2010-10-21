@@ -42,7 +42,7 @@ jQuery.Controller.extend('NlpImport.Controllers.NlpImportController',
 },
 
 apply_nlp: function() {
-    var note_text = $($('#bb_paste').val()).text();
+    var note_text = $("<p>"+$('#bb_paste').val()+"</p>").text();
 
     SMART.webhook_post('extract_meds_from_plaintext', note_text, 
 	  function(rdf) {
