@@ -8,6 +8,8 @@ SS_OAUTH = {
   'consumer_key': 'smart-connector@apps.smartplatforms.org', 
   'consumer_secret': 'smartapp-secret'
 }
+REGENSTRIEF_SERVER_LOCATION = {'scheme': 'http', 'host': 'roi.regenstrief.org:8080'}
+XSLT_STYLESHEET_LOC = APP_HOME + '/surescripts_connector/document_processing/stylesheets/'
 
 NLP_OAUTH = {
   'consumer_key': 'smart-med-extractor@apps.smartplatforms.org', 
