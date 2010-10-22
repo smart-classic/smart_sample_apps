@@ -133,7 +133,6 @@ class OAuthSignatureMethod_HMAC_SHA1(OAuthSignatureMethod):
       hmac_key = escape(consumer.secret)+ '&'
       if token and hasattr(token, secret_str):
         hmac_key += escape(token.secret)
-    
       # hmac object
       try:
         import hashlib # 2.5

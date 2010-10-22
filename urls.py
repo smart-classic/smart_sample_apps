@@ -1,26 +1,21 @@
 from django.http import HttpResponse
 from django.conf.urls.defaults import *
 from django.conf import settings
-from fuzzy_match import fuzzy_match_request, confident_match_request
-from extract_meds import extract_meds
 
 def echo_file(request):
     ret = "\n"
     for fname, fval in request.FILES.iteritems():
         for chunk in fval.chunks():
             ret += chunk
-            
-    
     f = request.FILES['bb_upload']
     return HttpResponse(ret, mimetype="text/plain")
 
 urlpatterns = patterns('',
     # static
-    ## WARNING NOT FOR PRODUCTION
+    (r'^surescripts_connector/', include('smart_sample_apps.surescripts_connector.urls')),
+    (r'^nlp_extractor/', include('smart_sample_apps.nlp_extractor.urls')),
+    (r'^webhook/', include('smart_sample_apps.webhook.urls')),
     (r'^echo_file$', echo_file),
-    (r'^webhook/fuzzy_match_rxnorm$', fuzzy_match_request),
-    (r'^webhook/confident_match_rxnorm$', confident_match_request),
-    (r'^webhook/extract_meds_from_plaintext$', extract_meds),
     (r'^(?P<path>.*)$', 'django.views.static.serve', {'document_root': '%s/static/'%settings.APP_HOME})
 )
 

@@ -5,8 +5,8 @@ Connect to the SMArt API
 import urllib, uuid
 import httplib
 from oauth import *
-import time
 from rdf_utils import *
+import time
 import RDF
     
 class SmartClient(OAuthClient):
@@ -49,7 +49,8 @@ class SmartClient(OAuthClient):
         data = None
         path = o.path
         if (http_request.method == "GET"):
-            path +=  "?"+(http_request.data or "")
+            if (http_request.data):
+                path +=  "?"+http_request.data
         else:
             data = http_request.data or {}
         conn.request(http_request.method, path, data, header)
@@ -125,43 +126,25 @@ class SmartClient(OAuthClient):
         self.set_token(token)
         return token
 
-    def get_notes(self, record_id):
-        result = self.get("/records/%s/notes/"%record_id)
-        notes = RDF.Model()
-        parse_rdf(result, notes)
-        return notes
+    def get_demographics(self):
+        d = self.get("/records/%s/demographics"%self.record_id)
+        print "d", d
+        model = parse_rdf(d)
 
-    def get_record(self):
-        result = self.get("/record_by_token/", None)
-        demographics = RDF.Model()
-        parse_rdf(result, demographics)
+        ret = {}
+        
+        ret['givenName'] = get_property(model, None, NS['foaf']['givenName'])      
+        ret['familyName'] = get_property(model, None, NS['foaf']['familyName'])      
+        ret['gender'] = get_property(model, None, NS['foaf']['gender'])      
+        ret['zipcode'] = get_property(model, None, NS['spdemo']['zipcode'])      
+        ret['birthday'] = get_property(model, None, NS['spdemo']['birthday'])      
+        return  ret
 
-        q = RDF.SPARQLQuery("""
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
-        PREFIX sp: <http://smartplatforms.org/>
-        SELECT DISTINCT ?s, ?gn, ?fn, ?zip, ?gender, ?birthday
-        WHERE {
-            ?s rdf:type foaf:Person.
-            ?s foaf:givenName ?gn.
-            ?s foaf:familyName ?fn.
-            ?s sp:zipcode ?zip.
-            ?s foaf:gender ?gender.
-            ?s sp:birthday ?birthday.
-        }""")
-              
-        try:
-            r =  q.execute(demographics)
-            r = r.next()
-            ret = {}
-            ret['givenName'] = r['gn'].literal_value['string']
-            ret['familyName'] = r['fn'].literal_value['string']
-            ret['zipCode'] = r['zip'].literal_value['string']
-            ret['gender'] = r['gender'].literal_value['string']
-            ret['DOB'] = r['birthday'].literal_value['string']
-            return ret
-        except:
-            return None
+
+    def get_notes(self):
+        n = self.get("/records/%s/notes/"%self.record_id)
+        return parse_rdf(n)
+
 
     def put_ccr_to_smart(self, record_id, ccr_string):
         rdf_string  = xslt_ccr_to_rdf(ccr_string, self.stylesheet)
@@ -310,3 +293,26 @@ class SmartClient(OAuthClient):
         self.post_rdf_store(m)
 
 
+    def loop_over_records(self):    
+        r = self.get("/apps/%s/tokens/records/first"%self.app_id)
+    
+        m = parse_rdf(r)
+        record = str(get_property(m, None, NS["sp"]["record"]))
+        record_id = record.split("http://smartplatforms.org/records/")[1]
+        
+        while record_id:
+            t = str(get_property(m, None, NS["sp"]["token"]))
+            s = str(get_property(m, None, NS["sp"]["secret"]))
+            try:
+                record_id = record.split("http://smartplatforms.org/records/")[1]
+            except: break
+            self.set_token(OAuthToken(token=t, secret=s))
+            self.record_id = record_id
+            yield record_id
+            self.set_token(None)
+            self.record_id = None
+            r = self.get("/apps/%s/tokens/records/%s/next"%(self.app_id, record_id))
+            m = parse_rdf(r)
+            record = str(get_property(m, None, NS["sp"]["record"]))
+            
+            

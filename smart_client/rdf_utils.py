@@ -15,6 +15,7 @@ NS['dcterms'] = RDF.NS('http://purl.org/dc/terms/')
 NS['med'] = RDF.NS('http://smartplatforms.org/medication#')
 NS['umls'] = RDF.NS('http://www.nlm.nih.gov/research/umls/')
 NS['sp'] = RDF.NS('http://smartplatforms.org/')
+NS['spdemo'] = RDF.NS('http://smartplatforms.org/demographics/')
 NS['foaf']=RDF.NS('http://xmlns.com/foaf/0.1/')
 NS['rdf'] = RDF.NS('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 NS['rxn'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/')
@@ -91,7 +92,7 @@ def get_medication_uris(g):
 def get_medication_model(g,med_uri):
     properties = [NS['dcterms']['title'], 
                   NS['med']['drug'],
-                  NS['med']['instructions'],
+                  NS['med']['notes'],
                   NS['med']['strength'],
                   NS['med']['strengthUnit'],
                   NS['med']['dose'],
@@ -160,5 +161,3 @@ def xslt_ccr_to_rdf(source, stylesheet):
 def apply_xslt(sourceDOM, stylesheetDOM):
     style = libxslt.parseStylesheetDoc(stylesheetDOM)
     return style.applyStylesheet(sourceDOM, None).serialize()
-
-

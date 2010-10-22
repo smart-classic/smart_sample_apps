@@ -2,7 +2,21 @@
 
 ## PARAMETERS TO REVIEW
 
-APP_HOME = "/web/smart_sample_apps"
+APP_HOME = "/home/jmandel/smart/smart_sample_apps"
+
+SS_OAUTH = {
+  'consumer_key': 'smart-connector@apps.smartplatforms.org', 
+  'consumer_secret': 'smartapp-secret'
+}
+
+NLP_OAUTH = {
+  'consumer_key': 'smart-med-extractor@apps.smartplatforms.org', 
+  'consumer_secret': 'smartapp-secret'
+}
+
+SMART_SERVER_PARAMS = {
+    'api_base' : 'http://localhost:7000'
+}
 
 ####
 #### Below here probably doesn't need modification
@@ -87,6 +101,8 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'surescripts_connector',
+    'nlp_extractor'
 )
 
 # sessions in filesystem

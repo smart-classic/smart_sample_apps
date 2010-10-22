@@ -1,0 +1,1765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContinuityOfCareRecord xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:astm-org:CCR" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CCRDocumentObjectID>0</CCRDocumentObjectID>
+  <Language>
+    <Text>ENGLISH</Text>
+  </Language>
+  <Version>V1.0</Version>
+  <DateTime>
+    <Type>
+      <Text>Create</Text>
+      <ObjectAttribute>
+        <Attribute>DisplayDate</Attribute>
+        <AttributeValue>
+          <Value>07/12/10</Value>
+        </AttributeValue>
+      </ObjectAttribute>
+    </Type>
+    <ExactDateTime>2010-07-12T12:56:24Z</ExactDateTime>
+  </DateTime>
+  <Patient>
+    <ActorID>Patient</ActorID>
+  </Patient>
+  <From>
+    <ActorLink/>
+  </From>
+  <Purpose>
+    <Description>
+      <Text>Medication History List</Text>
+    </Description>
+  </Purpose>
+  <Body>
+    <Medications>
+      <Medication>
+        <CCRDataObjectID>medication.1</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-15T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>AMITRIPTYLINE HCL 50 MG TAB</Text>
+            <Code>
+              <Value>00378265010</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>856845</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>50MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.1</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.2</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-15T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>prescriber.1</ActorID>
+            <ActorRole>
+              <Text>Prescribing clinician</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.2</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>HUMULIN 70/30 PEN</Text>
+            <Code>
+              <Value>00002877059</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>847187</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.2</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.3</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-15T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>HYDROCODONE/APAP 7.5/750 TB</Text>
+            <Code>
+              <Value>00406036001</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>833036</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>7.5-750MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>120</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.3</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>120</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.4</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-03-25T05:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>prescriber.1</ActorID>
+            <ActorRole>
+              <Text>Prescribing clinician</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.2</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>HYDROCODONE/APAP 5/500 TAB</Text>
+            <Code>
+              <Value>00406035705</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>856903</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+        </Product>
+        <Quantity>
+          <Value>16</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.4</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>16</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.5</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-15T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>LEVOTHYROXINE 50 MCG TABLET</Text>
+            <Code>
+              <Value>00378180301</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>238747</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>50MCG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.5</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.6</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-03T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>LEVOTHYROXINE 300 MCG TABLET</Text>
+            <Code>
+              <Value>00378182101</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>198281</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>300MCG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.6</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.7</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-03T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>AVANDIA 8 MG TABLET</Text>
+            <Code>
+              <Value>00029316013</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>312861</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>8MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.7</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.8</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-03T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>ZOLOFT 100 MG TABLET</Text>
+            <Code>
+              <Value>00049491066</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>312938</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>100MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.8</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.9</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-01T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>BUPROPION SR 150 MG TABLET</Text>
+            <Code>
+              <Value>00591083960</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>636353</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>150MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>60</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.9</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>60</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.10</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-01T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>prescriber.1</ActorID>
+            <ActorRole>
+              <Text>Prescribing clinician</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.2</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>DILTIAZEM HCL 240 MG CAP SA</Text>
+            <Code>
+              <Value>00093511898</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>830837</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.10</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.11</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-01T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>LISINOPRIL 20 MG TABLET</Text>
+            <Code>
+              <Value>00378207501</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>314077</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>20MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>60</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.11</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>60</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.12</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-06-01T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>ONE TOUCH ULTRA TEST STRIPS</Text>
+            <Code>
+              <Value>53885024510</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>00000</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+        </Product>
+        <Quantity>
+          <Value>100</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.12</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>100</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.13</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-05-24T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>AMOXICILLIN 875 MG TABLET</Text>
+            <Code>
+              <Value>00093226401</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>308194</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>875MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>20</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.13</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>20</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.14</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-05-24T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>HYDROCHLOROTHIAZIDE 50 MG TB</Text>
+            <Code>
+              <Value>00172208980</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>197770</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>50MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.14</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.15</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-05-24T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>METOPROLOL 100 MG TABLET</Text>
+            <Code>
+              <Value>00093073401</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>311675</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>100MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>60</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.15</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>60</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.16</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-05-12T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>ALPRAZOLAM 1 MG TABLET</Text>
+            <Code>
+              <Value>00378400501</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>197321</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>1MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>120</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.16</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>120</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.17</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-05-12T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>AMBIEN 10 MG TABLET</Text>
+            <Code>
+              <Value>00024542131</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>854873</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>10MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>30</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.17</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>30</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+      <Medication>
+        <CCRDataObjectID>medication.18</CCRDataObjectID>
+        <DateTime>
+          <Type>
+            <Text>Dispense date</Text>
+          </Type>
+          <ExactDateTime>2010-05-12T04:00:00Z</ExactDateTime>
+        </DateTime>
+        <Type>
+          <Text>Medication</Text>
+        </Type>
+        <Source>
+          <Actor>
+            <ActorID>Rx History Supplier</ActorID>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pharmacy.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing pharmacy</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Source>
+          <Actor>
+            <ActorID>pbm.1</ActorID>
+            <ActorRole>
+              <Text>Dispensing Information Source</Text>
+            </ActorRole>
+          </Actor>
+        </Source>
+        <Product>
+          <ProductName>
+            <Text>CARISOPRODOL 350 MG TABLET</Text>
+            <Code>
+              <Value>00591551301</Value>
+              <CodingSystem>NDC</CodingSystem>
+            </Code>
+            <Code>
+              <Value>197446</Value>
+              <CodingSystem>RXNORM</CodingSystem>
+            </Code>
+          </ProductName>
+          <Strength>
+            <Value>350MG</Value>
+            <Units>
+              <Unit>Not Specified</Unit>
+            </Units>
+          </Strength>
+        </Product>
+        <Quantity>
+          <Value>120</Value>
+          <Units>
+            <Unit>Not Specified</Unit>
+          </Units>
+        </Quantity>
+        <Directions>
+          <Direction>
+            <Description>
+              <Text/>
+            </Description>
+          </Direction>
+        </Directions>
+        <FulfillmentHistory>
+          <Fulfillment>
+            <CCRDataObjectID>fill.18</CCRDataObjectID>
+            <Description/>
+            <Source/>
+            <Location/>
+            <Quantity>
+              <Value>120</Value>
+              <Units>
+                <Unit>Not Specified</Unit>
+              </Units>
+            </Quantity>
+          </Fulfillment>
+        </FulfillmentHistory>
+      </Medication>
+    </Medications>
+    <HealthCareProviders>
+      <Provider>
+        <ActorID>pbm.1</ActorID>
+        <ActorRole>
+          <Text>Dispensing Information Source</Text>
+        </ActorRole>
+      </Provider>
+      <Provider>
+        <ActorID>pharmacy.1</ActorID>
+        <ActorRole>
+          <Text>Dispensing pharmacy</Text>
+        </ActorRole>
+      </Provider>
+      <Provider>
+        <ActorID>pbm.2</ActorID>
+        <ActorRole>
+          <Text>Dispensing Information Source</Text>
+        </ActorRole>
+      </Provider>
+      <Provider>
+        <ActorID>prescriber.1</ActorID>
+        <ActorRole>
+          <Text>Prescribing clinician</Text>
+        </ActorRole>
+      </Provider>
+    </HealthCareProviders>
+  </Body>
+  <Actors>
+    <Actor>
+      <ActorObjectID>pbm.1</ActorObjectID>
+      <Organization>
+        <Name>PBMB</Name>
+      </Organization>
+      <IDs>
+        <Type>
+          <Text>PBMID</Text>
+        </Type>
+        <ID>T00000000001011</ID>
+        <Source>
+          <Description>
+            <Text>SURESCRIPTS</Text>
+          </Description>
+        </Source>
+      </IDs>
+      <Source>
+        <Actor>
+          <ActorID>pbm.1</ActorID>
+          <ActorRole>
+            <Text>Dispensing Information Source</Text>
+          </ActorRole>
+        </Actor>
+      </Source>
+      <InternalCCRLink>
+        <LinkID>medication.1</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.3</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.5</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.6</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.7</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.8</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.9</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.11</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.12</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.13</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.14</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.15</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.16</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.17</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.18</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+    </Actor>
+    <Actor>
+      <ActorObjectID>pharmacy.1</ActorObjectID>
+      <Organization>
+        <Name>WAL-MART PHARMACY 10-0253</Name>
+      </Organization>
+      <IDs>
+        <Type>
+          <Text>NCPDP</Text>
+        </Type>
+        <ID>1453478</ID>
+        <Source>
+          <Description>
+            <Text>NCPDP</Text>
+          </Description>
+        </Source>
+      </IDs>
+      <Source>
+        <Actor>
+          <ActorID>pharmacy.1</ActorID>
+          <ActorRole>
+            <Text>Dispensing pharmacy</Text>
+          </ActorRole>
+        </Actor>
+      </Source>
+      <InternalCCRLink>
+        <LinkID>medication.1</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.2</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.3</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.4</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.5</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.6</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.7</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.8</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.9</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.10</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.11</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.12</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.13</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.14</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.15</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.16</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.17</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.18</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+    </Actor>
+    <Actor>
+      <ActorObjectID>pbm.2</ActorObjectID>
+      <Organization>
+        <Name>PBMA</Name>
+      </Organization>
+      <IDs>
+        <Type>
+          <Text>PBMID</Text>
+        </Type>
+        <ID>T00000000001010</ID>
+        <Source>
+          <Description>
+            <Text>SURESCRIPTS</Text>
+          </Description>
+        </Source>
+      </IDs>
+      <Source>
+        <Actor>
+          <ActorID>pbm.2</ActorID>
+          <ActorRole>
+            <Text>Dispensing Information Source</Text>
+          </ActorRole>
+        </Actor>
+      </Source>
+      <InternalCCRLink>
+        <LinkID>medication.2</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.4</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.10</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+    </Actor>
+    <Actor>
+      <ActorObjectID>prescriber.1</ActorObjectID>
+      <Person>
+        <Name>
+          <DisplayName>DOE, JOHN</DisplayName>
+        </Name>
+      </Person>
+      <IDs>
+        <Type>
+          <Text>DEA</Text>
+        </Type>
+        <ID>BM5598810</ID>
+        <Source>
+          <Description>
+            <Text/>
+          </Description>
+        </Source>
+      </IDs>
+      <Source>
+        <Actor>
+          <ActorID>prescriber.1</ActorID>
+          <ActorRole>
+            <Text>Prescribing clinician</Text>
+          </ActorRole>
+        </Actor>
+      </Source>
+      <InternalCCRLink>
+        <LinkID>medication.2</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.4</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+      <InternalCCRLink>
+        <LinkID>medication.10</LinkID>
+        <LinkRelationship>Prescribed Medication</LinkRelationship>
+      </InternalCCRLink>
+    </Actor>
+    <Actor>
+      <ActorObjectID>Patient</ActorObjectID>
+      <Person>
+        <Name>
+          <BirthName>
+            <Given>Tad</Given>
+            <Family>Dockendorf</Family>
+          </BirthName>
+          <DisplayName>Tad Dockendorf</DisplayName>
+        </Name>
+        <Gender>
+          <Text>M</Text>
+        </Gender>
+      </Person>
+      <Address>
+        <Line1/>
+        <City/>
+        <State/>
+        <PostalCode>82001</PostalCode>
+      </Address>
+      <Source/>
+    </Actor>
+  </Actors>
+</ContinuityOfCareRecord>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:med="http://smartplatforms.org/medication#" xmlns:sp="http://smartplatforms.org/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:foaf="http://xmlns.com/foaf/0.1/Person/" xmlns:rxcui="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/" xmlns:ccr="urn:astm-org:CCR">
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/856845"/>
+      <dcterms:title>AMITRIPTYLINE HCL 50 MG TAB</dcterms:title>
+      <med:strength>50MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-15T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/847187"/>
+      <dcterms:title>HUMULIN 70/30 PEN</dcterms:title>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-15T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001010</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:prescriber>BM5598810</sp:prescriber>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/833036"/>
+      <dcterms:title>HYDROCODONE/APAP 7.5/750 TB</dcterms:title>
+      <med:strength>7.5-750MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-15T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>120</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/856903"/>
+      <dcterms:title>HYDROCODONE/APAP 5/500 TAB</dcterms:title>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-03-25T05:00:00Z</dc:date>
+            <sp:PBM>T00000000001010</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:prescriber>BM5598810</sp:prescriber>
+            <sp:dispenseQuantity>16</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/238747"/>
+      <dcterms:title>LEVOTHYROXINE 50 MCG TABLET</dcterms:title>
+      <med:strength>50MCG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-15T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/198281"/>
+      <dcterms:title>LEVOTHYROXINE 300 MCG TABLET</dcterms:title>
+      <med:strength>300MCG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-03T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/312861"/>
+      <dcterms:title>AVANDIA 8 MG TABLET</dcterms:title>
+      <med:strength>8MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-03T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/312938"/>
+      <dcterms:title>ZOLOFT 100 MG TABLET</dcterms:title>
+      <med:strength>100MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-03T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/636353"/>
+      <dcterms:title>BUPROPION SR 150 MG TABLET</dcterms:title>
+      <med:strength>150MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-01T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>60</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/830837"/>
+      <dcterms:title>DILTIAZEM HCL 240 MG CAP SA</dcterms:title>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-01T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001010</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:prescriber>BM5598810</sp:prescriber>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/314077"/>
+      <dcterms:title>LISINOPRIL 20 MG TABLET</dcterms:title>
+      <med:strength>20MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-01T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>60</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/00000"/>
+      <dcterms:title>ONE TOUCH ULTRA TEST STRIPS</dcterms:title>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-06-01T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>100</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/308194"/>
+      <dcterms:title>AMOXICILLIN 875 MG TABLET</dcterms:title>
+      <med:strength>875MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-05-24T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>20</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/197770"/>
+      <dcterms:title>HYDROCHLOROTHIAZIDE 50 MG TB</dcterms:title>
+      <med:strength>50MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-05-24T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/311675"/>
+      <dcterms:title>METOPROLOL 100 MG TABLET</dcterms:title>
+      <med:strength>100MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-05-24T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>60</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/197321"/>
+      <dcterms:title>ALPRAZOLAM 1 MG TABLET</dcterms:title>
+      <med:strength>1MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-05-12T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>120</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/854873"/>
+      <dcterms:title>AMBIEN 10 MG TABLET</dcterms:title>
+      <med:strength>10MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-05-12T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/197446"/>
+      <dcterms:title>CARISOPRODOL 350 MG TABLET</dcterms:title>
+      <med:strength>350MG</med:strength>
+      <med:strengthUnits>not specified</med:strengthUnits>
+      <sp:fulfillment>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>
+            <dc:date>2010-05-12T04:00:00Z</dc:date>
+            <sp:PBM>T00000000001011</sp:PBM>
+            <sp:pharmacy>1453478</sp:pharmacy>
+            <sp:dispenseQuantity>120</sp:dispenseQuantity>
+         </rdf:Description>
+      </sp:fulfillment>
+   </rdf:Description>
+</rdf:RDF>

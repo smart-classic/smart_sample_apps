@@ -1,0 +1,11 @@
+{
+  "name" : "SMArt Note Extractor",
+  "description" : "Exract medications from a record's clinical notes and automatically insert into the medication list",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "smart-med-extractor@apps.smartplatforms.org",
+  "version" : ".1a",
+  "mode" : "background",
+  "base_url" : "http://localhost:8003",
+  "activities" : { },
+  "web_hooks" : { }
+}
