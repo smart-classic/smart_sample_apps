@@ -150,7 +150,7 @@ extend('Smart.Models.Med',
 		});
 	
 		this.dispenses_by_med = dispenses_by_med;
-	},
+	}
 
 	
 },
@@ -342,9 +342,5 @@ extend('Smart.Models.Med',
 					var rdf = SMART.process_rdf(contentType, data);
 					success(rdf);
 		});
-	},
-
-	
-	
-	
+	}
 });

@@ -108,7 +108,5 @@ extend('MedList.Controllers.TimelineController',
 				events[i].end=events[i].end.toISOString().substring(0,10);
 			
 		}
-	},
-	
-
+	}
 });
