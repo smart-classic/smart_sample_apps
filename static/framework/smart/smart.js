@@ -7,6 +7,7 @@ steal.plugins(
 	      'jquery/dom/form_params')               // form data helper
 	      .then('scripts/class')
 	      .then('scripts/json2')
+	      .then('scripts/jschannel')
 	      .then('scripts/smart-api-client')
 	      .then('scripts/jquery.hotkeys')
 	      .then('scripts/jquery.addons')
