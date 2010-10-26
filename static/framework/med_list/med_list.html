@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>MedDisplay App</title>
-	<script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true" type="text/javascript"></script>
 	<script type='text/javascript' src='../steal/steal.js?med_list,production'></script>
+
   </head>
 
   <body>
@@ -26,5 +26,13 @@
 	<div id="tl"></div>
     </div>
     </div>
-  </body>
+
+<script>
+     Timeline_ajax_url="resources/timeline/timeline_ajax/simile-ajax-api.js";
+     Timeline_urlPrefix='resources/timeline/timeline_js/';       
+     Timeline_parameters='bundle=true';
+</script>
+<script src="resources/timeline/timeline_js/timeline-api.js"></script>
+
+</body>
 </html>

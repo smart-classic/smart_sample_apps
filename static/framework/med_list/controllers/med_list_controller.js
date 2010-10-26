@@ -25,10 +25,11 @@ extend('MedList.Controllers.MedListController',
 		this.selectedRow = 0;
 		var _this = this;
 		
-		$("#tl").med_list_timeline();	
 		$("#MedListTabs").tabs();
 
 		$('#MedListTabs').bind('tabsshow', this.callback(function(event, ui) {
+		    $("#tl").med_list_timeline();	
+
 		    if (ui.panel.id == "tabs-timeline") {
 		        OpenAjax.hub.publish("timeline.view",this.meds)
 		    }		    

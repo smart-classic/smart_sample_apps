@@ -6,9 +6,9 @@ jQuery.Controller.extend('MedList.Controllers.MainController',
 /* @Prototype */
 {
     load: function() {
-	
+
 		var 	ORIGIN = null, 
-				FRAME = window.top;
+		    FRAME = window.top;
 
 		SMART = new SMART_CLIENT(ORIGIN, FRAME);
 		
@@ -16,5 +16,10 @@ jQuery.Controller.extend('MedList.Controllers.MainController',
 			  	$("#UserDisplay").html(record_info.full_name)
 				$("#MedList").med_list_med_list();
 				});
-		}
+
+		
+
+    }
+
+
 });
