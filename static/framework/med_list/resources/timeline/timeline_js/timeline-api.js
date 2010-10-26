@@ -95,8 +95,7 @@
         ];
         
         var localizedJavascriptFiles = [
-            "timeline.js",
-            "labellers.js"
+
         ];
         var localizedCssFiles = [
         ];

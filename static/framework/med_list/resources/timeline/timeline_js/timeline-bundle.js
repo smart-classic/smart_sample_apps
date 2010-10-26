@@ -2833,3 +2833,10 @@ Timeline.NativeDateUnit.later=function(B,A){return Timeline.NativeDateUnit.compa
 };
 Timeline.NativeDateUnit.change=function(A,B){return new Date(A.getTime()+B);
 };
+
+Timeline.strings["en"] = {
+        wikiLinkLabel:  "Discuss"
+    };
+
+Timeline.GregorianDateLabeller.monthNames["en"] = [
+ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
