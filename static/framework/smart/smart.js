@@ -13,7 +13,6 @@ steal.plugins(
 	      .then('scripts/jquery.addons')
 	      .then('scripts/date')
 	      .then('scripts/jquery.form')
-    .css('stylesheets/jquery-ui-1.8.2.custom')
     .css('stylesheets/med_display')
      .models('rdf_object', 'med', 'med_details', 'problem')
      .controllers('keybind')

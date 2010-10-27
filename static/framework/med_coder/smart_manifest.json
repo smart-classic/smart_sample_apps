@@ -7,10 +7,10 @@
 
   "base_url" : "http://localhost:8001",
   "activities" : {
-    "reconcile_medications" :  "$base_url/framework/med_coder/med_coder.html"
+    "reconcile_medications" :  "{base_url}/framework/med_coder/med_coder.html"
   },
 	
   "web_hooks" : { },
 
-  "icon" :  "$base_url/framework/med_coder/icon.png"
+  "icon" :  "{base_url}/framework/med_coder/icon.png"
 }

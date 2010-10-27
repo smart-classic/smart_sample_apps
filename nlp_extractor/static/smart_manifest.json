@@ -5,7 +5,6 @@
   "id" : "smart-med-extractor@apps.smartplatforms.org",
   "version" : ".1a",
   "mode" : "background",
-  "base_url" : "http://localhost:8003",
   "activities" : { },
   "web_hooks" : { }
 }

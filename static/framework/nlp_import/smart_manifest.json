@@ -8,15 +8,15 @@
 
 
   "activities" : {
-    "main" :  "$base_url/framework/nlp_import/nlp_import.html"
+    "main" :  "{base_url}/framework/nlp_import/nlp_import.html"
   },
 	
   "web_hooks" : { 
     "extract_meds_from_plaintext" : {
 	"description" : "Provides NLP-based medication extraction from free-text notes.",
-	"url" : "$base_url/webhook/extract_meds_from_plaintext"
+	"url" : "{base_url}/webhook/extract_meds_from_plaintext"
       }
   },
 
-  "icon" :  "$base_url/framework/nlp_import/icon.png"
+  "icon" :  "{base_url}/framework/nlp_import/icon.png"
 }

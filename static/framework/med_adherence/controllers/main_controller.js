@@ -38,7 +38,6 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 	    .html(this.view("chronics", {chronics: chronics}))
 	    .show("slide", {direction: "right"}, 150);
 	
-	//	$($("#chronic-div li").get(0)).click();
     },
  
    ".chronic_med click" : function(el) {
@@ -79,9 +78,7 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
        rval = Math.round(rval * 100)+"%";
 
        var dates= $("<br clear='all'/><span class='lscore'>"+d1+"<br />"+lval+"</span><span class='rscore'>"+d2+"<br />"+rval+"</span>");
-       //       var dates = $("<p class='date_range'>"+d1+"&mdash;" + d2+"</p>");
        var summary = $("<p class='summary'>&nbsp;</p>");
-       //       a.append(scores);
        a.append(canvas);
 
        this.draw_blocks(blocks, canvas);
@@ -103,18 +100,11 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
        var ppd =  pixels_per_day  = width / blocks.goods[blocks.goods.length-1].start * 1.0;
 
        var reserve = 0;
-       //       canvas.hide();
        canvas.attr("width", width);
        canvas.attr("height", height);
 
        var avd = canvas.parent();
-       //              $(".lscore", avd).css("top", (height*(1-blocks.mprs[0]))+"px");
-       //      $(".rscore", avd).css("top", (height*(1-blocks.mprs[blocks.mprs.length-1]))+"px");
-	      // $(".lscore", avd).css("top", (height*(1))+"px");
-       //       $(".rscore", avd).css("top", (height*(1))+"px");
-
        var xdelta = blocks.starts[blocks.starts.length-2];
-       //              $(".rscore", avd).css("right", (width-xdelta*ppd)+"px");
 
        canvas = canvas[canvas.length - 1];
        
@@ -132,50 +122,6 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 
 	       ctx.fillRect (g.start * ppd, bar_top, g.duration*ppd, bar_height);
 	   }	
-
-
-	   /*
-	   ctx.fillStyle = "rgba(200, 0, 0, .8)";
-	   for (var i = 0; i < blocks.bads.length; i++) {
-	       var b = blocks.bads[i];
-	       ctx.fillRect (b.start*ppd, height*reserve, b.duration*ppd, height*(1-reserve));	   
-	   }
-
-	   //	   ctx.fillRect ( width-2, height*reserve, 2, height*(1-reserve));
-
-	   ctx.strokeStyle='rgba(0,0,0,1)';
-	   ctx.lineWidth=2;
-	   ctx.lineJoin="miter"
-	   ctx.beginPath();
-	   ctx.moveTo(0, height);
-	   for (var i = 0; i < blocks.mprs.length; i++) {
-	       var m = blocks.mprs[i];
-	       var x= blocks.starts[i+1];
-	       ctx.moveTo(x*ppd, height);
-	       ctx.lineTo(x*ppd, height -2);
-	   }
-	   ctx.stroke();
-
-
-	   ctx.strokeStyle='rgba(0,0,0,1)';
-	   ctx.lineWidth=1;
-	   ctx.lineJoin="miter"
-	   for (var i = 0; i < blocks.mprs.length-1; i++) {
-	       var m = Math.min(1,blocks.mprs[i]);
-	       var x= blocks.starts[i+1];
-	       var x2= blocks.starts[i];
-	       var m2 = Math.min(blocks.mprs[i+1]);
-	       ctx.beginPath();
-	       
-	       ctx.lineTo(x*ppd, height * (1 - m2*(1-reserve)));;
-	       ctx.lineTo(x2*ppd, height * (1 - m2*(1-reserve)));
-	       ctx.stroke();
-	   }
-	   ctx.font = "20px Graublau Web";
-	   ctx.fillStyle = "Black";
-	   ctx.fillText("Sample String", 5, 30);
-*/
-
 
 	   ctx.strokeStyle='rgba(0,0,0,1)';
 	   ctx.lineWidth=1;

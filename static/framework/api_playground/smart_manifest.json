@@ -7,10 +7,10 @@
 
   "base_url" : "http://localhost:8001",
   "activities" : {
-    "main" :  "$base_url/framework/api_playground/api_playground.html"
+    "main" :  "{base_url}/framework/api_playground/api_playground.html"
   },
 	
   "web_hooks" : { },
 
-  "icon" :  "$base_url/framework/api_playground/icon.png"
+  "icon" :  "{base_url}/framework/api_playground/icon.png"
 }

@@ -7,11 +7,11 @@
 
   "base_url" : "http://localhost:8001",
   "activities" : {
-    "main" :              "$base_url/framework/med_list/med_list.html",
-    "view_medications" :  "$base_url/framework/med_list/med_list.html"
+    "main" :              "{base_url}/framework/med_list/med_list.html",
+    "view_medications" :  "{base_url}/framework/med_list/med_list.html"
   },
 	
   "web_hooks" : { },
 
-  "icon" :  "$base_url/framework/med_list/icon.png"
+  "icon" :  "{base_url}/framework/med_list/icon.png"
 }

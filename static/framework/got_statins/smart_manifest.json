@@ -7,11 +7,11 @@
 
   "base_url" : "http://localhost:8001",
   "activities" : {
-    "main" :              "$base_url/framework/got_statins/got_statins.html",
-    "view_medications" :  "$base_url/framework/got_statins/got_statins.html"
+    "main" :              "{base_url}/framework/got_statins/got_statins.html",
+    "view_medications" :  "{base_url}/framework/got_statins/got_statins.html"
   },
 	
   "web_hooks" : { },
 
-  "icon" :  "$base_url/framework/got_statins/icon.png"
+  "icon" :  "{base_url}/framework/got_statins/icon.png"
 }

@@ -1964,7 +1964,7 @@ SimileAjax.Graphics._FontRenderingContext.prototype.getLineHeight=function(){ret
 
 
 /* history.js */
-SimileAjax.History={maxHistoryLength:10,historyFile:"__history__.html",enabled:true,_initialized:false,_listeners:new SimileAjax.ListenerQueue(),_actions:[],_baseIndex:0,_currentIndex:0,_plainDocumentTitle:document.title};
+SimileAjax.History={maxHistoryLength:10,historyFile:"__history__.html",enabled:false,_initialized:false,_listeners:new SimileAjax.ListenerQueue(),_actions:[],_baseIndex:0,_currentIndex:0,_plainDocumentTitle:document.title};
 SimileAjax.History.formatHistoryEntryTitle=function(A){return SimileAjax.History._plainDocumentTitle+" {"+A+"}";
 };
 SimileAjax.History.initialize=function(){if(SimileAjax.History._initialized){return ;

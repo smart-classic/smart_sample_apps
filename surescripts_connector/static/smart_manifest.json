@@ -12,5 +12,5 @@
   "activities" : { },
   "web_hooks" : { },
 
-  "icon" :  "$base_url/icon.png"
+  "icon" :  "{base_url}/icon.png"
 }

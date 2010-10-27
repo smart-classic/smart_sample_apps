@@ -55,6 +55,7 @@ class SmartClient(OAuthClient):
             data = http_request.data or {}
         conn.request(http_request.method, path, data, header)
         r = conn.getresponse()
+        if (r.status == httplib.NOT_FOUND): raise Exception( "404")
         data = r.read()
         conn.close()
         return data
@@ -89,15 +90,15 @@ class SmartClient(OAuthClient):
                 
             return self.access_resource(req)
 
-    def post(self, url, data, content_type):
+    def post(self, url, data="", content_type="application/rdf+xml"):
             req = HTTPRequest('POST', '%s%s'%(self.baseURL, url), data=data, data_content_type=content_type)
             return self.access_resource(req,with_content_type=True)
         
-    def put(self, url, data, content_type):
+    def put(self, url, data="", content_type="application/rdf+xml"):
             req = HTTPRequest('PUT', '%s%s'%(self.baseURL, url), data=data, data_content_type=content_type)
             return self.access_resource(req,with_content_type=True)
 
-    def delete(self, url, data, content_type):
+    def delete(self, url, data="", content_type="application/rdf+xml"):
             req = HTTPRequest('DELETE', '%s%s'%(self.baseURL, url), data=data, data_content_type=content_type)
             return self.access_resource(req,with_content_type=True)
         
@@ -294,25 +295,26 @@ class SmartClient(OAuthClient):
 
 
     def loop_over_records(self):    
-        r = self.get("/apps/%s/tokens/records/first"%self.app_id)
-    
-        m = parse_rdf(r)
-        record = str(get_property(m, None, NS["sp"]["record"]))
-        record_id = record.split("http://smartplatforms.org/records/")[1]
+        r = self.post("/apps/%s/tokens/records/first"%self.app_id)
         
-        while record_id:
-            t = str(get_property(m, None, NS["sp"]["token"]))
-            s = str(get_property(m, None, NS["sp"]["secret"]))
-            try:
-                record_id = record.split("http://smartplatforms.org/records/")[1]
-            except: break
+        while r:
+            print r
+            p = {}
+            for pair in r.split('&'):
+                (k, v) = [urllib.unquote_plus(x) for x in pair.split('=')] 
+                p[k]=v
+        
+            record_id = p['smart_record_id']
+        
+            t = p['oauth_token']
+            s = p['oauth_token_secret']
+
             self.set_token(OAuthToken(token=t, secret=s))
             self.record_id = record_id
             yield record_id
             self.set_token(None)
             self.record_id = None
-            r = self.get("/apps/%s/tokens/records/%s/next"%(self.app_id, record_id))
-            m = parse_rdf(r)
-            record = str(get_property(m, None, NS["sp"]["record"]))
-            
-            
+            try:
+                r = self.post("/apps/%s/tokens/records/%s/next"%(self.app_id, record_id))
+            except:
+                break

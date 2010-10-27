@@ -6,4 +6,6 @@
 <a href="#adherence"><%= m.properName() %></a>
 </li>
 
-<% } %>
+<% } if (chronics.length == 0) { %>
+<li>No chronic meds in record</li>
+<%}%>
