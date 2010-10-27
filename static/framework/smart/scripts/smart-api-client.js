@@ -70,7 +70,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 			'app' : app_id,
 			'ready_data': ready_data
 			},
-				   success: callback||function(){}
+				   success: function(r){callback(r.contentType, r.data)}
 		});
 	};
 
@@ -84,7 +84,9 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		});
 	};
 
-
+	this.restart_activity = function(callback) {
+	    this.channel.call({method: "restart_activity", params: {}, success: callback||function(){}});
+	};
 
 
 SMART_CLIENT.prototype.MEDS_get = function(callback) {
