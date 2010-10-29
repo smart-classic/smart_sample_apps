@@ -107,6 +107,8 @@ from the provided list.
 		API.prescription_id = [];
 		API.problem_id = [];
 		API.note_id = [];
+		API.allergy_id = [];
+		
 		API.external_id = ['anything_you_like'];
 		API.external_med_id = ['anything_you_like'];
 		API.external_fill_id = ['anything_you_like'];
@@ -223,6 +225,61 @@ API.calls.push({url: '/records/{record_id}/notes/external_id/{external_id}',
 
 		
 /* 
+ *  Allergies
+ */
+ 
+ var sample_allergy_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
+<rdf:RDF\n\
+  xmlns:dcterms="http://purl.org/dc/terms/"\n\
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
+  xmlns:sp="http://smartplatforms.org/"\n\
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"\n\
+  xmlns:allergy="http://smartplatforms.org/allergy/">\n\
+  <rdf:Description>\n\
+      <rdf:type rdf:resource="http://smartplatforms.org/allergy"/>\n\
+      <allergy:severity rdf:resource="http://smartplatforms.org/allergy/severity/mild"/>\n\
+      <allergy:reaction>Erythema of lower extremities</allergy:reaction>\n\
+      <allergy:allergen>\n\
+      <rdf:Description>\n\
+        <allergy:category rdf:resource="http://smartplatforms.org/allergy/category/food" />\n\
+        <allergy:substance rdf:resource="http://fda.gov/UNII/QE1QX6B99R"/>\n\
+        <dcterms:title>Peanut</dcterms:title>\n\
+      </rdf:Description>\n\
+      </allergy:allergen>\n\
+   </rdf:Description>\n\
+</rdf:RDF>';
+
+API.calls.push({url: '/records/{record_id}/allergies/',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['POST', "application/rdf+xml"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						  	POST : sample_allergy_rdf
+						}
+					});
+
+					
+API.calls.push({url: '/records/{record_id}/allergies/{allergy_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {}
+					});
+
+API.calls.push({url: '/records/{record_id}/allergies/external_id/{external_id}',
+						methods: [['GET',"application/x-www-form-urlencoded"], 
+							      ['PUT',"application/rdf+xml"],
+							      ['DELETE', "application/x-www-form-urlencoded"]], 
+						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
+						sample_msg: {
+						PUT : sample_allergy_rdf
+						}
+					});
+
+				
+		
+/* 
  *  Meds
  */			
 var sample_med_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
@@ -288,17 +345,37 @@ API.calls.push({url: '/records/{record_id}/medications/external_id/{external_id}
 var sample_fill_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
   xmlns:sp="http://smartplatforms.org/"\n\
-  xmlns:dc="http://purl.org/dc/elements/1.1/">\n\
-   <rdf:Description>\n\
-		<rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>\n\
-		<dc:date>2010-06-15T04:00:00Z</dc:date>\n\
-		<sp:PBM>T00000000001011</sp:PBM>\n\
-		<sp:pharmacy>1453478</sp:pharmacy>\n\
-		<sp:dispenseQuantity>30</sp:dispenseQuantity>\n\
-   </rdf:Description>\n\
+  xmlns:dc="http://purl.org/dc/elements/1.1/"\n\
+  xmlns:dcterms="http://purl.org/dc/terms/"\n\
+  xmlns:v="http://www.w3.org/2006/vcard/ns#">\n\
+         <rdf:Description>\n\
+            <rdf:type rdf:resource="http://smartplatforms.org/fulfillment"/>\n\
+            <dc:date>2010-05-12T04:00:00Z</dc:date>\n\
+            <sp:prescriber>\n\
+              <rdf:Description>\n\
+                <dcterms:title>Josh Mandel</dcterms:title>\n\
+                <sp:NPI>5235235</sp:NPI>\n\
+                <sp:DEA>325555555</sp:DEA>\n\
+              </rdf:Description>\n\
+            </sp:prescriber>\n\
+            <sp:pharmacy>\n\
+              <rdf:Description>\n\
+                <dcterms:title>CVS #588</dcterms:title>\n\
+                <sp:NCPDPID>5235235</sp:NCPDPID>\n\
+                <v:adr>\n\
+                  <rdf:Description>\n\
+                    <v:street-address>111 Lake Drive</v:street-address>\n\
+                    <v:locality>WonderCity</v:locality>\n\
+                    <v:postal-code>5555</v:postal-code>\n\
+                    <v:country-name>Australia</v:country-name>\n\
+                  </rdf:Description>\n\
+                </v:adr>\n\
+              </rdf:Description>\n\
+            </sp:pharmacy>\n\
+            <sp:PBM>T00000000001011</sp:PBM>\n\
+            <sp:dispenseQuantity>30</sp:dispenseQuantity>\n\
+         </rdf:Description>\n\
 </rdf:RDF>';
-
-
 
 API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments/',
 						methods: [['GET',"application/x-www-form-urlencoded"], 
@@ -441,7 +518,7 @@ var build_api = function() {
 		
 		SMART.send_ready_message(function(record_info) {	
 			var loaded = 0;
-			var need_to_load = 3;
+			var need_to_load = 4;
 			
 			var done_loading = function() {
 				loaded++;
@@ -486,6 +563,16 @@ var build_api = function() {
 				for (var i = 0; i < vals.length; i++) {
 					var id = /\/notes\/([^/]*)/.exec(vals[i].m.value._string)[1];			
 					API.note_id.push(id);
+				}	
+				
+				done_loading();
+			});
+			
+			SMART.ALLERGIES_get(function(vals) {
+				var vals = vals.where("?m rdf:type sp:allergy");
+				for (var i = 0; i < vals.length; i++) {
+					var id = /\/allergies\/([^/]*)/.exec(vals[i].m.value._string)[1];			
+					API.allergy_id.push(id);
 				}	
 				
 				done_loading();

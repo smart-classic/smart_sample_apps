@@ -35,7 +35,7 @@ extend('Smart.Models.Problem',
 		this.rdf.prefix("sp","http://smartplatforms.org/");
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
 		this.rdf.prefix("umls","http://www.nlm.nih.gov/research/umls/");
-		       		
+		this.rdf.prefix("snomed-ct","http://www.ihtsdo.org/snomed-ct/");		       		
 		
 		var r = this.rdf.where("?problem rdf:type "+this.object_type);
 			
@@ -58,10 +58,10 @@ extend('Smart.Models.Problem',
 		.optional(this.nodeName() + " sp:notes ?notes")
 		.optional(this.nodeName() + " sp:onset ?onset")
 		.optional(this.nodeName() + " sp:resolution ?resolution")
-	    .optional(this.nodeName() + " umls:cui ?cui")[0];
+	    .optional(this.nodeName() + " snomed-ct:concept ?concept")[0];
 		
-		if (p.cui)
-			this.cui = p.cui.value;
+		if (p.concept)
+			this.concept= p.concept.value._string;
 		
 		this.title = p.title && p.title.type==='literal' ? p.title.value : "?title";
 		this.notes = p.notes && p.notes.type==='literal'? p.notes.value : "?notes";
@@ -77,12 +77,12 @@ extend('Smart.Models.Problem',
 		  .prefix('dc', 'http://purl.org/dc/elements/1.1/')
 		  .prefix('dcterms', 'http://purl.org/dc/terms/')
 		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-		  .prefix('umls', 'http://www.nlm.nih.gov/research/umls/');
+		  .prefix("snomed-ct","http://www.ihtsdo.org/snomed-ct/");
 
 		rdf.add('_:m rdf:type sp:problem .');
 		
-		if (this.cui)
-			rdf.add('_:m umls:cui "'+this.cui+'" .');
+		if (this.concept)
+			rdf.add('_:m snomed-ct:concept <'+this.concept+'> .');
 		
 		if (this.title)
 			rdf.add('_:m dcterms:title "'+this.title+'" .');

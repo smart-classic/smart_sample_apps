@@ -11,7 +11,7 @@
          var problem = problems[i];
 %>
 <tr class='problem' <%=problem %>>
-  <td><%= problem.cui %></td>
+  <td> <%= problem.concept.substr(problem.concept.lastIndexOf("/")+1) %></td>
   <td><%= problem.title %></td>
   <td><%= problem.notes%></td>
   <td><%= problem.onset %></td>

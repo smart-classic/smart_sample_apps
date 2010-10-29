@@ -254,6 +254,58 @@ SMART_CLIENT.prototype.NOTE_put = function(data, external_id, callback) {
 };
 
 
+SMART_CLIENT.prototype.ALLERGIES_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record_info.id + "/allergies/",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+};
+
+SMART_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'POST',
+		url : "/records/" + _this.record_info.id + "/allergies/",
+		contentType : 'application/rdf+xml',
+		data : data
+	}, function(contentType, data) {
+		callback(data);
+	});
+};
+
+SMART_CLIENT.prototype.ALLERGIES_delete = function(allergy_uri, callback) {
+	var _this = this;
+
+	this.api_call( {
+		method : 'DELETE',
+		url : allergy_uri,
+		data : {}
+	}, function(contentType, data) {
+		callback(data);
+	});
+};
+
+SMART_CLIENT.prototype.ALLERGY_put = function(data, external_id, callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'PUT',
+		url : "/records/" + _this.record_info.id + "/allergies/external_id/"
+				+ external_id,
+		contentType : 'application/rdf+xml',
+		data : data
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+};
+
+
+
 SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
 	var _this = this;
 	this.api_call( {
@@ -342,7 +394,7 @@ SMART_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
 			response(jQuery.map(json, function(item) {
 				return {
 					label : item.full_value,
-					value : item.umls_code
+					value : item.code
 				};
 			}));
 		})

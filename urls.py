@@ -18,4 +18,3 @@ urlpatterns = patterns('',
     (r'^echo_file$', echo_file),
     (r'^(?P<path>.*)$', 'django.views.static.serve', {'document_root': '%s/static/'%settings.APP_HOME})
 )
-

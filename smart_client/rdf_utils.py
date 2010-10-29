@@ -12,6 +12,7 @@ import datetime, time
 NS = {}
 NS['dc'] = RDF.NS('http://purl.org/dc/elements/1.1/')
 NS['dcterms'] = RDF.NS('http://purl.org/dc/terms/')
+NS['allergy'] = RDF.NS('http://smartplatforms.org/allergy/')
 NS['med'] = RDF.NS('http://smartplatforms.org/medication#')
 NS['umls'] = RDF.NS('http://www.nlm.nih.gov/research/umls/')
 NS['sp'] = RDF.NS('http://smartplatforms.org/')
@@ -51,9 +52,7 @@ def parse_rdf(string, model=None, context="none"):
     if model == None:
         model = RDF.Model() 
     parser = RDF.Parser()
-    try:
-        parser.parse_string_into_model(model, string.encode(), context)
-    except  RDF.RedlandError: pass
+    parser.parse_string_into_model(model, string.encode(), context)
     return model
 
 def get_property(model, s, p, raw_statement=False):
@@ -67,6 +66,7 @@ def get_property(model, s, p, raw_statement=False):
     r = list(r)
     assert len(r) <= 1, "Expect at most one %s on subject %s; got %s"%(p, s, len(r))
 
+    
     if len(r) == 0: return None
 
     node = r[0].object
@@ -161,3 +161,53 @@ def xslt_ccr_to_rdf(source, stylesheet):
 def apply_xslt(sourceDOM, stylesheetDOM):
     style = libxslt.parseStylesheetDoc(stylesheetDOM)
     return style.applyStylesheet(sourceDOM, None).serialize()
+
+class SMArtRecordManager(object):
+    def __init__(self, rdf):
+        self.rdf = rdf
+        self.model = parse_rdf(rdf)
+        self.medications = SMArtMedicationManager(self)
+        self.allergies = SMArtAllergyManager(self)
+        
+class SMArtObjectManager(object):
+    def __init__(self, om):
+        self.om = om
+        self.parse()
+
+    def parse(self):
+        all_uris = [t.subject for t in self.om.model.find_statements(RDF.Statement(None, NS['rdf']['type'], self.type))]
+        self.fill_in_details(all_uris)
+        
+class SMArtMedicationManager(SMArtObjectManager):
+    def __init__(self, om):
+        self.type = NS['sp']['medication']
+        super(SMArtMedicationManager, self).__init__(om)
+        
+    def fill_in_details(self, all_uris):
+        self.all= []
+        for med in all_uris:
+            m = SMArtObject()
+            m.uri =  med
+            m.drug = get_property(self.om.model, m.uri, NS['med']['drug'])
+            self.all.append(m)
+    
+class SMArtAllergyManager(SMArtObjectManager):
+    def __init__(self, om):
+        self.type = NS['sp']['allergy']
+        super(SMArtAllergyManager, self).__init__(om)
+    def fill_in_details(self, all_uris):
+        self.all= []
+        for allergy in all_uris:
+            a = SMArtObject()
+            a.uri =  allergy
+            
+            allergen = get_property(self.om.model, a.uri, NS['allergy']['allergen'], True)
+            allergen = list(allergen)[0].object            
+            substance = get_property(self.om.model, allergen, NS['allergy']['substance'])
+            
+            a.allergen = SMArtObject()
+            a.allergen.substance = substance
+            self.all.append(a)
+            
+class SMArtObject(object):
+    def __init__(self): pass

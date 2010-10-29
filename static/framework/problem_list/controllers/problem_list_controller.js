@@ -27,8 +27,7 @@ jQuery.Controller.extend('ProblemList.Controllers.ProblemListController',
 		jQuery('#ResolutionEntry').datepicker();
 		form.submit(function() {
 			var p = new Smart.Models.Problem();
-			
-			p.cui =  form.data("problem_code");
+			p.concept =  "http://www.ihtsdo.org/snomed-ct/concepts/"+form.data("problem_code");
 			p.title =  jQuery('#ProblemEntry').val();
 			p.onset = jQuery('#OnsetEntry').val();
 			p.resolution = jQuery('#ResolutionEntry').val();
