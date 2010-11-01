@@ -40,7 +40,13 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 	
     },
  
+	".restore_chronics click" : function(el) {
+	    $("#chronic-ul").show();
+	    $("#adherence-view").html("");
+	},
    ".chronic_med click" : function(el) {
+
+
     	$('#explanation').show();
     	$(".selected").removeClass("selected");
        el.addClass("selected");
@@ -92,6 +98,9 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 	       a.append(dates);
 	       a.append(summary);
 
+       $("#chronic-ul").hide();
+       $("#adherence-view").append($("<button class='restore_chronics'>Back to list</button>"));
+       window.scrollTo(0,0);
    },
 
        draw_blocks: function(blocks, canvas) {

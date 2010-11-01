@@ -45,11 +45,12 @@
     										 {format:'application/rdf+xml', 
 											  serialize: true});
 	
-				var ta = $("#TheAnswer");
-				ta.html("");
 				
 				// Run this graph through the 'check_allergies' webhook
 				SMART.webhook_post("check_allergies", serialized, function(rdf) {
+
+					var ta = $("#TheAnswer");
+					ta.html("");
 				
 					// And examine the result for any drug/allergy conflicts,
 					// displaying each to the user
