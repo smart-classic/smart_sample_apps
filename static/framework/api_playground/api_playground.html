@@ -516,7 +516,7 @@ var build_api = function() {
 
 
 		
-		SMART.send_ready_message(function(record_info) {	
+		SMART.send_ready_message(function(record_and_user_context) {	
 			var loaded = 0;
 			var need_to_load = 4;
 			
@@ -525,7 +525,7 @@ var build_api = function() {
 				if (loaded == need_to_load) build_api();
 			}
 			
-			API.record_id.push(record_info.id);
+			API.record_id.push(record_and_user_context.record.id);
 			
 			SMART.MEDS_get(function(meds) {
 				var vals = meds.where("?m rdf:type sp:medication");

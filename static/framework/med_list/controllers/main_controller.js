@@ -12,8 +12,8 @@ jQuery.Controller.extend('MedList.Controllers.MainController',
 
 		SMART = new SMART_CLIENT(ORIGIN, FRAME);
 		
-		SMART.send_ready_message(function(record_info) {	
-			  	$("#UserDisplay").html(record_info.full_name)
+		SMART.send_ready_message(function(user_and_record_context) {	
+			  	$("#UserDisplay").html(user_and_record_context.record.full_name)
 				$("#MedList").med_list_med_list();
 				});
 

@@ -1,6 +1,5 @@
 /*
  * SMArt API client
- *
  * Josh Mandel
  * Ben Adida
  */
@@ -35,13 +34,13 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.channel.bind("activityforeground", this.callback(function() {this.message_receivers.foreground();}));
 	    this.channel.bind("activitybackground", this.callback(function() {this.message_receivers.background();}));
 		
-	    this.credentials = message.credentials;
-	    this.record_info = message.record_info;
+	    this.user = message.user;
+	    this.record = message.record;
 	    this.ready_data = message.ready_data;
 		
 	    var _this = this;
 	    this.CAPABILITIES_get(function() {
-		    _this.ready_callback(_this.record_info, _this.ready_data);
+		    _this.ready_callback({user: message.user, record: message.record}, _this.ready_data);
 		});
 	    
 	};
@@ -93,7 +92,7 @@ SMART_CLIENT.prototype.MEDS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
-		url : "/records/" + _this.record_info.id + "/medications/",
+		url : "/records/" + _this.record.id + "/medications/",
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
@@ -108,7 +107,7 @@ SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
-		url : "/records/" + _this.record_info.id + "/medications/",
+		url : "/records/" + _this.record.id + "/medications/",
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
@@ -120,7 +119,7 @@ SMART_CLIENT.prototype.MEDS_delete = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'DELETE',
-		url : "/records/" + _this.record_info.id + "/medications/",
+		url : "/records/" + _this.record.id + "/medications/",
 		data : {}
 	}, function(contentType, data) {
 		callback(data);
@@ -142,7 +141,7 @@ SMART_CLIENT.prototype.MED_put = function(data, external_id, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
-		url : "/records/" + _this.record_info.id + "/medications/external_id/"
+		url : "/records/" + _this.record.id + "/medications/external_id/"
 				+ external_id,
 		contentType : 'application/rdf+xml',
 		data : data
@@ -157,7 +156,7 @@ SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
-		url : "/records/" + _this.record_info.id + "/problems/",
+		url : "/records/" + _this.record.id + "/problems/",
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
@@ -169,7 +168,7 @@ SMART_CLIENT.prototype.PROBLEMS_post = function(data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
-		url : "/records/" + _this.record_info.id + "/problems/",
+		url : "/records/" + _this.record.id + "/problems/",
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
@@ -193,7 +192,7 @@ SMART_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
-		url : "/records/" + _this.record_info.id + "/problems/external_id/"
+		url : "/records/" + _this.record.id + "/problems/external_id/"
 				+ external_id,
 		contentType : 'application/rdf+xml',
 		data : data
@@ -207,7 +206,7 @@ SMART_CLIENT.prototype.NOTES_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
-		url : "/records/" + _this.record_info.id + "/notes/",
+		url : "/records/" + _this.record.id + "/notes/",
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
@@ -219,7 +218,7 @@ SMART_CLIENT.prototype.NOTES_post = function(data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
-		url : "/records/" + _this.record_info.id + "/notes/",
+		url : "/records/" + _this.record.id + "/notes/",
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
@@ -243,7 +242,7 @@ SMART_CLIENT.prototype.NOTE_put = function(data, external_id, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
-		url : "/records/" + _this.record_info.id + "/notes/external_id/"
+		url : "/records/" + _this.record.id + "/notes/external_id/"
 				+ external_id,
 		contentType : 'application/rdf+xml',
 		data : data
@@ -258,7 +257,7 @@ SMART_CLIENT.prototype.ALLERGIES_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
-		url : "/records/" + _this.record_info.id + "/allergies/",
+		url : "/records/" + _this.record.id + "/allergies/",
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
@@ -270,7 +269,7 @@ SMART_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
-		url : "/records/" + _this.record_info.id + "/allergies/",
+		url : "/records/" + _this.record.id + "/allergies/",
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
@@ -294,7 +293,7 @@ SMART_CLIENT.prototype.ALLERGY_put = function(data, external_id, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
-		url : "/records/" + _this.record_info.id + "/allergies/external_id/"
+		url : "/records/" + _this.record.id + "/allergies/external_id/"
 				+ external_id,
 		contentType : 'application/rdf+xml',
 		data : data
@@ -407,7 +406,7 @@ SMART_CLIENT.prototype.SPARQL = function(query, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
-		url : "/records/" + _this.record_info.id + "/sparql",
+		url : "/records/" + _this.record.id + "/sparql",
 		data : {
 			q : query
 		}
@@ -515,6 +514,7 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 
 
 var loadDependencies = function(callback) {
+	
 	var load = function(filenames) {
 		load.getScripts(filenames);
 	}

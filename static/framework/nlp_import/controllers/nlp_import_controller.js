@@ -20,7 +20,7 @@ jQuery.Controller.extend('NlpImport.Controllers.NlpImportController',
 			SMART.restart_activity(function(){window.location.reload();});
 		}
 	};
-	SMART.send_ready_message(function(record_info) {});
+	SMART.send_ready_message(function(user_and_record_context) {});
 	
 	$('#bb_upload').change(function() {
 		$('#bb_file_form').submit();

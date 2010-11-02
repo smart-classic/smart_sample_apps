@@ -20,7 +20,7 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
 			window.location.reload();
 		}
 	};
-	SMART.send_ready_message(function(record_info) {});
+	SMART.send_ready_message(function(user_and_record_context) {});
 	
 
 	

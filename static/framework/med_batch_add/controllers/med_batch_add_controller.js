@@ -13,7 +13,7 @@ jQuery.Controller.extend('MedBatchAdd.Controllers.MedBatchAddController',
 		FRAME = window.top;
 	
 		SMART = new SMART_CLIENT(ORIGIN, FRAME);
-		SMART.send_ready_message(this.callback(function(record_info, incoming_data) {
+		SMART.send_ready_message(this.callback(function(user_and_record_context, incoming_data) {
 			if (incoming_data.rdf) {
 			  var rdf = SMART.process_rdf("xml", incoming_data.rdf);
 		      this.meds = Smart.Models.Med.saveRDF(rdf)[0];

@@ -14,7 +14,7 @@ jQuery.Controller.extend('MedCoder.Controllers.MedCoderController',
 		FRAME = window.top;
 	
 		SMART = new SMART_CLIENT(ORIGIN, FRAME);
-		SMART.send_ready_message(this.callback(function(record_info, med_xml) {
+		SMART.send_ready_message(this.callback(function(user_and_record_context, med_xml) {
 			if (med_xml) {
 				this.init_wizard(med_xml);
 			}
