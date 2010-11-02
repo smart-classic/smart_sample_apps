@@ -5,6 +5,7 @@
   "id" : "med-adherence@apps.smartplatforms.org",
   "version" : ".1a",
   "base_url" : "http://localhost:8001",
+  "mode" : "ui",
   "activities" : {
     "main" :              "{base_url}/framework/med_adherence/med_adherence.html",
     "view_medications" :  "{base_url}/framework/med_adherence/med_adherence.html"

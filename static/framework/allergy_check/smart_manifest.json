@@ -6,6 +6,9 @@
   "version" : ".1a",
 
   "base_url" : "http://localhost:8001",
+
+  "mode" : "ui",
+
   "activities" : {
     "main" :              "{base_url}/framework/allergy_check/allergy_check.html"
   },

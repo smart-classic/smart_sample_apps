@@ -5,7 +5,7 @@
   "id" : "med-adder@apps.smartplatforms.org",
   "version" : ".1a",
   "base_url" : "http://localhost:8001",
-
+  "mode" : "ui",
   "activities" : {
     "batch_add_medications" :     "{base_url}/framework/med_batch_add/med_batch_add.html"
   },

@@ -6,7 +6,7 @@
   "version" : ".1a",
   "base_url" : "http://localhost:8001",
 
-
+  "mode" : "ui", 
   "activities" : {
     "main" :  "{base_url}/framework/blue_button_import/blue_button_import.html"
   },
