@@ -91,10 +91,10 @@ extend('Smart.Models.Problem',
 			rdf.add('_:m sp:notes "'+this.notes+'" .');
 		
 		if (this.onset)
-			rdf.add('_:m sp:notes "'+this.onset+'" .');
+			rdf.add('_:m sp:onset "'+this.onset+'" .');
 
 		if (this.resolution)
-			rdf.add('_:m sp:notes "'+this.resolution+'" .');
+			rdf.add('_:m sp:resolution "'+this.resolution+'" .');
 		
 		return jQuery.rdf.dump(rdf.databank.triples(), {format:'application/rdf+xml', serialize: true});
 	},

@@ -342,6 +342,10 @@ API.calls.push({url: '/records/{record_id}/medications/external_id/{external_id}
 					});
 
 
+/* 
+ *  Fulfillments
+ */			
+
 var sample_fill_rdf = '<?xml version="1.0" encoding="utf-8"?>\n\
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n\
   xmlns:sp="http://smartplatforms.org/"\n\
@@ -388,7 +392,7 @@ API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillme
 					});
 
 
-API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments/{fullfillment_id}',
+API.calls.push({url: '/records/{record_id}/medications/{medication_id}/fulfillments/{fulfillment_id}',
 						methods: [['GET',"application/x-www-form-urlencoded"],  
 							      ['DELETE', "application/x-www-form-urlencoded"]], 
 						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
@@ -401,7 +405,7 @@ API.calls.push({url: '/records/{record_id}/medications/external_id/{external_med
 							      ['DELETE', "application/x-www-form-urlencoded"]], 
 						doc_url: 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API_Reference#',
 						sample_msg: {
-						  	PUT : sample_fill_rdf
+						  	PUT : sample_fill_rdf 
 						}
 					});
 

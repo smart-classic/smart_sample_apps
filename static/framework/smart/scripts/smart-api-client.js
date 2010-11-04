@@ -595,7 +595,7 @@ var loadDependencies = function(callback) {
 		}
 	};
 
-	need_jschannel.url = "http://github.com/mozilla/jschannel/raw/master/src/jschannel.js";
+	need_jschannel.url = "http://sandbox.smartplatforms.org/static/smart_ui_server/resources/jschannel.js";
 
 	var funcs = [ need_jquery, need_ui, need_rdf, need_jschannel ];
 
