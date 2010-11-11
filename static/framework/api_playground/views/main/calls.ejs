@@ -1,0 +1,41 @@
+<%
+var t = type;
+var cs = type.callsForDisplay();
+var cs_one = cs["one by ID"];
+var cs_ext = cs["one by external key"];
+var cs_many = cs["many"];
+%>
+<div>
+<h1>Available API calls for <b><%= t.name %></b>:</h1>
+<table id='calls'>
+<% if (cs_one.length > 0) { %>
+<tr class="call" <%=cs_one[0]%>><td>	One at a time (by ID):</td>  
+	<td>
+	<% for (var i = 0; i < cs_one[0].methods.length; i++) { %>
+	<button><%=cs_one[0].methods[i]%></button>
+	<% } %>
+	</td>
+</tr>	
+<% } %>
+
+<% if (cs_ext.length > 0) { %>
+<tr class="call" <%=cs_ext[0]%>><td>	One at a time (by external key):</td>  
+	<td>
+	<% for (var i = 0; i < cs_ext[0].methods.length; i++) { %>
+	<button><%=cs_ext[0].methods[i]%></button>
+	<% } %>
+	</td>
+</tr>	
+<% } %>
+
+<% if (cs_many.length > 0) { %>
+<tr class="call" <%=cs_many[0]%>><td>	All:</td>  
+<td>
+	<% for (var i = 0; i < cs_many[0].methods.length; i++) { %>
+	<button><%=cs_many[0].methods[i]%></button>
+	<% } %>
+	</td>
+</tr>
+<% } %>
+</table>
+</div>

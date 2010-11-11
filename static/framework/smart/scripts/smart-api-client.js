@@ -87,6 +87,19 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.channel.call({method: "restart_activity", params: {}, success: callback||function(){}});
 	};
 
+SMART_CLIENT.prototype.ONTOLOGY_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/ontology/",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+};
+
+	
 
 SMART_CLIENT.prototype.MEDS_get = function(callback) {
 	var _this = this;
@@ -482,21 +495,17 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	var rdf = jQuery.rdf();
 	rdf.base("");
 
-	try {
-		var t1 = new Date().getTime();
 		rdf.load(d, {});
-		var t2 = new Date().getTime();
-//		alert("parsed in " + (t2-t1) + ".");
 		// Load all the namespaces from the xml+rdf into jquery.rdf
 		for ( var i = 0; i < d.firstChild.attributes.length; i++) {
 			a = d.firstChild.attributes[i];
-			var match = /xmlns:(.*)/i.exec(a.nodeName);
-			if (match.length == 2) {
-				rdf.prefix(match[1], a.nodeValue);
-			}
+			try {
+				var match = /xmlns:(.*)/i.exec(a.nodeName);
+				if (match.length == 2) {
+					rdf.prefix(match[1], a.nodeValue);
+				}
+			} catch (err) {}
 		}
-	} catch (err) {
-	}
 
 	rdf.prefix("sp", "http://smartplatforms.org/");
 	rdf.prefix("dc","http://purl.org/dc/elements/1.1/");

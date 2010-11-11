@@ -1,0 +1,72 @@
+body {
+    background: white;
+    border-left: 1px solid black;
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+@font-face {
+    font-family: "Graublau Web";
+    src: url("GraublauWeb.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Graublau Web Bold";
+    font-weight: bold;
+    src: url("GraublauWebBold.woff") format("woff");
+}
+
+
+.methods {
+    color:#8B838B;
+    font-family:"Graublau Web Bold";
+    font-weight: bold;
+	float: left;
+}
+
+INPUT.interpolation-field {
+	width: 30em;
+	font-family: courier,fixed-width;
+}
+
+table#calls {
+		border-bottom: 1px solid black;
+		margin-bottom: 1em;
+	}
+
+#type-nav {
+	padding-right: 1em;
+	border-right: 1px dashed #2B333B;
+	height: 100%;
+	margin-right: 1em;
+    float: left;
+    color:#2B333B;
+    font-family:"Graublau Web Bold";
+    font-size:18px;
+    font-weight:normal;
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
+#type-heading h1 {
+    font-family:"Graublau Web";
+    font-size:1.5em;
+}
+
+#response, #payload {
+    font-size:0.8em;
+    position: relative;
+	width: 50em;
+	font-family: courier,fixed-width;
+}
+
+#payload {height: 20em;}
+#response {
+	padding: .5em;
+	border: 1px dotted black;	
+}
+
+LI {
+	list-style-type: none;
+}
+

@@ -1,0 +1,16 @@
+<span>
+SMArt Types
+<ul id='smart-types'></ul>
+
+
+<%  for (var i = 0; i < types.length; i++)  {
+         var t = types[i];
+%>
+
+	<li class="type" <%=t  %>>
+		<a href="#type"><%= t.name %></a>
+	</li>
+
+<%}%>
+</ul>
+</span>
