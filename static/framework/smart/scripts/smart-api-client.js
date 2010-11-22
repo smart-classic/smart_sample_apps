@@ -91,7 +91,7 @@ SMART_CLIENT.prototype.ONTOLOGY_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
-		url : "/ontology/",
+		url : "/ontology",
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);

@@ -1,0 +1,21 @@
+<span>
+API Playground &mdash; Calls:
+<ul id='smart-types'>
+
+<%  for (var i = 0; i < groups.length; i++)  {
+         var g = groups[i];
+%>
+
+	<li class="type" <%=g  %>>
+		<a href="#type"><%= g.group_name %></a>
+	</li>
+
+<%}%>
+</ul>
+
+Welcome to the API Playground!  
+Choose a category above, then choose an API call.  
+We'll do our best to provide default values
+for any necessary fields, but feel free to 
+change these as you explore!  
+</span>

@@ -1,14 +1,51 @@
 $.Model.extend('ApiType',
 /* @Static */
 {
+	
 	init: function() {
-		this.types = {};	
+		this.types = [];	
 		this.url_param_reg = /\{.*?\}/g;
 		
 		this.interpolations = {lists: {}};
-		console.log("initting apitype");
+		//console.log("initting apitype");
 	},
-	 
+	
+	find_type: function(uri) {
+		console.log("finding type " + uri)
+		var r = $.grep(this.types, function(t){return (t.type == uri);});
+		return r[0];
+	},
+
+	find_all_types_and_calls: function() {
+		SMART.ONTOLOGY_get(function(ont) {
+			this.ontology = ont;
+			
+			// Get all types
+			var types = ont.where("?cls api:name ?class_name")			
+			   			   .where("?cls api:name_plural ?class_plural_name")			
+		   				   .where("?cls api:example ?class_example");
+			
+			for (var i = 0; i < types.length; i++) {
+				ApiType.create(types[i]);
+			}
+			
+			// Get all calls
+			var calls = ont.where("?call rdf:type api:call")				
+			   .where("?call api:path ?call_path")
+			   .where("?call api:target ?call_target")
+			   .where("?call api:category ?call_category")
+			   .where("?call api:method ?call_method")
+			   .where("?call api:by_internal_id ?call_by_internal_id");
+			
+			for (var i = 0; i < calls.length; i++) {
+				ApiCall.create(calls[i]);
+			}
+
+			ApiCallGroup.make_groups();
+		    OpenAjax.hub.publish("ontology_parsed");
+		});
+	},
+	
 	addInterpolationValue: function(field, value) {
 		if (this.interpolations.lists[field] === undefined)
 			this.interpolations.lists[field] = [];
@@ -35,20 +72,17 @@ $.Model.extend('ApiType',
 		return url;
 	},
 	
-	get_or_create: function(t) {
-		var searchClass = t.cls.value;
-		
-		var ret = this.types[searchClass];
-
-		if (ret === undefined) {
-			ret = new ApiType({type: searchClass });
-			ret.example = t.e.value;
-			ret.name = t.n.value;
-			console.log("creating type " + ret.example);	
-			this.types[searchClass] = ret;
-		}
+	create: function(t) {	
+		var ret = new ApiType({
+			type: t.cls.value._string,
+			name: t.class_name.value,
+			plural_name: t.class_plural_name.value,
+			example: t.class_example.value
+		});
+		this.types.push(ret);
 		return ret;
 	},
+
 	pathRegex: function(path) {
 		var b = path;
 		var fields = b.match(ApiType.url_param_reg);
@@ -79,7 +113,7 @@ $.Model.extend('ApiType',
 			return matches;
 		};
 		
-		console.log("regex " + b);
+		//console.log("regex " + b);
 		return ret;		
 	},	
 	
@@ -92,24 +126,22 @@ $.Model.extend('ApiType',
 	this.calls = [];
   },
 
-   fetchParameters: function() {
-   		
+  fetchParameters: function() {   		
    		var c = this.fetchParametersCall();
    		var base_regexes = [];
    		
 		$.each(ApiCall.calls, function(path, call) {
-			if ($.inArray("base_path", call.targets) === -1) return;
-			base_regexes.push(ApiType.pathRegex(call.path));	
+			if (call.method == "GET")
+				base_regexes.push(ApiType.pathRegex(call.path));	
 		});
 		
-   		var args = c.buildCallArgs("GET", "", function(contentType, data) {
+		var args = c.buildCallArgs("", function(contentType, data) {
    			var rdf = SMART.process_rdf(contentType, data);
 			var typed_entities = rdf.where("?s rdf:type ?p");
-			console.log("Typed entities available: " + typed_entities.length);
+			//console.log("Typed entities available: " + typed_entities.length);
 			
 			$.each(typed_entities, function() {
 				var entity_url = ""+this.s.value;
-
 				$.each(base_regexes, function() {
 					var matched = this(entity_url);
 					$.each(matched, function(fieldname, value) {
@@ -124,75 +156,22 @@ $.Model.extend('ApiType',
    		SMART.api_call(args[0], args[1]);
    },
 
-   fetchParametersCall: function() {
-		var c = $.grep(this.calls, 
-					function(c) {return ($.inArray("record_items", c.targets) >=0);});
-		
-		var parent_candidates = []
-		$.each(ApiCall.calls, function(i, possible_parent) {
-			if (possible_parent.path.length >= c[0].path.length) return;			
-			if (c[0].path.match(possible_parent.path)) c[0] = possible_parent;  
-		});
-		
-		return c[0];
+   fetchParametersCall: function() {	   
+	   var uri = this.type;
+  	   var c = $.grep(ApiCall.calls, function(c) {return c.method=="GET" && c.target === uri && c.category==="record_items";})[0];
+  	   return this.oldest_ancestor_call(c);
    },
-
-   addCall: function(c) {
-		if ($.inArray(c, this.calls) === -1) { 		
-			this.calls.push(c);
-			c.type = this;
-		} 
-		return;
-	},
-
-   parentBasePath: function() {
-		var c = $.grep(this.calls, 
-					function(c) {return ($.inArray("base_path", c.targets) >=0);});
+   
+   oldest_ancestor_call: function(c) {
+	   console.log("finding oldest ancestor for " + c)
+		var c = [c];  // prevent inner scope from creating a global variable.
 		
-		var parent_candidates = []
-		$.each(ApiCall.calls, function(i, possible_parent) {
-			if (possible_parent.path.length >= c[0].path.length) return;			
-			if (c[0].path.match(possible_parent.path)) c[0] = possible_parent;  
-		});
-		
-		return c[0].path;
-   },
-
-	
-	basePath: function(){
-		var ret = $.grep(this.calls, 
-					function(c) {return ($.inArray("base_path", c.targets) >=0);});
-				
-		if (ret.length == 0) return "nobasepath in " + this.calls.length;
-		return ret[0].path;
-	},
-	
-	callsForDisplay: function() {
-		var ret = {};
-		ret["many"] = [];
-		ret["one by ID"] = [];
-		ret["one by external key"] = [];
-		
-		for (var i=0; i < this.calls.length; i++) {
-			var c = this.calls[i];
-			if ($.inArray("record_item", c.targets) !== -1 &&
-				!c.path.match(/external_id/))
-			{
-				ret["one by ID"].push(c);
-			}
-			else if ($.inArray("record_item", c.targets) !== -1 &&
-				c.path.match(/external_id/))
-			{
-				ret["one by external key"].push(c);
-			}
-			else if ($.inArray("record_items", c.targets) !== -1) 
-			{
-				ret["many"].push(c);
-			}
-		} 
-		
-		return ret;
-	}
+ 		$.each(ApiCall.calls, function(i, possible_parent) {
+ 			if (possible_parent.path.length >= c[0].path.length) return;			
+ 			if (c[0].path.match(possible_parent.path)) c[0] = possible_parent;  
+ 		});
+ 		return c[0];   
+   }
 
 });
 
@@ -201,22 +180,19 @@ $.Model.extend('ApiCall',
 {
 
 	init: function() {
-		this.calls = {};
+		this.calls = [];
 		this.payload_methods = ['PUT', 'POST'];
 		},
 	
-	get_or_create: function(t) {
-		var searchPath = t.p.value;
+	create: function(t) {
 		
-		var ret = this.calls[searchPath];
-		if (ret === undefined) {
-			ret = new ApiCall({path: searchPath});
-			this.calls[searchPath] = ret;
-		}
-
-		ret.addMethod(t.m.value);
-		ret.addTarget(t.t.value);
+		ret = new ApiCall({path: t.call_path.value,
+						   target: t.call_target.value._string,
+						   category: t.call_category.value,
+						   method: t.call_method.value,
+						   by_internal_id: !!(t.call_by_internal_id.value ==="true")});
 		
+		this.calls.push(ret);
 		return ret;
 	}
 
@@ -225,43 +201,132 @@ $.Model.extend('ApiCall',
 {	
 	init: function()
 	{
-		this.methods = [];
-		this.targets = [];
-    },
-	
-	addMethod: function(m) {
-		if ($.inArray(m, this.methods) === -1) {
-			this.methods.push(m);
-			this.methods = this.methods.sort();	
-		}
-		return;
-	},
-	addTarget: function(t) {
-		if ($.inArray(t, this.targets) === -1 )
-			this.targets.push(t);
-		return;
+
 	},
 	
-	contentTypeForMethod: function(method) {
-		if ($.inArray(method, this.Class.payload_methods) !== -1) {
+	contentType: function() {
+		if ($.inArray(this.method, this.Class.payload_methods) !== -1) {
 			return "application/rdf+xml";
 		}
-		return "application/x-www-form-urlencoded"
+		return "application/x-www-form-urlencoded";
 	},
 	
-	callAPI: function(method, data, callback) {
-		var args = this.buildCallArgs(method, data, callback);
+	callAPI: function(data, callback) {
+		var args = this.buildCallArgs(data, callback);
 		SMART.api_call(args[0], args[1]);
 	},
 	
-	buildCallArgs: function(method, data, callback) {
+	buildCallArgs: function(data, callback) {
 		var call_args = [{
-			method: method, 
+			method: this.method, 
 			url: ApiType.interpolatedPath(this.path), 
-			contentType: this.contentTypeForMethod(method), 
+			contentType: this.contentType(), 
 			data: data || {}
 		}, callback];
 	
 		return call_args;
 	}
+});
+
+
+
+$.Model.extend('ApiCallGroup',
+/* @Static */
+{
+
+	init: function() {
+		this.groups= [];
+	},
+	
+	get_top_groups: function() {
+		var g = $.grep(this.groups, function(g) {return (g.group_parent === null);});
+		g.sort(function(a,b) {if (a.group_name === b.group_name) return 0; if (a.group_name < b.group_name) return -1; return 1;});
+		return g;
+	},
+	
+	make_groups: function() {
+		this.make_record_item_groups();
+	},
+	
+	make_record_item_groups: function() {
+		this.record_item_groups_by_path();
+		this.record_item_groups_by_target();
+		
+	},
+	
+	record_item_groups_by_path: function() {
+		var by_path = {};
+		
+		$.each(ApiCall.calls, function(i, call) {
+			if (by_path[call.path] === undefined )
+				by_path[call.path] = [];
+			by_path[call.path].push(call);
+		});
+		
+		var category_names = {"record_item": "Single Item ",
+							  "record_items": "All Items "};
+		
+		$.each(by_path, function(path, calls) {
+			var gn = category_names[calls[0].category];
+			
+			if (calls[0].category === "record_item") {
+				if (calls[0].by_internal_id === false) 
+					gn += "by external key";
+				else gn += "by id";
+			}
+
+			var p = {
+					   group_name: gn,
+					   group_members: calls,
+					   group_parent: null,
+					   group_indentation_hint: null,
+					   group_type: ApiType.find_type(calls[0].target)
+					 };
+			
+			var g = new ApiCallGroup({p: p})
+			ApiCallGroup.groups.push(g);
+		});
+	},
+	
+	record_item_groups_by_target: function() {
+		var by_target = {};
+		$.each(ApiCallGroup.groups, function(i, group) {
+			var t = group.group_members[0].target;
+			if (by_target[t] === undefined )
+				by_target[t] = [];
+			by_target[t].push(group);			
+		});
+		
+		$.each(by_target, function(target, groups) {
+			groups.sort(function(a,b) {if (a.group_name === b.group_name) return 0; if (a.group_name > b.group_name) return -1; return 1;});
+			
+			var t= ApiType.find_type(target);
+			var p = {
+					   group_name: t.name,
+					   group_members: groups,
+					   group_parent: null,
+					   group_indentation_hint: null,
+					   group_type: groups[0].group_type
+					 };
+			var parent = new ApiCallGroup({p: p});
+			ApiCallGroup.groups.push(parent);
+			$.each(groups, function(i,g) {g.group_parent = parent});
+		});
+	}
+
+},
+/* @Prototype */
+{	
+	init: function()
+	{
+		this.group_name = this.p.group_name;
+		this.group_members = this.p.group_members;
+		
+		// the group to which this belongs, if any
+		this.group_parent = this.p.group_parent;
+		
+		// e.g. fills should be indented below meds 
+		this.group_indentation_hint = this.p.group_indentation_hint;
+		this.group_type = this.p.group_type;
+    },    
 });

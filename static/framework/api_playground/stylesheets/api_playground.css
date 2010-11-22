@@ -1,6 +1,9 @@
 body {
     background: white;
-    border-left: 1px solid black;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    
     margin-left: 0px;
     padding-left: 0px;
 }
@@ -24,6 +27,11 @@ body {
 	float: left;
 }
 
+INPUT.interpolation-field[disabled='true'] {
+ 
+}
+
+
 INPUT.interpolation-field {
 	width: 30em;
 	font-family: courier,fixed-width;
@@ -34,21 +42,28 @@ table#calls {
 		margin-bottom: 1em;
 	}
 
-#type-nav {
-	padding-right: 1em;
-	border-right: 1px dashed #2B333B;
-	height: 100%;
-	margin-right: 1em;
-    float: left;
-    color:#2B333B;
+#type-nav UL {
     font-family:"Graublau Web Bold";
     font-size:18px;
-    font-weight:normal;
-    padding-top: 0px;
-    margin-top: 0px;
+    font-weight:bold;
+}
+#type-nav {
+	padding-left: .2em;
+	padding-right: .2em;
+   font-family:"Graublau Web";
+   font-size:14px;
+   font-weight:normal;
+   float: left;
+   color:#2B333B;
+   padding-top: 0px;
+   margin-top: 0px;
+   width: 300px;
+	height: 100%;
+	background:  LightBlue;
 }
 
-#type-heading h1 {
+
+#type-heading .available {
     font-family:"Graublau Web";
     font-size:1.5em;
 }
@@ -63,6 +78,7 @@ table#calls {
 #payload {height: 20em;}
 #response {
 	padding: .5em;
+	margin-left: .8em;
 	border: 1px dotted black;	
 }
 

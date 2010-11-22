@@ -1,16 +1,26 @@
 <span>
-SMArt Types
-<ul id='smart-types'></ul>
+API Playground &mdash; Types:
+<ul id='smart-types'>
 
 
 <%  for (var i = 0; i < types.length; i++)  {
          var t = types[i];
+         var name = t.name;
+         var mj = t.depth();
+         var d = "";
+         for (var j = 0; j < mj; j++) d += "&nbsp;&nbsp;";
 %>
 
 	<li class="type" <%=t  %>>
-		<a href="#type"><%= t.name %></a>
+		<%= d %><a href="#type"><%= name %></a>
 	</li>
 
 <%}%>
 </ul>
+
+Welcome to the API Playground!  
+Choose a type above, then choose an API call.  
+We'll do our best to provide default values
+for any necessary fields, but feel free to 
+change these as you explore!  
 </span>
