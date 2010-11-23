@@ -37,7 +37,17 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.user = message.user;
 	    this.record = message.record;
 	    this.ready_data = message.ready_data;
-		
+	    
+	    if (message.credentials !== undefined ){
+		    this.credentials = message.credentials;
+		    var c = "oauth_token="+this.credentials.token+
+		    		"&oauth_token_secret="+this.credentials.secret+
+		    		"&smart_record_id="+this.record.id+
+		    		"&smart_user_id="+this.user.id;		    
+		    
+		    document.cookie = 'smart_credentials='+encodeURIComponent(c)+";path=/";;
+	    }
+
 	    var _this = this;
 	    this.CAPABILITIES_get(function() {
 		    _this.ready_callback({user: message.user, record: message.record}, _this.ready_data);
