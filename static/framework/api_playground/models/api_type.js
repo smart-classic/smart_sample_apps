@@ -11,7 +11,7 @@ $.Model.extend('ApiType',
 	},
 	
 	find_type: function(uri) {
-		console.log("finding type " + uri)
+	//		console.log("finding type " + uri)
 		var r = $.grep(this.types, function(t){return (t.type == uri);});
 		return r[0];
 	},
@@ -163,7 +163,7 @@ $.Model.extend('ApiType',
    },
    
    oldest_ancestor_call: function(c) {
-	   console.log("finding oldest ancestor for " + c)
+	//	   console.log("finding oldest ancestor for " + c)
 		var c = [c];  // prevent inner scope from creating a global variable.
 		
  		$.each(ApiCall.calls, function(i, possible_parent) {

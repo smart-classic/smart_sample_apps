@@ -45,7 +45,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		    		"&smart_record_id="+this.record.id+
 		    		"&smart_user_id="+this.user.id;		    
 		    
-		    document.cookie = 'smart_credentials='+encodeURIComponent(c)+";path=/";;
+		    document.cookie = 'smart_credentials='+encodeURIComponent(c)+";path=/";
 	    }
 
 	    var _this = this;
