@@ -40,7 +40,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    
 	    if (message.credentials !== undefined ){
 		    this.credentials = message.credentials;
-		    document.cookie = 'oauth_cookie='+this.credentials.oauth_cookie+";path=/";
+		    document.cookie = 'smart_oauth_cookie='+this.credentials.oauth_cookie+";path=/";
 	    }
 
 	    var _this = this;
