@@ -31,8 +31,15 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.channel.destroy();
 	    this.channel = Channel.build({window: frame, origin: "*", scope: message.activity_id, debugOutput: debug});
 
-	    this.channel.bind("activityforeground", this.callback(function() {this.message_receivers.foreground();}));
-	    this.channel.bind("activitybackground", this.callback(function() {this.message_receivers.background();}));
+	    this.channel.bind("activityforeground", this.callback(function() {
+			if (this.message_receivers.foreground !== undefined)
+			    this.message_receivers.foreground();
+		    }));
+
+	    this.channel.bind("activitybackground", this.callback(function() {
+			if (this.message_receivers.background !== undefined)
+			this.message_receivers.background();
+		    }));
 		
 	    this.user = message.user;
 	    this.record = message.record;
@@ -435,7 +442,19 @@ SMART_CLIENT.prototype.SPARQL = function(query, callback) {
 };
 
 SMART_CLIENT.prototype.createXMLDocument = function(string) {
-	return (new DOMParser()).parseFromString(string, 'text/xml');
+    var parser, xmlDoc;
+    if (window.DOMParser)
+	{
+	    parser = new DOMParser();
+	    xmlDoc = parser.parseFromString(string, 'text/xml');
+	}
+    else
+	{
+	    xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
+	    xmlDoc.async = 'false';
+	    xmlDoc.loadXML(string);
+	}
+    return xmlDoc;
 };
 
 SMART_CLIENT.prototype.node_name = function(node) {
@@ -502,15 +521,20 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 
 		rdf.load(d, {});
 		// Load all the namespaces from the xml+rdf into jquery.rdf
-		for ( var i = 0; i < d.firstChild.attributes.length; i++) {
-			a = d.firstChild.attributes[i];
-			try {
-				var match = /xmlns:(.*)/i.exec(a.nodeName);
-				if (match.length == 2) {
-					rdf.prefix(match[1], a.nodeValue);
-				}
-			} catch (err) {}
+	var r = d.childNodes[0];
+	if (r.nodeName !== "RDF" && r.nodeName !== "rdf:RDF")
+	    r = d.childNodes[1];
+
+	
+	for ( var i = 0; i < r.attributes.length; i++) {
+	    a = r.attributes[i];
+	    try {
+		var match = /xmlns:(.*)/i.exec(a.nodeName);
+		if (match.length == 2) {
+		    rdf.prefix(match[1], a.nodeValue);
 		}
+	    } catch (err) {}
+	}
 
 	rdf.prefix("sp", "http://smartplatforms.org/");
 	rdf.prefix("dc","http://purl.org/dc/elements/1.1/");

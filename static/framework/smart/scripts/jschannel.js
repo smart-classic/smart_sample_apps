@@ -535,6 +535,7 @@
 
             obj.bind('__ready', onReady);
             setTimeout(function() {
+ 	        if (cfg.origin !== null)
                 postMessage({ method: scopeMethod('__ready'), params: "ping" }, true);
             }, 0);
 
