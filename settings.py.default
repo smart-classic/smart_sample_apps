@@ -4,6 +4,12 @@
 
 APP_HOME = "/home/jmandel/smart/smart_sample_apps"
 
+AC_OAUTH = {
+  'consumer_key': 'allergy-check@apps.smartplatforms.org', 
+  'consumer_secret': 'smartapp-secret'
+}
+
+
 SS_OAUTH = {
   'consumer_key': 'smart-connector@apps.smartplatforms.org', 
   'consumer_secret': 'smartapp-secret'

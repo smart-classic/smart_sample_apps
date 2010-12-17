@@ -16,7 +16,8 @@
   "web_hooks" : { 
     "check_allergies" : {
 		"description" : "Convert Allergies and Meds to RxNorm ingredients, and cross-check.",
-		"url" : "{base_url}/webhook/check_allergies"
+		"url" : "{base_url}/webhook/check_allergies",
+		"requires_patient_context" : true
       }
   },
   

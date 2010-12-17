@@ -10,45 +10,12 @@
   	...
   </ui> 
   
-	
 	<script  src='../smart/scripts/smart-api-client.js'></script>
 	<script>
 		SMART = new SMART_CLIENT(null, window.top);
 		
 		SMART.send_ready_message(function(record_info) {
-		
-			// Keep track of the data we've obtained.	
-			var got = {combined: $.rdf()};
-			
-			// Get and store a set of medications
-			SMART.MEDS_get(function(r) {
-				$.each(r.databank.triples(), function(){got.combined.databank.add(this);});
-				got.meds = true;
-				check_done();
-			});
-			
-			// Get and store a set of allergies
-			SMART.ALLERGIES_get(function(r) {
-				$.each(r.databank.triples(), function(){got.combined.databank.add(this);});
-				got.allergies = true;
-				check_done();
-			});
-			
-			
-			var check_done = function() {
-						
-				// Wait until both meds + allergies have arrived (asynchronously)
-				if (!(got.meds && got.allergies)) return;
-
-				// Combined them into a single RDF graph, and serialize it
-				var serialized = $.rdf.dump(got.combined.databank.triples(), 
-    										 {format:'application/rdf+xml', 
-											  serialize: true});
-	
-				
-				// Run this graph through the 'check_allergies' webhook
-				SMART.webhook_post("check_allergies", serialized, function(rdf) {
-
+				SMART.webhook_post("check_allergies", {}, function(rdf) {
 					var ta = $("#TheAnswer");
 					ta.html("");
 				
@@ -60,9 +27,7 @@
 					
 					// Phew!
 					if (ta.html() === "") ta.html("None");
-					
 				});
-			};
 		});
 	</script>
   </body>

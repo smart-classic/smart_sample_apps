@@ -5,6 +5,8 @@ from string import Template
 import psycopg2
 import psycopg2.extras
 import sys, re
+import smart_client
+from smart_client import oauth, smart
 from smart_client.rdf_utils import *
 import RDF
 
@@ -14,13 +16,29 @@ conn = psycopg2.connect("dbname='%s' user='%s' password='%s'" %
                            settings.DATABASE_PASSWORD))
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+
+def get_smart_client(request):
+    oa_params = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
+    resource_tokens={'oauth_token':       oa_params['smart_oauth_token'],
+                     'oauth_token_secret':oa_params['smart_oauth_token_secret']}
+
+    ret = smart.SmartClient(settings.AC_OAUTH['consumer_key'], settings.SMART_SERVER_PARAMS, settings.AC_OAUTH, resource_tokens)
+    ret.record_id = oa_params['smart_record_id']
+    return ret
+
 def check_allergies(request):
-    patient_graph = request.raw_post_data
+    sc = get_smart_client(request)
+    meds = sc.get("/records/%s/medications/"%sc.record_id)
+    allergies = sc.get("/records/%s/allergies/"%sc.record_id)
+
+    m = SMArtRecordManager(meds)
+    a = SMArtRecordManager(allergies)
+        
+    print "And parsed", m.allergies.all, m.medications.all
     
-    m = SMArtRecordManager(patient_graph)    
     r = check_allergies_helper( 
-                               [a.allergen.substance for a in m.allergies.all],
-                               [med.drug for med in m.medications.all]
+                               [i.allergen.substance for i in a.allergies.all],
+                               [i.drug for i in m.medications.all]
                               )
     
     print "Allergy Conflicts: ", r
