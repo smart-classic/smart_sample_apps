@@ -28,8 +28,8 @@ def get_smart_client(request):
 
 def check_allergies(request):
     sc = get_smart_client(request)
-    meds = sc.get("/records/%s/medications/"%sc.record_id)
-    allergies = sc.get("/records/%s/allergies/"%sc.record_id)
+    meds = sc.records_X_medications_GET()
+    allergies = sc.records_X_allergies_GET()
 
     m = SMArtRecordManager(meds)
     a = SMArtRecordManager(allergies)

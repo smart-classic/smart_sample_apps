@@ -8,8 +8,11 @@ from oauth import *
 from rdf_utils import *
 import time
 import RDF
-    
+import generate_api
+     
 class SmartClient(OAuthClient):
+    ontology = None
+    
     def __init__(self, app_id, server_params, consumer_token, resource_token=None):
         # create an oauth client
         consumer = OAuthConsumer(consumer_key = consumer_token['consumer_key'], 
@@ -25,6 +28,11 @@ class SmartClient(OAuthClient):
         self.saved_ids = {}
         self.app_id = app_id
         self.stylesheet = None
+
+        if (self.__class__.ontology == None):
+            self.__class__.ontology = self.get("/ontology")     
+            generate_api.augment(self.__class__)
+            
         print "Done init sc"
 
     def access_resource(self, http_request, oauth_parameters = {}, with_content_type=False):
@@ -59,30 +67,12 @@ class SmartClient(OAuthClient):
         data = r.read()
         conn.close()
         return data
-    
-    @property
-    def storage_endpoint(self):
-        return "/app_storage/%s/"%self.app_id
-    
-    def post_rdf_store(self, graph):
-        return self.post(self.storage_endpoint, serialize_rdf(graph), "application/rdf+xml")
-    
-    def delete_rdf_store(self, sparql):
-        print "Endpoint: ", self.storage_endpoint
-        return self.delete(self.storage_endpoint, urllib.urlencode({'SPARQL' : sparql}), "application/x-www-form-urlencoded")
-        
-    def get_rdf_store(self, sparql=None):
-        data = None
-        ct = "application/x-www-form-urlencoded"
-        
-        if sparql:
-            data = urllib.urlencode({ "SPARQL": sparql })
-        
-        
-        return self.get(self.storage_endpoint, data, ct)
-        
+            
     def get(self, url, data=None, content_type=None):
             req = None
+            print url, data, content_type
+            if isinstance(data, dict): data = urllib.urlencode(data)
+            
             if (content_type):
                 req = HTTPRequest('GET', '%s%s'%(self.baseURL, url), data=data)
             else:
@@ -101,10 +91,6 @@ class SmartClient(OAuthClient):
     def delete(self, url, data="", content_type="application/rdf+xml"):
             req = HTTPRequest('DELETE', '%s%s'%(self.baseURL, url), data=data, data_content_type=content_type)
             return self.access_resource(req,with_content_type=True)
-        
-    def post_med_ccr(self, record_id, data):
-            return self.post("/med_store/records/%s/"%record_id, data, "application/xml" )
-
 
     def update_token(self, token):
         self.set_token(OAuthToken(token=token.token, secret = token.secret))
@@ -141,11 +127,9 @@ class SmartClient(OAuthClient):
         ret['birthday'] = get_property(model, None, NS['spdemo']['birthday'])      
         return  ret
 
-
     def get_notes(self):
         n = self.get("/records/%s/notes/"%self.record_id)
         return parse_rdf(n)
-
 
     def put_ccr_to_smart(self, record_id, ccr_string):
         rdf_string  = xslt_ccr_to_rdf(ccr_string, self.stylesheet)
@@ -207,92 +191,6 @@ class SmartClient(OAuthClient):
         
         return self.put("/records/%s/medications/external_id/%s/fulfillments/external_id/%s"%(record_id, med_external_id, fill_external_id), 
                         data, "application/rdf+xml")
-
-    def get_tokens_for_record(self, record_id, label="smart"):
-        q = """CONSTRUCT {?s ?p ?o} 
-                WHERE {?s ?p ?o
-                   filter (?s = <http://smartplatforms.org/records/%s>)
-                   }"""%record_id
-    
-        m = parse_rdf(self.get_rdf_store(q))
-        rec = RDF.Node(uri_string="http://smartplatforms.org/records/%s"%record_id.encode())
-        return self.extract_one_token(m, rec, label)
-
-    def get_all_tokens(self,labels=[]):
-        ret = {}
-
-        for l in labels:
-            q = """CONSTRUCT {?s ?p ?o} 
-                WHERE {?s ?p ?o
-                   filter (?p = <http://smartplatforms.org/%s_token> ||
-                           ?p = <http://smartplatforms.org/%s_secret> )
-                   }"""%(l, l)
-
-            m = parse_rdf(self.get_rdf_store(q))
-            
-            for s in m.find_statements(RDF.Statement(
-                None, 
-                RDF.Node(uri_string="http://smartplatforms.org/%s_token"%l),
-                None)):
-                print "getting one token", str(s.subject.uri)
-
-                record_id = str(s.subject.uri)
-
-                one_token =self.extract_one_token(m, s.subject, l) 
-                if one_token: 
-                    if (record_id not in ret): ret[record_id] = {}
-                    ret[record_id][l] = one_token
-
-        return ret
-
-    def extract_one_token(self, model, record, label="smart"):
-        base = "http://smartplatforms.org/%s"
-        targets = ['%s_token'%label, '%s_secret'%label]
-        ret = {}
-        try:
-            for t in targets:
-                ret[t] = get_property(model, record, RDF.Node(uri_string=base%t))
-              
-            return OAuthToken(token=ret['%s_token'%label], secret=ret['%s_secret'%label])
-
-        except AssertionError: return None
-
-
-    def delete_token(self, record_id, label="smart"):
-        q = """
-        CONSTRUCT { <http://smartplatforms.org/records/%s> ?p ?t.}
-        WHERE { 
-          <http://smartplatforms.org/records/%s> ?p ?t
-        FILTER (
-            ?p = <http://smartplatforms.org/%s_token> || 
-            ?p = <http://smartplatforms.org/%s_secret>)
-        }""" % (record_id, record_id, label, label)
-
-        print "Deleting, ",q
-        return self.delete_rdf_store(q)
-
-    def save_token(self, record_id, access_token, label="smart"):
-        self.delete_token(record_id, label)
-
-
-        sp = RDF.NS("http://smartplatforms.org/")
-        rec = sp["records/%s"%record_id.encode()]
-
-        m = RDF.Model()
-        m.append(RDF.Statement(
-                rec, 
-                sp["%s_token"%label],
-                RDF.Node(access_token.token)
-                ))
-
-        m.append(RDF.Statement(
-                rec, 
-                sp["%s_secret"%label],
-                RDF.Node(access_token.secret)
-                ))
-
-        self.post_rdf_store(m)
-
 
     def loop_over_records(self):    
         r = self.post("/apps/%s/tokens/records/first"%self.app_id)
