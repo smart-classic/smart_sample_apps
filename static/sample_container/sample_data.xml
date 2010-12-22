@@ -1,0 +1,45 @@
+
+<rdf:RDF xmlns:med="http://smartplatforms.org/medication#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sp="http://smartplatforms.org/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rxcui="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ccr="urn:astm-org:CCR" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:tns="http://ws.smart.i2b2.harvard.edu" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"> 
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:00003010960"> 
+<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
+<dcterms:title>Trimox 500mg capsule Bristol-Myers Squibb</dcterms:title> 
+<med:startDate>10/20/2001</med:startDate> 
+<med:endDate>10/20/2003</med:endDate> 
+</rdf:Description> 
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:00005306343"> 
+<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
+<dcterms:title>Albuterol Sulfate 4mg tablet ESI Lederle Generics</dcterms:title> 
+<med:dose>2.5</med:dose> 
+<med:doseUnits rdf:resource="http://smartplatforms.org/med#mg">mg</med:doseUnits> 
+<med:startDate>10/20/2001</med:startDate> 
+<med:endDate>10/20/2003</med:endDate> 
+</rdf:Description> 
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:00003010960"> 
+<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
+<dcterms:title>Trimox 500mg capsule Bristol-Myers Squibb</dcterms:title> 
+<med:startDate>05/30/2002</med:startDate> 
+<med:endDate>05/30/2004</med:endDate> 
+</rdf:Description> 
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:00005306343"> 
+<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
+<dcterms:title>Albuterol Sulfate 4mg tablet ESI Lederle Generics</dcterms:title> 
+<med:dose>2</med:dose> 
+<med:doseUnits rdf:resource="http://smartplatforms.org/med#puff">puff</med:doseUnits> 
+<med:startDate>02/14/2005</med:startDate> 
+<med:endDate>02/14/2007</med:endDate> 
+</rdf:Description> 
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:53014067870"> 
+<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
+<dcterms:title>Gastrocrom 20 mg/ml solution Medeva Pharmaceuticals</dcterms:title> 
+<med:dose>2</med:dose> 
+<med:doseUnits rdf:resource="http://smartplatforms.org/med#puff">puff</med:doseUnits> 
+<med:startDate>02/14/2005</med:startDate> 
+<med:endDate>02/14/2007</med:endDate> 
+</rdf:Description> 
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:60267074230"> 
+<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
+<dcterms:title>Sal-Tropine 0.4mg tablet Hope Pharmaceuticals</dcterms:title> 
+<med:startDate>03/13/2005</med:startDate> 
+<med:endDate>03/13/2007</med:endDate> 
+</rdf:Description> 
+</rdf:RDF>
