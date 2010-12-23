@@ -6,10 +6,12 @@ import urllib, uuid
 import httplib
 from oauth import *
 from rdf_utils import *
+import surf
 import time
-import RDF
 import generate_api
-     
+from generate_api import rdflib
+from StringIO import StringIO
+  
 class SmartClient(OAuthClient):
     ontology = None
     
@@ -216,3 +218,14 @@ class SmartClient(OAuthClient):
                 r = self.post("/apps/%s/tokens/records/%s/next"%(self.app_id, record_id))
             except:
                 break
+            
+    def data_mapper(self, data):
+        g = rdflib.ConjunctiveGraph()
+        g.parse(StringIO(data))
+        return g
+#        store = surf.Store(reader = "rdflib",
+#                   writer = "rdflib",
+#                   rdflib_store = "IOMemory")
+#        store.load_triples(source = StringIO(data))
+#        session = surf.Session(store)
+#        return session

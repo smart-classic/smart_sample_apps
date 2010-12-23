@@ -45,11 +45,6 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.record = message.record;
 	    this.ready_data = message.ready_data;
 	    
-	    if (message.credentials !== undefined ){
-		    this.credentials = message.credentials;
-		    document.cookie = 'smart_oauth_cookie='+this.credentials.oauth_cookie+";path=/";
-	    }
-
 	    var _this = this;
 	    this.CAPABILITIES_get(function() {
 		    _this.ready_callback({user: message.user, record: message.record}, _this.ready_data);

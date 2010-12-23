@@ -8,7 +8,7 @@ import sys, re
 import smart_client
 from smart_client import oauth, smart
 from smart_client.rdf_utils import *
-import RDF
+from StringIO import StringIO
 
 conn = psycopg2.connect("dbname='%s' user='%s' password='%s'" % 
                           (settings.DATABASE_RXN,
@@ -31,16 +31,18 @@ def check_allergies(request):
     meds = sc.records_X_medications_GET()
     allergies = sc.records_X_allergies_GET()
 
-    m = SMArtRecordManager(meds)
-    a = SMArtRecordManager(allergies)
-        
-    print "And parsed", m.allergies.all, m.medications.all
-    
-    r = check_allergies_helper( 
-                               [i.allergen.substance for i in a.allergies.all],
-                               [i.drug for i in m.medications.all]
-                              )
-    
+    substances = []
+    for a in allergies.subjects(smart.surf.ns.RDF["type"], smart.surf.ns.SP["allergy"]):
+        for agn in allergies.objects(a, smart.surf.ns.SP["allergy/allergen"]):
+            for s in allergies.objects(agn, smart.surf.ns.SP["allergy/substance"]):
+                substances.append(str(s))
+
+    medications = []
+    for m in meds.subjects(smart.surf.ns.RDF["type"], smart.surf.ns.SP["medication"]):
+        for d in meds.objects(m, smart.surf.ns.SP["medication#drug"]):
+            medications.append(str(d))
+
+    r = check_allergies_helper( substances, medications )
     print "Allergy Conflicts: ", r
     mr = RDF.Model()
     for conflict in r:
@@ -56,6 +58,9 @@ determine any common RxNorm ingredients
 def check_allergies_helper(allergen_codes, drug_codes):
     ag = make_allergens_generic(allergen_codes)
     dg = generic_ingredients_for_drugs(drug_codes)
+    
+    print ag, dg
+    
     conflicts = ag & dg
     
     q = """select max(str) as allergy_warning from rxnconso c 

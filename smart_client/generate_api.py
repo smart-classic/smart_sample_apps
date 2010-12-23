@@ -2,13 +2,15 @@
 Generate all API methods from SMArt_ontology.owl
 """
 
-import os, RDF, re, settings
-from rdf_utils import NS  
+import os, re, settings
+import surf
+import surf.namespace as ns
+import surf.rdf as rdflib
+from StringIO import StringIO
 
 pFormat = "{.*?}"
-rdf = NS['rdf']
-sp = NS['sp']
 SMART  = "http://smartplatforms.org/"
+ns.sp = surf.rdf.Namespace(SMART)
 
 class CallAttr(object):
     def __init__(self, name, predicate, uri_p=False, list_p=False):
@@ -18,38 +20,30 @@ class CallAttr(object):
         self.list_p = list_p
         
     def extract(self, data):
-        if (self.uri_p):
-            return str(data.object.uri)
-        else:
-            return str(data.object.literal_value['string'])
+        return str(data)
 
 class CallInfo(object):
-  attrs =  [CallAttr("target", sp['api/target'], True),
-            CallAttr("description", sp['api/description']),
-            CallAttr("path", sp['api/path']),
-            CallAttr("method", sp['api/method']),
-            CallAttr("by_internal_id", sp['api/by_internal_id']),
-            CallAttr("category", sp['api/category'])]
+  attrs =  [CallAttr("target", ns.sp['api/target'], True),
+            CallAttr("description", ns.sp['api/description']),
+            CallAttr("path", ns.sp['api/path']),
+            CallAttr("method", ns.sp['api/method']),
+            CallAttr("by_internal_id", ns.sp['api/by_internal_id']),
+            CallAttr("category", ns.sp['api/category'])]
   
-  def __init__(self, m, c):
-    self.model = m
+  def __init__(self, g, c):
     for a in self.__class__.attrs:
         try: 
-            v = [a.extract(x) for x in m.find_statements(RDF.Statement(c, a.predicate, None))][0]
+            v = [a.extract(x) for x in g.objects(c, a.predicate)]
+            if not a.list_p: v = v[0]
             setattr(self, a.name, v) 
         except: setattr(self, a.name, None)
     return
 
   @classmethod
-  def find_all_calls(cls, m):
-    def get_api_calls(m):
-      q = RDF.Statement(None, rdf['type'], sp['api/call'])
-      r = list(m.find_statements(q))
-      return r
-
+  def find_all_calls(cls, g):
     calls = []
-    for c in get_api_calls(m):
-      i = CallInfo(m, c.subject)
+    for c in g.subjects(ns.RDF["type"], ns.sp["api/call"]):
+      i = CallInfo(g, c)
       calls.append(i)
     return calls
 
@@ -101,13 +95,17 @@ class CallInfo(object):
           data = kwargs.get('data', None) 
           content_type = kwargs.get('content_type', None)
           f = getattr(self, call.method.lower())          
-          return f(url=url, data=data, content_type=content_type)          
+          ret =  f(url=url, data=data, content_type=content_type)
+          return self.data_mapper(ret)
       return c
 
 def augment(client_class):
-    m = RDF.Model()
-    p = RDF.Parser()
-    p.parse_string_into_model(m, client_class.ontology, "nodefault")
-    all_calls = CallInfo.find_all_calls(m)
+    g = rdflib.ConjunctiveGraph()
+    g.parse(StringIO(client_class.ontology))
+    
+    all_calls = CallInfo.find_all_calls(g)
     for c in all_calls:
         setattr(client_class, c.call_name, c.make_generic_call())
+
+    for prefix, uri in g.namespaces():
+        surf.ns.register(**{prefix: uri})
