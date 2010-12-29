@@ -33,7 +33,7 @@ extend('Smart.Models.MedDetails',
     getFulfillmentDetails : function(med, ret) {
 
 		var r = med.Class.rdf
-		.where(med.nodename+" <http://smartplatforms.org/fulfillment> ?o")
+		.where(med.nodename+" <http://smartplatforms.org/clinical/medication#fulfillment> ?o")
 		.where("?o ?f_field ?f_detail");
 	
 		for (var i = 0; i < r.length; i++)

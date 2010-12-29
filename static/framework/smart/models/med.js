@@ -49,7 +49,7 @@ extend('Smart.Models.Med',
 	},
 
 
-	object_type: "sp:medication",
+	object_type: "clin:Medication",
 	instantiateByType: function() {
 		
 		if (this.rdf === undefined || !this.rdf instanceof jQuery.rdf)
@@ -58,7 +58,9 @@ extend('Smart.Models.Med',
 		var ret = []
 		           
 		this.rdf.prefix("sp","http://smartplatforms.org/");
-		this.rdf.prefix("med","http://smartplatforms.org/medication#");
+		this.rdf.prefix("core","http://smartplatforms.org/core#");
+		this.rdf.prefix("clin","http://smartplatforms.org/clinical#");
+		this.rdf.prefix("med","http://smartplatforms.org/clinical/medication#");
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
 		this.rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 		       		
@@ -118,10 +120,10 @@ extend('Smart.Models.Med',
 
 		
 		var fulfillments = this.rdf
-		    .where("?med rdf:type sp:medication")
-		    .where("?med sp:fulfillment ?f")
+		    .where("?med rdf:type clin:Medication")
+		    .where("?med med:fulfillment ?f")
 		    .where("?f dc:date ?d")
-		    .optional("?f sp:dispenseQuantity ?q");
+		    .optional("?f med:dispenseQuantity ?q");
 
 		for (var i = 0; i < fulfillments.length; i++)
 		{
@@ -199,12 +201,14 @@ extend('Smart.Models.Med',
 		
 		var rdf = $.rdf()
 		  .prefix('sp', 'http://smartplatforms.org/')
-		  .prefix('med', "http://smartplatforms.org/medication#")
+		  .prefix('med', "http://smartplatforms.org/clinical/medication#")
 		  .prefix('dc', 'http://purl.org/dc/elements/1.1/')
 		  .prefix('dcterms', 'http://purl.org/dc/terms/')
-		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+		  .prefix("core","http://smartplatforms.org/core#")
+		  .prefix("clin","http://smartplatforms.org/clinical#");
 
-		rdf.add('_:m rdf:type sp:medication .');
+		rdf.add('_:m rdf:type clin:Medication .');
 		
 		if (this.drug)
 		rdf.add('_:m dcterms:title "'+this.drug+'" .');

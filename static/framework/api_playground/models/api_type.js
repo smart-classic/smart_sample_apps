@@ -35,7 +35,8 @@ $.Model.extend('ApiType',
 			   .where("?call api:target ?call_target")
 			   .where("?call api:category ?call_category")
 			   .where("?call api:method ?call_method")
-			   .where("?call api:by_internal_id ?call_by_internal_id");
+			   .where("?call api:by_internal_id ?call_by_internal_id")
+			   .optional("?call api:above ?call_above");
 			
 			for (var i = 0; i < calls.length; i++) {
 				ApiCall.create(calls[i]);
@@ -190,7 +191,8 @@ $.Model.extend('ApiCall',
 						   target: t.call_target.value._string,
 						   category: t.call_category.value,
 						   method: t.call_method.value,
-						   by_internal_id: !!(t.call_by_internal_id.value ==="true")});
+						   by_internal_id: !!(t.call_by_internal_id.value ==="true"),
+                                                   above:  t.call_above && t.call_above.value._string || ""});
 		
 		this.calls.push(ret);
 		return ret;
@@ -268,6 +270,7 @@ $.Model.extend('ApiCallGroup',
 		
 		$.each(by_path, function(path, calls) {
 			var gn = category_names[calls[0].category];
+                        if (calls[0].above !== "") gn += " via " + calls[0].above.split("#")[1]
 			
 			if (calls[0].category === "record_item") {
 				if (calls[0].by_internal_id === false) 
