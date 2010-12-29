@@ -17,16 +17,9 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		this.response_box = $("#response");
 		this.payload_box.hide();
 		this.response_box.hide();
-		
-		var ORIGIN = null, FRAME = window.top;
-	
-		SMART = new SMART_CLIENT(ORIGIN, FRAME);
-			
-		SMART.send_ready_message(function(user_and_record_context) {		
-			ApiType.interpolations.record_id = user_and_record_context.record.id;
-			ApiType.addInterpolationValue("record_id", user_and_record_context.record.id);
+			ApiType.interpolations.record_id = SMART.record.id;
+			ApiType.addInterpolationValue("record_id", SMART.record.id);
 			ApiType.find_all_types_and_calls();
-		});
     },
     
     'ontology_parsed subscribe': function(topic, element) {

@@ -16,7 +16,10 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		loadDependencies(function() {
 			_this.channel = Channel.build({window: frame, origin: "*", scope:"not_ready", debugOutput: debug});
 			_this.ready_callback = ready_callback;
+			var params = {}
+			if (_this.app_name!== undefined) { params.app_name = _this.app_name; }
 			_this.channel.call({method: "ready", 
+							params: params,
 				            success: _this.callback(_this.received_setup)
 				           });
 		});
@@ -43,15 +46,22 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		
 	    this.user = message.user;
 	    this.record = message.record;
+	    this.credentials = message.credentials;
+	    
 	    this.ready_data = message.ready_data;
 	    
-	    var _this = this;
+    	if (message.credentials.oauth_cookie !== undefined ){
+    		this.cookie_name ='smart_oauth_cookie' + message.activity_id;    		
+		    document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
+	    }
+
+    	var _this = this;
 	    this.CAPABILITIES_get(function() {
 		    _this.ready_callback({user: message.user, record: message.record}, _this.ready_data);
 		});
 	    
 	};
-
+	
 	this.api_call = function(options, callback) {
 	    this.channel.call({method: "api_call",
 			       params: 
@@ -638,6 +648,36 @@ var loadDependencies = function(callback) {
 
 	load(filenames);
 };
+};
 
+  
+SMART_frame_glue_app = function(redirect_url) {	
+   if (redirect_url === undefined)
+		redirect_url = "index.html"
+			
+   SMART = new SMART_CLIENT(null, window.top);
+   SMART.send_ready_message(function(context_info) {
+	   $("html").css("overflow","hidden");
+	   $("body").css("margin","0px");
+	   $(window).resize(function() {
+		  	var elt =$("#content");
+		  	elt.css("height",$(window).height());
+		  	elt.css("width",$(window).width());
+		  	elt.show();
+		  });
 
+	   redirect_url += "?cookie_name="+SMART.cookie_name;
+	   var content_iframe = $('<iframe src="'+redirect_url+'" id="content" style="border: 0px; overflow-x: hidden; overflow-y: auto;">');
+	   $('body').append(content_iframe);
+   });
+};
+
+SMART_frame_glue_app(window.SMART_redirect_url);
+
+SMART_frame_glue_page = function(callback) {
+	$('#content').get(0).contentWindow.SMART = SMART;
+	$("html", $('#content').get(0).contentDocument).css("overflow-x","hidden");
+	if (typeof callback === "function")	
+		callback();
+	$(window).resize();  
 };
