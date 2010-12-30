@@ -11,18 +11,11 @@ jQuery.Controller.extend('BlueButtonImport.Controllers.BlueButtonController',
 {
   init: function() {
 	
-	var 	ORIGIN = null, 
-	FRAME = window.top;
-
-	SMART = new SMART_CLIENT(ORIGIN, FRAME);
 	SMART.message_receivers = {
 		foreground: function() {
 			window.location.reload();
 		}
 	};
-	SMART.send_ready_message(function(user_and_record_context) {});
-	
-
 	
     this.handlers = [];
 	

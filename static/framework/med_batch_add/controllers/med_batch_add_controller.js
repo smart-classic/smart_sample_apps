@@ -9,11 +9,7 @@ jQuery.Controller.extend('MedBatchAdd.Controllers.MedBatchAddController',
 /* @Prototype */
 {
   init: function() {
-		var 	ORIGIN = null, 
-		FRAME = window.top;
-	
-		SMART = new SMART_CLIENT(ORIGIN, FRAME);
-		SMART.send_ready_message(this.callback(function(user_and_record_context, incoming_data) {
+		    var incoming_data = SMART.ready_data;
 			if (incoming_data.rdf) {
 			  var rdf = SMART.process_rdf("xml", incoming_data.rdf);
 		      this.meds = Smart.Models.Med.saveRDF(rdf)[0];
@@ -27,7 +23,6 @@ jQuery.Controller.extend('MedBatchAdd.Controllers.MedBatchAddController',
 			}
 			else
 				alert("Don't launch 'med batch add' directly.");
-		}));	
 		
 	},
 	

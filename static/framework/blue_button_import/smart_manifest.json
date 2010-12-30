@@ -8,7 +8,7 @@
 
   "mode" : "ui", 
   "activities" : {
-    "main" :  "{base_url}/framework/blue_button_import/blue_button_import.html"
+    "main" :  "{base_url}/framework/blue_button_import/bootstrap.html"
   },
 	
   "web_hooks" : { 

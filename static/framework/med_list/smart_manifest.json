@@ -8,8 +8,8 @@
   "base_url" : "http://localhost:8001",
   "mode" : "ui",
   "activities" : {
-    "main" :              "{base_url}/framework/med_list/med_list.html",
-    "view_medications" :  "{base_url}/framework/med_list/med_list.html"
+    "main" :              "{base_url}/framework/med_list/bootstrap.html",
+    "view_medications" :  "{base_url}/framework/med_list/bootstrap.html"
   },
 	
   "web_hooks" : { },

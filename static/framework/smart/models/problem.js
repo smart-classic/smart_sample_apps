@@ -25,19 +25,15 @@ extend('Smart.Models.Problem',
 		SMART.PROBLEMS_delete(uri,success);  
 	},
 	
-	object_type: "clin:Problem",
+	object_type: "sp:Problem",
 	instantiateByType: function() {
 		if (this.rdf === undefined || !this.rdf instanceof jQuery.rdf)
 			throw "rdfToMeds needs a jquery.rdf to work with!";
 		
 		var ret = [];
 		           
-		this.rdf.prefix("sp","http://smartplatforms.org/");
-		this.rdf.prefix("core","http://smartplatforms.org/core#");
-		this.rdf.prefix("clin","http://smartplatforms.org/clinical#");
-		this.rdf.prefix("prob","http://smartplatforms.org/clinical/problem#");
+		this.rdf.prefix("sp","http://smartplatforms.org/terms#");
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
-		this.rdf.prefix("umls","http://www.nlm.nih.gov/research/umls/");
 		
 		var r = this.rdf.where("?problem rdf:type "+this.object_type);
 			
@@ -56,11 +52,12 @@ extend('Smart.Models.Problem',
 		if (!this.rdf) return;
 		
 		var p = Smart.Models.Problem.rdf
-		.optional(this.nodeName() + " dcterms:title ?title")
-		.optional(this.nodeName() + " clin:notes ?notes")
-		.optional(this.nodeName() + " prob:onset ?onset")
-		.optional(this.nodeName() + " prob:resolution ?resolution")
-	    .optional(this.nodeName() + " prob:code ?concept")[0];
+		.optional(this.nodeName() + " sp:code ?pc ")
+		.optional("?pc dcterms:title ?title ")
+		.optional("?pc sp:code ?concept")
+		.optional(this.nodeName() + " sp:notes ?notes")
+		.optional(this.nodeName() + " sp:onset ?onset")
+		.optional(this.nodeName() + " sp:resolution ?resolution")[0];
 		
 		if (p.concept)
 			this.concept= p.concept.value._string;
@@ -75,30 +72,26 @@ extend('Smart.Models.Problem',
 	toRDFXML: function() {
 		
 		var rdf = $.rdf()
-		  .prefix('sp', 'http://smartplatforms.org/')
+		  .prefix('sp', 'http://smartplatforms.org/terms#')
 		  .prefix('dc', 'http://purl.org/dc/elements/1.1/')
 		  .prefix('dcterms', 'http://purl.org/dc/terms/')
-		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-		  .prefix("core","http://smartplatforms.org/core#")
-		  .prefix("clin","http://smartplatforms.org/clinical#")
-		  .prefix("prob","http://smartplatforms.org/clinical/problem#");
+		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 
-		rdf.add('_:m rdf:type clin:Problem .');
+		rdf.add('_:m rdf:type sp:Problem .');
 		
-		if (this.concept)
-			rdf.add('_:m prob:code <'+this.concept+'> .');
-		
-		if (this.title)
-			rdf.add('_:m dcterms:title "'+this.title+'" .');
+		rdf.add('_:m sp:code _:pc .');
+		rdf.add('_:pc dcterms:title "'+this.title+'" .');
+		if (this.concept) 
+			rdf.add('_:pc sp:code <'+this.concept+'> .');
 
 		if (this.notes)
-			rdf.add('_:m clin:notes "'+this.notes+'" .');
+			rdf.add('_:m sp:notes "'+this.notes+'" .');
 		
 		if (this.onset)
-			rdf.add('_:m prob:onset "'+this.onset+'" .');
+			rdf.add('_:m sp:onset "'+this.onset+'" .');
 
 		if (this.resolution)
-			rdf.add('_:m prob:resolution "'+this.resolution+'" .');
+			rdf.add('_:m sp:resolution "'+this.resolution+'" .');
 		
 		return jQuery.rdf.dump(rdf.databank.triples(), {format:'application/rdf+xml', serialize: true});
 	},

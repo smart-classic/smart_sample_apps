@@ -4,13 +4,15 @@ Generate all API methods from SMArt_ontology.owl
 
 import os, re, settings
 import surf
-import surf.namespace as ns
-import surf.rdf as rdflib
+import rdflib
 from StringIO import StringIO
 
 pFormat = "{.*?}"
 SMART  = "http://smartplatforms.org/"
-ns.sp = surf.rdf.Namespace(SMART)
+
+sp = rdflib.Namespace("http://smartplatforms.org/terms#")
+api = rdflib.Namespace("http://smartplatforms.org/api/")
+rdf = rdflib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
 class CallAttr(object):
     def __init__(self, name, predicate, uri_p=False, list_p=False):
@@ -23,12 +25,13 @@ class CallAttr(object):
         return str(data)
 
 class CallInfo(object):
-  attrs =  [CallAttr("target", ns.sp['api/target'], True),
-            CallAttr("description", ns.sp['api/description']),
-            CallAttr("path", ns.sp['api/path']),
-            CallAttr("method", ns.sp['api/method']),
-            CallAttr("by_internal_id", ns.sp['api/by_internal_id']),
-            CallAttr("category", ns.sp['api/category'])]
+  attrs =  [CallAttr("target", api['target'], True),
+            CallAttr("above", api['above']),
+            CallAttr("description", api['description']),
+            CallAttr("path", api['path']),
+            CallAttr("method", api['method']),
+            CallAttr("by_internal_id", api['by_internal_id']),
+            CallAttr("category", api['category'])]
   
   def __init__(self, g, c):
     for a in self.__class__.attrs:
@@ -42,7 +45,7 @@ class CallInfo(object):
   @classmethod
   def find_all_calls(cls, g):
     calls = []
-    for c in g.subjects(ns.RDF["type"], ns.sp["api/call"]):
+    for c in g.subjects(rdf["type"], api["call"]):
       i = CallInfo(g, c)
       calls.append(i)
     return calls
@@ -102,9 +105,9 @@ class CallInfo(object):
 def augment(client_class):
     g = rdflib.ConjunctiveGraph()
     g.parse(StringIO(client_class.ontology))
-    
     all_calls = CallInfo.find_all_calls(g)
     for c in all_calls:
+        print "and a call", c.call_name
         setattr(client_class, c.call_name, c.make_generic_call())
 
     for prefix, uri in g.namespaces():

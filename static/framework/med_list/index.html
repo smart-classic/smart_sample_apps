@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MedDisplay App</title>
+    <script src="../smart/scripts/smart-api-page.js"></script>
+    <script src="resources/timeline/timeline_ajax/simile-ajax-api.js?bundle=true"></script>
+    <script src="resources/timeline/timeline_js/timeline-api.js?bundle=true"></script>
+	<script type='text/javascript' src='../steal/steal.js?med_list,development'></script>
+  </head>
+
+  <body>
+  <div style"overflow:hidden">
+	<em id="UserDisplay">Smart MedList Loading...</em>
+	<div id='MedListTabs'>
+	<ul>
+	<li>
+	<a href="#tabs-list">Med List</a>
+	</li>
+    <li>
+    <a href="#tabs-timeline">Timeline</a>
+    </li>
+    </ul>
+	<div id='tabs-list'>
+	<div id="MedList"></div>
+    <div id="MedDetails" style="float: left;">Med Details here...</div><br clear="both"/>
+	</div>
+
+	<div id="tabs-timeline">
+	<div id="tl"></div>
+    </div>
+    </div>
+</div>
+</body>
+</html>

@@ -10,7 +10,7 @@
   "mode" : "ui",
 
   "activities" : {
-    "main" :              "{base_url}/framework/allergy_check/allergy_check.html"
+    "main" :              "{base_url}/framework/allergy_check/bootstrap.html"
   },
 
   "web_hooks" : { 

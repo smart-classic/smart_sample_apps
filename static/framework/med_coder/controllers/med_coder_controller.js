@@ -10,18 +10,12 @@ jQuery.Controller.extend('MedCoder.Controllers.MedCoderController',
 /* @Prototype */
 {
   init: function() {
-		var 	ORIGIN = null, 
-		FRAME = window.top;
-	
-		SMART = new SMART_CLIENT(ORIGIN, FRAME);
-		SMART.send_ready_message(this.callback(function(user_and_record_context, med_xml) {
+	        var med_xml = SMART.ready_data;
 			if (med_xml) {
 				this.init_wizard(med_xml);
 			}
 			else
 				alert("Don't launch med coder directly.");
-//				Smart.Models.Med.get(this.init_wizard);			
-		}));	
 	},
 
  init_wizard: function(meds) {

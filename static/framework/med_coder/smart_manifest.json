@@ -8,7 +8,7 @@
   "base_url" : "http://localhost:8001",
   "mode" : "ui",
   "activities" : {
-    "reconcile_medications" :  "{base_url}/framework/med_coder/med_coder.html"
+    "reconcile_medications" :  "{base_url}/framework/med_coder/bootstrap.html"
   },
 	
   "web_hooks" : { },

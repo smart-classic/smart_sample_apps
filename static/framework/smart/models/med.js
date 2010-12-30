@@ -49,7 +49,7 @@ extend('Smart.Models.Med',
 	},
 
 
-	object_type: "clin:Medication",
+	object_type: "sp:Medication",
 	instantiateByType: function() {
 		
 		if (this.rdf === undefined || !this.rdf instanceof jQuery.rdf)
@@ -57,27 +57,24 @@ extend('Smart.Models.Med',
 		
 		var ret = []
 		           
-		this.rdf.prefix("sp","http://smartplatforms.org/");
-		this.rdf.prefix("core","http://smartplatforms.org/core#");
-		this.rdf.prefix("clin","http://smartplatforms.org/clinical#");
-		this.rdf.prefix("med","http://smartplatforms.org/clinical/medication#");
+		this.rdf.prefix("sp","http://smartplatforms.org/terms#");
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
 		this.rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 		       		
 		var r = this.rdf.where("?med rdf:type "+this.object_type)
-			 .where(" ?med dcterms:title ?medlabel")
-			 .optional(" ?med med:strength ?strength")
-			 .optional(" ?med med:strengthUnit ?strengthUnit")
-			 .optional(" ?med med:form ?form")
-			 .optional(" ?med med:drug ?cui")
-			 .optional(" ?med med:dose ?dose")
-			 .optional(" ?med med:doseUnit ?doseUnit")
-			 .optional(" ?med med:route ?route")
-			 .optional(" ?med med:instructions ?notes")
-			 .optional(" ?med med:frequency ?freq")
-			 .optional(" ?med med:startDate ?sd")
-			 .optional(" ?med med:endDate ?ed");
-		
+			 .where(" ?med sp:code ?drug_code")
+			 .optional(" ?drug_code sp:code ?cui")
+			 .optional(" ?drug_code dcterms:title ?medlabel")
+			 .optional(" ?med sp:strength ?strength")
+			 .optional(" ?med sp:strengthUnit ?strengthUnit")
+			 .optional(" ?med sp:form ?form")
+			 .optional(" ?med sp:dose ?dose")
+			 .optional(" ?med sp:doseUnit ?doseUnit")
+			 .optional(" ?med sp:route ?route")
+			 .optional(" ?med sp:instructions ?notes")
+			 .optional(" ?med sp:frequency ?freq")
+			 .optional(" ?med sp:startDate ?sd")
+			 .optional(" ?med sp:endDate ?ed");
 			
 		for (var i = 0; i < r.length; i++) {
 			
@@ -121,9 +118,9 @@ extend('Smart.Models.Med',
 		
 		var fulfillments = this.rdf
 		    .where("?med rdf:type clin:Medication")
-		    .where("?med med:fulfillment ?f")
+		    .where("?med sp:fulfillment ?f")
 		    .where("?f dc:date ?d")
-		    .optional("?f med:dispenseQuantity ?q");
+		    .optional("?f sp:dispenseQuantity ?q");
 
 		for (var i = 0; i < fulfillments.length; i++)
 		{
@@ -201,41 +198,38 @@ extend('Smart.Models.Med',
 		
 		var rdf = $.rdf()
 		  .prefix('sp', 'http://smartplatforms.org/')
-		  .prefix('med', "http://smartplatforms.org/clinical/medication#")
-		  .prefix('dc', 'http://purl.org/dc/elements/1.1/')
 		  .prefix('dcterms', 'http://purl.org/dc/terms/')
-		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-		  .prefix("core","http://smartplatforms.org/core#")
-		  .prefix("clin","http://smartplatforms.org/clinical#");
+		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 
-		rdf.add('_:m rdf:type clin:Medication .');
+		rdf.add('_:m rdf:type sp:Medication .');
+		rdf.add('_:m sp:code _:med_code .');
 		
 		if (this.drug)
-		rdf.add('_:m dcterms:title "'+this.drug+'" .');
+			rdf.add('_:med_code dcterms:title "'+this.drug+'" .');
 
 		if (this.cui)
-			rdf.add('_:m med:drug <'+this.cui+'> .');
+			rdf.add('_:med_code sp:code <'+this.cui+'> .');
 		
 		if (this.dose)
-		rdf.add('_:m med:dose "'+this.dose+'" .');
+		rdf.add('_:m sp:dose "'+this.dose+'" .');
 		
 		if (this.dose_units)
-		rdf.add('_:m med:doseUnits "'+this.dose_units+'" .');
+		rdf.add('_:m sp:doseUnit "'+this.dose_units+'" .');
 		
 		if (this.strength)
-			rdf.add('_:m med:strength "'+this.strength+'" .');
+			rdf.add('_:m sp:strength "'+this.strength+'" .');
 		
 		if (this.strength_units)
-		rdf.add('_:m med:strengthUnits "'+this.strength_units+'" .');
+		rdf.add('_:m sp:strengthUnit "'+this.strength_units+'" .');
 		
 		if (this.instructions)
-		rdf.add('_:m med:instructions "'+this.instructions+'" .');
+		rdf.add('_:m sp:instructions "'+this.instructions+'" .');
 		
 		if (this.frequency)
-		rdf.add('_:m med:frequency "'+this.frequency+'" .');
+		rdf.add('_:m sp:frequency "'+this.frequency+'" .');
 		
 		if (this.route)
-		rdf.add('_:m med:route "'+this.route+'" .');
+		rdf.add('_:m sp:route "'+this.route+'" .');
 
 		return jQuery.rdf.dump(rdf.databank.triples(), {format:'application/rdf+xml', serialize: true});
 		

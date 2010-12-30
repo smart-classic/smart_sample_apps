@@ -7,15 +7,16 @@ import psycopg2.extras
 import sys, re
 import smart_client
 from smart_client import oauth, smart
-from smart_client.rdf_utils import *
 from StringIO import StringIO
+import rdflib
 
 conn = psycopg2.connect("dbname='%s' user='%s' password='%s'" % 
                           (settings.DATABASE_RXN,
                            settings.DATABASE_USER,
                            settings.DATABASE_PASSWORD))
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
+sp = rdflib.Namespace("http://smartplatforms.org/terms#")
+rdf = rdflib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
 def get_smart_client(request):
     oa_params = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
@@ -31,23 +32,29 @@ def check_allergies(request):
     meds = sc.records_X_medications_GET()
     allergies = sc.records_X_allergies_GET()
 
+    
+
     substances = []
-    for a in allergies.subjects(smart.surf.ns.RDF["type"], smart.surf.ns.SP["allergy"]):
-        for agn in allergies.objects(a, smart.surf.ns.SP["allergy/allergen"]):
-            for s in allergies.objects(agn, smart.surf.ns.SP["allergy/substance"]):
-                substances.append(str(s))
+    for a in allergies.subjects(rdf["type"], sp["Allergy"]):
+        for sub in allergies.objects(a, sp["substance"]):
+            for c in allergies.objects(sub, sp["code"]):
+                substances.append(str(c))
 
     medications = []
-    for m in meds.subjects(smart.surf.ns.RDF["type"], smart.surf.ns.SP["medication"]):
-        for d in meds.objects(m, smart.surf.ns.SP["medication#drug"]):
-            medications.append(str(d))
+    for m in meds.subjects(rdf["type"], sp["Medication"]):
+        for code in meds.objects(m, sp["code"]):
+            for c in meds.objects(code, sp["code"]):
+                medications.append(str(c))
 
     r = check_allergies_helper( substances, medications )
-    print "Allergy Conflicts: ", r
-    mr = RDF.Model()
+
+    g = rdflib.ConjunctiveGraph()
+
     for conflict in r:
-        mr.add_statement(RDF.Statement(RDF.Node(), NS['sp']['conflict'], RDF.Node(literal=conflict)))
-    return HttpResponse(serialize_rdf(mr), mimetype="application/rdf+xml")
+        print "Adding conflict", conflict
+        g.add ((rdflib.BNode(), sp['conflict'], rdflib.Literal(conflict)))
+    print "returning leng", len(g)
+    return HttpResponse(g.serialize(), mimetype="application/rdf+xml")
 
 """
 Given 
@@ -59,7 +66,7 @@ def check_allergies_helper(allergen_codes, drug_codes):
     ag = make_allergens_generic(allergen_codes)
     dg = generic_ingredients_for_drugs(drug_codes)
     
-    print ag, dg
+    print "Looking at intersection of two sets: " , ag, dg
     
     conflicts = ag & dg
     

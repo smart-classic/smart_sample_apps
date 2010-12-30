@@ -270,7 +270,7 @@ $.Model.extend('ApiCallGroup',
 		
 		$.each(by_path, function(path, calls) {
 			var gn = category_names[calls[0].category];
-                        if (calls[0].above !== "") gn += " via " + calls[0].above.split("#")[1]
+                        if (calls[0].above !== "") gn += " via " + calls[0].above.split("#")[1]+", "
 			
 			if (calls[0].category === "record_item") {
 				if (calls[0].by_internal_id === false) 

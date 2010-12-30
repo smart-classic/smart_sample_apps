@@ -7,8 +7,8 @@
   "base_url" : "http://localhost:8001",
   "mode" : "ui",
   "activities" : {
-    "main" :              "{base_url}/framework/med_adherence/med_adherence.html",
-    "view_medications" :  "{base_url}/framework/med_adherence/med_adherence.html"
+    "main" :              "{base_url}/framework/med_adherence/bootstrap.html",
+    "view_medications" :  "{base_url}/framework/med_adherence/bootstrap.html"
   },
 	
   "web_hooks" : { },

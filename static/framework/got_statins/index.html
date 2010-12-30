@@ -9,15 +9,11 @@
   <a id="TheAnswer" style="font-weight: bold; font-size: 120pt; font-family: Arial, sans-serif; text-decoration: none; color: black;">
   	... 
   </a> 
-	
-	<script  src='../smart/scripts/smart-api-client.js'></script>
+	<script  src='../smart/scripts/smart-api-page.js'></script>
 	<script>
-		SMART = new SMART_CLIENT(null, window.top);
-		
-		SMART.send_ready_message(function(user_and_record_context) {	
 			SMART.MEDS_get_all(function(meds) {
 			
-				var statin = meds.where("?m rdf:type sp:medication")
+				var statin = meds.where("?m rdf:type <http://smartplatforms.org/clinical#Medication>")
 								 .where("?m dcterms:title ?drugname");
 				
 				var answer = false;
@@ -29,7 +25,6 @@
 				
 				document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "No.";
 			});
-		});
 		
 		var is_a_statin = function(drug) {
 		

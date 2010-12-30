@@ -8,18 +8,12 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 	load : function() {
 		this.pending_timers = [];
 
-		var ORIGIN = null, FRAME = window.top;
-
-		SMART = new SMART_CLIENT(ORIGIN, FRAME);
 		var _this = this;
-		SMART.send_ready_message(function(user_and_record_context) {
 			Smart.Models.Med.get(function(data) {
 				_this.meds = data;
 				Smart.Models.Med.findDispenseEvents();
 				_this.initialize_ui();
 			});
-
-		});
 	},
 
 	initialize_ui : function() {

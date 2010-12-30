@@ -47,7 +47,6 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.user = message.user;
 	    this.record = message.record;
 	    this.credentials = message.credentials;
-	    
 	    this.ready_data = message.ready_data;
 	    
     	if (message.credentials.oauth_cookie !== undefined ){
@@ -541,10 +540,9 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	    } catch (err) {}
 	}
 
-	rdf.prefix("sp", "http://smartplatforms.org/");
+	rdf.prefix("sp", "http://smartplatforms.org/terms#");
 	rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 	rdf.prefix("dcterms", "http://purl.org/dc/terms/");
-	rdf.prefix("med","http://smartplatforms.org/medication#");
 
 	// abstract method to instantiate a list of objects from the rdf store.
 	var _this = this;
