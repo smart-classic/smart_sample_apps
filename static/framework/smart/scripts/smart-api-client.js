@@ -43,7 +43,13 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 			if (this.message_receivers.background !== undefined)
 			this.message_receivers.background();
 		    }));
-		
+
+	    this.channel.bind("activitydestroy", this.callback(function() {
+		    document.cookie = this.cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
+			if (this.message_receivers.background !== undefined)
+				this.message_receivers.destroy();
+		    }));
+			    
 	    this.user = message.user;
 	    this.record = message.record;
 	    this.credentials = message.credentials;

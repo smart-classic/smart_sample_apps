@@ -117,7 +117,7 @@ extend('Smart.Models.Med',
 
 		
 		var fulfillments = this.rdf
-		    .where("?med rdf:type clin:Medication")
+		    .where("?med rdf:type sp:Medication")
 		    .where("?med sp:fulfillment ?f")
 		    .where("?f dc:date ?d")
 		    .optional("?f sp:dispenseQuantity ?q");
@@ -197,7 +197,7 @@ extend('Smart.Models.Med',
 	toRDFXML: function() {
 		
 		var rdf = $.rdf()
-		  .prefix('sp', 'http://smartplatforms.org/')
+		  .prefix('sp', 'http://smartplatforms.org/terms#')
 		  .prefix('dcterms', 'http://purl.org/dc/terms/')
 		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 

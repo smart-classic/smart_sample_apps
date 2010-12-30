@@ -10,7 +10,7 @@ jQuery.Controller.extend('MedCoder.Controllers.WizardController',
 {
 
 init: function(el, meds) {
-
+    console.log("initializingn wizard" + meds)
 	this.meds = Smart.Models.Med.from_rdf_array(meds);
 
 	this.current = 0;
