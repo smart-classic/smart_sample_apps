@@ -408,9 +408,9 @@ SMART_CLIENT.prototype.CAPABILITIES_get = function(callback) {
 						var rdf = _this.process_rdf(contentType, data);
 						cs = rdf
 								.where(
-										"?platform  rdf:type  <http://smartplatforms.org/container>")
+										"?platform  rdf:type  sp:Container")
 								.where(
-										"?platform   <http://smartplatforms.org/capability> ?cap");
+										"?platform   sp:capability ?cap");
 
 						_this.capabilities = {}
 						for ( var i = 0; i < cs.length; i++) {
