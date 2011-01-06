@@ -122,6 +122,31 @@ SMART_CLIENT.prototype.ONTOLOGY_get = function(callback) {
 	});
 };
 
+SMART_CLIENT.prototype.FULFILLMENTS_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record.id + "/fulfillments/",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+
+};
+
+SMART_CLIENT.prototype.LABS_RESULTS_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record.id + "/lab_results/",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+
+};
 	
 
 SMART_CLIENT.prototype.MEDS_get = function(callback) {
