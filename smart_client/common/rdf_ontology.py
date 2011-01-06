@@ -1,4 +1,3 @@
-from django.conf import settings
 from query_builder import QueryBuilder
 from util import *
 
@@ -183,7 +182,8 @@ api_types = None
 ontology = SMArtType
 
 try:
+    from django.conf import settings
     f = open(settings.ONTOLOGY_FILE).read()
     parse_ontology(f)
-except AttributeError: pass
+except ImportError, AttributeError: pass
 

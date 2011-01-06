@@ -54,8 +54,9 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.record = message.record;
 	    this.credentials = message.credentials;
 	    this.ready_data = message.ready_data;
-	    
-    	if (message.credentials.oauth_cookie !== undefined ){
+	    this.cookie_name = "";
+
+    	if (message.credentials && message.credentials.oauth_cookie !== undefined ){
     		this.cookie_name ='smart_oauth_cookie' + message.activity_id;    		
 		    document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
 	    }
