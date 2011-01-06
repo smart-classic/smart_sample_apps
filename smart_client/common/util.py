@@ -21,7 +21,12 @@ for k in NS.keys():
     serializer.set_namespace(k, RDF.Uri(v._prefix))
 
 def serialize_rdf(model):
-    return serializer.serialize_model_to_string(model)
+    try: return serializer.serialize_model_to_string(model)
+    except AttributeError:
+        tmpmodel = RDF.Model()
+        for s in model:
+            tmpmodel.add_statement(s)
+        return serializer.serialize_model_to_string(tmpmodel)
 
 def parse_rdf(string, model=None, context="none"):
     if model == None:
@@ -63,3 +68,26 @@ def remap_node(model, old_node, new_node=None):
         del model[s]
         model.append(RDF.Statement(s.subject, s.predicate, new_node))            
     return
+
+
+def default_ns():
+    d = {}
+    d['dc'] = RDF.NS('http://purl.org/dc/elements/1.1/')
+    d['dcterms'] = RDF.NS('http://purl.org/dc/terms/')
+    d['umls'] = RDF.NS('http://www.nlm.nih.gov/research/umls/')
+    d['sp'] = RDF.NS('http://smartplatforms.org/terms#')
+    d['foaf']=RDF.NS('http://xmlns.com/foaf/0.1/')
+    d['rdf'] = RDF.NS('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+    d['rdfs'] = RDF.NS('http://www.w3.org/2000/01/rdf-schema#')
+    d['owl'] = RDF.NS('http://www.w3.org/2002/07/owl#')
+    d['api'] = RDF.NS('http://smartplatforms.org/api/')
+    d['rxn'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/')
+    d['rxcui'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXCUI/')
+    d['rxaui'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXAUI/')
+    d['rxatn'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXATN#')
+    d['rxrel'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/REL#')
+    d['snomed-ct'] = RDF.NS('http://www.ihtsdo.org/snomed-ct/')
+    d['ccr'] = RDF.NS('urn:astm-org:CCR')
+    d['v'] = RDF.NS('http://www.w3.org/2006/vcard/ns#')
+    return d
+

@@ -42,14 +42,14 @@ class QueryBuilder(object):
         self.triples_created.append("%s %s %s. " % (root_name, pred, obj))
         return " OPTIONAL { %s %s %s. } \n" % (root_name, pred, obj)
         
-    def optional_child(self, root_name, child, pred, obj):
-        self.triples_created.append("%s %s %s. " % (root_name, pred, obj))
-        ret = " OPTIONAL { %s %s %s. $insertion } \n" % (root_name, pred, obj)
-        repl = self.build(obj, child)
+    def optional_linked_type(self, linked_type, root_name,  predicate, object, to_follow, depth):
+        self.triples_created.append("%s %s %s. " % (root_name, predicate, object))
+        ret = " OPTIONAL { %s %s %s. $insertion } \n" % (root_name, predicate, object)
+        repl = self.build(to_follow, linked_type, depth)
         ret = ret.replace("$insertion", repl)
         return ret
 
-    def build(self, root_name=None, root_type=None):
+    def build(self, root_name=None, root_type=None, depth=0):
         ret = ""
         # Recursion starting off:  set initial conditions (if any).
         if root_type == None:
@@ -67,9 +67,30 @@ class QueryBuilder(object):
             oid = self.get_identifier("?"+p, "object")
             ret  += self.optional_triple(root_name, "<"+p+">", oid)
 
-        for p, c in root_type.contained_types.iteritems():
-            p = str(p.uri)
-            oid = self.get_identifier("?"+p, "object")
-            ret += self.optional_child(root_name, c, "<"+p+">", oid)
+        # We'll traverse + recurse down *only* from the top of the hierarchy
+        # OR if we're dealing with "core" (i.e. blank-node, i.e. non-GETtable) resources.
+        for pred, contained in root_type.contained_types.iteritems():
+            if depth > 0 and contained.base_path: continue
 
+            p = str(pred.uri)
+            oid = self.get_identifier("?"+p, "object")
+            ret += self.optional_linked_type(linked_type=contained, 
+                                             root_name=root_name,
+                                             predicate="<"+p+">", 
+                                             object=oid, 
+                                             to_follow=oid,
+                                             depth=depth+1)
+
+        # We'll only traverse *up* once, from the top level of our query. 
+        if depth == 0:
+            for containing, pred in root_type.containing_types.iteritems():
+                p = str(pred.uri)
+                oid = self.get_identifier("?"+p, "object")
+                ret += self.optional_linked_type(linked_type=containing, 
+                                                 root_name=oid, 
+                                                 predicate="<"+p+">", 
+                                                 object=root_name, 
+                                                 to_follow=oid,
+                                                 depth=depth+1)
+        
         return ret

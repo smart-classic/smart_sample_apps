@@ -112,25 +112,29 @@ class SMArtType(SMArtOwlObject):
                 self.parents.append(r)
 
         self.calls = filter(lambda c:  c.target == self.node, calls)
+
+        # Map this type's predicates --> contained types        
         self.contained_types = {}
-        self.properties = []
- 
+        
+        # Map types that contain this one --> predicate for mapping
+        self.containing_types = {}
+
         # Add properties and contained types based on our own restrictions.       
+        self.properties = []
         for p in self.parents:
             self.restrictions.extend(p.restrictions)
 
         for r in self.restrictions:
             if r.on_class:
                 self.contained_types[r.property] = SMArtType.get_or_create(model, r.on_class, calls)
+                self.contained_types[r.property].containing_types[self] = r.property
             else:
                 self.properties.append(r)
         
         # And then pull in any from our parents.
 
     def predicate_for_contained_type(self, contained_type):
-        for p, c in self.contained_types.iteritems():
-            if c == contained_type: return p
-        return None
+        return contained_type.containing_types[self]
 
     def __repr__(self):
         return "SMArtType:" + str(self.node)
@@ -185,5 +189,5 @@ try:
     from django.conf import settings
     f = open(settings.ONTOLOGY_FILE).read()
     parse_ontology(f)
-except ImportError, AttributeError: pass
+except (ImportError, AttributeError): pass
 
