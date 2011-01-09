@@ -127,7 +127,8 @@ extend('Smart.Models.Med',
 			var ds = [];
 
 			var devent = {};			
-			var d = Date.parse(fulfillments[i].d.value.substring(0,10));
+			var d = $.trim(fulfillments[i].d.value);
+			var d = Date.parse(d.substring(0,10));
 			
 			devent.quantity = fulfillments[i].q.value;
 			devent.title = devent.quantity;
@@ -315,30 +316,5 @@ extend('Smart.Models.Med',
 		
 		return dispenses;
 	},
-	
-	update_attribute: function(predicate, object, success, error) {
-		var url = this.rdf.med.value.path;
-		
-		pred_ns  = predicate.split(/(\/|#)/);	
-		pred = pred_ns[pred_ns.length-1];
-		pred_ns = predicate.substr(0, (predicate.length - pred.length));
-	
-		var update  = '<?xml version="1.0" encoding="utf-8"?>\n\
-			<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:pred="'+pred_ns+'">\n\
-			   <rdf:Description \n\
-			   		rdf:about="'+this.rdf.med.value._string+'">\n\
-			   		<pred:'+pred+' rdf:resource="'+object+'" />\n\
-			   </rdf:Description>\n\
-			</rdf:RDF>';
 
-		SMART.api_call( {
-					method : 'POST',
-					url : url,
-					contentType : 'application/rdf+xml',
-					data : update
-		}, function(contentType, data) {
-					var rdf = SMART.process_rdf(contentType, data);
-					success(rdf);
-		});
-	}
 });
