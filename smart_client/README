@@ -1,0 +1,549 @@
+class SSmmaarrttCClliieenntt(oauth.OAuthClient)
+ |  Establishes OAuth communication with a SMArt Container, and
+ |  provides access To the SMArt REST API
+ |  
+ |  Method resolution order:
+ |      SmartClient
+ |      oauth.OAuthClient
+ |      __builtin__.object
+ |  
+ |  Methods defined here:
+ |  
+ |  ____iinniitt____(self, app_id, server_params, consumer_token, resource_token=None)
+ |      Constructor for SmartClient. 
+ |      
+ |      app_id:  ID by which the app is known to the SMArt Container
+ |      
+ |      server_params: Hash containing an "api_base" key pointing
+ |      to the SMArt Container's base URL.
+ |      
+ |          e.g. {"api_base" : "http://sandbox-api.smartplatforms.org"}
+ |      
+ |      consumer_token: Hash containing a "consumer_key" and
+ |      "consumer_secret" to be used for two- and three-legged
+ |      OAuth requests.
+ |      
+ |      resource_token (optional): Hash containing session
+ |      "oauth_token" and "oauth_token_secret" to be used for
+ |      three-legged OAuth requests.
+ |  
+ |  ccaappaabbiilliittiieess__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/capabilities/
+ |      
+ |      Get a list of all auxiliiary container capabilities
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Container]
+ |  
+ |  ddaattaa__mmaappppeerr(self, data)
+ |      Hook to parse the results of OAuth requests into a
+ |      query-able RDF graph
+ |  
+ |  ddeelleettee(self, url, data=None, content_type=None)
+ |      Issue an HTTP DELETE request to the specified URL and
+ |      return the response body.
+ |  
+ |  eexxcchhaannggee(self, request_token, verifier=None)
+ |  
+ |  ggeett(self, url, data=None, content_type=None)
+ |      Issue an HTTP GET request to the specified URL and
+ |      return the response body.
+ |      
+ |            data: a dictionary of data to be url-encoded, or a
+ |            string containing the HTTP request message body.
+ |      
+ |            content_type:  defaults to "application/x-www-form-urlencoded"
+ |  
+ |  ggeett__rreeqquueesstt__ttookkeenn(self, params={})
+ |  
+ |  lloooopp__oovveerr__rreeccoorrddss(self)
+ |      Iterator allowing background apps to loop through each
+ |      patient record in the SMArt container, e.g. to perform
+ |      reporting or analytics.  For each patient record in the
+ |      container, sets access tokens on the SmartClient object and
+ |      yields the new record_id.
+ |  
+ |  oonnttoollooggyy__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/ontology
+ |      
+ |      Retrieve ontology used by a SMArt container
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Ontology]
+ |  
+ |  ppoosstt(self, url, data='', content_type='application/rdf+xml')
+ |      Issue an HTTP POST request to the specified URL and
+ |      return the response body.
+ |      
+ |            data: string containing HTTP request message body.
+ |      
+ |            content_type:  defaults to "application/x-www-form-urlencoded"
+ |  
+ |  ppuutt(self, url, data='', content_type='application/rdf+xml')
+ |      Issue an HTTP PUT request to the specified URL and
+ |      return the response body.
+ |      
+ |            data: string containing HTTP request message body.
+ |      
+ |            content_type:  defaults to "application/x-www-form-urlencoded"
+ |  
+ |  rreeccoorrddss__XX__aalllleerrggiieess__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/allergies/
+ |      
+ |      Delete all allergies from a record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Allergy]
+ |  
+ |  rreeccoorrddss__XX__aalllleerrggiieess__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/allergies/
+ |      
+ |      GET all allergies for a record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Allergy]
+ |  
+ |  rreeccoorrddss__XX__aalllleerrggiieess__PPOOSSTT = c(self, *args, **kwargs)
+ |      POST http://smartplatforms.org/records/{record_id}/allergies/
+ |      
+ |      Add new allergies to a record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Allergy]
+ |  
+ |  rreeccoorrddss__XX__aalllleerrggiieess__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/allergies/{allergy_id}
+ |      
+ |      Delete a single allergy
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Allergy]
+ |  
+ |  rreeccoorrddss__XX__aalllleerrggiieess__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/allergies/{allergy_id}
+ |      
+ |      Get a single allergy
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Allergy]
+ |  
+ |  rreeccoorrddss__XX__aalllleerrggiieess__eexxtteerrnnaall__iidd__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/allergies/external_id/{external_id}
+ |      
+ |      Delete a single allergy
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Allergy]
+ |  
+ |  rreeccoorrddss__XX__aalllleerrggiieess__eexxtteerrnnaall__iidd__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/allergies/external_id/{external_id}
+ |      
+ |      Get a single allergy
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Allergy]
+ |  
+ |  rreeccoorrddss__XX__aalllleerrggiieess__eexxtteerrnnaall__iidd__XX__PPUUTT = c(self, *args, **kwargs)
+ |      PUT http://smartplatforms.org/records/{record_id}/allergies/external_id/{external_id}
+ |      
+ |      Add a single allergy by external key
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Allergy]
+ |  
+ |  rreeccoorrddss__XX__ddeemmooggrraapphhiiccss__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/demographics
+ |      
+ |      Get all demographics for a patient
+ |      
+ |      Returns RDF Graph containing:  [http://xmlns.com/foaf/0.1/Person]
+ |  
+ |  rreeccoorrddss__XX__ddeemmooggrraapphhiiccss__PPUUTT = c(self, *args, **kwargs)
+ |      PUT http://smartplatforms.org/records/{record_id}/demographics
+ |      
+ |      Replace all demographics for a patient with a newly-supplied graph
+ |      
+ |      Returns RDF Graph containing:  [http://xmlns.com/foaf/0.1/Person]
+ |  
+ |  rreeccoorrddss__XX__ffuullffiillllmmeennttss__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/fulfillments/
+ |      
+ |      Delete all fulfillments in the record.
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__ffuullffiillllmmeennttss__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/fulfillments/
+ |      
+ |      Get all fulfillments in the record.
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__ffuullffiillllmmeennttss__PPOOSSTT = c(self, *args, **kwargs)
+ |      POST http://smartplatforms.org/records/{record_id}/fulfillments/
+ |      
+ |      Add fulfillments in the absence of a medication
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__ffuullffiillllmmeennttss__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/fulfillments/{fulfillment_id}
+ |      
+ |      Delete a single fulfillment
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__ffuullffiillllmmeennttss__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/fulfillments/{fulfillment_id}
+ |      
+ |      Get a single fulfillment
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__ffuullffiillllmmeennttss__eexxtteerrnnaall__iidd__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/fulfillments/external_id/{external_id}
+ |      
+ |      Delete a single fulfillment
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__ffuullffiillllmmeennttss__eexxtteerrnnaall__iidd__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/fulfillments/external_id/{external_id}
+ |      
+ |      Get a single fulfillment
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__ffuullffiillllmmeennttss__eexxtteerrnnaall__iidd__XX__PPUUTT = c(self, *args, **kwargs)
+ |      PUT http://smartplatforms.org/records/{record_id}/fulfillments/external_id/{external_id}
+ |      
+ |      Put a single fulfillment by its external key
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuulltt__ppaanneellss__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/lab_result_panels/
+ |      
+ |      Delete all lab result panels from a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResultPanel]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuulltt__ppaanneellss__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/lab_result_panels/
+ |      
+ |      Get all lab result panels for a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResultPanel]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuulltt__ppaanneellss__PPOOSSTT = c(self, *args, **kwargs)
+ |      POST http://smartplatforms.org/records/{record_id}/lab_result_panels/
+ |      
+ |      Add lab result panels to a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResultPanel]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuulltt__ppaanneellss__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/lab_result_panels/{lab_result_panel_id}
+ |      
+ |      Delete a single lab result panel
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResultPanel]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuulltt__ppaanneellss__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/lab_result_panels/{lab_result_panel_id}
+ |      
+ |      Get a single lab result panel
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResultPanel]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuullttss__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/lab_results/
+ |      
+ |      Delete all lab results from a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResult]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuullttss__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/lab_results/
+ |      
+ |      Get all lab results for a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResult]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuullttss__PPOOSSTT = c(self, *args, **kwargs)
+ |      POST http://smartplatforms.org/records/{record_id}/lab_results/
+ |      
+ |      Add lab results to a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResult]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuullttss__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/lab_results/{lab_result_id}
+ |      
+ |      Delete a single lab result
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResult]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuullttss__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/lab_results/{lab_result_id}
+ |      
+ |      Get a single lab result
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResult]
+ |  
+ |  rreeccoorrddss__XX__llaabb__rreessuullttss__eexxtteerrnnaall__iidd__XX__PPUUTT = c(self, *args, **kwargs)
+ |      PUT http://smartplatforms.org/records/{record_id}/lab_results/external_id/{external_id}
+ |      
+ |      Add lab results to a given record by external key
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#LabResult]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/medications/
+ |      
+ |      Delete all medications from a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Medication]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/medications/
+ |      
+ |      Get all medications for a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Medication]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__PPOOSSTT = c(self, *args, **kwargs)
+ |      POST http://smartplatforms.org/records/{record_id}/medications/
+ |      
+ |      Add medications to a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Medication]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/medications/{medication_id}
+ |      
+ |      Delete a single medication
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Medication]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/medications/{medication_id}
+ |      
+ |      Get a single medication
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Medication]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__XX__ffuullffiillllmmeennttss__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/medications/{medication_id}/fulfillments/
+ |      
+ |      Deletefulfillments for a given medication
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__XX__ffuullffiillllmmeennttss__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/medications/{medication_id}/fulfillments/
+ |      
+ |      Get all fulfillments for a given medication
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__XX__ffuullffiillllmmeennttss__PPOOSSTT = c(self, *args, **kwargs)
+ |      POST http://smartplatforms.org/records/{record_id}/medications/{medication_id}/fulfillments/
+ |      
+ |      Add fulfillments for a given medication
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__eexxtteerrnnaall__iidd__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/medications/external_id/{external_id}
+ |      
+ |      Delete a single medication
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Medication]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__eexxtteerrnnaall__iidd__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/medications/external_id/{external_id}
+ |      
+ |      Get a single medication
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Medication]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__eexxtteerrnnaall__iidd__XX__PPUUTT = c(self, *args, **kwargs)
+ |      PUT http://smartplatforms.org/records/{record_id}/medications/external_id/{external_id}
+ |      
+ |      Put a single medication by its external key
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Medication]
+ |  
+ |  rreeccoorrddss__XX__mmeeddiiccaattiioonnss__eexxtteerrnnaall__iidd__XX__ffuullffiillllmmeennttss__eexxtteerrnnaall__iidd__XX__PPUUTT = c(self, *args, **kwargs)
+ |      PUT http://smartplatforms.org/records/{record_id}/medications/external_id/{med_external_id}/fulfillments/external_id/{external_id}
+ |      
+ |      Put a single fulfillmentby its external key
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Fulfillment]
+ |  
+ |  rreeccoorrddss__XX__nnootteess__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/notes/
+ |      
+ |      Delete all notes from a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Note]
+ |  
+ |  rreeccoorrddss__XX__nnootteess__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/notes/
+ |      
+ |      Get all notes for a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Note]
+ |  
+ |  rreeccoorrddss__XX__nnootteess__PPOOSSTT = c(self, *args, **kwargs)
+ |      POST http://smartplatforms.org/records/{record_id}/notes/
+ |      
+ |      Add notes to a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Note]
+ |  
+ |  rreeccoorrddss__XX__nnootteess__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/notes/{note_id}
+ |      
+ |      Delete a single note
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Note]
+ |  
+ |  rreeccoorrddss__XX__nnootteess__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/notes/{note_id}
+ |      
+ |      Get a single note
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Note]
+ |  
+ |  rreeccoorrddss__XX__nnootteess__eexxtteerrnnaall__iidd__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/notes/external_id/{external_id}
+ |      
+ |      Delete a single note
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Note]
+ |  
+ |  rreeccoorrddss__XX__nnootteess__eexxtteerrnnaall__iidd__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/notes/external_id/{external_id}
+ |      
+ |      Get a single note
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Note]
+ |  
+ |  rreeccoorrddss__XX__nnootteess__eexxtteerrnnaall__iidd__XX__PPUUTT = c(self, *args, **kwargs)
+ |      PUT http://smartplatforms.org/records/{record_id}/notes/external_id/{external_id}
+ |      
+ |      Put a single note by its external key
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Note]
+ |  
+ |  rreeccoorrddss__XX__pprroobblleemmss__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/problems/
+ |      
+ |      Delete all problems from a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Problem]
+ |  
+ |  rreeccoorrddss__XX__pprroobblleemmss__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/problems/
+ |      
+ |      Get all problems for a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Problem]
+ |  
+ |  rreeccoorrddss__XX__pprroobblleemmss__PPOOSSTT = c(self, *args, **kwargs)
+ |      POST http://smartplatforms.org/records/{record_id}/problems/
+ |      
+ |      Add problems to a given record
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Problem]
+ |  
+ |  rreeccoorrddss__XX__pprroobblleemmss__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/problems/{problem_id}
+ |      
+ |      Delete a single problem
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Problem]
+ |  
+ |  rreeccoorrddss__XX__pprroobblleemmss__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/problems/{problem_id}
+ |      
+ |      Get a single problem
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Problem]
+ |  
+ |  rreeccoorrddss__XX__pprroobblleemmss__eexxtteerrnnaall__iidd__XX__DDEELLEETTEE = c(self, *args, **kwargs)
+ |      DELETE http://smartplatforms.org/records/{record_id}/problems/external_id/{external_id}
+ |      
+ |      Delete a single problem
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Problem]
+ |  
+ |  rreeccoorrddss__XX__pprroobblleemmss__eexxtteerrnnaall__iidd__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/records/{record_id}/problems/external_id/{external_id}
+ |      
+ |      Get a single problem
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Problem]
+ |  
+ |  rreeccoorrddss__XX__pprroobblleemmss__eexxtteerrnnaall__iidd__XX__PPUUTT = c(self, *args, **kwargs)
+ |      PUT http://smartplatforms.org/records/{record_id}/problems/external_id/{external_id}
+ |      
+ |      Put a single problem by its external key
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#Problem]
+ |  
+ |  rreeddiirreecctt__uurrll(self, request_token)
+ |  
+ |  uuppddaattee__ttookkeenn(self, resource_token)
+ |      Sets the session token for subsequent three-legged OAuth requests.
+ |      
+ |      resource_token: Hash containing session "oauth_token" and
+ |      "oauth_token_secret" to be used for three-legged OAuth
+ |      requests.
+ |  
+ |  uusseerrss__XX__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/users/{user_id}
+ |      
+ |      Get a single user by internal ID
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#User]
+ |  
+ |  uusseerrss__sseeaarrcchh__GGEETT = c(self, *args, **kwargs)
+ |      GET http://smartplatforms.org/users/search?givenName={givenName}&familyName={familyName}
+ |      
+ |      Find users by name (or all users if blank)
+ |      
+ |      Returns RDF Graph containing:  [http://smartplatforms.org/terms#User]
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |  
+ |  oonnttoollooggyy__ffiillee = '<?xml version="1.0"?>\n\n<rdf:RDF\n     xml:base="h.....
+ |  
+ |  ----------------------------------------------------------------------
+ |  Methods inherited from oauth.OAuthClient:
+ |  
+ |  aacccceessss__rreessoouurrccee(self, http_request, with_content_type=False)
+ |      host is a dictionary containing protocol, hostname, and port
+ |      if port is not specified, it is assumed to be 80 for http, and 443 for https
+ |  
+ |  ffeettcchh__aacccceessss__ttookkeenn(self, request_token, verifier=None)
+ |  
+ |  ffeettcchh__rreeqquueesstt__ttookkeenn(self)
+ |  
+ |  ggeett__aauutthhoorriizzee__uurrll(self, request_token)
+ |  
+ |  ggeett__ccoonnssuummeerr(self)
+ |  
+ |  ggeett__ttookkeenn(self)
+ |  
+ |  sseett__ttookkeenn(self, token)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data descriptors inherited from oauth.OAuthClient:
+ |  
+ |  ____ddiicctt____
+ |      dictionary for instance variables (if defined)
+ |  
+ |  ____wweeaakkrreeff____
+ |      list of weak references to the object (if defined)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes inherited from oauth.OAuthClient:
+ |  
+ |  ccoonnssuummeerr = None
+ |  
+ |  ttookkeenn = None
+

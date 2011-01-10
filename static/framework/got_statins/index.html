@@ -13,8 +13,9 @@
 	<script>
 			SMART.MEDS_get_all(function(meds) {
 			
-				var statin = meds.where("?m rdf:type <http://smartplatforms.org/clinical#Medication>")
-								 .where("?m dcterms:title ?drugname");
+				var statin = meds.where("?m rdf:type sp:Medication")
+						 .where("?m sp:code ?c")
+						 .where("?c dcterms:title ?drugname");
 				
 				var answer = false;
 								 
@@ -27,7 +28,6 @@
 			});
 		
 		var is_a_statin = function(drug) {
-		
 			if (drug.match(/statin$/i)) return true;
 			if (drug.match(/Advicor/i)) return true;
 			if (drug.match(/Altoprev/i)) return true;

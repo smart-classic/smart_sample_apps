@@ -686,6 +686,11 @@ SMART_frame_glue_app = function(redirect_url) {
 		redirect_url = "index.html"
 			
    SMART = new SMART_CLIENT(null, window.top);
+   SMART.message_receivers = {foreground: function() {
+	   var src = $('#content').get(0).src;
+	   $('#content').get(0).src = src;
+       }};
+
    SMART.send_ready_message(function(context_info) {
 	   $("html").css("overflow","hidden");
 	   $("body").css("margin","0px");
