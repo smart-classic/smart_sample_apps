@@ -82,14 +82,20 @@ extend('MedList.Controllers.TimelineController',
 		return ret;
 		
 	},
-	
+	dateToISO: function(date) {
+	    var r = date.toISOString();
+	    if (r.match(/^"/) !== null) {
+              return r.substring(1, 10);
+            }
+             return r.substring(0,10);
+	},
 	earliestEvent : function(events) {
 		var d = new Date(); // start with today's date as the assumption to disprove.
 		for (var i = 0; i < events.length; i++ ) {
 			if (events[i].start < d)
 				d = events[i].start;			
 		}
-		return d.toISOString().substring(0,10);
+		return this.dateToISO(d);
 	},
 	latestEvent : function(events) {
 		var d = new Date(1000,1,1); // start with today's date as the assumption to disprove.
@@ -98,14 +104,14 @@ extend('MedList.Controllers.TimelineController',
 			if (ev_end > d)
 				d = ev_end;			
 		}
-		return d.toISOString().substring(0,10);
+		return this.dateToISO(d);
 	},
 	replaceUndefinedDates : function(events) {
 		for (var i = 0; i < events.length; i++ ) {
 			if (typeof(events[i].start)=="object" && events[i].start !== null)
-				events[i].start=events[i].start.toISOString().substring(0,10);
+				events[i].start=this.dateToISO(events[i].start);
 			if (typeof(events[i].end)=="object"&& events[i].end !== null)
-				events[i].end=events[i].end.toISOString().substring(0,10);
+				events[i].end=this.dateToISO(events[i].end);
 			
 		}
 	}
