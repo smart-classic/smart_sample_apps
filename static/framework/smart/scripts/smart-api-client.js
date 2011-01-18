@@ -704,6 +704,7 @@ SMART_frame_glue_app = function(redirect_url) {
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
 	   var content_iframe = $('<iframe src="'+redirect_url+'" id="content" style="border: 0px; overflow-x: hidden; overflow-y: auto;">');
 	   $('body').append(content_iframe);
+		$(window).resize();  
    });
 };
 
