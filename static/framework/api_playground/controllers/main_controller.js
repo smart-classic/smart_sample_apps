@@ -15,6 +15,9 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		this.calls = {};
 		this.payload_box = $("#payload");
 		this.response_box = $("#response");
+		window.jash = new Jash(this.response_box.get(0));
+		window.jash.main();
+
 		this.payload_box.hide();
 		this.response_box.hide();
 			ApiType.interpolations.record_id = SMART.record.id;
@@ -36,7 +39,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		//console.log("chose type " + t.name);
 		this.payload_box.hide();
 		this.response_box.hide();
-		this.response_box.html("");
 		$("#interpolation-fields").html("");
 		g.group_type.fetchParameters();
     },
@@ -60,7 +62,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		}
 
 		this.response_box.hide();
-		this.response_box.html("");
 		
 		$("#interpolation-fields").html(this.view('interpolations', {type: this.selected_top_group.group_type, 
 																	 call: this.selected_call}));
@@ -117,8 +118,19 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 	r = SMART.process_rdf(contentType, data);
     	//console.log("got data" + contentType + data);
 	window.response = r;
+	window.jash.clear();
+	window.jash.output.value = data;
+	window.jash.output.value += "\n\n------------\n";
+	window.jash.output.value += window.jash.defaultText;
+	window.jash.output.value += "\n";
+	window.jash.output.value += "Triples in RDF graph returned: " + response.where('?s ?p ?o.').length+"\n\n";
+	window.jash.output.value += "To explore the graph, try:\n";
+	window.jash.output.value += "  > response.source_xml";
+	window.jash.output.value += "  > response.where('?s ?p ?o.').length\n";
+	window.jash.output.value += "  > response.where('?s ?p ?o.').[0].s \n";
     	this.response_box.show();
-	
+	window.jash.print("\nTo explore type or paste commands in the textbox below, then press Enter.");
+	window.jash.input.focus();
     	$(".cancel-call").removeAttr("DISABLED");
 		$(".complete-call").removeAttr("DISABLED");
     	$("#interpolation-fields INPUT").each(function() {

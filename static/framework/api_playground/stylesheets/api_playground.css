@@ -70,9 +70,8 @@ table#calls {
 
 #response, #payload {
     font-size:0.8em;
-    position: relative;
-	width: 50em;
-	font-family: courier,fixed-width;
+    width: 640px;
+    font-family: courier,fixed-width;
 }
 
 #payload {height: 20em;}
@@ -80,6 +79,15 @@ table#calls {
 	padding: .5em;
 	margin-left: .8em;
 	border: 1px dotted black;	
+}
+
+#result{
+	width: 640px;
+	height: 450px;
+	border: 1px solid gray;
+	z-index: 10000;
+	overflow: hidden;
+	font-family: monospace;
 }
 
 LI {
