@@ -85,7 +85,7 @@ extend('MedList.Controllers.TimelineController',
 	dateToISO: function(date) {
 	    var r = date.toISOString();
 	    if (r.match(/^"/) !== null) {
-              return r.substring(1, 10);
+              return r.substring(1, 11);
             }
              return r.substring(0,10);
 	},

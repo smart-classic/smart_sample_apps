@@ -13,5 +13,6 @@
 	
   "web_hooks" : { },
 
-  "icon" :  "{base_url}/framework/api_playground/icon.png"
+  "icon" :  "{base_url}/framework/api_playground/icon.png",
+  "enabled_by_default" : "true"
 }

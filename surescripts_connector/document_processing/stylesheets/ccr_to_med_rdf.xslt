@@ -99,14 +99,14 @@ version="1.0">
   </xsl:choose>
 
   <xsl:choose><xsl:when test="$cui">
-  	    <sp:code>
+  	    <sp:drugName>
 	    <sp:CodedValue>
 	    <sp:code><xsl:attribute name="rdf:resource">http://link.informatics.stonybrook.edu/rxnorm/RXCUI/<xsl:value-of select="$cui"/></xsl:attribute></sp:code>
 	    <xsl:choose><xsl:when test="$name">
   	      <dcterms:title><xsl:value-of select="$name"/></dcterms:title>
 	    </xsl:when></xsl:choose>
 	    </sp:CodedValue>
-	    </sp:code>
+	    </sp:drugName>
   </xsl:when></xsl:choose>
 
 

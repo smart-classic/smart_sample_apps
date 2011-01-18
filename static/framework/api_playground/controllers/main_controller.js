@@ -114,11 +114,9 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     },
     
     receivedResult: function(contentType, data) {
-    	
+	r = SMART.process_rdf(contentType, data);
     	//console.log("got data" + contentType + data);
-    	this.response_box.text("Response:\n\n"+data);
-		this.response_box.html(this.response_box.html()
-				.replace(/\n/g, "<br>"));
+	window.response = r;
     	this.response_box.show();
 	
     	$(".cancel-call").removeAttr("DISABLED");

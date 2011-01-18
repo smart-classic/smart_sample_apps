@@ -31,4 +31,3 @@ def get_smart_client(resource_tokens=None):
     ret = SmartClient(settings.SS_OAUTH['consumer_key'], settings.SMART_SERVER_PARAMS, settings.SS_OAUTH, resource_tokens)
     ret.stylesheet = "%s%s"%(settings.XSLT_STYLESHEET_LOC, "ccr_to_med_rdf.xslt")
     return ret
-

@@ -62,7 +62,7 @@ extend('Smart.Models.Med',
 		this.rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 		       		
 		var r = this.rdf.where("?med rdf:type "+this.object_type)
-			 .where(" ?med sp:code ?drug_code")
+			 .where(" ?med sp:drugName ?drug_code")
 			 .optional(" ?drug_code sp:code ?cui")
 			 .optional(" ?drug_code dcterms:title ?medlabel")
 			 .optional(" ?med sp:strength ?strength")
@@ -203,7 +203,7 @@ extend('Smart.Models.Med',
 		  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 
 		rdf.add('_:m rdf:type sp:Medication .');
-		rdf.add('_:m sp:code _:med_code .');
+		rdf.add('_:m sp:drugName _:med_code .');
 		
 		if (this.drug)
 			rdf.add('_:med_code dcterms:title "'+this.drug+'" .');

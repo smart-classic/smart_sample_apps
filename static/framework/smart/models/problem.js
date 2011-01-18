@@ -52,7 +52,7 @@ extend('Smart.Models.Problem',
 		if (!this.rdf) return;
 		
 		var p = Smart.Models.Problem.rdf
-		.optional(this.nodeName() + " sp:code ?pc ")
+		.optional(this.nodeName() + " sp:problemName ?pc ")
 		.optional("?pc dcterms:title ?title ")
 		.optional("?pc sp:code ?concept")
 		.optional(this.nodeName() + " sp:notes ?notes")
@@ -79,7 +79,7 @@ extend('Smart.Models.Problem',
 
 		rdf.add('_:m rdf:type sp:Problem .');
 		
-		rdf.add('_:m sp:code _:pc .');
+		rdf.add('_:m sp:problemName _:pc .');
 		rdf.add('_:pc dcterms:title "'+this.title+'" .');
 		if (this.concept) 
 			rdf.add('_:pc sp:code <'+this.concept+'> .');
