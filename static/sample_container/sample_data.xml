@@ -1,45 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 
-<rdf:RDF xmlns:med="http://smartplatforms.org/medication#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sp="http://smartplatforms.org/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rxcui="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ccr="urn:astm-org:CCR" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:tns="http://ws.smart.i2b2.harvard.edu" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"> 
-<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:00003010960"> 
-<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
-<dcterms:title>Trimox 500mg capsule Bristol-Myers Squibb</dcterms:title> 
-<med:startDate>10/20/2001</med:startDate> 
-<med:endDate>10/20/2003</med:endDate> 
-</rdf:Description> 
-<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:00005306343"> 
-<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
-<dcterms:title>Albuterol Sulfate 4mg tablet ESI Lederle Generics</dcterms:title> 
-<med:dose>2.5</med:dose> 
-<med:doseUnits rdf:resource="http://smartplatforms.org/med#mg">mg</med:doseUnits> 
-<med:startDate>10/20/2001</med:startDate> 
-<med:endDate>10/20/2003</med:endDate> 
-</rdf:Description> 
-<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:00003010960"> 
-<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
-<dcterms:title>Trimox 500mg capsule Bristol-Myers Squibb</dcterms:title> 
-<med:startDate>05/30/2002</med:startDate> 
-<med:endDate>05/30/2004</med:endDate> 
-</rdf:Description> 
-<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:00005306343"> 
-<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
-<dcterms:title>Albuterol Sulfate 4mg tablet ESI Lederle Generics</dcterms:title> 
-<med:dose>2</med:dose> 
-<med:doseUnits rdf:resource="http://smartplatforms.org/med#puff">puff</med:doseUnits> 
-<med:startDate>02/14/2005</med:startDate> 
-<med:endDate>02/14/2007</med:endDate> 
-</rdf:Description> 
-<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:53014067870"> 
-<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
-<dcterms:title>Gastrocrom 20 mg/ml solution Medeva Pharmaceuticals</dcterms:title> 
-<med:dose>2</med:dose> 
-<med:doseUnits rdf:resource="http://smartplatforms.org/med#puff">puff</med:doseUnits> 
-<med:startDate>02/14/2005</med:startDate> 
-<med:endDate>02/14/2007</med:endDate> 
-</rdf:Description> 
-<rdf:Description rdf:about="http://smartplatforms.org/records/1000000012/medications/NDC:60267074230"> 
-<rdf:type rdf:resource="http://smartplatforms.org/medication" /> 
-<dcterms:title>Sal-Tropine 0.4mg tablet Hope Pharmaceuticals</dcterms:title> 
-<med:startDate>03/13/2005</med:startDate> 
-<med:endDate>03/13/2007</med:endDate> 
-</rdf:Description> 
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/2fb97a53-a4e6-4f4f-ac84-6f367bef7267">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">oral</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2001-07-25</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2001-07-25</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">4</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5619"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5619">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/197318"/>
+    <title xmlns="http://purl.org/dc/terms/">Albuterol 4 MG Oral Tablet</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/a9f324e9-0485-409e-afe8-c1e8c783ae7c">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">injectable</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2002-07-01</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2002-07-01</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">mg/ml</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">40</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg/mL</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">40</dose>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5621"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5621">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/102860"/>
+    <title xmlns="http://purl.org/dc/terms/">Triamcinolone 40 MG/ML Injectable Suspension [Kenalog]</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/7b29f94d-8915-41f6-85ab-da6c079dbec1">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">oral</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2003-02-07</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2003-02-07</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">2</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5623"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5623">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/197590"/>
+    <title xmlns="http://purl.org/dc/terms/">Diazepam 2 MG Oral Tablet</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/97fe049f-fa2d-44ba-940b-f9e8c8e22f10">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">rectal</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2003-02-07</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2003-02-07</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">mg/ml</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">5</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5625"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5625">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/801960"/>
+    <title xmlns="http://purl.org/dc/terms/">1 ML Diazepam 0.005 MG/MG Prefilled Applicator [Diastat]</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/e9110d35-3b33-4fed-babd-ab2d9ebe0911">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">oral</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2006-03-06</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2006-03-06</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">4</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">4</dose>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5627"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5627">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/197318"/>
+    <title xmlns="http://purl.org/dc/terms/">Albuterol 4 MG Oral Tablet</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/092c2158-5d71-49a2-8292-ac686c639f1a">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">rectal</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2006-05-30</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2006-05-30</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">120</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5629"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5629">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/209359"/>
+    <title xmlns="http://purl.org/dc/terms/">Acetaminophen 120 MG Rectal Suppository [Uniserts]</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/ed721123-4792-42c5-86b8-b6c0abe71440">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">oral</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2007-02-15</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2007-02-15</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">MG</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">100</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">100</dose>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5631"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5631">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/213271"/>
+    <title xmlns="http://purl.org/dc/terms/">sildenafil 100 MG Oral Tablet [Viagra]</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/3e24bd90-2ded-4b4e-9ba8-f2da818e5cae">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">oral</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2009-02-13</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2009-02-13</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">4</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5633"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5633">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <drugName xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/197318"/>
+    <title xmlns="http://purl.org/dc/terms/">Albuterol 4 MG Oral Tablet</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://smartplatforms.org/records/1000000003/medications/6875151b-7421-4453-8c8e-5b8800c4b060">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+    <route xmlns="http://smartplatforms.org/terms#">intravenous</route>
+    <startDate xmlns="http://smartplatforms.org/terms#">2009-06-19</startDate>
+    <endDate xmlns="http://smartplatforms.org/terms#">2009-06-19</endDate>
+    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
+    <strength xmlns="http://smartplatforms.org/terms#">500</strength>
+    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
+    <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
+    <dose xmlns="http://smartplatforms.org/terms#">500</dose>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5635"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="r1294169778r21765r5635">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <code xmlns="http://smartplatforms.org/terms#" rdf:resource="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/351772"/>
+    <title xmlns="http://purl.org/dc/terms/">Azithromycin 100 MG/ML Injectable Solution [Zithromax]</title>
+</rdf:Description>
+
 </rdf:RDF>
+
