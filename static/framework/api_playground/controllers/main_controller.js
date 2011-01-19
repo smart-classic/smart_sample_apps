@@ -125,7 +125,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 	window.jash.output.value += "\n";
 	window.jash.output.value += "Triples in RDF graph returned: " + response.where('?s ?p ?o.').length+"\n\n";
 	window.jash.output.value += "To explore the graph, try:\n";
-	window.jash.output.value += "  > response.source_xml";
+	window.jash.output.value += "  > response.source_xml\n";
 	window.jash.output.value += "  > response.where('?s ?p ?o.').length\n";
 	window.jash.output.value += "  > response.where('?s ?p ?o.').[0].s \n";
     	this.response_box.show();
