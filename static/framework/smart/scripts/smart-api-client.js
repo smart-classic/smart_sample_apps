@@ -147,6 +147,20 @@ SMART_CLIENT.prototype.LABS_RESULTS_get = function(callback) {
 	});
 
 };
+
+SMART_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record.id + "/demographics",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+
+};
+
 	
 
 SMART_CLIENT.prototype.MEDS_get = function(callback) {
