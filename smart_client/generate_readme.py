@@ -14,8 +14,22 @@ s = SmartClient(SMART_SERVER_OAUTH['consumer_key'],
                        SMART_SERVER_PARAMS, 
                        SMART_SERVER_OAUTH)
 
+
 import pydoc
 t = pydoc.TextDoc()
 
+# TextDoc default behavior wrecks havoc with markdown interpretation.
+# So strip out the " |" line beginnings...
 sys.stdout = tmp
-print t.docclass(SmartClient)
+d = t.docclass(SmartClient)
+d = pydoc.plain(d)
+print """SMArt Python Client Library
+
+To generate this README:
+
+  $ python generate_readme.py > README
+
+---
+
+"""
+print d

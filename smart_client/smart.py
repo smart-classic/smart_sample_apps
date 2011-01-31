@@ -12,7 +12,7 @@ import common.util
 
 class SmartClient(OAuthClient):
     """Establishes OAuth communication with a SMArt Container, and
-    provides access To the SMArt REST API"""  
+    provides access to the SMArt REST API"""  
 
     def __init__(self, app_id, server_params, consumer_token, resource_token=None):
         """Constructor for SmartClient. 
