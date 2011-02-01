@@ -57,8 +57,18 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.cookie_name = "";
 
     	if (message.credentials && message.credentials.oauth_cookie !== undefined ){
-    		this.cookie_name ='smart_oauth_cookie' + message.activity_id;    		
-		    document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
+
+            var existing_cookies = document.cookie.split(";");
+            n = existing_cookies.length;
+            while (n > 10) {
+		n = n-1;
+                old_cookie_name = existing_cookies[n].split("=")[0].trim();
+		console.log("deleting old cookie" + old_cookie_name);
+                document.cookie = old_cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
+            }
+
+	    this.cookie_name ='smart_oauth_cookie' + message.activity_id;    		
+	    document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
 	    }
 
     	var _this = this;
