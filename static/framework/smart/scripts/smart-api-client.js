@@ -1,4 +1,4 @@
-*
+/*
  * SMArt API client
  * Josh Mandel
  * Ben Adida
