@@ -5,7 +5,7 @@
  */
 
 var SMART_CLIENT = function(smart_server_origin, frame) {
-    var debug = true;
+    var debug = false;
 	var _this = this;
 	this.message_receivers = {};
 	this.send_ready_message = function(ready_callback) {
