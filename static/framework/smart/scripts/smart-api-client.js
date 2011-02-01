@@ -1,4 +1,4 @@
-/*
+*
  * SMArt API client
  * Josh Mandel
  * Ben Adida
@@ -63,7 +63,6 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
             while (n > 10) {
 		n = n-1;
                 old_cookie_name = existing_cookies[n].split("=")[0].trim();
-		console.log("deleting old cookie" + old_cookie_name);
                 document.cookie = old_cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
             }
 
