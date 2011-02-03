@@ -61,9 +61,10 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
             var existing_cookies = document.cookie.split(";");
             n = existing_cookies.length;
             while (n > 10) {
-		n = n-1;
+            	n = n-1;
                 old_cookie_name = existing_cookies[n].split("=")[0].trim();
-                document.cookie = old_cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
+                if (old_cookie_name.match("^smart_oauth_cookie") !== null)
+                	document.cookie = old_cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
             }
 
 	    this.cookie_name ='smart_oauth_cookie' + message.activity_id;    		
@@ -712,6 +713,22 @@ SMART_frame_glue_app = function(redirect_url) {
        document.body.innerHTML = '<img id="loading" src="http://sample-apps.smartplatforms.org/framework/smart/images/ajax-loader.gif">';
    };
 
+   var check_loaded_handler = function(iframe_to_load) {
+	   var dom = iframe_to_load.data("finished_dom");
+	   var api_page= iframe_to_load.data("loaded_api_page");
+	      if (api_page === true)
+	    	  return;
+	   
+		  if (dom === false )
+		  {
+		   $("body").prepend("<B>SMArt App Loading Error</b>: 30 seconds passed, and app DOM failed to load:  <br>" + iframe_to_load.attr("src"));
+		  }
+		  else
+		  {
+		   $("body").prepend("<B>SMArt App Loading Error</b>: 30 seconds passed, and app DOM loaded, but never loaded smart-api-page.js");
+		  }	
+   }
+   
    SMART = new SMART_CLIENT(null, window.top);
    SMART.message_receivers = {foreground: function() {
 	   var src = $('#content').get(0).src;
@@ -731,17 +748,27 @@ SMART_frame_glue_app = function(redirect_url) {
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
 	   var content_iframe = $('<iframe src="'+redirect_url+'" id="content" style="border: 0px; overflow-x: hidden; overflow-y: auto;">');
 	   $('body').append(content_iframe);
-		$(window).resize();  
+	   content_iframe.hide();
+	   content_iframe.data("finished_dom", false);
+	   content_iframe.data("loaded_api_page", false);
+	   
+	   setTimeout(function(){check_loaded_handler(content_iframe)},30000);
+	   
+	   content_iframe.load(function() {
+ 		    content_iframe.data("finished_dom", true);
+			$('#loading').remove();
+			$("html", content_iframe.get(0).contentDocument).css("overflow-x","hidden");
+			$(window).resize();  
+			content_iframe.show();
+	   });
    });
 };
 
 SMART_frame_glue_app(window.SMART_redirect_url);
 
 SMART_frame_glue_page = function(callback) {
+	$('#content').data("loaded_api_page", true);
 	$('#content').get(0).contentWindow.SMART = SMART;
-	$('#loading').remove();
-	$("html", $('#content').get(0).contentDocument).css("overflow-x","hidden");
 	if (typeof callback === "function")	
 		callback();
-	$(window).resize();  
 };
