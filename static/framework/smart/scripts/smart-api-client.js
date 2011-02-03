@@ -736,8 +736,6 @@ SMART_frame_glue_app = function(redirect_url) {
        }};
 
    SMART.send_ready_message(function(context_info) {
-	   $("html").css("overflow","hidden");
-	   $("body").css("margin","0px");
 	   $(window).resize(function() {
 		  	var elt =$("#content");
 		  	elt.css("height",$(window).height());
@@ -757,9 +755,13 @@ SMART_frame_glue_app = function(redirect_url) {
 	   content_iframe.load(function() {
  		    content_iframe.data("finished_dom", true);
 			$('#loading').remove();
+			$("html").css("overflow","hidden");
+			$("body").css("margin","0px");
+			   
+
 			$("html", content_iframe.get(0).contentDocument).css("overflow-x","hidden");
-			$(window).resize();  
 			content_iframe.show();
+			$(window).resize();  
 	   });
    });
 };
