@@ -706,8 +706,12 @@ var loadDependencies = function(callback) {
   
 SMART_frame_glue_app = function(redirect_url) {	
    if (redirect_url === undefined)
-		redirect_url = "index.html"
-			
+       redirect_url = "index.html";
+
+   window.onload = function() {
+       document.body.innerHTML = '<img id="loading" src="http://sample-apps.smartplatforms.org/framework/smart/images/ajax-loader.gif">';
+   };
+
    SMART = new SMART_CLIENT(null, window.top);
    SMART.message_receivers = {foreground: function() {
 	   var src = $('#content').get(0).src;
@@ -735,6 +739,7 @@ SMART_frame_glue_app(window.SMART_redirect_url);
 
 SMART_frame_glue_page = function(callback) {
 	$('#content').get(0).contentWindow.SMART = SMART;
+	$('#loading').remove();
 	$("html", $('#content').get(0).contentDocument).css("overflow-x","hidden");
 	if (typeof callback === "function")	
 		callback();
