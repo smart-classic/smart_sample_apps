@@ -36,9 +36,12 @@
         //   $('#log').append('<div>Handler for .resize() called.</div>');
         // });
 
+
+
         //
         // MAIN
         //
+
         // sizing: use 800x600 for now
         // var iframe  = $(window.frameElement);
         var h = 600; // $(iframe).height();
@@ -46,37 +49,46 @@
         $("#holder").height(h);
         $("#holder").width(w);
 
-        // get some demographics
         SMART.DEMOGRAPHICS_get(function(demographics) {
           var p = demographics
             .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-            .where('?p foaf:givenName ?givenName')
-            .where('?p foaf:familyName ?familyName')
-            .where('?p foaf:gender ?gender')
-            .where('?p foaf:birthday ?birthday')
+            .prefix('sp', 'http://smartplatforms.org/terms#')
+            .where('?a foaf:givenName ?givenName')
+            .where('?a foaf:familyName ?familyName')
+            .where('?a foaf:gender ?gender')
+            .where('?a sp:birthday ?birthday')
+            .get(0);
+
+          // fixme: do age here? in a .each?
+
+          SMART.LAB_RESULTS_get(function(labs){
+
+            var crp_hs
+              , total_cholesterol
+              , ldl_cholesterol
+              , hdl_cholesterol;
+              
+              
+            debugger;
+            
+            labs
+            .prefix('sp', 'http://smartplatforms.org/terms#')
+            .where('?a dcterms:title "Serum cholesterol"')
             .get(0)
-        });
-          
-          
-        var start_me = function () {
-          var r = Raphael("holder"),
-            fin = function () {
-              // this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
-            },
-            fout = function () {
-              // this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-            },
-            fin2 = function () {
-              var y = [], res = [];
-              for (var i = this.bars.length; i--;) {
-                y.push(this.bars[i].y);
-                res.push(this.bars[i].value || "0");
-              }
-              this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
-            },
-            fout2 = function () {
-              this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-            };
+            
+              
+            var r = Raphael("holder"),
+              fin2 = function () {
+                var y = [], res = [];
+                for (var i = this.bars.length; i--;) {
+                  y.push(this.bars[i].y);
+                  res.push(this.bars[i].value || "0");
+                }
+                this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
+              },
+              fout2 = function () {
+                this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+              };
 
             // set default txtattrs
             r.g.txtattr = {
@@ -87,12 +99,11 @@
             // set up overall layout and text
             r.g.text(0, 20, "Bloodwork Cardiology Result").attr({"fill": "#555"});
 
-
             // metadata
             r.g.txtattr = {'font-size': '12px', 'font-weight': 'bold'};
-            r.g.text(400, 0, "ORDERED BY").attr({"fill": "#555"});
+            r.g.text(400, 10, "ORDERED BY").attr({"fill": "#555"});
             r.g.txtattr = {'font-size': '12px', 'font-weight': 'bold'};
-            r.g.text(400, 20, "ORDERED BY").attr({"fill": "#555"});
+            r.g.text(400, 25, p.givenName.value).attr({"fill": "#555"});
 
             var c = r.g.hbarchart(
               0,
@@ -107,11 +118,10 @@
                 stacked: true,
                 type: "soft",
                 colors: ['#0B9DBC', '#008EB0']
-              }).hoverColumn(fin2, fout2);
-        };
-        
-        setTimeout("start_me()", 250); // fake dom ready hack
-        
+              })
+              .hoverColumn(fin2, fout2);
+          });
+        });
     </script>
   </head>
   <body>
