@@ -77,6 +77,34 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		});
 	    
 	};
+
+    this.adjust_size = debounce(this,2,100, function(size_requirements) {
+	    
+	if (size_requirements === undefined)
+	    size_requirements = this.last_size_requirements;
+	if (size_requirements === undefined)
+	    size_requirements = {};
+
+	this.last_size_requirements = size_requirements;
+	console.log("used adjust size: " + size_requirements);
+
+	var c = $("#content");	
+	var h = $("html", c.get(0).contentDocument);
+	var defaults = {
+	    width: 0,
+	    height: getDocHeight(c.get(0).contentDocument)
+	};
+
+	$.extend(defaults, size_requirements);
+
+	this.channel.call({
+		method: "adjust_size",
+		    params:  defaults,
+		    success: function(r) { }
+	    });
+	
+	});
+    
 	
 	this.api_call = function(options, callback) {
 	    this.channel.call({method: "api_call",
@@ -713,6 +741,7 @@ SMART_frame_glue_app = function(redirect_url) {
        document.body.innerHTML = '<img id="loading" src="http://sample-apps.smartplatforms.org/framework/smart/images/ajax-loader.gif">';
    };
 
+
    var check_loaded_handler = function(iframe_to_load) {
 	   var dom = iframe_to_load.data("finished_dom");
 	   var api_page= iframe_to_load.data("loaded_api_page");
@@ -730,22 +759,39 @@ SMART_frame_glue_app = function(redirect_url) {
    }
    
    SMART = new SMART_CLIENT(null, window.top);
+ 
    SMART.message_receivers = {foreground: function() {
+	   // Default behavior on 'foregrounded' event: reload
 	   var src = $('#content').get(0).src;
 	   $('#content').get(0).src = src;
        }};
 
    SMART.send_ready_message(function(context_info) {
 	   $(window).resize(function() {
-		  	var elt =$("#content");
-		  	elt.css("height",$(window).height());
-		  	elt.css("width",$(window).width());
-		  	elt.show();
-		  });
+		   
+		  	var c =$("#content");
+		  	var ctr =$("#container");
+			
+			var new_w = $(window).width();
+			var new_h = $(window).height();
+			console.log("Saw window resize with: " + new_w+","+new_h);
+			if (new_w !== c.data("old_w") || new_h !== c.data("old_h"))
+			    {
+				console.log("so, setting: ");
+				c.width(new_w).height(new_h);
+				ctr.width(new_w).height(new_h);
 
+				c.data("old_w", new_w);
+				c.data("old_h", new_h);
+				SMART.adjust_size();
+			    }
+		   });
+	   
+	   $('html').css("overflow", "hidden");
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
-	   var content_iframe = $('<iframe src="'+redirect_url+'" id="content" style="border: 0px; overflow-x: hidden; overflow-y: auto;">');
-	   $('body').append(content_iframe);
+	   var content = $('<div id="container" style="overflow: hidden;"><iframe SEAMLESS style="border: 0px; overflow: hidden;" src="'+redirect_url+'" id="content"></div>');
+	   $('body').append(content);
+	   var content_iframe = $("#content");
 	   content_iframe.hide();
 	   content_iframe.data("finished_dom", false);
 	   content_iframe.data("loaded_api_page", false);
@@ -755,18 +801,14 @@ SMART_frame_glue_app = function(redirect_url) {
 	   content_iframe.load(function() {
  		    content_iframe.data("finished_dom", true);
 			$('#loading').remove();
-			$("html").css("overflow","hidden");
+			var h = $("html", content_iframe.get(0).contentDocument);
 			$("body").css("margin","0px");
-			   
-
-			$("html", content_iframe.get(0).contentDocument).css("overflow-x","hidden");
 			content_iframe.show();
 			$(window).resize();  
 	   });
    });
 };
 
-SMART_frame_glue_app(window.SMART_redirect_url);
 
 SMART_frame_glue_page = function(callback) {
 	$('#content').data("loaded_api_page", true);
@@ -774,3 +816,40 @@ SMART_frame_glue_page = function(callback) {
 	if (typeof callback === "function")	
 		callback();
 };
+
+function getDocHeight(D) {
+    if (D === undefined) {
+	D = document;
+    }
+
+    return Math.max(
+		    Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+		    Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+		    Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+		    );
+};
+
+var debounce = function(scope, max, timeout,fn) {
+    if (timeout === undefined)
+	timeout = 100; // 100 ms default 
+
+    if (max === undefined)
+	max = 3; // allow 2 runs in 100ms
+
+    var inrange = 0;
+    
+    return function() {
+	if (inrange >= max){
+	    console.log("smoothed out bounce for " + inrange);
+	    fnfail.apply(scope, arguments);
+	    return;
+	}
+	inrange+= 1;
+	setTimeout(function(){inrange = 0;},timeout);
+
+	fn.apply(scope, arguments);
+    };
+    
+};
+
+SMART_frame_glue_app(window.SMART_redirect_url);

@@ -52,6 +52,9 @@ extend('MedList.Controllers.TimelineController',
 	      var url = '.';
 	      eventSource1.loadJSON(eventData, url);
 	      this.tl.layout();	
+
+	      SMART.adjust_size();
+						
 	},
 
 	timelineData : function(meds) {

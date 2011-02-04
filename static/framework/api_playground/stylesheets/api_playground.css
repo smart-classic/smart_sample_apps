@@ -24,7 +24,6 @@ body {
     color:#8B838B;
     font-family:"Graublau Web Bold";
     font-weight: bold;
-	float: left;
 }
 
 INPUT.interpolation-field[disabled='true'] {
@@ -47,19 +46,25 @@ table#calls {
     font-size:18px;
     font-weight:bold;
 }
+#wrap  {
+    left: 10px;
+    position: absolute;
+}
+
 #type-nav {
-	padding-left: .2em;
-	padding-right: .2em;
-   font-family:"Graublau Web";
+    padding-left: .2em;
+    padding-right: .2em;
+    font-family:"Graublau Web";
    font-size:14px;
    font-weight:normal;
-   float: left;
+   left:0;
+   position: absolute;
    color:#2B333B;
    padding-top: 0px;
    margin-top: 0px;
    width: 300px;
-	height: 100%;
-	background:  LightBlue;
+   height: 100%;
+   background:  LightBlue;
 }
 
 
