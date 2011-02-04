@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:sp="http://smartplatforms.org/terms#"
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:v="http://www.w3.org/2006/vcard/ns#" >
+
+
+  <foaf:Person>
+    <foaf:givenName>Mathilde</foaf:givenName>
+    <sp:zipcode>74008</sp:zipcode>
+    <foaf:gender>female</foaf:gender>
+    <foaf:familyName>Reynolds</foaf:familyName>
+    <sp:birthday>1952-03-30</sp:birthday>
+  </foaf:Person>
+
+  <sp:LabResult>
+      <sp:labName>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://loinc.org/codes/2093-3"/>
+          <dcterms:title>Serum cholesterol</dcterms:title>
+        </sp:CodedValue>
+      </sp:labName>
+      <sp:quantitativeResult>
+        <sp:QuantitativeResult>
+          <sp:valueAndUnit>
+            <sp:ValueAndUnit>
+              <sp:value>220</sp:value>
+              <sp:unit>mg/dL</sp:unit>
+            </sp:ValueAndUnit>
+          </sp:valueAndUnit>
+          <sp:normalRange>
+             <sp:ResultRange>
+              <sp:minimum>
+                <sp:ValueAndUnit>
+                   <sp:value>0</sp:value>
+                   <sp:unit>mg/dL</sp:unit>
+                </sp:ValueAndUnit>
+              </sp:minimum>
+              <sp:maximum>
+                <sp:ValueAndUnit>
+                   <sp:value>199</sp:value>
+                   <sp:unit>mg/dL</sp:unit>
+                </sp:ValueAndUnit>
+              </sp:maximum>
+             </sp:ResultRange>
+          </sp:normalRange>
+        </sp:QuantitativeResult>
+      </sp:quantitativeResult>
+      <sp:status>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://smartplatforms.org/terms/code/labStatus#final"/>
+          <dcterms:title>Final results: complete and verified</dcterms:title>      
+        </sp:CodedValue>
+      </sp:status>
+      <sp:abnormalInterpretation>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://smartplatforms.org/terms/code/labInterpretation#high"/>
+          <dcterms:title>High</dcterms:title>      
+        </sp:CodedValue>
+      </sp:abnormalInterpretation>
+   </sp:LabResult>
+
+  <sp:LabResult>
+      <sp:labName>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://loinc.org/codes/2085-9"/>
+          <dcterms:title>Serum HDL Cholesterol</dcterms:title>
+        </sp:CodedValue>
+      </sp:labName>
+      <sp:quantitativeResult>
+        <sp:QuantitativeResult>
+          <sp:valueAndUnit>
+            <sp:ValueAndUnit>
+              <sp:value>51</sp:value>
+              <sp:unit>mg/dL</sp:unit>
+            </sp:ValueAndUnit>
+          </sp:valueAndUnit>
+          <sp:normalRange>
+             <sp:ResultRange>
+              <sp:minimum>
+                <sp:ValueAndUnit>
+                   <sp:value>40</sp:value>
+                   <sp:unit>mg/dL</sp:unit>
+                </sp:ValueAndUnit>
+              </sp:minimum>
+              <sp:maximum>
+                <sp:ValueAndUnit>
+                   <sp:value>150</sp:value>
+                   <sp:unit>mg/dL</sp:unit>
+                </sp:ValueAndUnit>
+              </sp:maximum>
+             </sp:ResultRange>
+          </sp:normalRange>
+        </sp:QuantitativeResult>
+      </sp:quantitativeResult>
+      <sp:status>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://smartplatforms.org/terms/code/labStatus#final"/>
+          <dcterms:title>Final results: complete and verified</dcterms:title>      
+        </sp:CodedValue>
+      </sp:status>
+      <sp:abnormalInterpretation>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://smartplatforms.org/terms/code/labInterpretation#normal"/>
+          <dcterms:title>Normal</dcterms:title>      
+        </sp:CodedValue>
+      </sp:abnormalInterpretation>
+   </sp:LabResult>
+
+  <sp:LabResult>
+      <sp:labName>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://loinc.org/codes/2089-1"/>
+          <dcterms:title>Serum LDL Cholesterol</dcterms:title>
+        </sp:CodedValue>
+      </sp:labName>
+      <sp:quantitativeResult>
+        <sp:QuantitativeResult>
+          <sp:valueAndUnit>
+            <sp:ValueAndUnit>
+              <sp:value>230</sp:value>
+              <sp:unit>mg/dL</sp:unit>
+            </sp:ValueAndUnit>
+          </sp:valueAndUnit>
+          <sp:normalRange>
+             <sp:ResultRange>
+              <sp:minimum>
+                <sp:ValueAndUnit>
+                   <sp:value>0</sp:value>
+                   <sp:unit>mg/dL</sp:unit>
+                </sp:ValueAndUnit>
+              </sp:minimum>
+              <sp:maximum>
+                <sp:ValueAndUnit>
+                   <sp:value>159</sp:value>
+                   <sp:unit>mg/dL</sp:unit>
+                </sp:ValueAndUnit>
+              </sp:maximum>
+             </sp:ResultRange>
+          </sp:normalRange>
+        </sp:QuantitativeResult>
+      </sp:quantitativeResult>
+      <sp:status>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://smartplatforms.org/terms/code/labStatus#final"/>
+          <dcterms:title>Final results: complete and verified</dcterms:title>      
+        </sp:CodedValue>
+      </sp:status>
+      <sp:abnormalInterpretation>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://smartplatforms.org/terms/code/labInterpretation#normal"/>
+          <dcterms:title>Normal</dcterms:title>      
+        </sp:CodedValue>
+      </sp:abnormalInterpretation>
+   </sp:LabResult>
+
+
+
+  <sp:LabResult>
+      <sp:labName>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://loinc.org/codes/30522-7"/>
+          <dcterms:title>C Reactive Protein (High Sensitivity)</dcterms:title>
+        </sp:CodedValue>
+      </sp:labName>
+      <sp:quantitativeResult>
+        <sp:QuantitativeResult>
+          <sp:valueAndUnit>
+            <sp:ValueAndUnit>
+              <sp:value>4.2</sp:value>
+              <sp:unit>mg/L</sp:unit>
+            </sp:ValueAndUnit>
+          </sp:valueAndUnit>
+          <sp:normalRange>
+             <sp:ResultRange>
+              <sp:minimum>
+                <sp:ValueAndUnit>
+                   <sp:value>0</sp:value>
+                   <sp:unit>mg/L</sp:unit>
+                </sp:ValueAndUnit>
+              </sp:minimum>
+              <sp:maximum>
+                <sp:ValueAndUnit>
+                   <sp:value>3</sp:value>
+                   <sp:unit>mg/L</sp:unit>
+                </sp:ValueAndUnit>
+              </sp:maximum>
+             </sp:ResultRange>
+          </sp:normalRange>
+        </sp:QuantitativeResult>
+      </sp:quantitativeResult>
+      <sp:status>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://smartplatforms.org/terms/code/labStatus#final"/>
+          <dcterms:title>Final results: complete and verified</dcterms:title>      
+        </sp:CodedValue>
+      </sp:status>
+      <sp:abnormalInterpretation>
+        <sp:CodedValue>
+          <sp:code rdf:resource="http://smartplatforms.org/terms/code/labInterpretation#high"/>
+          <dcterms:title>High</dcterms:title>      
+        </sp:CodedValue>
+      </sp:abnormalInterpretation>
+   </sp:LabResult>
+</rdf:RDF>

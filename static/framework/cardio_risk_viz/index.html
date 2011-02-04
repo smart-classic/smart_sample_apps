@@ -5,90 +5,66 @@
       <script src='../smart/scripts/smart-api-page.js'></script>
       <script src='../jquery/jquery.js'></script>
       <script src='./raphael-min.js'></script>
-      <script src='./g.raphael-min.js'></script>
-      <script src='./g.bar-min.js'></script>
+      <script src='./g.raphael.js'></script>
+      <script src='./g.bar.js'></script>
       <script>
-        // SMART.MEDS_get_all(function(meds) {
-        // 
-        //   var statin = meds.where("?m rdf:type sp:Medication")
-        //        .where("?m sp:drugName ?c")
-        //        .where("?c dcterms:title ?drugname");
-        // 
-        //   var answer = false;
-        // 
-        //   for (var i = 0; i < statin.length; i++) {
-        //     if (is_a_statin(statin[i].drugname.value))
-        //       answer = true;
-        //   }                
-        // 
-        //   document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "boo!";
-        // });
-        // 
-        // var is_a_statin = function(drug) {
-        //   if (drug.match(/statin$/i)) return true;
-        //   if (drug.match(/Advicor/i)) return true;
-        //   if (drug.match(/Altoprev/i)) return true;
-        //   if (drug.match(/Caduet/i)) return true;
-        //   if (drug.match(/Crestor/i)) return true;
-        //   if (drug.match(/Lescol/i)) return true;
-        //   if (drug.match(/Lipitor/i)) return true;
-        //   if (drug.match(/Mevacor/i)) return true;
-        //   if (drug.match(/Pravachol/i)) return true;
-        //   if (drug.match(/Simcor/i)) return true;
-        //   if (drug.match(/Vytorin/i)) return true;
-        //   if (drug.match(/Zocor/i)) return true;
-        // 
-        //   return false;
-        //   }
-        // 
-
-        // SMART.user {id, full_name}
-        // SMART.record {id, full_name}
-        // 
-        // DEMOGRAPHICS_get
-        // <rdf:RDF
-        //   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        //   xmlns:sp="http://smartplatforms.org/terms#"
-        //   xmlns:foaf="http://xmlns.com/foaf/0.1/">
-        //    <foaf:Person>
-        //      <foaf:givenName>Bob</foaf:givenName>
-        //      <foaf:familyName>Odenkirk</foaf:familyName>
-        //      <foaf:gender>male</foaf:gender>
-        //      <sp:zipcode>90001</sp:zipcode>
-        //      <sp:birthday>1959-12-25</sp:birthday>
-        //    </foaf:Person>
-        // </rdf:RDF>
-
-
-
         // LAB_RESULTS_get
         // http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_RDF_Data#Lab_Result_RDF
 
 
-        // SMART.MEDS_get_all(function(meds) {
+        // evelopment and Validation of Improved Algorithms for the Assessment of Global Cardiovascular Risk in Women
+        //         PM Ridker, JE Buring, N Rifai… - JAMA, 2007
+        // Model B, the Reynolds Risk Score
+        // 10-year cardiovascular disease risk (%) =[1−0.98634
+        // (exp[B−22.325])
+        // ]100% where
+        // B=0.0799  a g e  3.137  na tur a l  log a r i thm  ( s y s tol i c blood pr e s sur e ) 
+        // 0.180natural logarithm (high-sensitivity C-reactive protein)  1.382natural
+        // logarithm (total cholesterol) −1.172natural logarithm (high-density lipoprotein cholesterol)  0.134hemoglobin A1c
+        // (%) (if diabetic)  0.818 (if current
+        // smoker)  0.438 (if family history of premature myocardial infarction)
+        
+        
+        // // detect resize events
+        // $(window).resize(function() {
+        //
+        // USE http://raphaeljs.com/reference.html#setSize ? or scale?
         // 
-        //   var statin = meds.where("?m rdf:type sp:Medication")
-        //        .where("?m sp:drugName ?c")
-        //        .where("?c dcterms:title ?drugname");
-        // 
-        //   var answer = false;
-        // 
-        //   for (var i = 0; i < statin.length; i++) {
-        //     if (is_a_statin(statin[i].drugname.value))
-        //       answer = true;
-        //   }                
-        // 
-        //   document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "boo!";
+        //   var iframe  = $(window.frameElement);
+        //   console.log($(window).height(), $(window).width())
+        //   console.log($(iframe).height(), $(iframe).width())
+        //   $('#log').append('<div>Handler for .resize() called.</div>');
         // });
 
-        // init raphael
+        //
+        // MAIN
+        //
+        // sizing: use 800x600 for now
+        // var iframe  = $(window.frameElement);
+        var h = 600; // $(iframe).height();
+        var w = 800; // $(iframe).width();
+        $("#holder").height(h);
+        $("#holder").width(w);
+
+        // get some demographics
+        SMART.DEMOGRAPHICS_get(function(demographics) {
+          var p = demographics
+            .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+            .where('?p foaf:givenName ?givenName')
+            .where('?p foaf:familyName ?familyName')
+            .where('?p foaf:gender ?gender')
+            .where('?p foaf:birthday ?birthday')
+            .get(0)
+        });
+          
+          
         var start_me = function () {
           var r = Raphael("holder"),
             fin = function () {
-              this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+              // this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
             },
             fout = function () {
-              this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+              // this.flag.animate({opacity: 0}, 300, function () {this.remove();});
             },
             fin2 = function () {
               var y = [], res = [];
@@ -102,57 +78,40 @@
               this.flag.animate({opacity: 0}, 300, function () {this.remove();});
             };
 
-            r.g.txtattr.font = "25px 'Helvetica Neue', Calibri, Helvetica, Tahoma, Verdana, sans-serif;"
-            r.g.text(200, 20, "Bloodwork Cardiology Result");
+            // set default txtattrs
+            r.g.txtattr = {
+              'font': "24px 'Helvetica Neue', Helvetica, Corbel, Verdana, sans-serif", 
+              'text-anchor': 'start'
+            };
+
+            // set up overall layout and text
+            r.g.text(0, 20, "Bloodwork Cardiology Result").attr({"fill": "#555"});
+
+
+            // metadata
+            r.g.txtattr = {'font-size': '12px', 'font-weight': 'bold'};
+            r.g.text(400, 0, "ORDERED BY").attr({"fill": "#555"});
+            r.g.txtattr = {'font-size': '12px', 'font-weight': 'bold'};
+            r.g.text(400, 20, "ORDERED BY").attr({"fill": "#555"});
+
             var c = r.g.hbarchart(
-              330,
-              250,
-              300,
-              220,
+              0,
+              50,
+              700,
+              500,
               [
                 [55, 20, 13, 32, 5, 1, 2, 10],
                 [10, 2, 1, 5, 32, 13, 20, 55]
               ],
               {
                 stacked: true,
-                type: "soft"
+                type: "soft",
+                colors: ['#0B9DBC', '#008EB0']
               }).hoverColumn(fin2, fout2);
         };
-
-        // // detect resize events
-        // $(window).resize(function() {
-        //   var iframe  = $(window.frameElement);
-        //   console.log($(window).height(), $(window).width())
-        //   console.log($(iframe).height(), $(iframe).width())
-        //   $('#log').append('<div>Handler for .resize() called.</div>');
-        // });
-
-        //
-        // MAIN
-        //
         
-        var init = function(){
-          // get the iframe we are embedded in and set the #holder's size based on it
-          var iframe  = $(window.frameElement);
-          var h = $(iframe).height();
-          var w = $(iframe).width();
-          $("#holder").height(h);
-          $("#holder").width(w);
-
-        };
+        setTimeout("start_me()", 250); // fake dom ready hack
         
-        // lame ordering
-        setTimeout("init()", 500);
-        setTimeout("start_me()", 1000);
-        
-        
-        
-
-        
-        
-
-        
-
     </script>
   </head>
   <body>
