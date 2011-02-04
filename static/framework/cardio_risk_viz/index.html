@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cardiology Risk Visualization</title>
+      <script src='../smart/scripts/smart-api-page.js'></script>
+      <script src='../jquery/jquery.js'></script>
+      <script src='./raphael-min.js'></script>
+      <script src='./g.raphael-min.js'></script>
+      <script src='./g.bar-min.js'></script>
+      <script>
+        // SMART.MEDS_get_all(function(meds) {
+        // 
+        //   var statin = meds.where("?m rdf:type sp:Medication")
+        //        .where("?m sp:drugName ?c")
+        //        .where("?c dcterms:title ?drugname");
+        // 
+        //   var answer = false;
+        // 
+        //   for (var i = 0; i < statin.length; i++) {
+        //     if (is_a_statin(statin[i].drugname.value))
+        //       answer = true;
+        //   }                
+        // 
+        //   document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "boo!";
+        // });
+        // 
+        // var is_a_statin = function(drug) {
+        //   if (drug.match(/statin$/i)) return true;
+        //   if (drug.match(/Advicor/i)) return true;
+        //   if (drug.match(/Altoprev/i)) return true;
+        //   if (drug.match(/Caduet/i)) return true;
+        //   if (drug.match(/Crestor/i)) return true;
+        //   if (drug.match(/Lescol/i)) return true;
+        //   if (drug.match(/Lipitor/i)) return true;
+        //   if (drug.match(/Mevacor/i)) return true;
+        //   if (drug.match(/Pravachol/i)) return true;
+        //   if (drug.match(/Simcor/i)) return true;
+        //   if (drug.match(/Vytorin/i)) return true;
+        //   if (drug.match(/Zocor/i)) return true;
+        // 
+        //   return false;
+        //   }
+        // 
+
+        // SMART.user {id, full_name}
+        // SMART.record {id, full_name}
+        // 
+        // DEMOGRAPHICS_get
+        // <rdf:RDF
+        //   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        //   xmlns:sp="http://smartplatforms.org/terms#"
+        //   xmlns:foaf="http://xmlns.com/foaf/0.1/">
+        //    <foaf:Person>
+        //      <foaf:givenName>Bob</foaf:givenName>
+        //      <foaf:familyName>Odenkirk</foaf:familyName>
+        //      <foaf:gender>male</foaf:gender>
+        //      <sp:zipcode>90001</sp:zipcode>
+        //      <sp:birthday>1959-12-25</sp:birthday>
+        //    </foaf:Person>
+        // </rdf:RDF>
+
+
+
+        // LAB_RESULTS_get
+        // http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_RDF_Data#Lab_Result_RDF
+
+
+        // SMART.MEDS_get_all(function(meds) {
+        // 
+        //   var statin = meds.where("?m rdf:type sp:Medication")
+        //        .where("?m sp:drugName ?c")
+        //        .where("?c dcterms:title ?drugname");
+        // 
+        //   var answer = false;
+        // 
+        //   for (var i = 0; i < statin.length; i++) {
+        //     if (is_a_statin(statin[i].drugname.value))
+        //       answer = true;
+        //   }                
+        // 
+        //   document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "boo!";
+        // });
+
+        // init raphael
+        var start_me = function () {
+          var r = Raphael("holder"),
+            fin = function () {
+              this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+            },
+            fout = function () {
+              this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+            },
+            fin2 = function () {
+              var y = [], res = [];
+              for (var i = this.bars.length; i--;) {
+                y.push(this.bars[i].y);
+                res.push(this.bars[i].value || "0");
+              }
+              this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
+            },
+            fout2 = function () {
+              this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+            };
+
+            r.g.txtattr.font = "25px 'Helvetica Neue', Calibri, Helvetica, Tahoma, Verdana, sans-serif;"
+            r.g.text(200, 20, "Bloodwork Cardiology Result");
+            var c = r.g.hbarchart(
+              330,
+              250,
+              300,
+              220,
+              [
+                [55, 20, 13, 32, 5, 1, 2, 10],
+                [10, 2, 1, 5, 32, 13, 20, 55]
+              ],
+              {
+                stacked: true,
+                type: "soft"
+              }).hoverColumn(fin2, fout2);
+        };
+
+        // // detect resize events
+        // $(window).resize(function() {
+        //   var iframe  = $(window.frameElement);
+        //   console.log($(window).height(), $(window).width())
+        //   console.log($(iframe).height(), $(iframe).width())
+        //   $('#log').append('<div>Handler for .resize() called.</div>');
+        // });
+
+        //
+        // MAIN
+        //
+        
+        var init = function(){
+          // get the iframe we are embedded in and set the #holder's size based on it
+          var iframe  = $(window.frameElement);
+          var h = $(iframe).height();
+          var w = $(iframe).width();
+          $("#holder").height(h);
+          $("#holder").width(w);
+
+        };
+        
+        // lame ordering
+        setTimeout("init()", 500);
+        setTimeout("start_me()", 1000);
+        
+        
+        
+
+        
+        
+
+        
+
+    </script>
+  </head>
+  <body>
+    <div id="holder" style=""></div>
+    <div id="log"></div>
+  </body>
+</html>
