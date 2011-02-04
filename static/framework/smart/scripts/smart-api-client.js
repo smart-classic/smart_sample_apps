@@ -5,7 +5,7 @@
  */
 
 var SMART_CLIENT = function(smart_server_origin, frame) {
-    var debug = true;
+    var debug = false;
 	var _this = this;
 	this.message_receivers = {};
 	this.send_ready_message = function(ready_callback) {
@@ -57,8 +57,18 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.cookie_name = "";
 
     	if (message.credentials && message.credentials.oauth_cookie !== undefined ){
-    		this.cookie_name ='smart_oauth_cookie' + message.activity_id;    		
-		    document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
+
+            var existing_cookies = document.cookie.split(";");
+            n = existing_cookies.length;
+            while (n > 10) {
+            	n = n-1;
+                old_cookie_name = existing_cookies[n].split("=")[0].trim();
+                if (old_cookie_name.match("^smart_oauth_cookie") !== null)
+                	document.cookie = old_cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
+            }
+
+	    this.cookie_name ='smart_oauth_cookie' + message.activity_id;    		
+	    document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
 	    }
 
     	var _this = this;
@@ -147,6 +157,20 @@ SMART_CLIENT.prototype.LABS_RESULTS_get = function(callback) {
 	});
 
 };
+
+SMART_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record.id + "/demographics",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+
+};
+
 	
 
 SMART_CLIENT.prototype.MEDS_get = function(callback) {
@@ -683,8 +707,28 @@ var loadDependencies = function(callback) {
   
 SMART_frame_glue_app = function(redirect_url) {	
    if (redirect_url === undefined)
-		redirect_url = "index.html"
-			
+       redirect_url = "index.html";
+
+   window.onload = function() {
+       document.body.innerHTML = '<img id="loading" src="http://sample-apps.smartplatforms.org/framework/smart/images/ajax-loader.gif">';
+   };
+
+   var check_loaded_handler = function(iframe_to_load) {
+	   var dom = iframe_to_load.data("finished_dom");
+	   var api_page= iframe_to_load.data("loaded_api_page");
+	      if (api_page === true)
+	    	  return;
+	   
+		  if (dom === false )
+		  {
+		   $("body").prepend("<B>SMArt App Loading Error</b>: 30 seconds passed, and app DOM failed to load:  <br>" + iframe_to_load.attr("src"));
+		  }
+		  else
+		  {
+		   $("body").prepend("<B>SMArt App Loading Error</b>: 30 seconds passed, and app DOM loaded, but never loaded smart-api-page.js");
+		  }	
+   }
+   
    SMART = new SMART_CLIENT(null, window.top);
    SMART.message_receivers = {foreground: function() {
 	   var src = $('#content').get(0).src;
@@ -692,8 +736,6 @@ SMART_frame_glue_app = function(redirect_url) {
        }};
 
    SMART.send_ready_message(function(context_info) {
-	   $("html").css("overflow","hidden");
-	   $("body").css("margin","0px");
 	   $(window).resize(function() {
 		  	var elt =$("#content");
 		  	elt.css("height",$(window).height());
@@ -704,16 +746,31 @@ SMART_frame_glue_app = function(redirect_url) {
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
 	   var content_iframe = $('<iframe src="'+redirect_url+'" id="content" style="border: 0px; overflow-x: hidden; overflow-y: auto;">');
 	   $('body').append(content_iframe);
-		$(window).resize();  
+	   content_iframe.hide();
+	   content_iframe.data("finished_dom", false);
+	   content_iframe.data("loaded_api_page", false);
+	   
+	   setTimeout(function(){check_loaded_handler(content_iframe)},30000);
+	   
+	   content_iframe.load(function() {
+ 		    content_iframe.data("finished_dom", true);
+			$('#loading').remove();
+			$("html").css("overflow","hidden");
+			$("body").css("margin","0px");
+			   
+
+			$("html", content_iframe.get(0).contentDocument).css("overflow-x","hidden");
+			content_iframe.show();
+			$(window).resize();  
+	   });
    });
 };
 
 SMART_frame_glue_app(window.SMART_redirect_url);
 
 SMART_frame_glue_page = function(callback) {
+	$('#content').data("loaded_api_page", true);
 	$('#content').get(0).contentWindow.SMART = SMART;
-	$("html", $('#content').get(0).contentDocument).css("overflow-x","hidden");
 	if (typeof callback === "function")	
 		callback();
-	$(window).resize();  
 };

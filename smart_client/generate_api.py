@@ -7,7 +7,6 @@ import RDF
 import common.rdf_ontology as rdf_ontology
 
 pFormat = "{.*?}"
-SMART  = "http://smartplatforms.org/"
 
 def parameter_optional(call, p):
     mark = call.path.find("?")
@@ -15,7 +14,7 @@ def parameter_optional(call, p):
     return -1 < mark < point
 
 def fill_url_template(call, *args, **kwargs):
-    url = "/" + str(call.path).replace(SMART, "")
+    url =  str(call.path)
     url = url.split("?")[0]
 
     # Look for each param in kwargs.  
@@ -36,12 +35,13 @@ def fill_url_template(call, *args, **kwargs):
     return url
 
 def call_name(call):
-    ret = str(call.path).replace(SMART, "")
+    ret = str(call.path)
     ret = ret.split("?")[0]
     ret = ret.replace("/", "_")
     ret = re.sub(pFormat, "_X", ret)
     ret = ret + "_" + str(call.method)
     ret = re.sub("_+", "_", ret)
+    ret = re.sub("^_", "", ret)
     return ret
 
 def params(call):
@@ -51,6 +51,7 @@ def make_generic_call(call):
     def c(self, *args, **kwargs):
         kwargs['_client'] = self
         url = fill_url_template(call, **kwargs)
+        print "gencall: ", url
         data = kwargs.get('data', None) 
         content_type = kwargs.get('content_type', None)
         f = getattr(self, str(call.method).lower())          
@@ -68,3 +69,4 @@ def augment(client_class):
 Returns RDF Graph containing:  %s
      """%(c.method, c.path, c.description, c.target)
         setattr(client_class, call_name(c), call)
+    print dir(client_class)

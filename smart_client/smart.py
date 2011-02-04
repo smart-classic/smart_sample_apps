@@ -12,7 +12,7 @@ import common.util
 
 class SmartClient(OAuthClient):
     """Establishes OAuth communication with a SMArt Container, and
-    provides access To the SMArt REST API"""  
+    provides access to the SMArt REST API"""  
 
     def __init__(self, app_id, server_params, consumer_token, resource_token=None):
         """Constructor for SmartClient. 
@@ -131,7 +131,7 @@ class SmartClient(OAuthClient):
             """Issue an HTTP DELETE request to the specified URL and
             return the response body.
             """
-            Req = HTTPRequest('DELETE', '%s%s'%(self.baseURL, url), data=data)
+            req = HTTPRequest('DELETE', '%s%s'%(self.baseURL, url), data=data)
             return self._access_resource(req)
 
     def update_token(self, resource_token):
