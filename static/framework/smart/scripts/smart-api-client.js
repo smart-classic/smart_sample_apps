@@ -145,7 +145,7 @@ SMART_CLIENT.prototype.FULFILLMENTS_get = function(callback) {
 
 };
 
-SMART_CLIENT.prototype.LABS_RESULTS_get = function(callback) {
+SMART_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
