@@ -127,14 +127,14 @@
             // );
 
             // first bar
-            var w = 800
-              , h = 50
+            var w = 700
+              , h = 75
               , units_n = 10
               , unit_w = w / units_n
               , x = 0
               , y = 150
               , space = 2
-              , cap_w = 35.35; // h^(1/2) / 2
+              , cap_w = 53.033; // (h * 2^(1/2)) / 2
             
             // make width smaller with space, start x on unit_w multiple 
             r.rect(0,         y, unit_w-space,       h).attr({fill: '#61AFC9', stroke: 'none'});
@@ -143,17 +143,18 @@
             r.rect(w-cap_w/2, y, cap_w,              cap_w).attr({fill: '#0B9DBC', stroke: 'none'}).rotate(45, w-cap_w/2, y);
             
             // second bar
-            var w = 800
-              , h = 50
-              , unit_w = 26.66
+            var w = 700
+              , h = 75
+              , units_n = 30
+              , unit_w = w / units_n
               , x = 0
               , y = 250
               , space = 2
-              , cap_w = 35.35;
+              , cap_w = 53.033;
             
-            r.rect(0,            y, unit_w*20-space,       h).attr({fill: '#A0BE78', stroke: 'none'});
-            r.rect(unit_w*20,    y, unit_w*3-space,     h).attr({fill: '#86AD52', stroke: 'none'});
-            r.rect(unit_w*23,    y, unit_w*7-(cap_w/2), h).attr({fill: '#5E892B', stroke: 'none'});
+            r.rect(0,         y, unit_w*20-space,    h).attr({fill: '#A0BE78', stroke: 'none'});
+            r.rect(unit_w*20, y, unit_w*3-space,     h).attr({fill: '#86AD52', stroke: 'none'});
+            r.rect(unit_w*23, y, unit_w*7-(cap_w/2), h).attr({fill: '#5E892B', stroke: 'none'});
             r.rect(w-cap_w/2, y, cap_w,              cap_w).attr({fill: '#5E892B', stroke: 'none'}).rotate(45, w-cap_w/2, y);
 
 
