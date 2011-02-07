@@ -37,7 +37,6 @@
         // });
 
 
-
         //
         // MAIN
         //
@@ -46,8 +45,8 @@
         // var iframe  = $(window.frameElement);
         var h = 600; // $(iframe).height();
         var w = 800; // $(iframe).width();
-        $("#holder").height(h);
-        $("#holder").width(w);
+        $('#holder').height(h);
+        $('#holder').width(w);
 
         SMART.DEMOGRAPHICS_get(function(demographics) {
           var p = demographics
@@ -59,32 +58,37 @@
             .where('?a sp:birthday ?birthday')
             .get(0);
 
-          // fixme: do age here? in a .each?
+          var get_age = function(dob_string){
+            var dob = new Date(dob_string);
+            var today = new Date();
+            var db = new Date(dob_string);
+            var cy = today.getFullYear();
+            var by = dob.getFullYear();
+            db.setFullYear(cy);
+            var adj = (today-db<0) ? 1 : 0;
+            return cy - by - adj;
+          }
+
+          p.age = {};
+          p.age.value = get_age(p.birthday.value)
 
           SMART.LAB_RESULTS_get(function(labs){
 
-            var crp_hs
-              , total_cholesterol
-              , ldl_cholesterol
-              , hdl_cholesterol;
-              
-              
-            debugger;
-            
-            labs
-            .prefix('sp', 'http://smartplatforms.org/terms#')
-            .where('?a dcterms:title "Serum cholesterol"')
-            .get(0)
-            
-              
-            var r = Raphael("holder"),
+            // fixturize until I figure out querying the rdf
+            var crp = 3.3
+              , total_cholesterol = 265
+              , ldl_cholesterol = 233
+              , hdl_cholesterol = 32;
+
+            // some ranges
+            var r = Raphael('holder'),
               fin2 = function () {
                 var y = [], res = [];
                 for (var i = this.bars.length; i--;) {
                   y.push(this.bars[i].y);
-                  res.push(this.bars[i].value || "0");
+                  res.push(this.bars[i].value || '0');
                 }
-                this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
+                this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(', ')).insertBefore(this);
               },
               fout2 = function () {
                 this.flag.animate({opacity: 0}, 300, function () {this.remove();});
@@ -92,40 +96,73 @@
 
             // set default txtattrs
             r.g.txtattr = {
-              'font': "24px 'Helvetica Neue', Helvetica, Corbel, Verdana, sans-serif", 
+              'font': '24px \'Helvetica Neue\', Helvetica, Corbel, Verdana, sans-serif', 
               'text-anchor': 'start'
             };
 
             // set up overall layout and text
-            r.g.text(0, 20, "Bloodwork Cardiology Result").attr({"fill": "#555"});
+            r.g.text(0, 20, 'Bloodwork Cardiology Result').attr({'fill': '#555'});
 
             // metadata
             r.g.txtattr = {'font-size': '12px', 'font-weight': 'bold'};
-            r.g.text(400, 10, "ORDERED BY").attr({"fill": "#555"});
+            r.g.text(400, 10, 'ORDERED BY').attr({'fill': '#555'});
             r.g.txtattr = {'font-size': '12px', 'font-weight': 'bold'};
-            r.g.text(400, 25, p.givenName.value).attr({"fill": "#555"});
+            r.g.text(400, 25, p.givenName.value).attr({'fill': '#555'});
 
-            var c = r.g.hbarchart(
-              0,
-              50,
-              700,
-              500,
-              [
-                [55, 20, 13, 32, 5, 1, 2, 10],
-                [10, 2, 1, 5, 32, 13, 20, 55]
-              ],
-              {
-                stacked: true,
-                type: "soft",
-                colors: ['#0B9DBC', '#008EB0']
-              })
-              .hoverColumn(fin2, fout2);
+            // var v = r.g.hbarchart(
+            //   0,
+            //   50,
+            //   700,
+            //   150,
+            //   [
+            //     [2],
+            //     [3],
+            //     [7]
+            //   ],
+            //   {
+            //     stacked: true,
+            //     type: 'sharp',
+            //     colors: ['#61AFC9', '#008EB0', '#0B9DBC']
+            //   }
+            // );
+
+            // first bar
+            var w = 800
+              , h = 50
+              , units_n = 10
+              , unit_w = w / units_n
+              , x = 0
+              , y = 150
+              , space = 2
+              , cap_w = 35.35; // h^(1/2) / 2
+            
+            // make width smaller with space, start x on unit_w multiple 
+            r.rect(0,         y, unit_w-space,       h).attr({fill: '#61AFC9', stroke: 'none'});
+            r.rect(unit_w,    y, unit_w*2-space,     h).attr({fill: '#008EB0', stroke: 'none'});
+            r.rect(unit_w*3,  y, unit_w*7-(cap_w/2), h).attr({fill: '#0B9DBC', stroke: 'none'});
+            r.rect(w-cap_w/2, y, cap_w,              cap_w).attr({fill: '#0B9DBC', stroke: 'none'}).rotate(45, w-cap_w/2, y);
+            
+            // second bar
+            var w = 800
+              , h = 50
+              , unit_w = 26.66
+              , x = 0
+              , y = 250
+              , space = 2
+              , cap_w = 35.35;
+            
+            r.rect(0,            y, unit_w*20-space,       h).attr({fill: '#A0BE78', stroke: 'none'});
+            r.rect(unit_w*20,    y, unit_w*3-space,     h).attr({fill: '#86AD52', stroke: 'none'});
+            r.rect(unit_w*23,    y, unit_w*7-(cap_w/2), h).attr({fill: '#5E892B', stroke: 'none'});
+            r.rect(w-cap_w/2, y, cap_w,              cap_w).attr({fill: '#5E892B', stroke: 'none'}).rotate(45, w-cap_w/2, y);
+
+
           });
         });
     </script>
   </head>
   <body>
-    <div id="holder" style=""></div>
-    <div id="log"></div>
+    <div id='holder' style=''></div>
+    <div id='log'></div>
   </body>
 </html>
