@@ -41,12 +41,12 @@
         // MAIN
         //
 
-        // sizing: use 800x600 for now
-        // var iframe  = $(window.frameElement);
-        var h = 600; // $(iframe).height();
-        var w = 800; // $(iframe).width();
-        $('#holder').height(h);
-        $('#holder').width(w);
+        // // sizing: use 800x600 for now
+        // // var iframe  = $(window.frameElement);
+        // var h = 600; // $(iframe).height();
+        // var w = 800; // $(iframe).width();
+        // $('#holder').height(h);
+        // $('#holder').width(w);
 
         SMART.DEMOGRAPHICS_get(function(demographics) {
           var p = demographics
@@ -80,90 +80,106 @@
               , ldl_cholesterol = 233
               , hdl_cholesterol = 32;
 
-            // some ranges
-            var r = Raphael('holder'),
-              fin2 = function () {
-                var y = [], res = [];
-                for (var i = this.bars.length; i--;) {
-                  y.push(this.bars[i].y);
-                  res.push(this.bars[i].value || '0');
-                }
-                this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(', ')).insertBefore(this);
-              },
-              fout2 = function () {
-                this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-              };
+            var r = Raphael('holder');
 
             // set default txtattrs
             r.g.txtattr = {
               'font': '24px \'Helvetica Neue\', Helvetica, Corbel, Verdana, sans-serif', 
-              'text-anchor': 'start'
+              'text-anchor': 'start',
+              'fill': '#555'
             };
 
             // set up overall layout and text
-            r.g.text(0, 20, 'Bloodwork Cardiology Result').attr({'fill': '#555'});
+            // using a 8 column grid on 800px
+            r.g.text(0, 20, 'Bloodwork Cardiology Result')
+            r.path("M0 40 L313 40").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
 
-            // metadata
-            r.g.txtattr = {'font-size': '12px', 'font-weight': 'bold'};
-            r.g.text(400, 10, 'ORDERED BY').attr({'fill': '#555'});
-            r.g.txtattr = {'font-size': '12px', 'font-weight': 'bold'};
-            r.g.text(400, 25, p.givenName.value).attr({'fill': '#555'});
+            // pad in 40px
+            r.g.txtattr = {
+              'font': '16px \'Helvetica Neue\', Helvetica, Corbel, Verdana, sans-serif', 
+              'text-anchor': 'start',
+              'fill': '#555'
+            };
+            r.g.text(40, 60+1, 'NAME:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(80, 60, p.givenName.value + ' ' + p.familyName.value).attr({'font-size': '18px'})
+            
+            r.g.text(40, 80+1, 'GENDER:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(92, 80, p.gender.value == 'female' ? 'F' : 'M')
+            
+            r.g.text(112, 80+1, 'AGE:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(142, 80, p.age.value)
+            
+            r.g.text(172, 80+1, 'DOB:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(202, 80, p.birthday.value)
 
-            // var v = r.g.hbarchart(
-            //   0,
-            //   50,
-            //   700,
-            //   150,
-            //   [
-            //     [2],
-            //     [3],
-            //     [7]
-            //   ],
-            //   {
-            //     stacked: true,
-            //     type: 'sharp',
-            //     colors: ['#61AFC9', '#008EB0', '#0B9DBC']
-            //   }
-            // );
+            r.path("M0 100 L800 100").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+
+            r.circle(40, 120, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(40, 120, '1').attr({'font-size': '18px', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(60, 120, 'About this test').attr({'font-size': '16px', 'font-weight': 'bold'})
+            r.g.text(60, 140, 'This report evaluates your potential risk of heart disease, heart attack, and stroke.')
+              .attr({'font-size': '14px'})
+            
+            r.path("M0 160 L800 160").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'});
+
+            r.circle(40, 180, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(40, 180, '2').attr({'font-size': '18px', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(60, 180, 'Your Results').attr({'font-size': '16px', 'font-weight': 'bold'})
 
             // first bar
-            var w = 700
-              , h = 75
+            var x = 60
+              , y = 220
+              , w = 700
+              , h = 80
               , units_n = 10
               , unit_w = w / units_n
-              , x = 0
-              , y = 150
               , space = 2
-              , cap_w = 53.033; // (h * 2^(1/2)) / 2
+              , cap_x = w + x
+              , cap_y = y
+              , cap_mid_x = 780
+              , cap_mid_y = y + h/2
+              , cap_end_x = cap_x
+              , cap_end_y = y + h
             
             // make width smaller with space, start x on unit_w multiple 
-            r.rect(0,         y, unit_w-space,       h).attr({fill: '#61AFC9', stroke: 'none'});
-            r.rect(unit_w,    y, unit_w*2-space,     h).attr({fill: '#008EB0', stroke: 'none'});
-            r.rect(unit_w*3,  y, unit_w*7-(cap_w/2), h).attr({fill: '#0B9DBC', stroke: 'none'});
-            r.rect(w-cap_w/2, y, cap_w,              cap_w).attr({fill: '#0B9DBC', stroke: 'none'}).rotate(45, w-cap_w/2, y);
-            
-            // second bar
-            var w = 700
-              , h = 75
-              , units_n = 30
+            r.rect(x+0,         y, unit_w-space,       h).attr({fill: '#61AFC9', stroke: 'none'});
+            r.rect(x+unit_w,    y, unit_w*2-space,     h).attr({fill: '#008EB0', stroke: 'none'});
+            r.rect(x+unit_w*3,  y, unit_w*7,           h).attr({fill: '#0B9DBC', stroke: 'none'});
+            r.path('M' + cap_x     + ' ' + cap_y + 
+                   'L' + cap_mid_x + ' ' + cap_mid_y + 
+                   'L' + cap_end_x + ' ' + cap_end_y +
+                   'z')
+                   .attr({'fill': '#0B9DBC', 'stroke': 'none'});
+
+            var x = 60
+              , y = 360
+              , w = 700
+              , h = 80
+              , units_n = 10
               , unit_w = w / units_n
-              , x = 0
-              , y = 250
               , space = 2
-              , cap_w = 53.033;
+              , cap_x = w + x
+              , cap_y = y
+              , cap_mid_x = 780
+              , cap_mid_y = y + h/2
+              , cap_end_x = cap_x
+              , cap_end_y = y + h
             
-            r.rect(0,         y, unit_w*20-space,    h).attr({fill: '#A0BE78', stroke: 'none'});
-            r.rect(unit_w*20, y, unit_w*3-space,     h).attr({fill: '#86AD52', stroke: 'none'});
-            r.rect(unit_w*23, y, unit_w*7-(cap_w/2), h).attr({fill: '#5E892B', stroke: 'none'});
-            r.rect(w-cap_w/2, y, cap_w,              cap_w).attr({fill: '#5E892B', stroke: 'none'}).rotate(45, w-cap_w/2, y);
-
-
+            // make width smaller with space, start x on unit_w multiple 
+            r.rect(x+0,         y, unit_w*6-space,  h).attr({fill: '#A0BE78', stroke: 'none'});
+            r.rect(x+unit_w*6,  y, unit_w*1-space,  h).attr({fill: '#86AD52', stroke: 'none'});
+            r.rect(x+unit_w*7,  y, unit_w*3,        h).attr({fill: '#5E892B', stroke: 'none'});
+            r.path('M' + cap_x     + ' ' + cap_y + 
+                   'L' + cap_mid_x + ' ' + cap_mid_y + 
+                   'L' + cap_end_x + ' ' + cap_end_y +
+                   'z')
+                   .attr({'fill': '#5E892B', 'stroke': 'none'});
           });
         });
     </script>
   </head>
   <body>
-    <div id='holder' style=''></div>
+    <div id='holder' style='width: 800px; height: 600px;'></div>
     <div id='log'></div>
   </body>
 </html>
