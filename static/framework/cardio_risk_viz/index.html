@@ -6,48 +6,116 @@
       <script src='../jquery/jquery.js'></script>
       <script src='./raphael-min.js'></script>
       <script src='./g.raphael.js'></script>
-      <script src='./g.bar.js'></script>
       <script>
+
+      // improvments
+      // - rm lines
+      // - more semantic colors?
+      // - bullet charts?
+
+      // todo
+      // - rdf
+      // - plot circles on chart
+      // - do risk score
+      // - images
+
+
+
         // LAB_RESULTS_get
         // http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_RDF_Data#Lab_Result_RDF
-
-
-        // evelopment and Validation of Improved Algorithms for the Assessment of Global Cardiovascular Risk in Women
-        //         PM Ridker, JE Buring, N Rifai… - JAMA, 2007
-        // Model B, the Reynolds Risk Score
-        // 10-year cardiovascular disease risk (%) =[1−0.98634
-        // (exp[B−22.325])
-        // ]100% where
-        // B=0.0799  a g e  3.137  na tur a l  log a r i thm  ( s y s tol i c blood pr e s sur e ) 
-        // 0.180natural logarithm (high-sensitivity C-reactive protein)  1.382natural
-        // logarithm (total cholesterol) −1.172natural logarithm (high-density lipoprotein cholesterol)  0.134hemoglobin A1c
-        // (%) (if diabetic)  0.818 (if current
-        // smoker)  0.438 (if family history of premature myocardial infarction)
-        
-        
-        // // detect resize events
-        // $(window).resize(function() {
-        //
-        // USE http://raphaeljs.com/reference.html#setSize ? or scale?
-        // 
-        //   var iframe  = $(window.frameElement);
-        //   console.log($(window).height(), $(window).width())
-        //   console.log($(iframe).height(), $(iframe).width())
-        //   $('#log').append('<div>Handler for .resize() called.</div>');
-        // });
-
-
-        //
-        // MAIN
         //
 
-        // // sizing: use 800x600 for now
-        // // var iframe  = $(window.frameElement);
-        // var h = 600; // $(iframe).height();
-        // var w = 800; // $(iframe).width();
-        // $('#holder').height(h);
-        // $('#holder').width(w);
-        
+        var reynolds_risks_score = function(p){
+          // Reynolds Risk Score
+          //
+          // Women (not recommended for diabetics anymore? http://www.reynoldsriskscore.org/faq.aspx)
+          // 10 year cardiovascular disease risk for women = 1-0.98634^(exp [B-22.325]) x 100%
+          //
+          // where B = 0.0799 x age 
+          //         + 3.137 x ln(systolic bp)
+          //         + 0.180 x ln(hsCRP)
+          //         + 1.382 x ln(total cholesterol)
+          //         - 1.172 x ln(HDL)
+          //         + 0.134 x hba1c (%)  // if diabetic
+          //         + 0.818              // if current smoker
+          //         + 0.438              // if fx of premature myocardial infarction
+          //
+          // Men
+          //
+          // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2752381/
+          // 10 year cardiovascular disease risk for men = 1-0.8990^(exp [B-33.097]) x 100%
+          //
+          // where B = 4.385 x ln(age)
+          //         + 2.607 x ln(systolic bp)
+          //         + 0.102 x ln(hsCRP)
+          //         + 0.963 x ln(total cholesterol)
+          //         - 0.772 x ln(HDL)
+          //         + 0.405              // if current smoker
+          //         + 0.541              // if fx of premature myocardial infarction
+          //
+          // ** no hba1c! non-diabetic men
+            
+          var parameters = {}
+            , result = null;
+
+          if (p.gender.value === 'female') {
+            params = {
+              'age': 0.0799,
+              'sbp': 3.137,
+              'hsCRP': 0.180,
+              'cholesterol': 1.382,
+              'HDL': -1.172,
+              'smoker': 0.818,
+              'fx_of_mi': 0.438
+            }
+          } else {
+            params = {
+              'age': 4.385,
+              'sbp': 2.607,
+              'hsCRP': 0.102,
+              'cholesterol': 0.963,
+              'HDL': -0.772,
+              'smoker': 0.405,
+              'fx_of_mi': 0.541
+            }
+          }
+
+          
+          var b1 = params.age          * p.gender.value==='female' ? p.age.value : Math.log(p.age.value)
+            , b2 = params.sbp          * Math.log(p.sbp.value)
+            , b3 = params.hsCRP        * Math.log(p.hsCRP.value)
+            , b4 = params.cholesterol  * Math.log(p.cholesterol.value)
+            , b5 = params.HDL          * Math.log(p.HDL.value)
+            , b6 = params.smoker       * p.smoker_p.value ? 1 : 0
+            , b7 = params.fx_of_mi     * p.fx_of_mi_p.value ? 1 : 0;
+
+          var B = b1 + b2 + b3 + b4 + b5 + b6 + b7;
+
+
+          if (p.gender.value === 'female') {
+            var a = Math.exp(B-22.325)
+              , b = Math.pow(0.98634, a)
+              , c = 1 - b
+              , d = c * 100
+              debugger;
+
+            result = (1 - Math.pow(0.98634, (Math.exp(B-22.325)))) * 100
+          } else {
+
+            var a = Math.exp(B-33.097)
+              , b = Math.pow(0.8990, a)
+              , c = 1 - b
+              , d = c * 100
+
+            debugger;
+              
+            result = (1 - Math.pow(0.8990,  (Math.exp(B-33.097)))) * 100            
+          }
+
+          console.log('RRS %', result, 'B', B);
+          return result;
+        }
+
         SMART.DEMOGRAPHICS_get(function(demographics) {
           var p = demographics
             .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
@@ -73,12 +141,27 @@
           p.age.value = get_age(p.birthday.value)
 
           SMART.LAB_RESULTS_get(function(labs){
+            // fixturize until I figure out querying the rdf
+            // fixturize until I figure out querying the rdf
+            // fixturize until I figure out querying the rdf
+            // fixturize until I figure out querying the rdf
+            // fixturize until I figure out querying the rdf
+            // fixturize until I figure out querying the rdf
+            p.age.value = 49;
+            p.gender.value = 'female';
+            p.sbp = {'value': 130} // asssumed
+            , p.hsCRP = {'value': 3.3}
+            , p.cholesterol = {'value': 265}
+            , p.LDL = {'value': 233}
+            , p.HDL = {'value': 32}
+            , p.smoker_p = {'value': true}
+            , p.fx_of_mi_p = {'value': true};
+
+
+            var score = reynolds_risks_score(p);
 
             // fixturize until I figure out querying the rdf
-            var crp = 3.3
-              , total_cholesterol = 265
-              , ldl_cholesterol = 233
-              , hdl_cholesterol = 32;
+            // fixturize until I figure out querying the rdf
 
             var r = Raphael('holder');
 
