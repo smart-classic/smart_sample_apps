@@ -55,6 +55,9 @@
           //         + 0.405              // if current smoker
           //         + 0.541              // if fx of premature myocardial infarction
           //
+          // 10-year cardiovascular disease risk (%) = [1 – 0.8990 (exp[B-33.097])] x 100% where
+          // B = 4.385 x natural logarithm(age) + 2.607 x natural logarithm(systolic blood pressure) + 0.963 x natural logarithm(total cholesterol) - 0.772 x natural logarithm(high-density lipoprotein cholesterol) + 0.405 (if current smoker) + 0.102 x natural logarithm(high-sensitivity C-reactive protein) + 0.541 (if parental history of premature myocardial infarction)
+          //
           // ** no hba1c! non-diabetic men
             
           var parameters = {}
@@ -94,7 +97,8 @@
           var B = b1 + b2 + b3 + b4 + b5 + b6 + b7;
 
           // console.log('B (22-28 f), (30-37 m)', B);
-
+          // debugger;
+          
           if (p.gender.value === 'female') {
             var a = Math.exp(B-22.325)
               , b = Math.pow(0.98634, a)
@@ -196,7 +200,7 @@
             p.givenName.value = 'John';
             p.familyName.value = 'Doe';
             p.age.value = 49;
-            p.gender.value = 'female';
+            p.gender.value = 'male';
             p.sbp = {'value': 130} // asssumed
             , p.hsCRP = {'value': 3.3}
             , p.cholesterol = {'value': 265}
@@ -283,7 +287,7 @@
             // no -space here since the cap is next
             r.rect(x+unit_w*3,  y, unit_w*7,           h).attr({fill: '#008EB0', stroke: 'none'});
             r.g.text(x+unit_w*3, y+h+8, 'High risk of cardiovascular disease').attr({'font-size': '12px', 'font-weight': 'normal'})
-            r.g.text(x+unit_w*3, y+h+20, '3 - 10 mg/L').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+            r.g.text(x+unit_w*3, y+h+20, '3 - 10').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
 
             r.path('M' + cap_x     + ' ' + cap_y + 
                    'L' + cap_mid_x + ' ' + cap_mid_y + 
@@ -318,7 +322,7 @@
 
             r.rect(x+0,         y, unit_w*18-space,       h).attr({fill: '#A0BE78', stroke: 'none'});
             r.g.text(x, y+h+8, 'Desirable').attr({'font-size': '12px', 'font-weight': 'normal'})
-            r.g.text(x, y+h+20, '0').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+            r.g.text(x, y+h+20, '0 mg/dL').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
 
             r.rect(x+unit_w*18,    y, unit_w*4-space,     h).attr({fill: '#86AD52', stroke: 'none'});
             r.g.text(x+unit_w*18,  y+h+8, 'Borderline').attr({'font-size': '12px', 'font-weight': 'normal'})
@@ -359,7 +363,7 @@
 
             r.rect(x+0,         y, unit_w*10-space,       h).attr({fill: '#DCE6CC', stroke: 'none'});
             r.g.text(x, y+h+8, 'Optimal').attr({'font-size': '12px', 'font-weight': 'normal'})
-            r.g.text(x, y+h+20, '0').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+            r.g.text(x, y+h+20, '0 mg/dL').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
 
             r.rect(x+unit_w*10,    y, unit_w*3-space,     h).attr({fill: '#BDD1A0', stroke: 'none'});
             // adjust height for newline in text string
@@ -409,7 +413,7 @@
 
             r.rect(x+0,         y, unit_w*4-space,       h).attr({fill: '#A0BE78', stroke: 'none'});
             r.g.text(x, y+h+8, 'Low').attr({'font-size': '12px', 'font-weight': 'normal'})
-            r.g.text(x, y+h+20, '0').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+            r.g.text(x, y+h+20, '0 mg/dL').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
 
             r.rect(x+unit_w*4,    y, unit_w*2-space,     h).attr({fill: '#86AD52', stroke: 'none'});
             r.g.text(x+unit_w*4,  y+h+8, 'Normal').attr({'font-size': '12px', 'font-weight': 'normal'})
@@ -468,20 +472,24 @@
             y = 900
             x = 30
             r.image("images/runner.png", x,     y, 45, 60);
+            r.g.text(x+55, y+12, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(x+55, y+36, 'can improve your\ncholesterol levels').attr({'font-size': '14px', 'fill': '#888'})
+
             r.image("images/smoker.png", x+180, y, 45, 60);
+            r.g.text(x+180+55, y+12, 'Quiting smoking').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(x+180+55, y+36+8, 'can decrease your\nheart disease risk\nby 50% or more').attr({'font-size': '14px', 'fill': '#888'})
+
             r.image("images/doctor.png", x+360, y, 45, 60);
+            r.g.text(x+360+55, y+12, 'Ask your doctor').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(x+360+55, y+36+8, 'about statins or other\nmedications that can\nlower cholesterol').attr({'font-size': '14px', 'fill': '#888'})
+
             r.image("images/needle.png", x+540, y, 45, 60);
-            // r.g.text(x, y, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            // r.g.text(x, y+18, 'can improve your\ncholesterol levels').attr({'font-size': '14px', 'fill': '#888'})
+            r.g.text(x+540+55, y+12, 'Consider retesting').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(x+540+55, y+36+8, 'in 1 or 2 weeks to\nexclude a temporary\nspike in blood levels').attr({'font-size': '14px', 'fill': '#888'})
 
-            // r.g.text(60, 900, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
 
-            // r.g.text(60, 900, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-
-            // r.g.text(60, 900, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-
-            // r.path("M10 900 L790 900").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            // r.g.text(60, 920, 'Credits...').attr({'font-size': '14px', 'fill': '#ccc'})
+            r.path("M10 980 L790 980").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
 
             
           });
@@ -489,7 +497,7 @@
     </script>
   </head>
   <body>
-    <div id='holder' style='width: 800px; height: 1000px;'></div>
+    <div id='holder' style='width: 800px; height: 1200px;'></div>
     <div id='log'></div>
   </body>
 </html>
