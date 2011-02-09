@@ -78,34 +78,6 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    
 	};
 
-    this.adjust_size = debounce(this,2,100, function(size_requirements) {
-	    
-	if (size_requirements === undefined)
-	    size_requirements = this.last_size_requirements;
-	if (size_requirements === undefined)
-	    size_requirements = {};
-
-	this.last_size_requirements = size_requirements;
-	console.log("used adjust size: " + size_requirements);
-
-	var c = $("#content");	
-	var h = $("html", c.get(0).contentDocument);
-	var defaults = {
-	    width: 0,
-	    height: getDocHeight(c.get(0).contentDocument)
-	};
-
-	$.extend(defaults, size_requirements);
-
-	this.channel.call({
-		method: "adjust_size",
-		    params:  defaults,
-		    success: function(r) { }
-	    });
-	
-	});
-    
-	
 	this.api_call = function(options, callback) {
 	    this.channel.call({method: "api_call",
 			       params: 
@@ -770,7 +742,6 @@ SMART_frame_glue_app = function(redirect_url) {
 	   $(window).resize(function() {
 		   
 		  	var c =$("#content");
-		  	var ctr =$("#container");
 			
 			var new_w = $(window).width();
 			var new_h = $(window).height();
@@ -779,19 +750,18 @@ SMART_frame_glue_app = function(redirect_url) {
 			    {
 				console.log("so, setting: ");
 				c.width(new_w).height(new_h);
-				ctr.width(new_w).height(new_h);
 
 				c.data("old_w", new_w);
 				c.data("old_h", new_h);
-				SMART.adjust_size();
 			    }
 		   });
 	   
-	   $('html').css("overflow", "hidden");
+	   $("html").css("overflow", "hidden");
+	   $("body").css("margin","0px");
+
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
-	   var content = $('<div id="container" style="overflow: hidden;"><iframe SEAMLESS style="border: 0px; overflow: hidden;" src="'+redirect_url+'" id="content"></div>');
-	   $('body').append(content);
-	   var content_iframe = $("#content");
+	   var content_iframe = $('<iframe SEAMLESS style="border: 0px; " src="'+redirect_url+'" id="content">');
+	   $('body').append(content_iframe);
 	   content_iframe.hide();
 	   content_iframe.data("finished_dom", false);
 	   content_iframe.data("loaded_api_page", false);
@@ -801,8 +771,6 @@ SMART_frame_glue_app = function(redirect_url) {
 	   content_iframe.load(function() {
  		    content_iframe.data("finished_dom", true);
 			$('#loading').remove();
-			var h = $("html", content_iframe.get(0).contentDocument);
-			$("body").css("margin","0px");
 			content_iframe.show();
 			$(window).resize();  
 	   });
@@ -827,29 +795,6 @@ function getDocHeight(D) {
 		    Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
 		    Math.max(D.body.clientHeight, D.documentElement.clientHeight)
 		    );
-};
-
-var debounce = function(scope, max, timeout,fn) {
-    if (timeout === undefined)
-	timeout = 100; // 100 ms default 
-
-    if (max === undefined)
-	max = 3; // allow 2 runs in 100ms
-
-    var inrange = 0;
-    
-    return function() {
-	if (inrange >= max){
-	    console.log("smoothed out bounce for " + inrange);
-	    fnfail.apply(scope, arguments);
-	    return;
-	}
-	inrange+= 1;
-	setTimeout(function(){inrange = 0;},timeout);
-
-	fn.apply(scope, arguments);
-    };
-    
 };
 
 SMART_frame_glue_app(window.SMART_redirect_url);

@@ -62,8 +62,7 @@ jQuery.Controller.extend('ProblemList.Controllers.ProblemListController',
 					this.problems = problems;
 					var v = this.view('problems', {problems: problems});
 					this.element.html(v);				
-					console.log("Adjust size now.");
-					SMART.adjust_size({width: $("table.medtable").width()});
+					//					SMART.adjust_size({width: $("table.medtable").width()});
 				}	
 			)
 		);
