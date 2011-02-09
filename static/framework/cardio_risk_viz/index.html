@@ -7,19 +7,21 @@
       <script src='./raphael-min.js'></script>
       <script src='./g.raphael.js'></script>
       <script>
+        // load data:
+        //
+        // export PYTHONPATH=/home/smart/smart_server; export DJANGO_SETTINGS_MODULE=settings
+        // cd load_tools; python load_one_patient.py /home/smart/smart_sample_apps/static/framework/cardio_risk_viz/3001.xml
+      
+        // improvments
+        // - rm lines
+        // - more semantic colors?
+        // - bullet charts?
 
-      // improvments
-      // - rm lines
-      // - more semantic colors?
-      // - bullet charts?
-
-      // todo
-      // - rdf
-      // - plot circles on chart
-      // - do risk score
-      // - images
-
-
+        // todo
+        // - rdf
+        // - plot circles on chart
+        // - do risk score
+        // - images
 
         // LAB_RESULTS_get
         // http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_RDF_Data#Lab_Result_RDF
@@ -81,7 +83,7 @@
           }
 
           
-          var b1 = params.age          * p.gender.value==='female' ? p.age.value : Math.log(p.age.value)
+          var b1 = params.age          * (p.gender.value==='female' ? p.age.value : Math.log(p.age.value))
             , b2 = params.sbp          * Math.log(p.sbp.value)
             , b3 = params.hsCRP        * Math.log(p.hsCRP.value)
             , b4 = params.cholesterol  * Math.log(p.cholesterol.value)
@@ -91,13 +93,13 @@
 
           var B = b1 + b2 + b3 + b4 + b5 + b6 + b7;
 
+          // console.log('B (22-28 f), (30-37 m)', B);
 
           if (p.gender.value === 'female') {
             var a = Math.exp(B-22.325)
               , b = Math.pow(0.98634, a)
               , c = 1 - b
               , d = c * 100
-              debugger;
 
             result = (1 - Math.pow(0.98634, (Math.exp(B-22.325)))) * 100
           } else {
@@ -107,12 +109,10 @@
               , c = 1 - b
               , d = c * 100
 
-            debugger;
-              
             result = (1 - Math.pow(0.8990,  (Math.exp(B-33.097)))) * 100            
           }
 
-          console.log('RRS %', result, 'B', B);
+          // console.log('RRS %', result, 'check with d', d, 'B', B);
           return result;
         }
 
@@ -136,17 +136,65 @@
             var adj = (today-db<0) ? 1 : 0;
             return cy - by - adj;
           }
-
-          p.age = {};
-          p.age.value = get_age(p.birthday.value)
+          p.age = {'value': get_age(p.birthday.value)};
 
           SMART.LAB_RESULTS_get(function(labs){
-            // fixturize until I figure out querying the rdf
-            // fixturize until I figure out querying the rdf
-            // fixturize until I figure out querying the rdf
-            // fixturize until I figure out querying the rdf
-            // fixturize until I figure out querying the rdf
-            // fixturize until I figure out querying the rdf
+            // cleaner way to cast to {'value': x as number}?
+            p.hsCRP = {
+              'value': Number(labs.where("?l rdf:type sp:LabResult")
+                                  .where("?l sp:labName ?ln")
+                                  .where("?ln sp:code <http://loinc.org/codes/30522-7>")
+                                  .where("?l sp:quantitativeResult ?qr") // predicate
+                                  .where("?qr rdf:type sp:QuantitativeResult") // type
+                                  .where("?qr sp:valueAndUnit ?vu")
+                                  .where("?vu sp:value ?v")
+                                  .get(0)
+                                  .v
+                                  .value)
+            }
+
+            p.cholesterol = {
+              'value': Number(labs.where("?l rdf:type sp:LabResult")
+                                  .where("?l sp:labName ?ln")
+                                  .where("?ln sp:code <http://loinc.org/codes/2093-3>")
+                                  .where("?l sp:quantitativeResult ?qr") // predicate
+                                  .where("?qr rdf:type sp:QuantitativeResult") // type
+                                  .where("?qr sp:valueAndUnit ?vu")
+                                  .where("?vu sp:value ?v")
+                                  .get(0)
+                                  .v
+                                  .value)
+            }
+
+            p.LDL = {
+              'value': Number(labs.where("?l rdf:type sp:LabResult")
+                                  .where("?l sp:labName ?ln")
+                                  .where("?ln sp:code <http://loinc.org/codes/2089-1>")
+                                  .where("?l sp:quantitativeResult ?qr") // predicate
+                                  .where("?qr rdf:type sp:QuantitativeResult") // type
+                                  .where("?qr sp:valueAndUnit ?vu")
+                                  .where("?vu sp:value ?v")
+                                  .get(0)
+                                  .v
+                                  .value)
+            }
+
+            p.HDL = {
+              'value': Number(labs.where("?l rdf:type sp:LabResult")
+                                  .where("?l sp:labName ?ln")
+                                  .where("?ln sp:code <http://loinc.org/codes/2085-9>")
+                                  .where("?l sp:quantitativeResult ?qr") // predicate
+                                  .where("?qr rdf:type sp:QuantitativeResult") // type
+                                  .where("?qr sp:valueAndUnit ?vu")
+                                  .where("?vu sp:value ?v")
+                                  .get(0)
+                                  .v
+                                  .value)
+            }
+
+            // update data to test score against reference
+            p.givenName.value = 'John';
+            p.familyName.value = 'Doe';
             p.age.value = 49;
             p.gender.value = 'female';
             p.sbp = {'value': 130} // asssumed
@@ -156,13 +204,8 @@
             , p.HDL = {'value': 32}
             , p.smoker_p = {'value': true}
             , p.fx_of_mi_p = {'value': true};
-
-
+            
             var score = reynolds_risks_score(p);
-
-            // fixturize until I figure out querying the rdf
-            // fixturize until I figure out querying the rdf
-
             var r = Raphael('holder');
 
             // set default txtattrs
