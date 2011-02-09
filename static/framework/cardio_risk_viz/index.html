@@ -210,57 +210,55 @@
 
             // set default txtattrs
             r.g.txtattr = {
-              'font': '24px Calibri, \'Helvetica Neue\', Helvetica, Verdana, sans-serif', 
+              'font-family': 'Calibri, \'Helvetica Neue\', Helvetica, Verdana, sans-serif', 
+              'font-size': '16px',
               'text-anchor': 'start',
               'fill': '#555'
             };
 
             // set up overall layout and text
             // using a 8 column grid on 800px
-            r.g.text(0, 20, 'Bloodwork Cardiology Result')
-            r.path("M0 40 L313 40").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.g.text(10, 20, 'Bloodwork Cardiology Result').attr({'font-size': '24px'})
+            r.path("M10 40 L290 40").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
 
             // pad in 40px
-            r.g.txtattr = {
-              'font': '16px Calibri, \'Helvetica Neue\', Helvetica, Verdana, sans-serif', 
-              'text-anchor': 'start',
-              'fill': '#555'
-            };
-            r.g.text(40, 60+1, 'Patient info').attr({'font-size': '18px'})
+            r.g.text(40, 55, 'Patient info').attr({'font-size': '18px', 'font-weight': 'bold'})
 
-            r.g.text(40, 80+1, 'NAME:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
-            r.g.text(80, 80, p.givenName.value + ' ' + p.familyName.value).attr({'font-size': '18px'})
+            r.g.text(40, 80+3, 'NAME:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(80, 80, p.givenName.value + ' ' + p.familyName.value).attr({'font-size': '24px', 'font-weight': 'normal'})
             
-            r.g.text(40, 100+1, 'GENDER:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
-            r.g.text(92, 100, p.gender.value == 'female' ? 'F' : 'M')
+            r.g.text(40, 100+3, 'GENDER:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(92, 100+2, p.gender.value == 'female' ? 'F' : 'M')
             
-            r.g.text(112, 100+1, 'AGE:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
-            r.g.text(142, 100, p.age.value)
+            r.g.text(112, 100+3, 'AGE:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(142-1, 100, p.age.value)
             
-            r.g.text(172, 100+1, 'DOB:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
-            r.g.text(202, 100, p.birthday.value)
+            r.g.text(172, 100+3, 'DOB:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(202-1, 100, p.birthday.value)
 
-            r.path("M0 120 L800 120").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.path("M10 120 L790 120").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
 
-            r.circle(40, 140, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, 140, '1').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
-            r.g.text(60, 140, 'About this test').attr({'font-size': '16px', 'font-weight': 'bold'})
-            r.g.text(60, 160, 'This report evaluates your potential risk of heart disease, heart attack, and stroke.')
+            var y = 150;
+            r.circle(40, y, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(40, y, '1').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(60, y, 'About this test').attr({'font-size': '18px', 'font-weight': 'bold'})
+            r.g.text(60, y+20, 'This report evaluates your potential risk of heart disease, heart attack, and stroke.').attr({'fill': '#888'})
               .attr({'font-size': '14px'})
             
-            r.path("M0 180 L800 180").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'});
+            r.path("M10 190 L790 190").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'});
 
-            r.circle(40, 200, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, 200, '2').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
-            r.g.text(60, 200, 'Your Results').attr({'font-size': '16px', 'font-weight': 'bold'})
+            y = 210;
+            r.circle(40, y, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(40, y, '2').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(60, y, 'Your Results').attr({'font-size': '18px', 'font-weight': 'bold'})
 
 
 
             var title = 'CRP level test'
               , x = 60
-              , y = 240
+              , y = 255
               , w = 700
-              , h = 80
+              , h = 65
               , units_n = 10
               , unit_w = w / units_n
               , space = 2
@@ -272,7 +270,7 @@
               , cap_end_y = y + h
             
             // make width smaller with space, start x on unit_w multiple 
-            r.g.text(x, y-12, title).attr({'font-size': '14px', 'font-weight': 'bold'})
+            r.g.text(x, y-12, title).attr({'font-size': '18px', 'font-weight': 'normal'})
 
             r.rect(x+0,         y, unit_w-space,       h).attr({fill: '#61AFC9', stroke: 'none'});
             r.g.text(x, y+h+8, 'Low risk').attr({'font-size': '12px', 'font-weight': 'normal'})
@@ -305,7 +303,7 @@
               , x = 60
               , y = 380
               , w = 700
-              , h = 80
+              , h = 65
               , units_n = 30 // max value 300
               , unit_w = w / units_n
               , space = 2
@@ -316,7 +314,7 @@
               , cap_end_x = cap_x
               , cap_end_y = y + h
             
-            r.g.text(x, y-12, title).attr({'font-size': '14px', 'font-weight': 'bold'})
+            r.g.text(x, y-12, title).attr({'font-size': '14px'})
 
             r.rect(x+0,         y, unit_w*18-space,       h).attr({fill: '#A0BE78', stroke: 'none'});
             r.g.text(x, y+h+8, 'Desirable').attr({'font-size': '12px', 'font-weight': 'normal'})
@@ -342,11 +340,11 @@
 
 
 
-            var title = 'LDL "bad" cholesterol level'
+            var title = 'LDL "bad" cholesterol'
               , x = 160
               , y = 500 // 130px from above
               , w = 600
-              , h = 40
+              , h = 30
               , units_n = 30 // max value 300
               , unit_w = w / units_n
               , space = 2
@@ -357,7 +355,7 @@
               , cap_end_x = cap_x
               , cap_end_y = y + h
             
-            r.g.text(x, y-12, title).attr({'font-size': '14px', 'font-weight': 'bold'})
+            r.g.text(x, y-12, title).attr({'font-size': '14px'})
 
             r.rect(x+0,         y, unit_w*10-space,       h).attr({fill: '#DCE6CC', stroke: 'none'});
             r.g.text(x, y+h+8, 'Optimal').attr({'font-size': '12px', 'font-weight': 'normal'})
@@ -392,11 +390,11 @@
 
 
 
-            var title = 'HDL "good" cholesterol level'
+            var title = 'HDL "good" cholesterol'
               , x = 160
               , y = 620 // 120px from above
               , w = 600
-              , h = 40
+              , h = 30
               , units_n = 10 // max value 100
               , unit_w = w / units_n
               , space = 2
@@ -407,7 +405,7 @@
               , cap_end_x = cap_x
               , cap_end_y = y + h
             
-            r.g.text(x, y-12, title).attr({'font-size': '14px', 'font-weight': 'bold'})
+            r.g.text(x, y-12, title).attr({'font-size': '16px'})
 
             r.rect(x+0,         y, unit_w*4-space,       h).attr({fill: '#A0BE78', stroke: 'none'});
             r.g.text(x, y+h+8, 'Low').attr({'font-size': '12px', 'font-weight': 'normal'})
@@ -432,21 +430,58 @@
             r.g.text(circle_x, y, p.HDL.value).attr({'font': '16px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
 
 
-            r.path("M0 700 L800 700").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.path("M10 700 L790 700").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
             r.circle(40, 720, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
             r.g.text(40, 720, '3').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
-            r.g.text(60, 720, 'Your risk').attr({'font-size': '16px', 'font-weight': 'bold'})
-            // r.g.text(60, 740, 'This report evaluates your potential risk of heart disease, heart attack, and stroke.')
-            //   .attr({'font-size': '14px'})
+            r.g.text(60, 720, 'Your risk').attr({'font-size': '18px', 'font-weight': 'bold'})
+            r.g.text(60+60+10, 720, 'You show an elevated risk of cardiovascular disease')
+              .attr({'font-size': '18px', 'font-weight': 'normal', 'fill': '#888'})
+            r.g.text(60, 780, 'If you\'re a smoker with normal blood\n pressure, (130 mm/Hg) but family history\n of heart attack before the age of 60 (one\n or both parents) your risk over 10 years is:')
+              .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
 
+            score = 15;
+            r.g.text(320, 780, score+'%')
+              .attr({'font-size': '72px', 'font-weight': 'bold', 'fill': '#6A9C2D', 'font-family': "Consolas, monospace", 'font-weight': '900'})
 
-            r.path("M0 800 L800 800").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            r.circle(40, 820, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, 820, '4').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
-            r.g.text(60, 820, 'What now?').attr({'font-size': '16px', 'font-weight': 'bold'})
+            y = 750;
+            r.g.text(460, y, 'Your risk would be lowered to:').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+    
+            r.g.text(460, y+16, '12%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(460+28, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
+            
+            r.g.text(460, y+32, '10%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(460+28, y+32, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
+
+            r.g.text(460, y+48, '6%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(460+28, y+48, 'if you reduced cholesterol to 160mm/DL').attr({'font-size': '14px', 'fill': '#888'})
+
+            r.g.text(60, y+80, 'Use your CRP results and cholesterol level to calculate your 10 year risk of a cardiovascular event at ReynoldsRisk.org')
+              .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
+
+            r.path("M10 855 L790 855").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.circle(40, 880, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(40, 880, '4').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(60, 880, 'What now?').attr({'font-size': '18px', 'font-weight': 'bold'})
  
-            r.path("M0 900 L800 900").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            r.g.text(60, 920, 'Credits...').attr({'font-size': '14px', 'fill': '#ccc'})
+            // 780px into 4 col grid. each col 180 + 15 right margin
+
+            y = 900
+            x = 30
+            r.image("runner.png", x,     y, 45, 60);
+            r.image("smoker.png", x+180, y, 45, 60);
+            r.image("doctor.png", x+360, y, 45, 60);
+            r.image("needle.png", x+540, y, 45, 60);
+            // r.g.text(x, y, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            // r.g.text(x, y+18, 'can improve your\ncholesterol levels').attr({'font-size': '14px', 'fill': '#888'})
+
+            // r.g.text(60, 900, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+
+            // r.g.text(60, 900, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+
+            // r.g.text(60, 900, 'Diet and exercise').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+
+            // r.path("M10 900 L790 900").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            // r.g.text(60, 920, 'Credits...').attr({'font-size': '14px', 'fill': '#ccc'})
 
             
           });
