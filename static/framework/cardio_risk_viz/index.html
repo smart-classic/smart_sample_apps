@@ -86,15 +86,14 @@
               , d = c * 100
               , result = (1 - Math.pow(0.98634, (Math.exp(B-22.325)))) * 100
           } else {
-
             var a = Math.exp(B-33.097)
               , b = Math.pow(0.8990, a)
               , c = 1 - b
               , d = c * 100
-              , sresult = (1 - Math.pow(0.8990,  (Math.exp(B-33.097)))) * 100            
+              , result = (1 - Math.pow(0.8990,  (Math.exp(B-33.097)))) * 100            
           }
-          // console.log('RRS %', result, 'check with d', d, 'B', B);
-          return result;
+//          console.log('RRS %', result, 'check with d', d, 'B', B);
+          return (result < 10 ? result.toPrecision(1) : result.toPrecision(2))
         }
 
         SMART.DEMOGRAPHICS_get(function(demographics) {
@@ -179,15 +178,15 @@
             p.fx_of_mi_p = {'value': true}
             
             // update data to test score against reference
-            // p.givenName.value = 'John';
-            // p.familyName.value = 'Doe';
-            // p.age.value = 49;
-            // p.gender.value = 'male';
-            // , p.hsCRP = {'value': 3.3}
-            // , p.cholesterol = {'value': 265}
-            // , p.LDL = {'value': 233}
-            // , p.HDL = {'value': 32}
-            
+            p.givenName.value = 'John';
+            p.familyName.value = 'Doe';
+            p.age.value = 49;
+            p.gender.value = 'male';
+            p.hsCRP = {'value': 3.3}
+            p.cholesterol = {'value': 265}
+            p.LDL = {'value': 233}
+            p.HDL = {'value': 32}
+
             var score = reynolds_risks_score(p);
             var r = Raphael('holder');
 
@@ -422,7 +421,9 @@
             r.g.text(60, 780, 'If you\'re a smoker with normal blood\n pressure, (130 mm/Hg) but family history\n of heart attack before the age of 60 (one\n or both parents) your risk over 10 years is:')
               .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
 
-            r.g.text(320, 780, score.toPrecision(1)+'%')
+            // console.log(score);
+            
+            r.g.text(320, 780, score+'%')
               .attr({'font-size': '72px', 'font-weight': 'bold', 'fill': '#6A9C2D', 'font-family': "Consolas, monospace", 'font-weight': '900'})
 
             y = 750;
