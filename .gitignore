@@ -5,3 +5,5 @@
 .settings
 settings.py
 .pydevproject
+production.js
+production.css

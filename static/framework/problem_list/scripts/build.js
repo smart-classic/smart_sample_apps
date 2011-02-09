@@ -2,5 +2,5 @@
 
 load("steal/rhino/steal.js");
 steal.plugins('steal/build','steal/build/scripts','steal/build/styles',function(){
-	steal.build('med_list/index.html',{to: 'med_list'});
+	steal.build('problem_list/index.html',{to: 'problem_list'});
 });

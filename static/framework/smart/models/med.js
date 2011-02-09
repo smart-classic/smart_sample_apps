@@ -315,6 +315,6 @@ extend('Smart.Models.Med',
 	
 		
 		return dispenses;
-	},
+	}
 
 });
