@@ -29,7 +29,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     'ontology_parsed subscribe': function(topic, element) {
 		$("#type-nav").html(this.view('groups', {groups: ApiCallGroup.get_top_groups()}));
 		$("#wrap").css({marginLeft: $("#type-nav").width()});
-		SMART.adjust_size({width: 970});
     }, 
 
     ".type click": function(el, ev ){
@@ -42,7 +41,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		this.response_box.hide();
 		$("#interpolation-fields").html("");
 		g.group_type.fetchParameters();
-		SMART.adjust_size({width: 970});
 
     },
     
@@ -92,7 +90,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 			try  {$i.val(ApiType.interpolations.lists[field_name][0]);} catch(err){}
 			
 		});
-		SMART.adjust_size({width: 970});
 		
    },
 
@@ -140,7 +137,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     		$i.removeAttr("DISABLED");
     	});
 
-	SMART.adjust_size({width: 970});
     	this.selected_top_group.group_type.fetchParameters();		
     }
     
