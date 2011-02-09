@@ -8,29 +8,15 @@
       <script src='./g.raphael.js'></script>
       <script>
         // load data:
-        //
         // export PYTHONPATH=/home/smart/smart_server; export DJANGO_SETTINGS_MODULE=settings
         // cd load_tools; python load_one_patient.py /home/smart/smart_sample_apps/static/framework/cardio_risk_viz/3001.xml
-      
-        // improvments
-        // - rm lines
-        // - more semantic colors?
-        // - bullet charts?
-
-        // todo
-        // - rdf
-        // - plot circles on chart
-        // - do risk score
-        // - images
-
-        // LAB_RESULTS_get
-        // http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_RDF_Data#Lab_Result_RDF
         //
+        // Docs:
+        // LAB_RESULTS_get: http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_RDF_Data#Lab_Result_RDF
 
         var reynolds_risks_score = function(p){
-          // Reynolds Risk Score
+          // Women (not recommended for diabetics see http://www.reynoldsriskscore.org/faq.aspx)
           //
-          // Women (not recommended for diabetics anymore? http://www.reynoldsriskscore.org/faq.aspx)
           // 10 year cardiovascular disease risk for women = 1-0.98634^(exp [B-22.325]) x 100%
           //
           // where B = 0.0799 x age 
@@ -54,9 +40,6 @@
           //         - 0.772 x ln(HDL)
           //         + 0.405              // if current smoker
           //         + 0.541              // if fx of premature myocardial infarction
-          //
-          // 10-year cardiovascular disease risk (%) = [1 – 0.8990 (exp[B-33.097])] x 100% where
-          // B = 4.385 x natural logarithm(age) + 2.607 x natural logarithm(systolic blood pressure) + 0.963 x natural logarithm(total cholesterol) - 0.772 x natural logarithm(high-density lipoprotein cholesterol) + 0.405 (if current smoker) + 0.102 x natural logarithm(high-sensitivity C-reactive protein) + 0.541 (if parental history of premature myocardial infarction)
           //
           // ** no hba1c! non-diabetic men
             
@@ -91,31 +74,25 @@
             , b3 = params.hsCRP        * Math.log(p.hsCRP.value)
             , b4 = params.cholesterol  * Math.log(p.cholesterol.value)
             , b5 = params.HDL          * Math.log(p.HDL.value)
-            , b6 = params.smoker       * p.smoker_p.value ? 1 : 0
-            , b7 = params.fx_of_mi     * p.fx_of_mi_p.value ? 1 : 0;
+            , b6 = params.smoker       * (p.smoker_p.value ? 1 : 0)
+            , b7 = params.fx_of_mi     * (p.fx_of_mi_p.value ? 1 : 0);
 
           var B = b1 + b2 + b3 + b4 + b5 + b6 + b7;
 
-          // console.log('B (22-28 f), (30-37 m)', B);
-          // debugger;
-          
           if (p.gender.value === 'female') {
             var a = Math.exp(B-22.325)
               , b = Math.pow(0.98634, a)
               , c = 1 - b
               , d = c * 100
-
-            result = (1 - Math.pow(0.98634, (Math.exp(B-22.325)))) * 100
+              , result = (1 - Math.pow(0.98634, (Math.exp(B-22.325)))) * 100
           } else {
 
             var a = Math.exp(B-33.097)
               , b = Math.pow(0.8990, a)
               , c = 1 - b
               , d = c * 100
-
-            result = (1 - Math.pow(0.8990,  (Math.exp(B-33.097)))) * 100            
+              , sresult = (1 - Math.pow(0.8990,  (Math.exp(B-33.097)))) * 100            
           }
-
           // console.log('RRS %', result, 'check with d', d, 'B', B);
           return result;
         }
@@ -143,7 +120,6 @@
           p.age = {'value': get_age(p.birthday.value)};
 
           SMART.LAB_RESULTS_get(function(labs){
-            // cleaner way to cast to {'value': x as number}?
             p.hsCRP = {
               'value': Number(labs.where("?l rdf:type sp:LabResult")
                                   .where("?l sp:labName ?ln")
@@ -196,18 +172,21 @@
                                   .value)
             }
 
+
+            // fixtures until form input
+            p.sbp = {'value': 130}
+            p.smoker_p = {'value': true}
+            p.fx_of_mi_p = {'value': true}
+            
             // update data to test score against reference
-            p.givenName.value = 'John';
-            p.familyName.value = 'Doe';
-            p.age.value = 49;
-            p.gender.value = 'male';
-            p.sbp = {'value': 130} // asssumed
-            , p.hsCRP = {'value': 3.3}
-            , p.cholesterol = {'value': 265}
-            , p.LDL = {'value': 233}
-            , p.HDL = {'value': 32}
-            , p.smoker_p = {'value': true}
-            , p.fx_of_mi_p = {'value': true};
+            // p.givenName.value = 'John';
+            // p.familyName.value = 'Doe';
+            // p.age.value = 49;
+            // p.gender.value = 'male';
+            // , p.hsCRP = {'value': 3.3}
+            // , p.cholesterol = {'value': 265}
+            // , p.LDL = {'value': 233}
+            // , p.HDL = {'value': 32}
             
             var score = reynolds_risks_score(p);
             var r = Raphael('holder');
@@ -443,20 +422,19 @@
             r.g.text(60, 780, 'If you\'re a smoker with normal blood\n pressure, (130 mm/Hg) but family history\n of heart attack before the age of 60 (one\n or both parents) your risk over 10 years is:')
               .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
 
-            score = 15;
-            r.g.text(320, 780, score+'%')
+            r.g.text(320, 780, score.toPrecision(1)+'%')
               .attr({'font-size': '72px', 'font-weight': 'bold', 'fill': '#6A9C2D', 'font-family': "Consolas, monospace", 'font-weight': '900'})
 
             y = 750;
             r.g.text(460, y, 'Your risk would be lowered to:').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
     
-            r.g.text(460, y+16, '12%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(460, y+16, 'x%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
             r.g.text(460+28, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
             
-            r.g.text(460, y+32, '10%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(460, y+32, 'x%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
             r.g.text(460+28, y+32, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
 
-            r.g.text(460, y+48, '6%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(460, y+48, 'x%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
             r.g.text(460+28, y+48, 'if you reduced cholesterol to 160mm/DL').attr({'font-size': '14px', 'fill': '#888'})
 
             r.g.text(60, y+80, 'Use your CRP results and cholesterol level to calculate your 10 year risk of a cardiovascular event at ReynoldsRisk.org')
@@ -490,8 +468,6 @@
 
             r.path("M10 980 L790 980").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
             r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
-
-            
           });
         });
     </script>
