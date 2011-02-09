@@ -116,7 +116,7 @@ $.Model.extend('ApiType',
 		
 		//console.log("regex " + b);
 		return ret;		
-	},	
+	}	
 	
 },
 /* @Prototype */
@@ -331,5 +331,5 @@ $.Model.extend('ApiCallGroup',
 		// e.g. fills should be indented below meds 
 		this.group_indentation_hint = this.p.group_indentation_hint;
 		this.group_type = this.p.group_type;
-    },    
+    }    
 });

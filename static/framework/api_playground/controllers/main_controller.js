@@ -20,9 +20,10 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 
 		this.payload_box.hide();
 		this.response_box.hide();
-			ApiType.interpolations.record_id = SMART.record.id;
-			ApiType.addInterpolationValue("record_id", SMART.record.id);
-			ApiType.find_all_types_and_calls();
+		ApiType.interpolations.record_id = SMART.record.id;
+		ApiType.addInterpolationValue("record_id", SMART.record.id);
+		ApiType.find_all_types_and_calls();
+		
     },
     
     'ontology_parsed subscribe': function(topic, element) {
@@ -36,11 +37,11 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		g.element = el;
 		
 		$("#type-heading").html(this.view('calls', {group: g}));
-		//console.log("chose type " + t.name);
 		this.payload_box.hide();
 		this.response_box.hide();
 		$("#interpolation-fields").html("");
 		g.group_type.fetchParameters();
+
     },
     
     "BUTTON.call click": function(el, ev)
@@ -50,8 +51,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		this.selected_call = c;
 		var method = c.method;
 		
-		//console.log("chose "+el.text()+" call " + c.targets.join(", ")  + c.type.example);
-
 		if ($.inArray(method, ApiCall.payload_methods) !== -1)
 		{
 			this.payload_box.val(this.selected_top_group.group_type.example);	
@@ -65,7 +64,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		
 		$("#interpolation-fields").html(this.view('interpolations', {type: this.selected_top_group.group_type, 
 																	 call: this.selected_call}));
-		
 		$("#interpolation-fields INPUT").each(function() {
 			$i = $(this);
 			var field_name = $i.attr("field_name");
@@ -92,7 +90,8 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 			try  {$i.val(ApiType.interpolations.lists[field_name][0]);} catch(err){}
 			
 		});
-    },
+		
+   },
 
     "BUTTON.cancel-call click": function(el, ev) {
     	this.selected_top_group.element.click();

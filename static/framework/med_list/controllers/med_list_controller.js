@@ -144,6 +144,9 @@ extend('MedList.Controllers.MedListController',
 						}
 						
 						this.moveSel($old_sel, $old_sel);
+						//SMART.adjust_size();
+
+
     			     }), 
     			     function(){alert("Error!");});
     	}	

@@ -80,7 +80,9 @@ function Jash(existingParent) {
 		/* create new history object */
 		this.history = new Jash.History();
 		window.setTimeout(function() {
+			try { // IE chokes if we try to focus while still hidden
 			self.input.focus();
+			} catch (err){}
 		},500);
 	}
 	
@@ -267,7 +269,9 @@ function Jash(existingParent) {
 	this.clear = function() {
 	    	this.outputHistory.push(this.output.value);
 		this.output.value = "";
-		this.input.focus();
+		try { // IE chokes on focusing a hidden element
+		    this.input.focus();
+		} catch (err) {}
 		return _null;
 	}
 	
