@@ -254,7 +254,8 @@
             r.g.text(40, 200, '2').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
             r.g.text(60, 200, 'Your Results').attr({'font-size': '16px', 'font-weight': 'bold'})
 
-            // first bar
+
+
             var title = 'CRP level test'
               , x = 60
               , y = 240
@@ -277,11 +278,12 @@
             r.g.text(x, y+h+8, 'Low risk').attr({'font-size': '12px', 'font-weight': 'normal'})
             r.g.text(x, y+h+20, '0 mg/L').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
 
-            r.rect(x+unit_w,    y, unit_w*2-space,     h).attr({fill: '#008EB0', stroke: 'none'});
+            r.rect(x+unit_w,    y, unit_w*2-space,     h).attr({fill: '#0B9DBC', stroke: 'none'});
             r.g.text(x+unit_w,  y+h+8, 'Average').attr({'font-size': '12px', 'font-weight': 'normal'})
             r.g.text(x+unit_w,  y+h+20, '1 - 3').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
 
-            r.rect(x+unit_w*3,  y, unit_w*7,           h).attr({fill: '#0B9DBC', stroke: 'none'});
+            // no -space here since the cap is next
+            r.rect(x+unit_w*3,  y, unit_w*7,           h).attr({fill: '#008EB0', stroke: 'none'});
             r.g.text(x+unit_w*3, y+h+8, 'High risk of cardiovascular disease').attr({'font-size': '12px', 'font-weight': 'normal'})
             r.g.text(x+unit_w*3, y+h+20, '3 - 10 mg/L').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
 
@@ -289,39 +291,170 @@
                    'L' + cap_mid_x + ' ' + cap_mid_y + 
                    'L' + cap_end_x + ' ' + cap_end_y +
                    'z')
-                   .attr({'fill': '#0B9DBC', 'stroke': 'none'});
+                   .attr({'fill': '#008EB0', 'stroke': 'none'});
 
-                   
+            // place circle on bar
+            var circle_x = unit_w * p.hsCRP.value + x;
+            r.circle(circle_x, y, 22).attr({'fill': '#F4804E', 'stroke': '#fff', 'stroke-width': '2px'});
+            r.g.text(circle_x, y, p.hsCRP.value.toPrecision(2)).attr({'font': '20px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
 
-            // var x = 60
-            //   , y = 380
-            //   , w = 700
-            //   , h = 80
-            //   , units_n = 10
-            //   , unit_w = w / units_n
-            //   , space = 2
-            //   , cap_x = w + x
-            //   , cap_y = y
-            //   , cap_mid_x = 780
-            //   , cap_mid_y = y + h/2
-            //   , cap_end_x = cap_x
-            //   , cap_end_y = y + h
-            // 
-            // // make width smaller with space, start x on unit_w multiple 
-            // r.rect(x+0,         y, unit_w*6-space,  h).attr({fill: '#A0BE78', stroke: 'none'});
-            // r.rect(x+unit_w*6,  y, unit_w*1-space,  h).attr({fill: '#86AD52', stroke: 'none'});
-            // r.rect(x+unit_w*7,  y, unit_w*3,        h).attr({fill: '#5E892B', stroke: 'none'});
-            // r.path('M' + cap_x     + ' ' + cap_y + 
-            //        'L' + cap_mid_x + ' ' + cap_mid_y + 
-            //        'L' + cap_end_x + ' ' + cap_end_y +
-            //        'z')
-            //        .attr({'fill': '#5E892B', 'stroke': 'none'});
+
+
+            // mildly non-proportional to make things look nicer
+            var title = 'Total cholesterol level'
+              , x = 60
+              , y = 380
+              , w = 700
+              , h = 80
+              , units_n = 30 // max value 300
+              , unit_w = w / units_n
+              , space = 2
+              , cap_x = w + x
+              , cap_y = y
+              , cap_mid_x = 780
+              , cap_mid_y = y + h/2
+              , cap_end_x = cap_x
+              , cap_end_y = y + h
+            
+            r.g.text(x, y-12, title).attr({'font-size': '14px', 'font-weight': 'bold'})
+
+            r.rect(x+0,         y, unit_w*18-space,       h).attr({fill: '#A0BE78', stroke: 'none'});
+            r.g.text(x, y+h+8, 'Desirable').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x, y+h+20, '0').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.rect(x+unit_w*18,    y, unit_w*4-space,     h).attr({fill: '#86AD52', stroke: 'none'});
+            r.g.text(x+unit_w*18,  y+h+8, 'Borderline').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x+unit_w*18,  y+h+20, '200 - 239').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.rect(x+unit_w*22,  y, unit_w*8,           h).attr({fill: '#5E892B', stroke: 'none'});
+            r.g.text(x+unit_w*22, y+h+8, 'High').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x+unit_w*22, y+h+20, '240+').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.path('M' + cap_x     + ' ' + cap_y + 
+                   'L' + cap_mid_x + ' ' + cap_mid_y + 
+                   'L' + cap_end_x + ' ' + cap_end_y +
+                   'z')
+                   .attr({'fill': '#5E892B', 'stroke': 'none'});
+
+            var circle_x = (unit_w * (p.cholesterol.value / 10)) + x;
+            r.circle(circle_x, y, 22).attr({'fill': '#F4804E', 'stroke': '#fff', 'stroke-width': '2px'});
+            r.g.text(circle_x, y, p.cholesterol.value).attr({'font': '20px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
+
+
+
+            var title = 'LDL "bad" cholesterol level'
+              , x = 160
+              , y = 500 // 130px from above
+              , w = 600
+              , h = 40
+              , units_n = 30 // max value 300
+              , unit_w = w / units_n
+              , space = 2
+              , cap_x = w + x
+              , cap_y = y
+              , cap_mid_x = 780 - 10 // adjust
+              , cap_mid_y = y + h/2
+              , cap_end_x = cap_x
+              , cap_end_y = y + h
+            
+            r.g.text(x, y-12, title).attr({'font-size': '14px', 'font-weight': 'bold'})
+
+            r.rect(x+0,         y, unit_w*10-space,       h).attr({fill: '#DCE6CC', stroke: 'none'});
+            r.g.text(x, y+h+8, 'Optimal').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x, y+h+20, '0').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.rect(x+unit_w*10,    y, unit_w*3-space,     h).attr({fill: '#BDD1A0', stroke: 'none'});
+            // adjust height for newline in text string
+            r.g.text(x+unit_w*10,  y+h+15, 'Near\nOptimal').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x+unit_w*10,  y+h+35, '100 - 129').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.rect(x+unit_w*13,  y, unit_w*3-space,           h).attr({fill: '#A0BE78', stroke: 'none'});
+            r.g.text(x+unit_w*13, y+h+15, 'Borderline\nhigh').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x+unit_w*13, y+h+35, '129 - 159').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.rect(x+unit_w*16,  y, unit_w*3-space,           h).attr({fill: '#86AD52', stroke: 'none'});
+            r.g.text(x+unit_w*16, y+h+8, 'High').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x+unit_w*16, y+h+20, '160 - 189').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.rect(x+unit_w*19,  y, unit_w*11,           h).attr({fill: '#5E892B', stroke: 'none'});
+            r.g.text(x+unit_w*19, y+h+8, 'Very High').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x+unit_w*19, y+h+20, '190+').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.path('M' + cap_x     + ' ' + cap_y + 
+                   'L' + cap_mid_x + ' ' + cap_mid_y + 
+                   'L' + cap_end_x + ' ' + cap_end_y +
+                   'z')
+                   .attr({'fill': '#5E892B', 'stroke': 'none'});
+
+            var circle_x = (unit_w * (p.LDL.value / 10)) + x;
+            r.circle(circle_x, y, 18).attr({'fill': '#F4804E', 'stroke': '#fff', 'stroke-width': '2px'});
+            r.g.text(circle_x, y, p.LDL.value).attr({'font': '16px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
+
+
+
+            var title = 'HDL "good" cholesterol level'
+              , x = 160
+              , y = 620 // 120px from above
+              , w = 600
+              , h = 40
+              , units_n = 10 // max value 100
+              , unit_w = w / units_n
+              , space = 2
+              , cap_x = w + x
+              , cap_y = y
+              , cap_mid_x = 780 - 10 // adjust
+              , cap_mid_y = y + h/2
+              , cap_end_x = cap_x
+              , cap_end_y = y + h
+            
+            r.g.text(x, y-12, title).attr({'font-size': '14px', 'font-weight': 'bold'})
+
+            r.rect(x+0,         y, unit_w*4-space,       h).attr({fill: '#A0BE78', stroke: 'none'});
+            r.g.text(x, y+h+8, 'Low').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x, y+h+20, '0').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.rect(x+unit_w*4,    y, unit_w*2-space,     h).attr({fill: '#86AD52', stroke: 'none'});
+            r.g.text(x+unit_w*4,  y+h+8, 'Normal').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x+unit_w*4,  y+h+20, '100 - 129').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.rect(x+unit_w*6,  y, unit_w*4,           h).attr({fill: '#5E892B', stroke: 'none'});
+            r.g.text(x+unit_w*6, y+h+8, 'High').attr({'font-size': '12px', 'font-weight': 'normal'})
+            r.g.text(x+unit_w*6, y+h+20, '129 - 159').attr({'font-size': '10px', 'font-weight': '200', 'fill': '#888'})
+
+            r.path('M' + cap_x     + ' ' + cap_y + 
+                   'L' + cap_mid_x + ' ' + cap_mid_y + 
+                   'L' + cap_end_x + ' ' + cap_end_y +
+                   'z')
+                   .attr({'fill': '#5E892B', 'stroke': 'none'});
+
+            var circle_x = (unit_w * (p.HDL.value / 10)) + x;
+            r.circle(circle_x, y, 18).attr({'fill': '#F4804E', 'stroke': '#fff', 'stroke-width': '2px'});
+            r.g.text(circle_x, y, p.HDL.value).attr({'font': '16px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
+
+
+            r.path("M0 700 L800 700").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.circle(40, 720, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(40, 720, '3').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(60, 720, 'Your risk').attr({'font-size': '16px', 'font-weight': 'bold'})
+            // r.g.text(60, 740, 'This report evaluates your potential risk of heart disease, heart attack, and stroke.')
+            //   .attr({'font-size': '14px'})
+
+
+            r.path("M0 800 L800 800").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.circle(40, 820, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(40, 820, '4').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(60, 820, 'What now?').attr({'font-size': '16px', 'font-weight': 'bold'})
+ 
+            r.path("M0 900 L800 900").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.g.text(60, 920, 'Credits...').attr({'font-size': '14px', 'fill': '#ccc'})
+
+            
           });
         });
     </script>
   </head>
   <body>
-    <div id='holder' style='width: 800px; height: 600px;'></div>
+    <div id='holder' style='width: 800px; height: 1000px;'></div>
     <div id='log'></div>
   </body>
 </html>
