@@ -13,7 +13,7 @@ from smart_client.rdf_utils import *
 from subprocess import Popen, PIPE, STDOUT
 
 dcterms = RDF.NS('http://purl.org/dc/terms/')
-sp = RDF.NS('http://smartplatforms.org/')
+sp = RDF.NS('http://smartplatforms.org/terms#')
 rxn = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/')
 rxcui = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXCUI/')
 tty = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/TTY/')
@@ -60,13 +60,22 @@ def add_med(model, cui, title):
     
     s = RDF.Statement(med, 
         RDF.Node(NS["rdf"]["type"]), 
-        RDF.Node(NS["sp"]["medication"]))
+        RDF.Node(sp["Medication"]))
     m.append(s)
+
+    medName = RDF.Node()
+
     s = RDF.Statement(med,
-        RDF.Node(NS["med"]["drug"]),
+        RDF.Node(sp["drugName"]),
+        RDF.Node(medName))
+    m.append(s)
+
+    s = RDF.Statement(medName,
+        RDF.Node(sp["drug"]),
         RDF.Node(NS["rxcui"][cui]))
     m.append(s)
-    s = RDF.Statement(med,
+
+    s = RDF.Statement(medName,
         RDF.Node(NS["dcterms"]["title"]),
         RDF.Node(literal=title))
     m.append(s)    

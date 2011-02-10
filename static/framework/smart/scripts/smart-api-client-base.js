@@ -650,10 +650,10 @@ SMART_frame_glue_app = function(redirect_url) {
 			
 			var new_w = $(window).width();
 			var new_h = $(window).height();
-			console.log("Saw window resize with: " + new_w+","+new_h);
+			//			console.log("Saw window resize with: " + new_w+","+new_h);
 			if (new_w !== c.data("old_w") || new_h !== c.data("old_h"))
 			    {
-				console.log("so, setting: ");
+				//				console.log("so, setting: ");
 				c.width(new_w).height(new_h);
 
 				c.data("old_w", new_w);
