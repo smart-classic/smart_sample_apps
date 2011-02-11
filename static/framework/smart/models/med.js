@@ -56,7 +56,7 @@ extend('Smart.Models.Med',
 			throw "rdfToMeds needs a jquery.rdf to work with!";
 		
 		var ret = []
-		           
+	           
 		this.rdf.prefix("sp","http://smartplatforms.org/terms#");
 		this.rdf.prefix("dcterms","http://purl.org/dc/terms/");
 		this.rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
@@ -98,9 +98,11 @@ extend('Smart.Models.Med',
 				nodename: med
 			}}));
 		}
-		
+
+		ret.sort(this.compare(function(a){return a.drug.toUpperCase();}));
 		return ret;
 	},
+
 	earlier: function(a,b)
 	{	if (a == null) return b;
 		if (b == null) return a;

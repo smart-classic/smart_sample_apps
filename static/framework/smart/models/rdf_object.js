@@ -15,7 +15,18 @@ $.Model.extend('Smart.Models.RdfObject',
     // Abstract function
     instantiateByType : function() {
     	throw "Subclass must implement abstract function instantiateByType - do not call on RdfObject directly!";
-    }
+	    },
+
+compare: function(f) {
+		return function(a,b) {	
+	a = f(a);
+	b = f(b);
+	if (a < b) return -1;
+	if (a > b) return 1;
+	return 0;
+		}
+}
+
     
 },
 /* @Prototype */

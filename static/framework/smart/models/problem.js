@@ -41,10 +41,11 @@ extend('Smart.Models.Problem',
 		    var p = new Smart.Models.Problem({rdf: r[i].problem});
 		    ret.push(p);
 		}
-		
+		ret.sort(this.compare(function(a){return a.title.toUpperCase();}));		
 	    return ret;
 
-	}
+    }
+
 },
 /* @Prototype */
 {	
