@@ -2,15 +2,12 @@
 <tr>
 <th></th>
 <th>Medication</th>
-<th colspan='1'>Strength</th>
-<th colspan='1'>Dose</th>
-<th colspan='1'>Instructions</th>
+<th>Instructions</th>
   <% if (SMART.capabilities["http://smartplatforms.org/capability/SPL/lookup"] == true &&
-  		  SMART.capabilities["http://smartplatforms.org/capability/Pillbox/lookup"] == true) { %>
-  
+  		  SMART.capabilities["http://smartplatforms.org/capability/Pillbox/lookup"] == true) { %>  
   <th></th>
   <% } %>
-  <th></th>
+
 </tr>
 
 <%  for (var i = 0; i < meds.length; i++)  {
@@ -19,15 +16,12 @@
 <tr class='med <%=((i === 0) ? "selected" : "") %>' <%=m  %>>
   <td><%= (i === 0) ? ">" : ""%></td>
   <td><%= m.properName() %></td>
-  <td><%= m.strength %> <%= m.strengthUnit %></td>  
-  <td><%= m.dose %> <%= m.doseUnit %></td>
-  <td><%= m.route %> <%= m.frequency %>  <%= m.instructions %></td>
+  <td> <%= m.instructions %></td>
   <% if (SMART.capabilities["http://smartplatforms.org/capability/SPL/lookup"] == true &&
   		  SMART.capabilities["http://smartplatforms.org/capability/Pillbox/lookup"] == true) { %>
   
   <td>[<a href="#spl" class='spl'>images</a>]</td>
   <% } %>
-  <td>[<a href="#" class='delete_med'>X</a>]</td>
 </tr>
 <%}%>
 </table>
