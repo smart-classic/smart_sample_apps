@@ -17,4 +17,6 @@ Most of these apps were built using the JavascriptMVC framework.
 There's a shared library of data models and common code in
 static/framework/smart, and individual application code resides in
 subdirectories of static/framework
-(e.g. static/framework/problem_list).
+(e.g. static/framework/problem_list).For installation instructions, please see the README at:
+
+  https://github.com/chb/smart_server/
