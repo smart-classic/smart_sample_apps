@@ -16,33 +16,6 @@
 
         var reynolds_risks_score = function(p){
           // Women (not recommended for diabetics see http://www.reynoldsriskscore.org/faq.aspx)
-          //
-          // 10 year cardiovascular disease risk for women = 1-0.98634^(exp [B-22.325]) x 100%
-          //
-          // where B = 0.0799 x age 
-          //         + 3.137 x ln(systolic bp)
-          //         + 0.180 x ln(hsCRP)
-          //         + 1.382 x ln(total cholesterol)
-          //         - 1.172 x ln(HDL)
-          //         + 0.134 x hba1c (%)  // if diabetic
-          //         + 0.818              // if current smoker
-          //         + 0.438              // if fx of premature myocardial infarction
-          //
-          // Men
-          //
-          // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2752381/
-          // 10 year cardiovascular disease risk for men = 1-0.8990^(exp [B-33.097]) x 100%
-          //
-          // where B = 4.385 x ln(age)
-          //         + 2.607 x ln(systolic bp)
-          //         + 0.102 x ln(hsCRP)
-          //         + 0.963 x ln(total cholesterol)
-          //         - 0.772 x ln(HDL)
-          //         + 0.405              // if current smoker
-          //         + 0.541              // if fx of premature myocardial infarction
-          //
-          // ** no hba1c! non-diabetic men
-            
           var parameters = {}
             , result = null;
 
@@ -92,7 +65,6 @@
               , d = c * 100
               , result = (1 - Math.pow(0.8990,  (Math.exp(B-33.097)))) * 100            
           }
-//          console.log('RRS %', result, 'check with d', d, 'B', B);
           return (result < 10 ? result.toPrecision(1) : result.toPrecision(2))
         }
 
@@ -187,6 +159,16 @@
             p.LDL = {'value': 233}
             p.HDL = {'value': 32}
 
+            // todo!
+            // check that we have all the data we need
+            // should be generalized: pass an array of property names, check that the passed in object has them
+            // without type checking. There's probably some jquery lib to help with this... or underscore?
+            // better would be a "template object" with types as values...
+            // var check_for_data = function(){};
+
+            var redraw = function(){
+            }
+
             var score = reynolds_risks_score(p);
             var r = Raphael('holder');
 
@@ -200,7 +182,7 @@
 
             // set up overall layout and text
             // using a 8 column grid on 800px
-            r.g.text(10, 20, 'Bloodwork Cardiology Result').attr({'font-size': '24px'})
+            var headline = r.g.text(10, 20, 'Bloodwork Cardiology Result').attr({'font-size': '24px'})
             r.path("M10 40 L290 40").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
 
             // pad in 40px
@@ -217,6 +199,94 @@
             
             r.g.text(172, 100+3, 'DOB:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
             r.g.text(202-1, 100, p.birthday.value)
+
+            // draggable for sbp? range: 90 mmHg to 190
+            //   - updates number in circle
+
+            var c = null;
+            r.g.text(500+10, 55-24, 'Note: these results are valid for non-diabetics only!').attr({'font-size': '12px', 'font-weight': 'normal', 'fill': "#888"});
+
+            r.circle(500+20, 55, 8)
+             .attr({
+               stroke: '#F4804E', 
+               fill: p.smoker_p ? '#F4804E' : '#F6F6F6' // use a bg colored fill so hover events don't fire only while mouse in on the stroke  
+             })
+             .hover(function(){this.attr({'fill': '#F4804F', 'cursor': 'pointer'})},
+                    function(){if(!p.smoker_p)this.attr({'fill': '#F6F6F6', 'cursor': 'normal'})})
+             .click(function(){
+               p.smoker_p = !p.smoker_p
+               this.attr('fill', p.smoker_p ? '#F4804E' : '#F6F6F6')
+               redraw();
+             })
+             r.g.text(500+20+20, 55, 'Current smoker?').attr({'font-size': '16px', 'font-weight': 'normal'});
+
+             r.circle(500+20, 55+24, 8)
+              .attr({
+                stroke: '#F4804E', 
+                fill: p.fx_of_mi_p ? '#F4804E' : '#F6F6F6'
+              })
+              .hover(function(){this.attr({'fill': '#F4804F', 'cursor': 'pointer'})},
+                     function(){if(!p.fx_of_mi_p)this.attr({'fill': '#F6F6F6', 'cursor': 'normal'})})
+              .click(function(){
+                p.fx_of_mi_p = !p.fx_of_mi_p
+                this.attr('fill', p.fx_of_mi_p ? '#F4804E' : '#F6F6F6')
+                redraw();
+              })
+              r.g.text(500+20+20, 55+24, 'Family history of heart attack?').attr({'font-size': '16px', 'font-weight': 'normal'});
+
+
+            // SBP slider
+            r.g.text(500+20+20, 55+24+24, 'Systolic blood pressure').attr({'font-size': '16px', 'font-weight': 'normal'});
+            var min_x = 320
+              , max_x = 520
+              , len_x = max_x - min_x
+              , start_value = 100
+              , start_value_delta = p.sbp.value - start_value
+              , start_x = (len_x / 2) + min_x + start_value_delta
+              , y = 55+24+24
+              , start_r = 12
+              , click_r = 14
+
+            r.path('M'+min_x+' '+y+' L'+max_x+' '+y).attr({'stroke': '#aaa', 'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            var t = r.g.text(start_x, y, p.sbp.value).attr({'cursor': 'pointer', 'font': '10px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#000'});
+            c = r.circle(start_x, y, start_r).attr({
+              opacity: .5,
+              fill: '#F4804E',
+              // fill: 'hsl(18, 88, 63)', // F4804E -> hsl(18, 88, 63)
+              stroke: '#F4804E',
+              cursor: 'pointer'
+            });
+            
+            var start = function () {
+                // storing original coordinates
+                this.animate({r: click_r}, 500, ">");
+                this.ox = this.attr('cx');
+                this.sbp = p.sbp.value;
+            },
+            move = function (dx, dy) {
+              var cx = this.ox + dx
+              if (cx >= min_x && cx < max_x) {
+                this.attr({cx: cx});
+                // this.attr({fill: 'hsl(18, 88, '+ 63 + (cx - min_x) + ')'});
+                this.sbp = Math.round(cx - min_x); 
+                t.attr({
+                  text: this.sbp,
+                  x: cx
+                })
+              } else if (cx < min_x) {
+                this.attr({cx: min_x})
+              } else if (cx > max_x) {
+                this.attr({cx: max_x})
+              }
+            },
+            up = function () {
+              this.sbp = Math.round(this.attr('cx') - min_x);
+              this.animate({r: start_r}, 500, ">");
+              p.sbp.value = this.sbp;
+              redraw();
+            };
+            c.drag(move, start, up);
+            
 
             r.path("M10 120 L790 120").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
 
@@ -468,7 +538,26 @@
 
 
             r.path("M10 980 L790 980").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
+            r.g.text(150, 1000, 'Original Design: David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net')
+              .attr({'font-size': '14px', 'fill': '#0088CC'})
+              .click(function(e){window.open('http://www.informationisbeautiful.net/2010/visualizing-bloodtests/')})
+              .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
+            r.g.text(150, 1000+16, 'Reynolds Risk Score Calculator // ReynoldsRiskScore.org')
+              .attr({'font-size': '14px', 'fill': '#0088CC'})
+              .click(function(e){window.open('http://ReynoldsRiskScore.org')})
+              .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
+            r.g.text(150, 1000+48, 'Development and validation of improved algorithms for the assessment of global cardiovascular risk in women:\nThe Reynolds Risk Score. Ridker el al. JAMA 2007;297:611-619')
+              .attr({'font-size': '12px', 'fill': '#0088CC'})
+              .click(function(e){window.open('http://jama.ama-assn.org/content/297/6/611.long')})
+              .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
+            r.g.text(150, 1000+80, 'C-reactive protein and parental history improve global cardiovascular risk prediction: The Reynolds Risk Score for Men.\n Ridker et al. Circulation. 2008;118:2243-2251')
+              .attr({'font-size': '12px', 'fill': '#0088CC'})
+              .click(function(e){window.open('http://circ.ahajournals.org/cgi/content/full/118/22/2243')})
+              .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
+            
+            // r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
+            // r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
+            // r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
           });
         });
     </script>
