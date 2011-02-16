@@ -14,7 +14,7 @@
         // Docs:
         // LAB_RESULTS_get: http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_RDF_Data#Lab_Result_RDF
 
-        var reynolds_risks_score = function(p){
+        var reynolds_risk_score = function(p){
           // Women (not recommended for diabetics see http://www.reynoldsriskscore.org/faq.aspx)
           var parameters = {}
             , result = null;
@@ -89,6 +89,11 @@
             return cy - by - adj;
           }
           p.age = {'value': get_age(p.birthday.value)};
+          if (p.age.value > 80) {
+            alert('The risk score is only valid for ages less than 80 years old.\n\nShowing results based on age of 80 years;');
+            p.age.value = 80;
+            
+          }
 
           SMART.LAB_RESULTS_get(function(labs){
             p.hsCRP = {
@@ -165,12 +170,53 @@
             // without type checking. There's probably some jquery lib to help with this... or underscore?
             // better would be a "template object" with types as values...
             // var check_for_data = function(){};
-
+            var score = reynolds_risk_score(p);
+            var p2 = $.extend(true, {}, p); // deep copy needed here
+            var score_if_non_smoker
+              , score_if_sbp_of_120
+              , score_if_all_optimal = null;
+            
+            var compute_other_scores = function(){
+              p2 = $.extend(true, {}, p);
+              p2.sbp.value = 120;
+              score_if_sbp_of_120 = reynolds_risk_score(p2);
+              p2.sbp.value = p.sbp.value; // reset sbp
+              p2.smoker_p.value = false;
+              score_if_non_smoker = reynolds_risk_score(p2);
+              p2.hsCRP.value = 0.5;
+              p2.cholesterol.value = 160;
+              p2.HDL.value = 60
+              p2.LDL.value = 100;
+              score_if_all_optimal = reynolds_risk_score(p2);
+            }
+            
+            compute_other_scores();
+            
             var redraw = function(){
+              score = reynolds_risk_score(p);
+              compute_other_scores();
+              score_text.animate({opacity: 0}, 500, '>', function(){ 
+                this.attr({text: score+'%'});
+                this.animate({opacity: 1}, 500, '>'); 
+              })
+              
+              score_if_sbp_of_120_text.attr({text: score_if_sbp_of_120+'%'});
+              score_if_all_optimal_text.attr({text: score_if_all_optimal+'%'});
+              if_you_quit_set.items[0].attr({text: score_if_non_smoker+'%'});
+              
+              if (p.smoker_p.value === false) {
+                if_you_quit_set.animate({opacity: 0}, 500, '>');
+                quit_text_1.attr({text: 'Staying smokefree'})
+                quit_text_2.attr({text: 'is one of the best\nways to improve your\nheart disease risk'})
+              } else {
+                if_you_quit_set.animate({opacity: 1}, 500, '>');
+                quit_text_1.attr({text: 'Quitting smoking'})
+                quit_text_2.attr({text: 'can decrease your\nheart disease risk\nby 50% or more'})
+              }
             }
 
-            var score = reynolds_risks_score(p);
             var r = Raphael('holder');
+            var if_you_quit_set = r.set();
 
             // set default txtattrs
             r.g.txtattr = {
@@ -209,13 +255,13 @@
             r.circle(500+20, 55, 8)
              .attr({
                stroke: '#F4804E', 
-               fill: p.smoker_p ? '#F4804E' : '#F6F6F6' // use a bg colored fill so hover events don't fire only while mouse in on the stroke  
+               fill: p.smoker_p.value ? '#F4804E' : '#F6F6F6' // use a bg colored fill so hover events don't fire only while mouse in on the stroke  
              })
              .hover(function(){this.attr({'fill': '#F4804F', 'cursor': 'pointer'})},
-                    function(){if(!p.smoker_p)this.attr({'fill': '#F6F6F6', 'cursor': 'normal'})})
+                    function(){if(!p.smoker_p.value)this.attr({'fill': '#F6F6F6', 'cursor': 'normal'})})
              .click(function(){
-               p.smoker_p = !p.smoker_p
-               this.attr('fill', p.smoker_p ? '#F4804E' : '#F6F6F6')
+               p.smoker_p.value = !p.smoker_p.value
+               this.attr('fill', p.smoker_p.value ? '#F4804E' : '#F6F6F6')
                redraw();
              })
              r.g.text(500+20+20, 55, 'Current smoker?').attr({'font-size': '16px', 'font-weight': 'normal'});
@@ -491,22 +537,23 @@
             r.g.text(60, 780, 'If you\'re a smoker with normal blood\n pressure, (130 mm/Hg) but family history\n of heart attack before the age of 60 (one\n or both parents) your risk over 10 years is:')
               .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
 
-            // console.log(score);
-            
-            r.g.text(320, 780, score+'%')
+            var score_text = r.g.text(320, 780, score+'%')
               .attr({'font-size': '72px', 'font-weight': 'bold', 'fill': '#6A9C2D', 'font-family': "Consolas, monospace", 'font-weight': '900'})
 
             y = 750;
             r.g.text(460, y, 'Your risk would be lowered to:').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
     
-            r.g.text(460, y+16, 'x%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            var score_if_sbp_of_120_text = r.g.text(460, y+16, score_if_sbp_of_120+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
             r.g.text(460+28, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
-            
-            r.g.text(460, y+32, 'x%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(460+28, y+32, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
 
-            r.g.text(460, y+48, 'x%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(460+28, y+48, 'if you reduced cholesterol to 160mm/DL').attr({'font-size': '14px', 'fill': '#888'})
+            var score_if_all_optimal_text = r.g.text(460, y+32, score_if_all_optimal+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(460+28, y+32, 'if you didn\'t smoke and all levels were optimal').attr({'font-size': '14px', 'fill': '#888'})
+            
+
+            if_you_quit_set.push(
+              r.g.text(460, y+48, score_if_non_smoker+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'}),
+              r.g.text(460+28, y+48, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
+            );
 
             r.g.text(60, y+80, 'Use your CRP results and cholesterol level to calculate your 10 year risk of a cardiovascular event at ReynoldsRisk.org')
               .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
@@ -525,8 +572,8 @@
             r.g.text(x+55, y+36, 'can improve your\ncholesterol levels').attr({'font-size': '14px', 'fill': '#888'})
 
             r.image("images/smoker.png", x+180, y, 45, 60);
-            r.g.text(x+180+55, y+12, 'Quiting smoking').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(x+180+55, y+36+8, 'can decrease your\nheart disease risk\nby 50% or more').attr({'font-size': '14px', 'fill': '#888'})
+            var quit_text_1 = r.g.text(x+180+55, y+12, 'Quiting smoking').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            var quit_text_2 = r.g.text(x+180+55, y+36+8, 'can decrease your\nheart disease risk\nby 50% or more').attr({'font-size': '14px', 'fill': '#888'})
 
             r.image("images/doctor.png", x+360, y, 45, 60);
             r.g.text(x+360+55, y+12, 'Ask your doctor').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
