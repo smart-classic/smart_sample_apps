@@ -65,7 +65,7 @@
               , d = c * 100
               , result = (1 - Math.pow(0.8990,  (Math.exp(B-33.097)))) * 100            
           }
-          return (result < 10 ? result.toPrecision(1) : result.toPrecision(2))
+          return Math.round((result < 10 ? result.toPrecision(1) : result.toPrecision(2)))
         }
 
         SMART.DEMOGRAPHICS_get(function(demographics) {
@@ -269,13 +269,13 @@
              r.circle(500+20, 55+24, 8)
               .attr({
                 stroke: '#F4804E', 
-                fill: p.fx_of_mi_p ? '#F4804E' : '#F6F6F6'
+                fill: p.fx_of_mi_p.value ? '#F4804E' : '#F6F6F6'
               })
               .hover(function(){this.attr({'fill': '#F4804F', 'cursor': 'pointer'})},
-                     function(){if(!p.fx_of_mi_p)this.attr({'fill': '#F6F6F6', 'cursor': 'normal'})})
+                     function(){if(!p.fx_of_mi_p.value)this.attr({'fill': '#F6F6F6', 'cursor': 'normal'})})
               .click(function(){
-                p.fx_of_mi_p = !p.fx_of_mi_p
-                this.attr('fill', p.fx_of_mi_p ? '#F4804E' : '#F6F6F6')
+                p.fx_of_mi_p.value = !p.fx_of_mi_p.value
+                this.attr('fill', p.fx_of_mi_p.value ? '#F4804E' : '#F6F6F6')
                 redraw();
               })
               r.g.text(500+20+20, 55+24, 'Family history of heart attack?').attr({'font-size': '16px', 'font-weight': 'normal'});
@@ -290,11 +290,11 @@
               , start_value_delta = p.sbp.value - start_value
               , start_x = (len_x / 2) + min_x + start_value_delta
               , y = 55+24+24
-              , start_r = 12
-              , click_r = 14
+              , start_r = 13
+              , click_r = 15
 
             r.path('M'+min_x+' '+y+' L'+max_x+' '+y).attr({'stroke': '#aaa', 'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            var t = r.g.text(start_x, y, p.sbp.value).attr({'cursor': 'pointer', 'font': '10px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#000'});
+            var t = r.g.text(start_x, y, p.sbp.value).attr({'cursor': 'pointer', 'font': '11px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#000'});
             c = r.circle(start_x, y, start_r).attr({
               opacity: .5,
               fill: '#F4804E',
