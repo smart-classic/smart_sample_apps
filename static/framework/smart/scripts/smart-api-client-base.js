@@ -53,6 +53,8 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	    this.credentials = message.credentials;
 	    this.ready_data = message.ready_data;
 	    this.cookie_name = "";
+	    this.iframe_width=message.iframe_width;
+	    this.iframe_height=message.iframe_height;
 
     	if (message.credentials && message.credentials.oauth_cookie !== undefined ){
 
