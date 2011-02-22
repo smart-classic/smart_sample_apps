@@ -6,7 +6,7 @@ jQuery.Controller.extend('MedList.Controllers.MainController',
 /* @Prototype */
 {
     load: function() {
-			  	$("#UserDisplay").html(SMART.user.full_name)
-				$("#MedList").med_list_med_list();
+	$("#UserDisplay").html("");
+	$("#MedList").med_list_med_list();
     }
 });
