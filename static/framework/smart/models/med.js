@@ -122,7 +122,7 @@ extend('Smart.Models.Med',
 		    .where("?med rdf:type sp:Medication")
 		    .where("?med sp:fulfillment ?f")
 		    .where("?f dc:date ?d")
-		    .optional("?f sp:dispenseQuantity ?q");
+		    .optional("?f sp:dispenseDaysSupply ?q");
 
 		for (var i = 0; i < fulfillments.length; i++)
 		{
@@ -134,7 +134,7 @@ extend('Smart.Models.Med',
 			
 			devent.quantity = fulfillments[i].q.value;
 			devent.title = devent.quantity;
-			devent.description = d.toString('M/d/yyyy') + ": Dispensed " + fulfillments[i].q.value;
+			devent.description = d.toString('M/d/yyyy') + ": " + fulfillments[i].q.value + " days' supply";
 			devent.start = d;
 			devent.end = d;
 
@@ -288,7 +288,7 @@ extend('Smart.Models.Med',
 		var main_event = {};
 		main_event.instant = true;
 		main_event.title = this.drug;
-		main_event.description = this.toString();
+		main_event.description = dispenses.length + " fulfillments"
 		
 		if (this.start_date|| this.end_date)
 		{
@@ -297,8 +297,6 @@ extend('Smart.Models.Med',
 			
 			main_event.start = this.start_date ;// "2008-08-05";
 			main_event.end = this.end_date;
-// main_event.image =
-// "http://pillbox.nlm.nih.gov/assets/super_small/684620195ss.png";
 		}		
 		
 
