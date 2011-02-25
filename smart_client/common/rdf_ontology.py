@@ -45,14 +45,14 @@ class SMArtOwlObject(OwlObject):
     @classmethod
     def find_all(cls, m, *args, **kwargs):
         def get_nodes(m):
-            print "Getting ", cls, "nodes"
+#            print "Getting ", cls, "nodes"
             r = list(m.triples((None, rdf.type, cls.rdf_type)))
             return r
 
         for n in get_nodes(m):
-            print "Found one", cls, n
+#            print "Found one", cls, n
             cls.get_or_create(m, n[0], *args, **kwargs)
-        print "foudn all", cls, cls.store.keys()
+#        print "foudn all", cls, cls.store.keys()
 
         return cls.store.values()
     
