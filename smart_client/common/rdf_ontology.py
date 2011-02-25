@@ -26,7 +26,7 @@ class SMArtOwlObject(OwlObject):
         super(SMArtOwlObject, self).__init__(model, node)
         for a in self.attributes:
             try: 
-                v =  [x.object for x in model.find_statements(RDF.Statement(node, a.predicate, None))]
+                v =  [x[2] for x in model.triples((node, a.predicate, None))]
                 if a.max_cardinality==1: 
                     assert len(v) < 2, "Attribute %s has max cardinality 1, but length %s"%(a.name, len(v))
                     if len(v) == 1: v = v[0]
@@ -45,30 +45,33 @@ class SMArtOwlObject(OwlObject):
     @classmethod
     def find_all(cls, m, *args, **kwargs):
         def get_nodes(m):
-            q = RDF.Statement(None, rdf['type'], cls.rdf_type)
-            r = list(m.find_statements(q))
+            print "Getting ", cls, "nodes"
+            r = list(m.triples((None, rdf.type, cls.rdf_type)))
             return r
 
         for n in get_nodes(m):
-            cls.get_or_create(m, n.subject, *args, **kwargs)
+            print "Found one", cls, n
+            cls.get_or_create(m, n[0], *args, **kwargs)
+        print "foudn all", cls, cls.store.keys()
+
         return cls.store.values()
     
     @classmethod
     def __getitem__(cls, key):
         try: return cls.store[key]
-        except: return cls.store[RDF.Node(uri_string=key.encode())]
+        except: return cls.store[URIRef(key.encode())]
             
 """Represent calls like GET /records/{rid}/medications/"""
 class SMArtCall(SMArtOwlObject):
-    rdf_type = api['call']
+    rdf_type = api.call
     store = {}
-    attributes =  [OwlAttr("target", api['target']),
-              OwlAttr("above", api['above']),
-              OwlAttr("description", api['description']),
-              OwlAttr("path", api['path']),
-              OwlAttr("method", api['method']),
-              OwlAttr("by_internal_id", api['by_internal_id']),
-              OwlAttr("category", api['category'])]
+    attributes =  [OwlAttr("target", api.target),
+              OwlAttr("above", api.above),
+              OwlAttr("description", api.description),
+              OwlAttr("path", api.path),
+              OwlAttr("method", api.method),
+              OwlAttr("by_internal_id", api.by_internal_id),
+              OwlAttr("category", api.category)]
 
 class SMArtDocs(SMArtOwlObject):
     attributes =  [OwlAttr("name", api['name']),
@@ -76,12 +79,12 @@ class SMArtDocs(SMArtOwlObject):
 
 
 class SMArtRestriction(SMArtOwlObject):
-    attributes =  [OwlAttr("property", owl['onProperty']),
-                   OwlAttr("on_class", owl['onClass']),
-                   OwlAttr("min_cardinality", owl['minCardinality']),
-                   OwlAttr("all_values_from", owl['allValuesFrom']),
-                   OwlAttr("doc", api['doc']),
-                   OwlAttr("type", rdf['type'])]
+    attributes =  [OwlAttr("property", owl.onProperty),
+                   OwlAttr("on_class", owl.onClass),
+                   OwlAttr("min_cardinality", owl.minCardinality),
+                   OwlAttr("all_values_from", owl.allValuesFrom),
+                   OwlAttr("doc", api.doc),
+                   OwlAttr("type", rdf.type)]
 
     def __init__(self, model, node):
         super(SMArtRestriction, self).__init__(model, node)
@@ -90,12 +93,12 @@ class SMArtRestriction(SMArtOwlObject):
 """Represent types like sp:Medication"""
 class SMArtType(SMArtOwlObject):
     rdf_type = owl['Class']
-    attributes =  [OwlAttr("example", api['example']),
-                   OwlAttr("name", api['name']),
-                   OwlAttr("name_plural", api['name_plural']),
-                   OwlAttr("description", api['description']),
-                   OwlAttr("base_path", api['base_path']),
-                   OwlAttr("supers_classes", rdfs['subClassOf'], max_cardinality=0)]        
+    attributes =  [OwlAttr("example", api.example),
+                   OwlAttr("name", api.name),
+                   OwlAttr("name_plural", api.name_plural),
+                   OwlAttr("description", api.description),
+                   OwlAttr("base_path", api.base_path),
+                   OwlAttr("supers_classes", rdfs.subClassOf, max_cardinality=0)]        
     
     store = {}
     def __init__(self, model, node, calls):
@@ -105,7 +108,7 @@ class SMArtType(SMArtOwlObject):
         self.parents = []
         for s in self.supers_classes:
             r = SMArtRestriction(model, s)
-            if (r.type == owl['Restriction']):
+            if (r.type == owl.Restriction):
                 self.restrictions.append(r)
             else:
                 r = SMArtType.get_or_create(model, s, calls)
@@ -139,13 +142,16 @@ class SMArtType(SMArtOwlObject):
     def __repr__(self):
         return "SMArtType:" + str(self.node)
 
-    def query_one(self, id):
-        return self.query(one_name=id)
+    def query_one(self, id,filter_clause=""):
+        return self.query(one_name=id,filter_clause=filter_clause)
 
-    def query_all(self, above_type=None, above_uri=None):
-        return self.query(above_type=above_type, above_uri=above_uri)
+    def query_all(self, above_type=None, above_uri=None,filter_clause=""):
+        return self.query(above_type=above_type, above_uri=above_uri,filter_clause=filter_clause)
 
-    def query(self, one_name="?root_subject", above_type=None, above_uri=None):
+    def query(self, one_name="?root_subject", 
+                    above_type=None, 
+                    above_uri=None, 
+                    filter_clause=""):
         ret = """
         BASE <http://smartplatforms.org/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -153,6 +159,7 @@ class SMArtType(SMArtOwlObject):
         FROM $context
         WHERE {
            { $query_triples } 
+           $filter_clause
         }
         """
 
@@ -164,15 +171,14 @@ class SMArtType(SMArtOwlObject):
 
         ret = ret.replace("$construct_triples", q.construct_triples())
         ret = ret.replace("$query_triples", b)        
+        ret = ret.replace("$filter_clause", filter_clause)        
         return ret
                  
 parsed = False
                 
 def parse_ontology(f):
-    m = RDF.Model()
-    p = RDF.Parser()
-    p.parse_string_into_model(m, f, "nodefault")
-    
+    m = parse_rdf(f)
+    print "parsed ", m
     global api_calls 
     global api_types
     global parsed
@@ -189,5 +195,6 @@ try:
     from django.conf import settings
     f = open(settings.ONTOLOGY_FILE).read()
     parse_ontology(f)
-except (ImportError, AttributeError): pass
+except (ImportError, AttributeError): 
+    pass
 

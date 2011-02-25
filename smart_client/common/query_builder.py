@@ -13,11 +13,11 @@ class QueryBuilder(object):
     def require_above(self, above_type=None, above_uri=None):
         if (above_uri == None): return
         predicate = above_type.predicate_for_contained_type(self.root_type)
-        predicate = str(predicate.uri)
+        predicate = str(predicate)
         self.required_triple("<"+above_uri+">", "<"+predicate+">", self.root_name )
         
     def get_identifier(self, id_base, role=""):
-        if id_base[0] == "<" or id_base.startswith("_:"): return id_base
+        if id_base.startswith("<") or id_base.startswith("_:"): return id_base
         
         start = id_base[0] == "?" and "?" or ""
 
@@ -66,10 +66,10 @@ class QueryBuilder(object):
         # If there's a type, it must be the root_type
         type_id = self.get_identifier("?rdftype", "object")
         ret += self.optional_triple(root_name, "rdf:type", type_id)  + \
-               "FILTER (!BOUND(%s) || %s = <%s>) "% (type_id, type_id, str(root_type.node.uri))
+               "FILTER (!BOUND(%s) || %s = <%s>) "% (type_id, type_id, str(root_type.node))
 
         for p in root_type.properties:
-            p = str(p.property.uri)
+            p = str(p.property)
             oid = self.get_identifier("?"+p, "object")
             ret  += self.optional_triple(root_name, "<"+p+">", oid)
 
@@ -78,7 +78,7 @@ class QueryBuilder(object):
         for pred, contained in root_type.contained_types.iteritems():
             if depth > 0 and contained.base_path: continue
 
-            p = str(pred.uri)
+            p = str(pred)
             oid = self.get_identifier("?"+p, "object")
             ret += self.optional_linked_type(linked_type=contained, 
                                              root_name=root_name,
@@ -90,7 +90,7 @@ class QueryBuilder(object):
         # We'll only traverse *up* once, from the top level of our query. 
         if depth == 0:
             for containing, pred in root_type.containing_types.iteritems():
-                p = str(pred.uri)
+                p = str(pred)
                 oid = self.get_identifier("?"+p, "object")
                 ret += self.optional_linked_type(linked_type=containing, 
                                                  root_name=oid, 
