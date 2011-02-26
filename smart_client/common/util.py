@@ -46,7 +46,7 @@ def get_property(model, s, p, raw_statement=False):
 
 def remap_node(model, old_node, new_node=None):
     if (new_node == None):
-        new_node = URIRef(uri_string="http://reified_node_" + str(old_node))
+        new_node = URIRef("http://reified_node_" + str(old_node))
 
     for s in list(model.triples((old_node, None, None))):
         model.remove(s)
