@@ -1,21 +1,39 @@
 <!DOCTYPE html>
 <html>
+  <!--
+    Original Design: David McCandless & Stefanie Posavec for Wired Magazine <http://informationisbeautiful.net>
+    Implementation: Arjun Sanyal <arjun.sanyal@childrens.harvard.edu>
+  -->
   <head>
     <title>Cardiology Risk Visualization</title>
+      <style>
+        #errors {
+          font-size: 16px;
+          font-family: Calibri, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+          color: #555;
+        }
+      </style>
       <script src='../smart/scripts/smart-api-page.js'></script>
       <script src='../jquery/jquery.js'></script>
       <script src='./raphael-min.js'></script>
       <script src='./g.raphael.js'></script>
       <script>
-        // load data:
-        // export PYTHONPATH=/home/smart/smart_server; export DJANGO_SETTINGS_MODULE=settings
-        // cd load_tools; python load_one_patient.py /home/smart/smart_sample_apps/static/framework/cardio_risk_viz/3001.xml
-        //
-        // Docs:
-        // LAB_RESULTS_get: http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_RDF_Data#Lab_Result_RDF
+        // checks for data needed to compute risk score. returns a possibly empty array of strings.
+        // if the array is empty everything's ok. TODO: seperate missing and out of range criteria
+        var report_missing_data = function(p){
+          var a = [];
+          if (p.gender.value != 'male' && p.gender.value != 'female') a.push('Gender is required')
+          if (p.age.value < 45 || p.age.value > 80) a.push('Age must be between 45 and 80 years old') 
+          if (p.sbp.value < 105 || p.sbp.value > 200) a.push('Systolic blood pressure must be between 105 and 200mm/Hg')
+          if (p.cholesterol.value < 140 || p.cholesterol.value > 400) a.push('Total cholesterol must be between 140 and 400mm/dL')
+          if (p.HDL.value < 30 || p.HDL.value > 150) a.push('HDL cholesterol must be between 30 and 150mm/dL')
+          if (p.hsCRP.value < 0.03 || p.hsCRP.value > 20) a.push('hsCRP must be between 0.03 and 20mg/L')
+          if (p.smoker_p.value === false || p.smoker_p.value === true) {} else { a.push('Current smoking status must be defined') }
+          if (p.fx_of_mi_p.value === false || p.fx_of_mi_p.value === true) {} else { a.push('Family history of heart attack before the age of 60 must be defined') }
+          return a;
+        }
 
         var reynolds_risk_score = function(p){
-          // Women (not recommended for diabetics see http://www.reynoldsriskscore.org/faq.aspx)
           var parameters = {}
             , result = null;
 
@@ -40,7 +58,6 @@
               'fx_of_mi': 0.541
             }
           }
-
           
           var b1 = params.age          * (p.gender.value==='female' ? p.age.value : Math.log(p.age.value))
             , b2 = params.sbp          * Math.log(p.sbp.value)
@@ -68,15 +85,29 @@
           return Math.round((result < 10 ? result.toPrecision(1) : result.toPrecision(2)))
         }
 
-        SMART.DEMOGRAPHICS_get(function(demographics) {
-          var p = demographics
-            .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-            .prefix('sp', 'http://smartplatforms.org/terms#')
-            .where('?a foaf:givenName ?givenName')
-            .where('?a foaf:familyName ?familyName')
-            .where('?a foaf:gender ?gender')
-            .where('?a sp:birthday ?birthday')
-            .get(0);
+        var p = {
+          'givenName':    {'value': null}
+          ,'familyName':  {'value': null}
+          ,'gender':      {'value': null}
+          ,'birthday':    {'value': null}
+          ,'age':         {'value': null}
+          ,'hsCRP':       {'value': null}
+          ,'cholesterol': {'value': null}
+          ,'HDL':         {'value': null}
+          ,'LDL':         {'value': null}
+          ,'sbp':         {'value': null}
+          ,'smoker_p':    {'value': null}
+          ,'fx_of_mi_p':  {'value': null}
+        }
+
+        SMART.DEMOGRAPHICS_get(function(demos) {
+          $.extend(p, demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+                           .prefix('sp', 'http://smartplatforms.org/terms#')
+                           .where('?a foaf:givenName ?givenName')
+                           .where('?a foaf:familyName ?familyName')
+                           .where('?a foaf:gender ?gender')
+                           .where('?a sp:birthday ?birthday')
+                           .get(0))
 
           var get_age = function(dob_string){
             var dob = new Date(dob_string);
@@ -88,88 +119,61 @@
             var adj = (today-db<0) ? 1 : 0;
             return cy - by - adj;
           }
-          p.age = {'value': get_age(p.birthday.value)};
+
+          p.age.value = get_age(p.birthday.value);
+          
           if (p.age.value > 80) {
             alert('The risk score is only valid for ages less than 80 years old.\n\nShowing results based on age of 80 years;');
             p.age.value = 80;
-            
           }
 
           SMART.LAB_RESULTS_get(function(labs){
-            p.hsCRP = {
-              'value': Number(labs.where("?l rdf:type sp:LabResult")
-                                  .where("?l sp:labName ?ln")
-                                  .where("?ln sp:code <http://loinc.org/codes/30522-7>")
-                                  .where("?l sp:quantitativeResult ?qr") // predicate
-                                  .where("?qr rdf:type sp:QuantitativeResult") // type
-                                  .where("?qr sp:valueAndUnit ?vu")
-                                  .where("?vu sp:value ?v")
-                                  .get(0)
-                                  .v
-                                  .value)
-            }
-
-            p.cholesterol = {
-              'value': Number(labs.where("?l rdf:type sp:LabResult")
-                                  .where("?l sp:labName ?ln")
-                                  .where("?ln sp:code <http://loinc.org/codes/2093-3>")
-                                  .where("?l sp:quantitativeResult ?qr") // predicate
-                                  .where("?qr rdf:type sp:QuantitativeResult") // type
-                                  .where("?qr sp:valueAndUnit ?vu")
-                                  .where("?vu sp:value ?v")
-                                  .get(0)
-                                  .v
-                                  .value)
-            }
-
-            p.LDL = {
-              'value': Number(labs.where("?l rdf:type sp:LabResult")
-                                  .where("?l sp:labName ?ln")
-                                  .where("?ln sp:code <http://loinc.org/codes/2089-1>")
-                                  .where("?l sp:quantitativeResult ?qr") // predicate
-                                  .where("?qr rdf:type sp:QuantitativeResult") // type
-                                  .where("?qr sp:valueAndUnit ?vu")
-                                  .where("?vu sp:value ?v")
-                                  .get(0)
-                                  .v
-                                  .value)
-            }
-
-            p.HDL = {
-              'value': Number(labs.where("?l rdf:type sp:LabResult")
-                                  .where("?l sp:labName ?ln")
-                                  .where("?ln sp:code <http://loinc.org/codes/2085-9>")
-                                  .where("?l sp:quantitativeResult ?qr") // predicate
-                                  .where("?qr rdf:type sp:QuantitativeResult") // type
-                                  .where("?qr sp:valueAndUnit ?vu")
-                                  .where("?vu sp:value ?v")
-                                  .get(0)
-                                  .v
-                                  .value)
-            }
-
-
-            // fixtures until form input
-            p.sbp = {'value': 130}
-            p.smoker_p = {'value': true}
-            p.fx_of_mi_p = {'value': true}
+            labs.where("?l rdf:type sp:LabResult")
+                .where("?l sp:labName ?ln")
+                .where("?ln sp:code <http://loinc.org/codes/30522-7>")
+                .where("?l sp:quantitativeResult ?qr") // predicate
+                .where("?qr rdf:type sp:QuantitativeResult") // type
+                .where("?qr sp:valueAndUnit ?vu")
+                .where("?vu sp:value ?v")
+                .each(function(){ p.hsCRP.value = Number(this.v.value); })
             
-            // update data to test score against reference
-            p.givenName.value = 'John';
-            p.familyName.value = 'Doe';
-            p.age.value = 49;
-            p.gender.value = 'male';
-            p.hsCRP = {'value': 3.3}
-            p.cholesterol = {'value': 265}
-            p.LDL = {'value': 233}
-            p.HDL = {'value': 32}
+            labs.where("?l rdf:type sp:LabResult")
+                .where("?l sp:labName ?ln")
+                .where("?ln sp:code <http://loinc.org/codes/2093-3>")
+                .where("?l sp:quantitativeResult ?qr")
+                .where("?qr rdf:type sp:QuantitativeResult")
+                .where("?qr sp:valueAndUnit ?vu")
+                .where("?vu sp:value ?v")
+                .each(function(){ p.cholesterol.value = Number(this.v.value); })
 
-            // todo!
-            // check that we have all the data we need
-            // should be generalized: pass an array of property names, check that the passed in object has them
-            // without type checking. There's probably some jquery lib to help with this... or underscore?
-            // better would be a "template object" with types as values...
-            // var check_for_data = function(){};
+            labs.where("?l rdf:type sp:LabResult")
+                .where("?l sp:labName ?ln")
+                .where("?ln sp:code <http://loinc.org/codes/2085-9>")
+                .where("?l sp:quantitativeResult ?qr")
+                .where("?qr rdf:type sp:QuantitativeResult")
+                .where("?qr sp:valueAndUnit ?vu")
+                .where("?vu sp:value ?v")
+                .each(function(){ p.HDL.value = Number(this.v.value); })
+
+            // defaults for user-submitted values
+            p.LDL = {'value': p.cholesterol.value - p.HDL.value}
+            p.sbp = {'value': 120}
+            p.smoker_p = {'value': false}
+            p.fx_of_mi_p = {'value': false}
+            
+            var missing_data_array = report_missing_data(p);
+            if (missing_data_array.length > 0) {
+              $('#errors').html(function(){
+                var out = '<h2>Can\'t Compute Cardiovascular Risk Score</h2><p>Can\'t compute cardiovascular risk score from available data because of the following issues:</p><ul>';
+                $.each(missing_data_array, function(i, v){
+                  out += '<li>' + missing_data_array[i] + '</li>';
+                }) 
+                return out + '</ul>';
+              });
+
+              return;
+            }
+            
             var score = reynolds_risk_score(p);
             var p2 = $.extend(true, {}, p); // deep copy needed here
             var score_if_non_smoker
@@ -229,7 +233,7 @@
             // set up overall layout and text
             // using a 8 column grid on 800px
             var headline = r.g.text(10, 20, 'Bloodwork Cardiology Result').attr({'font-size': '24px'})
-            r.path("M10 40 L290 40").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            // r.path("M10 40 L300 40").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
 
             // pad in 40px
             r.g.text(40, 55, 'Patient info').attr({'font-size': '18px', 'font-weight': 'bold'})
@@ -294,7 +298,7 @@
               , click_r = 15
 
             r.path('M'+min_x+' '+y+' L'+max_x+' '+y).attr({'stroke': '#aaa', 'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            var t = r.g.text(start_x, y, p.sbp.value).attr({'cursor': 'pointer', 'font': '11px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#000'});
+            var t = r.g.text(start_x, y, p.sbp.value).attr({'cursor': 'pointer', 'font': '11px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#000'});
             c = r.circle(start_x, y, start_r).attr({
               opacity: .5,
               fill: '#F4804E',
@@ -338,7 +342,7 @@
 
             var y = 150;
             r.circle(40, y, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, y, '1').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(40, y, '1').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
             r.g.text(60, y, 'About this test').attr({'font-size': '18px', 'font-weight': 'bold'})
             r.g.text(60, y+20, 'This report evaluates your potential risk of heart disease, heart attack, and stroke.').attr({'fill': '#888'})
               .attr({'font-size': '14px'})
@@ -347,7 +351,7 @@
 
             y = 210;
             r.circle(40, y, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, y, '2').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(40, y, '2').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
             r.g.text(60, y, 'Your Results').attr({'font-size': '18px', 'font-weight': 'bold'})
 
 
@@ -392,7 +396,7 @@
             // place circle on bar
             var circle_x = unit_w * p.hsCRP.value + x;
             r.circle(circle_x, y, 22).attr({'fill': '#F4804E', 'stroke': '#fff', 'stroke-width': '2px'});
-            r.g.text(circle_x, y, p.hsCRP.value.toPrecision(2)).attr({'font': '20px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
+            r.g.text(circle_x, y, p.hsCRP.value.toPrecision(2)).attr({'font': '20px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
 
 
 
@@ -434,7 +438,7 @@
 
             var circle_x = (unit_w * (p.cholesterol.value / 10)) + x;
             r.circle(circle_x, y, 22).attr({'fill': '#F4804E', 'stroke': '#fff', 'stroke-width': '2px'});
-            r.g.text(circle_x, y, p.cholesterol.value).attr({'font': '20px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
+            r.g.text(circle_x, y, p.cholesterol.value).attr({'font': '20px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
 
 
 
@@ -484,7 +488,7 @@
 
             var circle_x = (unit_w * (p.LDL.value / 10)) + x;
             r.circle(circle_x, y, 18).attr({'fill': '#F4804E', 'stroke': '#fff', 'stroke-width': '2px'});
-            r.g.text(circle_x, y, p.LDL.value).attr({'font': '16px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
+            r.g.text(circle_x, y, p.LDL.value).attr({'font': '16px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
 
 
 
@@ -525,34 +529,34 @@
 
             var circle_x = (unit_w * (p.HDL.value / 10)) + x;
             r.circle(circle_x, y, 18).attr({'fill': '#F4804E', 'stroke': '#fff', 'stroke-width': '2px'});
-            r.g.text(circle_x, y, p.HDL.value).attr({'font': '16px Consolas', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
+            r.g.text(circle_x, y, p.HDL.value).attr({'font': '16px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
 
 
             r.path("M10 700 L790 700").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
             r.circle(40, 720, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, 720, '3').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(40, 720, '3').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
             r.g.text(60, 720, 'Your risk').attr({'font-size': '18px', 'font-weight': 'bold'})
-            r.g.text(60+60+10, 720, 'You show an elevated risk of cardiovascular disease')
+            r.g.text(60+100, 720, 'You show an elevated risk of cardiovascular disease')
               .attr({'font-size': '18px', 'font-weight': 'normal', 'fill': '#888'})
             r.g.text(60, 780, 'If you\'re a smoker with normal blood\n pressure, (130 mm/Hg) but family history\n of heart attack before the age of 60 (one\n or both parents) your risk over 10 years is:')
               .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
 
-            var score_text = r.g.text(320, 780, score+'%')
+            var score_text = r.g.text(330, 780, score+'%')
               .attr({'font-size': '72px', 'font-weight': 'bold', 'fill': '#6A9C2D', 'font-family': "Consolas, monospace", 'font-weight': '900'})
 
             y = 750;
             r.g.text(460, y, 'Your risk would be lowered to:').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
     
             var score_if_sbp_of_120_text = r.g.text(460, y+16, score_if_sbp_of_120+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(460+28, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
+            r.g.text(460+32, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
 
             var score_if_all_optimal_text = r.g.text(460, y+32, score_if_all_optimal+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(460+28, y+32, 'if you didn\'t smoke and all levels were optimal').attr({'font-size': '14px', 'fill': '#888'})
+            r.g.text(460+32, y+32, 'if you didn\'t smoke and all levels were optimal').attr({'font-size': '14px', 'fill': '#888'})
             
 
             if_you_quit_set.push(
               r.g.text(460, y+48, score_if_non_smoker+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'}),
-              r.g.text(460+28, y+48, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
+              r.g.text(460+32, y+48, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
             );
 
             r.g.text(60, y+80, 'Use your CRP results and cholesterol level to calculate your 10 year risk of a cardiovascular event at ReynoldsRisk.org')
@@ -560,7 +564,7 @@
 
             r.path("M10 855 L790 855").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
             r.circle(40, 880, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, 880, '4').attr({'font': '18px Consolas', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(40, 880, '4').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
             r.g.text(60, 880, 'What now?').attr({'font-size': '18px', 'font-weight': 'bold'})
  
             // 780px into 4 col grid. each col 180 + 15 right margin
@@ -579,9 +583,10 @@
             r.g.text(x+360+55, y+12, 'Ask your doctor').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
             r.g.text(x+360+55, y+36+8, 'about statins or other\nmedications that can\nlower cholesterol').attr({'font-size': '14px', 'fill': '#888'})
 
-            r.image("images/needle.png", x+540, y, 45, 60);
-            r.g.text(x+540+55, y+12, 'Consider retesting').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(x+540+55, y+36+8, 'in 1 or 2 weeks to\nexclude a temporary\nspike in blood levels').attr({'font-size': '14px', 'fill': '#888'})
+            // some extra left margin here for systems without Calibri (ipad, etc.)
+            r.image("images/needle.png", x+540+10, y, 45, 60);
+            r.g.text(x+540+65, y+12, 'Consider retesting').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(x+540+65, y+36+8, 'in 1 or 2 weeks to\nexclude a temporary\nspike in blood levels').attr({'font-size': '14px', 'fill': '#888'})
 
 
             r.path("M10 980 L790 980").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
@@ -610,7 +615,9 @@
     </script>
   </head>
   <body>
-    <div id='holder' style='width: 800px; height: 1200px;'></div>
+    <div id='holder' style='width: 800px; height: 1200px;'>
+      <div id='errors' style='width: 600px; margin: 100px auto;'></div>
+    </div>
     <div id='log'></div>
   </body>
 </html>
