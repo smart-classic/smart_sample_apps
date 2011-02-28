@@ -12,4 +12,3 @@ urlpatterns = patterns('',
     (r'^extract_meds_from_plaintext$', extract_meds),
     (r'^check_allergies$', check_allergies)
 )
-

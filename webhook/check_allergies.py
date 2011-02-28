@@ -2,9 +2,9 @@ from django.http import HttpResponse
 from django.conf import settings
 import psycopg2
 import psycopg2.extras
-import sys, re, RDF
+import sys, re
 from smart_client import oauth, smart
-from smart_client.common.util import serialize_rdf, sp, rdf
+from smart_client.common.util import serialize_rdf, sp, rdf, bound_graph, Literal, BNode
 
 conn = psycopg2.connect("dbname='%s' user='%s' password='%s'" % 
                           (settings.DATABASE_RXN,
@@ -27,31 +27,30 @@ def check_allergies(request):
     allergies = sc.records_X_allergies_GET()    
 
     substances = []
-    for a in allergies.find_statements(RDF.Statement(None, rdf["type"], sp["Allergy"])):
-        a = a.subject
-        for sub in allergies.find_statements(RDF.Statement(a, sp["substance"], None)):
-            sub = sub.object
-            for c in allergies.find_statements(RDF.Statement(sub, sp["code"], None)):
-                c = c.object
-                substances.append(str(c.uri))
+    for a in allergies.triples((None, rdf["type"], sp["Allergy"])):
+        a = a[0] #subject
+        for sub in allergies.triples((a, sp["substance"], None)):
+            sub = sub[2]
+            for c in allergies.triples((sub, sp["code"], None)):
+                c = c[2]
+                substances.append(str(c))
 
     medications = []
-    for m in meds.find_statements(RDF.Statement(None,rdf["type"], sp["Medication"])):
-        m = m.subject
-        for code in meds.find_statements(RDF.Statement(m, sp["code"], None)):
-            code = code.object
-            for c in meds.find_statements(RDF.Statement(code, sp["code"], None)):
-                c = c.object
-                medications.append(str(c.uri))
+    for m in meds.triples((None,rdf["type"], sp["Medication"])):
+        m = m[0] # subject
+        for code in meds.triples((m, sp["drugName"], None)):
+            code = code[2]
+            for c in meds.triples((code, sp["code"], None)):
+                c = c[2]
+                medications.append(str(c))
 
     r = check_allergies_helper( substances, medications )
 
-    g = RDF.Model()
+    g = bound_graph()
 
     for conflict in r:
         print "Adding conflict", conflict
-        g.add_statement(RDF.Statement(RDF.Node(), sp['conflict'], RDF.Node(literal=conflict)))
-    print "returning leng", len(g)
+        g.add((BNode(), sp['conflict'], Literal(conflict)))
     return HttpResponse(serialize_rdf(g), mimetype="application/rdf+xml")
 
 """

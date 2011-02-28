@@ -9,14 +9,16 @@ from regenstrief import SSClient
 import sys, time
 
 def sync_regenstrief():
-    regenstrief_client = SSClient()
+#    regenstrief_client = SSClient()
     smart_client = get_smart_client()
     print dir(smart_client)
     
     for record_id in smart_client.loop_over_records():
         if (record_id[0] != "2"): 
-            print "not a SS patient"
-            continue
+            print "not a SS patient, but here's the med list..."
+            print  smart_client.records_X_medications_GET().serialize()
+
+        continue
         
         print "Deleting old meds ", record_id, time.time()        
         smart_client.records_X_medications_DELETE()        

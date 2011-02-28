@@ -3,14 +3,13 @@ Generate all API methods from SMArt OWL ontology
 """
 
 import os, re
-import RDF
 import common.rdf_ontology as rdf_ontology
 
 pFormat = "{.*?}"
 
 def parameter_optional(call, p):
-    mark = call.path.find("?")
-    point = call.path.find(p)
+    mark = str(call.path).find("?")
+    point = str(call.path).find(p)
     return -1 < mark < point
 
 def fill_url_template(call, *args, **kwargs):
