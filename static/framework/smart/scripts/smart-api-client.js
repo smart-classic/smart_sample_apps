@@ -22307,54 +22307,6 @@ SMART_CLIENT.prototype.MEDS_get = function(callback) {
 
 SMART_CLIENT.prototype.MEDS_get_all = SMART_CLIENT.prototype.MEDS_get;
 
-SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'POST',
-		url : "/records/" + _this.record.id + "/medications/",
-		contentType : 'application/rdf+xml',
-		data : data
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.MEDS_delete = function(callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'DELETE',
-		url : "/records/" + _this.record.id + "/medications/",
-		data : {}
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.MED_delete = function(uri, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'DELETE',
-		url : uri,
-		data : {}
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.MED_put = function(data, external_id, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'PUT',
-		url : "/records/" + _this.record.id + "/medications/external_id/"
-				+ external_id,
-		contentType : 'application/rdf+xml',
-		data : data
-	}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
-	});
-
-};
 
 SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
 	var _this = this;
@@ -22368,43 +22320,6 @@ SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
 	});
 };
 
-SMART_CLIENT.prototype.PROBLEMS_post = function(data, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'POST',
-		url : "/records/" + _this.record.id + "/problems/",
-		contentType : 'application/rdf+xml',
-		data : data
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback) {
-	var _this = this;
-
-	this.api_call( {
-		method : 'DELETE',
-		url : problem_uri,
-		data : {}
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'PUT',
-		url : "/records/" + _this.record.id + "/problems/external_id/"
-				+ external_id,
-		contentType : 'application/rdf+xml',
-		data : data
-	}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
-	});
-};
 
 SMART_CLIENT.prototype.NOTES_get = function(callback) {
 	var _this = this;
@@ -22418,45 +22333,6 @@ SMART_CLIENT.prototype.NOTES_get = function(callback) {
 	});
 };
 
-SMART_CLIENT.prototype.NOTES_post = function(data, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'POST',
-		url : "/records/" + _this.record.id + "/notes/",
-		contentType : 'application/rdf+xml',
-		data : data
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.NOTES_delete = function(note_uri, callback) {
-	var _this = this;
-
-	this.api_call( {
-		method : 'DELETE',
-		url : note_uri,
-		data : {}
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.NOTE_put = function(data, external_id, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'PUT',
-		url : "/records/" + _this.record.id + "/notes/external_id/"
-				+ external_id,
-		contentType : 'application/rdf+xml',
-		data : data
-	}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
-	});
-};
-
-
 SMART_CLIENT.prototype.ALLERGIES_get = function(callback) {
 	var _this = this;
 	this.api_call( {
@@ -22468,45 +22344,6 @@ SMART_CLIENT.prototype.ALLERGIES_get = function(callback) {
 		callback(rdf);
 	});
 };
-
-SMART_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'POST',
-		url : "/records/" + _this.record.id + "/allergies/",
-		contentType : 'application/rdf+xml',
-		data : data
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.ALLERGIES_delete = function(allergy_uri, callback) {
-	var _this = this;
-
-	this.api_call( {
-		method : 'DELETE',
-		url : allergy_uri,
-		data : {}
-	}, function(contentType, data) {
-		callback(data);
-	});
-};
-
-SMART_CLIENT.prototype.ALLERGY_put = function(data, external_id, callback) {
-	var _this = this;
-	this.api_call( {
-		method : 'PUT',
-		url : "/records/" + _this.record.id + "/allergies/external_id/"
-				+ external_id,
-		contentType : 'application/rdf+xml',
-		data : data
-	}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
-	});
-};
-
 
 
 SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
