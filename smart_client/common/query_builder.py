@@ -65,8 +65,7 @@ class QueryBuilder(object):
 
         # If there's a type, it must be the root_type
         type_id = self.get_identifier("?rdftype", "object")
-        ret += self.optional_triple(root_name, "rdf:type", type_id)  + \
-               "FILTER (!BOUND(%s) || %s = <%s>) "% (type_id, type_id, str(root_type.node))
+        ret += self.required_triple(root_name, "rdf:type", root_type.node.n3())
 
         for p in root_type.properties:
             p = str(p.property)
