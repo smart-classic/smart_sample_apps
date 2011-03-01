@@ -113,6 +113,16 @@
             var dob = new Date(dob_string);
             var today = new Date();
             var db = new Date(dob_string);
+            
+            if (isNaN(dob)) { // IE Date constructor doesn't parse ISO-8601 -JCM
+               dob_string = dob_string.split("-");
+               var dob = new Date();
+               dob.setFullYear(dob_string[0], dob_string[1]-1, dob_string[2]);
+
+               var db = new Date();
+               db.setFullYear(dob_string[0], dob_string[1]-1, dob_string[2]);
+	    }
+				      
             var cy = today.getFullYear();
             var by = dob.getFullYear();
             db.setFullYear(cy);
