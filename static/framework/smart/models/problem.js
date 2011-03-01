@@ -63,10 +63,10 @@ extend('Smart.Models.Problem',
 		if (p.concept)
 			this.concept= p.concept.value._string;
 		
-		this.title = p.title && p.title.type==='literal' ? p.title.value : "?title";
-		this.notes = p.notes && p.notes.type==='literal'? p.notes.value : "?notes";
-		this.onset = p.onset && p.onset.type==='literal'? p.onset.value : "?onset";
-		this.resolution= p.resolution && p.resolution.type==='literal'? p.resolution.value : "?resolution";
+		this.title = p.title && p.title.type==='literal' ? p.title.value : "";
+		this.notes = p.notes && p.notes.type==='literal'? p.notes.value : "";
+		this.onset = p.onset && p.onset.type==='literal'? p.onset.value : "";
+		this.resolution= p.resolution && p.resolution.type==='literal'? p.resolution.value : "";
 		
 	},
 	

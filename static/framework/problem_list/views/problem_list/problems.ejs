@@ -2,9 +2,9 @@
 <tr>
 <th>SNOMED</th>
 <th>Problem</th>
-<th>Notes</th>
 <th>Onset</th>
 <th>Resolution</th>
+<th>Notes</th>
 </tr>
 <%  for (var i = 0; i < problems.length; i++)  { 
          var problem = problems[i];
@@ -12,9 +12,9 @@
 <tr class='problem' <%=problem %>>
   <td> <%= problem.concept ? problem.concept.substr(problem.concept.lastIndexOf("/")+1) : "N/A" %></td>
   <td><%= problem.title %></td>
-  <td><%= problem.notes%></td>
   <td><%= problem.onset %></td>
   <td><%= problem.resolution %></td>
+  <td><%= problem.notes%></td>
 </tr>
 <% } %>
 </table>
