@@ -118,11 +118,10 @@
                dob_string = dob_string.split("-");
                var dob = new Date();
                dob.setFullYear(dob_string[0], dob_string[1]-1, dob_string[2]);
-
                var db = new Date();
                db.setFullYear(dob_string[0], dob_string[1]-1, dob_string[2]);
-	    }
-				      
+            }
+
             var cy = today.getFullYear();
             var by = dob.getFullYear();
             db.setFullYear(cy);
@@ -173,15 +172,18 @@
             
             var missing_data_array = report_missing_data(p);
             if (missing_data_array.length > 0) {
-              $('#errors').html(function(){
-                var out = '<h2>Can\'t Compute Cardiovascular Risk Score</h2><p>Can\'t compute cardiovascular risk score from available data because of the following issues:</p><ul>';
-                $.each(missing_data_array, function(i, v){
-                  out += '<li>' + missing_data_array[i] + '</li>';
-                }) 
-                return out + '</ul>';
-              });
 
-              return;
+              $('#errors')
+                .show()
+                .html(function(){
+                  var out = '<h2>Can\'t Compute Cardiovascular Risk Score</h2><p>Can\'t compute cardiovascular risk score from available data because of the following issues:</p><ul>';
+                  $.each(missing_data_array, function(i, v){ out += '<li>' + missing_data_array[i] + '</li>'; }) 
+                  return out + '</ul>';
+                });
+                
+                return; // abort script
+            } else {
+              $('#holder').show();
             }
             
             var score = reynolds_risk_score(p);
@@ -245,28 +247,26 @@
             var headline = r.g.text(10, 20, 'Bloodwork Cardiology Result').attr({'font-size': '24px'})
             // r.path("M10 40 L300 40").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
 
-            // pad in 40px
-            r.g.text(40, 55, 'Patient info').attr({'font-size': '18px', 'font-weight': 'bold'})
+            // pad in 30px
+            r.g.text(30, 55, 'Patient info').attr({'font-size': '18px', 'font-weight': 'bold'})
 
-            r.g.text(40, 80+3, 'NAME:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
-            r.g.text(80, 80, p.givenName.value + ' ' + p.familyName.value).attr({'font-size': '24px', 'font-weight': 'normal'})
+            r.g.text(30, 80+3, 'NAME:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(70, 80, p.givenName.value + ' ' + p.familyName.value).attr({'font-size': '24px', 'font-weight': 'normal'})
             
-            r.g.text(40, 100+3, 'GENDER:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
-            r.g.text(92, 100+2, p.gender.value == 'female' ? 'F' : 'M')
+            r.g.text(30, 100+3, 'GENDER:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(82, 100+2, p.gender.value == 'female' ? 'F' : 'M')
             
-            r.g.text(112, 100+3, 'AGE:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(102, 100+3, 'AGE:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
             r.g.text(142-1, 100, p.age.value)
             
-            r.g.text(172, 100+3, 'DOB:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
-            r.g.text(202-1, 100, p.birthday.value)
+            r.g.text(162, 100+3, 'DOB:').attr({'fill': '#888', 'font-size': '12px', 'font-weight': '200'});
+            r.g.text(192-1, 100, p.birthday.value)
 
-            // draggable for sbp? range: 90 mmHg to 190
-            //   - updates number in circle
-
+            // draggable for sbp. TODO: fix range: 90 mmHg to 190
             var c = null;
-            r.g.text(500+10, 55-24, 'Note: these results are valid for non-diabetics only!').attr({'font-size': '12px', 'font-weight': 'normal', 'fill': "#888"});
+            r.g.text(500, 55-24, 'Note: these results are valid for non-diabetics only!').attr({'font-size': '12px', 'font-weight': 'normal', 'fill': "#888"});
 
-            r.circle(500+20, 55, 8)
+            r.circle(500+10, 55, 8)
              .attr({
                stroke: '#F4804E', 
                fill: p.smoker_p.value ? '#F4804E' : '#F6F6F6' // use a bg colored fill so hover events don't fire only while mouse in on the stroke  
@@ -278,9 +278,9 @@
                this.attr('fill', p.smoker_p.value ? '#F4804E' : '#F6F6F6')
                redraw();
              })
-             r.g.text(500+20+20, 55, 'Current smoker?').attr({'font-size': '16px', 'font-weight': 'normal'});
+             r.g.text(500+20+10, 55, 'Current smoker?').attr({'font-size': '16px', 'font-weight': 'normal'});
 
-             r.circle(500+20, 55+24, 8)
+             r.circle(500+10, 55+24, 8)
               .attr({
                 stroke: '#F4804E', 
                 fill: p.fx_of_mi_p.value ? '#F4804E' : '#F6F6F6'
@@ -292,11 +292,11 @@
                 this.attr('fill', p.fx_of_mi_p.value ? '#F4804E' : '#F6F6F6')
                 redraw();
               })
-              r.g.text(500+20+20, 55+24, 'Family history of heart attack?').attr({'font-size': '16px', 'font-weight': 'normal'});
+              r.g.text(500+20+10, 55+24, 'Family history of heart attack?').attr({'font-size': '16px', 'font-weight': 'normal'});
 
 
             // SBP slider
-            r.g.text(500+20+20, 55+24+24, 'Systolic blood pressure').attr({'font-size': '16px', 'font-weight': 'normal'});
+            r.g.text(500+20+10, 55+24+24, 'Systolic blood pressure').attr({'font-size': '16px', 'font-weight': 'normal'});
             var min_x = 320
               , max_x = 520
               , len_x = max_x - min_x
@@ -348,26 +348,26 @@
             c.drag(move, start, up);
             
 
-            r.path("M10 120 L790 120").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.path("M10 120 L760 120").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
 
             var y = 150;
-            r.circle(40, y, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, y, '1').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
-            r.g.text(60, y, 'About this test').attr({'font-size': '18px', 'font-weight': 'bold'})
-            r.g.text(60, y+20, 'This report evaluates your potential risk of heart disease, heart attack, and stroke.').attr({'fill': '#888'})
+            r.circle(30, y, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(30, y, '1').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(50, y, 'About this test').attr({'font-size': '18px', 'font-weight': 'bold'})
+            r.g.text(50, y+20, 'This report evaluates your potential risk of heart disease, heart attack, and stroke.').attr({'fill': '#888'})
               .attr({'font-size': '14px'})
             
-            r.path("M10 190 L790 190").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'});
+            r.path("M10 190 L760 190").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'});
 
             y = 210;
-            r.circle(40, y, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, y, '2').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
-            r.g.text(60, y, 'Your Results').attr({'font-size': '18px', 'font-weight': 'bold'})
+            r.circle(30, y, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(30, y, '2').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(50, y, 'Your Results').attr({'font-size': '18px', 'font-weight': 'bold'})
 
 
 
             var title = 'CRP level test'
-              , x = 60
+              , x = 40
               , y = 255
               , w = 700
               , h = 65
@@ -376,7 +376,7 @@
               , space = 2
               , cap_x = w + x
               , cap_y = y
-              , cap_mid_x = 780
+              , cap_mid_x = 760
               , cap_mid_y = y + h/2
               , cap_end_x = cap_x
               , cap_end_y = y + h
@@ -412,7 +412,7 @@
 
             // mildly non-proportional to make things look nicer
             var title = 'Total cholesterol level'
-              , x = 60
+              , x = 40
               , y = 380
               , w = 700
               , h = 65
@@ -421,7 +421,7 @@
               , space = 2
               , cap_x = w + x
               , cap_y = y
-              , cap_mid_x = 780
+              , cap_mid_x = 760
               , cap_mid_y = y + h/2
               , cap_end_x = cap_x
               , cap_end_y = y + h
@@ -453,7 +453,7 @@
 
 
             var title = 'LDL "bad" cholesterol'
-              , x = 160
+              , x = 140
               , y = 500 // 130px from above
               , w = 600
               , h = 30
@@ -462,7 +462,7 @@
               , space = 2
               , cap_x = w + x
               , cap_y = y
-              , cap_mid_x = 780 - 10 // adjust
+              , cap_mid_x = 760 - 10 // adjust
               , cap_mid_y = y + h/2
               , cap_end_x = cap_x
               , cap_end_y = y + h
@@ -503,7 +503,7 @@
 
 
             var title = 'HDL "good" cholesterol'
-              , x = 160
+              , x = 140
               , y = 620 // 120px from above
               , w = 600
               , h = 30
@@ -512,7 +512,7 @@
               , space = 2
               , cap_x = w + x
               , cap_y = y
-              , cap_mid_x = 780 - 10 // adjust
+              , cap_mid_x = 760 - 10 // adjust
               , cap_mid_y = y + h/2
               , cap_end_x = cap_x
               , cap_end_y = y + h
@@ -542,40 +542,40 @@
             r.g.text(circle_x, y, p.HDL.value).attr({'font': '16px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'normal', 'fill': '#fff'})
 
 
-            r.path("M10 700 L790 700").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            r.circle(40, 720, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, 720, '3').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
-            r.g.text(60, 720, 'Your risk').attr({'font-size': '18px', 'font-weight': 'bold'})
-            r.g.text(60+100, 720, 'You show an elevated risk of cardiovascular disease')
+            r.path("M10 700 L760 700").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.circle(30, 720, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(30, 720, '3').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(50, 720, 'Your risk').attr({'font-size': '18px', 'font-weight': 'bold'})
+            r.g.text(50+100, 720, 'You show an elevated risk of cardiovascular disease')
               .attr({'font-size': '18px', 'font-weight': 'normal', 'fill': '#888'})
-            r.g.text(60, 780, 'If you\'re a smoker with normal blood\n pressure, (130 mm/Hg) but family history\n of heart attack before the age of 60 (one\n or both parents) your risk over 10 years is:')
+            r.g.text(50, 780, 'If you\'re a smoker with normal blood\n pressure, (130 mm/Hg) but family history\n of heart attack before the age of 60 (one\n or both parents) your risk over 10 years is:')
               .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
 
-            var score_text = r.g.text(330, 780, score+'%')
+            var score_text = r.g.text(320, 780, score+'%')
               .attr({'font-size': '72px', 'font-weight': 'bold', 'fill': '#6A9C2D', 'font-family': "Consolas, monospace", 'font-weight': '900'})
 
             y = 750;
-            r.g.text(460, y, 'Your risk would be lowered to:').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            r.g.text(450, y, 'Your risk would be lowered to:').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
     
             var score_if_sbp_of_120_text = r.g.text(460, y+16, score_if_sbp_of_120+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(460+32, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
+            r.g.text(450+32, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
 
             var score_if_all_optimal_text = r.g.text(460, y+32, score_if_all_optimal+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(460+32, y+32, 'if you didn\'t smoke and all levels were optimal').attr({'font-size': '14px', 'fill': '#888'})
+            r.g.text(450+32, y+32, 'if you didn\'t smoke and all levels were optimal').attr({'font-size': '14px', 'fill': '#888'})
             
 
             if_you_quit_set.push(
               r.g.text(460, y+48, score_if_non_smoker+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'}),
-              r.g.text(460+32, y+48, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
+              r.g.text(450+32, y+48, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
             );
 
-            r.g.text(60, y+80, 'Use your CRP results and cholesterol level to calculate your 10 year risk of a cardiovascular event at ReynoldsRisk.org')
+            r.g.text(50, y+80, 'Use your test results to calculate your risk of a cardiovascular event at ReynoldsRisk.org')
               .attr({'font-size': '14px', 'font-weight': 'normal', 'fill': '#888'})
 
-            r.path("M10 855 L790 855").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            r.circle(40, 880, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
-            r.g.text(40, 880, '4').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
-            r.g.text(60, 880, 'What now?').attr({'font-size': '18px', 'font-weight': 'bold'})
+            r.path("M10 855 L760 855").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})
+            r.circle(30, 880, 14).attr({'fill': '#F4804E', 'stroke': 'none'});
+            r.g.text(30, 880, '4').attr({'font': '18px Consolas, monospace', 'text-anchor': 'middle', 'font-weight': 'bold', 'fill': '#fff'})
+            r.g.text(50, 880, 'What now?').attr({'font-size': '18px', 'font-weight': 'bold'})
  
             // 780px into 4 col grid. each col 180 + 15 right margin
 
@@ -599,34 +599,30 @@
             r.g.text(x+540+65, y+36+8, 'in 1 or 2 weeks to\nexclude a temporary\nspike in blood levels').attr({'font-size': '14px', 'fill': '#888'})
 
 
-            r.path("M10 980 L790 980").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
-            r.g.text(150, 1000, 'Original Design: David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net')
+            r.path("M10 980 L760 980").attr({'stroke-dasharray': '.', 'stroke-linecap': 'butt'})        
+            r.g.text(90, 1000, 'Original Design: David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net')
               .attr({'font-size': '14px', 'fill': '#0088CC'})
               .click(function(e){window.open('http://www.informationisbeautiful.net/2010/visualizing-bloodtests/')})
               .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
-            r.g.text(150, 1000+16, 'Reynolds Risk Score Calculator // ReynoldsRiskScore.org')
+            r.g.text(90, 1000+16, 'Reynolds Risk Score Calculator // ReynoldsRiskScore.org')
               .attr({'font-size': '14px', 'fill': '#0088CC'})
               .click(function(e){window.open('http://ReynoldsRiskScore.org')})
               .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
-            r.g.text(150, 1000+48, 'Development and validation of improved algorithms for the assessment of global cardiovascular risk in women:\nThe Reynolds Risk Score. Ridker el al. JAMA 2007;297:611-619')
+            r.g.text(90, 1000+48, 'Development and validation of improved algorithms for the assessment of global cardiovascular risk in women:\nThe Reynolds Risk Score. Ridker el al. JAMA 2007;297:611-619')
               .attr({'font-size': '12px', 'fill': '#0088CC'})
               .click(function(e){window.open('http://jama.ama-assn.org/content/297/6/611.long')})
               .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
-            r.g.text(150, 1000+80, 'C-reactive protein and parental history improve global cardiovascular risk prediction: The Reynolds Risk Score for Men.\n Ridker et al. Circulation. 2008;118:2243-2251')
+            r.g.text(90, 1000+80, 'C-reactive protein and parental history improve global cardiovascular risk prediction: The Reynolds Risk Score for Men.\n Ridker et al. Circulation. 2008;118:2243-2251')
               .attr({'font-size': '12px', 'fill': '#0088CC'})
               .click(function(e){window.open('http://circ.ahajournals.org/cgi/content/full/118/22/2243')})
               .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
-            
-            // r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
-            // r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
-            // r.g.text(150, 1000, 'David McCandless & Stefanie Posavec for Wired Magazine // informationisbeautiful.net').attr({'font-size': '14px', 'fill': '#aaa'})
           });
         });
     </script>
   </head>
-  <body>
-    <div id='holder' style='width: 800px; height: 1200px;'>
-      <div id='errors' style='width: 600px; margin: 100px auto;'></div>
+  <body style="margin: none;">
+    <div id='errors' style='display: none; width: 600px; margin: 100px auto;'></div>
+    <div id='holder' style='display: none; height: 1200px;'>
     </div>
     <div id='log'></div>
   </body>
