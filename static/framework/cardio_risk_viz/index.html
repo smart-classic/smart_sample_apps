@@ -222,7 +222,7 @@
               
               if (p.smoker_p.value === false) {
                 if_you_quit_set.animate({opacity: 0}, 500, '>');
-                quit_text_1.attr({text: 'Staying smokefree'})
+                quit_text_1.attr({text: 'Staying smoke-free'})
                 quit_text_2.attr({text: 'is one of the best\nways to improve your\nheart disease risk'})
               } else {
                 if_you_quit_set.animate({opacity: 1}, 500, '>');
@@ -558,15 +558,15 @@
             r.g.text(450, y, 'Your risk would be lowered to:').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
     
             var score_if_sbp_of_120_text = r.g.text(460, y+16, score_if_sbp_of_120+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(450+32, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
+            r.g.text(450+36, y+16, 'if your blood pressure were 120mm/Hg').attr({'font-size': '14px', 'fill': '#888'})
 
             var score_if_all_optimal_text = r.g.text(460, y+32, score_if_all_optimal+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            r.g.text(450+32, y+32, 'if you didn\'t smoke and all levels were optimal').attr({'font-size': '14px', 'fill': '#888'})
+            r.g.text(450+36, y+32, 'if you didn\'t smoke and all levels were optimal').attr({'font-size': '14px', 'fill': '#888'})
             
 
             if_you_quit_set.push(
               r.g.text(460, y+48, score_if_non_smoker+'%').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'}),
-              r.g.text(450+32, y+48, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
+              r.g.text(450+36, y+48, 'if you quit smoking').attr({'font-size': '14px', 'fill': '#888'})
             );
 
             r.g.text(50, y+80, 'Use your test results to calculate your risk of a cardiovascular event at ReynoldsRisk.org')
@@ -586,8 +586,8 @@
             r.g.text(x+55, y+36, 'can improve your\ncholesterol levels').attr({'font-size': '14px', 'fill': '#888'})
 
             r.image("images/smoker.png", x+180, y, 45, 60);
-            var quit_text_1 = r.g.text(x+180+55, y+12, 'Quiting smoking').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
-            var quit_text_2 = r.g.text(x+180+55, y+36+8, 'can decrease your\nheart disease risk\nby 50% or more').attr({'font-size': '14px', 'fill': '#888'})
+            var quit_text_1 = r.g.text(x+180+55, y+12, 'Staying smoke-free').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
+            var quit_text_2 = r.g.text(x+180+55, y+36+8, 'is one of the best\nways to improve your\nheart disease risk').attr({'font-size': '14px', 'fill': '#888'})
 
             r.image("images/doctor.png", x+360, y, 45, 60);
             r.g.text(x+360+55, y+12, 'Ask your doctor').attr({'font-size': '14px', 'font-weight': 'bold', 'fill': '#555'})
