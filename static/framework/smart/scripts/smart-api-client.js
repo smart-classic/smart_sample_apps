@@ -22177,11 +22177,8 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		var smart_cookie_names = [];
 
 		for (var c = 0; c < n; c++) {
-		    old_cookie_name = existing_cookies[c].split("=")[0];
-		    if (old_cookie_name.trim !== undefined)
-			old_cookie_name = old_cookie_name.trim();
-
-		    if (old_cookie_name.match("^smart_oauth_cookie") !== null) {
+		    var old_cookie_name = existing_cookies[c].split("=")[0];
+		    if (old_cookie_name.match("smart_oauth_cookie") !== null) {
 			smart_cookie_names.push(old_cookie_name);
 		    }
 		}
