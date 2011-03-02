@@ -22172,18 +22172,23 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
 
 	    if (message.credentials && message.credentials.oauth_cookie !== undefined ){
-
 		var existing_cookies = document.cookie.split(";");
-		n = existing_cookies.length;
-		var num_to_delete = Math.min(n-6, n);
-		var num_deleted = 0;
-		while (num_deleted < num_to_delete) {
-		    n--;
-		    old_cookie_name = existing_cookies[n].split("=")[0].trim();
+		var n = existing_cookies.length;
+		var smart_cookie_names = [];
+
+		for (var c = 0; c < n; c++) {
+		    old_cookie_name = existing_cookies[c].split("=")[0];
+		    if (old_cookie_name.trim !== undefined)
+			old_cookie_name = old_cookie_name.trim();
+
 		    if (old_cookie_name.match("^smart_oauth_cookie") !== null) {
-                        document.cookie = old_cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
-                        num_deleted++;
+			smart_cookie_names.push(old_cookie_name);
 		    }
+		}
+
+		n = smart_cookie_names.length;
+		for (var c = 5; c < n; c++) { // Limit to 5 cookies per app domain any given time to prevent too long a header
+		    document.cookie = smart_cookie_names[c]+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
 		}
 
 		this.cookie_name ='smart_oauth_cookie' + message.activity_id;               
