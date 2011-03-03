@@ -10,6 +10,9 @@ cd ../..
 ./js med_list/scripts/build.js
 sed -i 's/,development/,production/g' med_list/index.html
 
+./js med_calendar/scripts/build.js
+sed -i 's/,development/,production/g' med_calendar/index.html
+
 ./js problem_list/scripts/build.js
 sed -i 's/,development/,production/g' problem_list/index.html
 

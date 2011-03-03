@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  	<head>
+    	<title>MedDisplay App</title>
+	<script src="../smart/scripts/smart-api-page.js"></script>
+	<script type='text/javascript' src='../steal/steal.js?med_calendar,development'></script>
+  	</head>
+
+  	<body>
+		<div style"overflow:hidden">
+			<em id="UserDisplay">Smart MedList Loading...</em>
+			<div id='MedListTabs'>
+				<ul>
+					<li>
+						<a href="#tabs-list">Medication</a>
+					</li>
+	    			<li>
+	    				<a href="#tabs-timeline">Calendar</a>
+	    			</li>
+	    		</ul>
+				<div id='tabs-list'>
+					<div><h1>Prescriptions</h1></div>
+					<div id="MedList"></div>
+	    			<div id="MedDetails" style="float: left;">Med Details here...</div><br clear="both"/>
+				</div>
+
+				<div id="tabs-timeline">
+					<div>
+						<h1>Calendar</h1>
+					<div>
+					<div id="tl"></div>
+					<div id="popover" style="display:none">
+						<div class="arrow right"></div>
+						<div class="title"></div>
+						<div class="description"></div>
+						<div>
+							<span>Start -</span>
+							<span class="start"></span>
+						</div>
+						<div>
+							<span>End -</span>
+							<span class="end"></span>
+						</div>
+					</div>
+	    		</div>
+	    	</div>
+		</div>
+	</body>
+</html>
