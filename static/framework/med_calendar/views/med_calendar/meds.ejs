@@ -1,0 +1,28 @@
+<table class='medtable'>
+	<col class="col1">
+	<col class="colname">
+	<col class="colstart">
+	<col class="colend">
+	<col class="colnotes">
+	<tbody>
+	<tr>
+		<th></th>
+		<th>Name</th>
+		<th>Start Date</th>
+		<th>Est. End Date</th>
+		<th>Instructions</th>
+	</tr>
+
+	<%  for (var i = 0; i < meds.length; i++)  {
+			var m = meds[i];
+	%>
+	<tr class='med'>
+		<td><div class="pip <%= m.isExpired %>"></div></td>
+		<td><%= m.properName() %></td>
+		<td><%= m.start_date %></td>
+		<td><%= m.end_date %></td>
+		<td><%= m.instructions %></td>
+	</tr>
+	<%}%>
+	</tbody>
+</table>

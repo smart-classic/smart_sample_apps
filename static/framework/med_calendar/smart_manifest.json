@@ -1,0 +1,17 @@
+{
+  "name" : "Med Calendar",
+  "description" : "Display medications in a table or calendar view",
+  "author" : "Appigo",
+  "id" : "med-calendar@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "base_url" : "http://localhost:8001",
+  "mode" : "ui",
+  "activities" : {
+    "main" :              "{base_url}/framework/med_calendar/bootstrap.html"
+  },
+	
+  "web_hooks" : { },
+
+  "icon" :  "{base_url}/framework/med_calendar/icon.png"
+}
