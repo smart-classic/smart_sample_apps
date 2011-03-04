@@ -1,8 +1,8 @@
 {
-  "name" : "Cardiology Risk Visualization",
+  "name" : "Cardiac Risk",
   "description" : "A Visualization of Cardiology Bloodwork Results with the Framingham Risk Score",
   "author" : "Implimentation: Arjun Sanyal, Children's Hospital Boston; Design: McCandless & Posavec http://informationisbeautiful.net",
-  "id" : "cardio_risk_viz@apps.smartplatforms.org",
+  "id" : "cardiac_risk@apps.smartplatforms.org",
   "version" : ".1a",
 
   "base_url" : "http://localhost:8001",
