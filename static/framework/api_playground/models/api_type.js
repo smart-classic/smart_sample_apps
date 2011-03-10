@@ -36,7 +36,8 @@ $.Model.extend('ApiType',
 			   .where("?call api:category ?call_category")
 			   .where("?call api:method ?call_method")
 			   .where("?call api:by_internal_id ?call_by_internal_id")
-			   .optional("?call api:above ?call_above");
+			   .optional("?call api:above ?call_above")
+			   .optional("?call api:example ?call_example");
 			
 			for (var i = 0; i < calls.length; i++) {
 				ApiCall.create(calls[i]);
@@ -189,6 +190,7 @@ $.Model.extend('ApiCall',
 		
 		ret = new ApiCall({path: t.call_path.value,
 						   target: t.call_target.value._string,
+                  				   example: t.call_example?t.call_example.value : undefined,
 						   category: t.call_category.value,
 						   method: t.call_method.value,
 						   by_internal_id: !!(t.call_by_internal_id.value ==="true"),

@@ -53,8 +53,11 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		
 		if ($.inArray(method, ApiCall.payload_methods) !== -1)
 		{
+		    if (c.example !== undefined)
+			this.payload_box.val(c.example);	
+		    else
 			this.payload_box.val(this.selected_top_group.group_type.example);	
-			this.payload_box.show();	
+		    this.payload_box.show();	
 		} else  {
 			this.payload_box.val("");
 			this.payload_box.hide();
