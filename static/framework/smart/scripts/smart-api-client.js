@@ -22767,28 +22767,10 @@ SMART_frame_glue_app = function(redirect_url) {
        }};
 
    SMART.send_ready_message(function(context_info) {
-	   $(window).resize(function() {
-		   
-		  	var c =$("#content");
-			
-			var new_w = $(window).width();
-			var new_h = $(window).height();
-			//			console.log("Saw window resize with: " + new_w+","+new_h);
-			if (new_w !== c.data("old_w") || new_h !== c.data("old_h"))
-			    {
-				//				console.log("so, setting: ");
-				c.width(new_w).height(new_h);
-
-				c.data("old_w", new_w);
-				c.data("old_h", new_h);
-			    }
-		   });
-	   
-	   $("html").css("overflow", "hidden");
 	   $("body").css("margin","0px");
 
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
-	   var content_iframe = $('<iframe SEAMLESS style="border: 0px; " src="'+redirect_url+'" id="content">');
+	   var content_iframe = $('<iframe SEAMLESS style="width: 100%; height: 100%; display: block; border: 0px; " src="'+redirect_url+'" id="content">');
 	   $('body').append(content_iframe);
 	   content_iframe.hide();
 	   content_iframe.data("finished_dom", false);
@@ -22800,7 +22782,6 @@ SMART_frame_glue_app = function(redirect_url) {
  		    content_iframe.data("finished_dom", true);
 			$('#loading').remove();
 			content_iframe.show();
-			$(window).resize();  
 	   });
    });
 };
