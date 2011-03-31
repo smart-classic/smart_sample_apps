@@ -58,6 +58,9 @@ $.Model.extend('ApiType',
 	},
 	interpolationVars: function(url) {
 		var fields = url.match(ApiType.url_param_reg);
+		if (fields === null)
+		    return [];
+
 		return fields;	
 	},
 
@@ -169,6 +172,7 @@ $.Model.extend('ApiType',
 		var c = [c];  // prevent inner scope from creating a global variable.
 		
  		$.each(ApiCall.calls, function(i, possible_parent) {
+			if (possible_parent.path == "/records/") return;
  			if (possible_parent.path.length >= c[0].path.length) return;			
  			if (c[0].path.match(possible_parent.path)) c[0] = possible_parent;  
  		});

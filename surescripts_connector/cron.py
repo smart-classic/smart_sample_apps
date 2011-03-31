@@ -12,12 +12,21 @@ def sync_regenstrief():
 #    regenstrief_client = SSClient()
     smart_client = get_smart_client()
     print dir(smart_client)
-    
-    for record_id in smart_client.loop_over_records():
-        if (record_id[0] != "2"): 
-            print "not a SS patient, but here's the med list..."
-            print  smart_client.records_X_medications_GET().serialize()
 
+    sparql = """PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>
+CONSTRUCT {?person rdf:type foaf:Person} 
+WHERE   {
+  ?person foaf:givenName "Betty".
+  ?person rdf:type foaf:Person.
+}
+order by ?ln"""
+
+
+    print  smart_client.get("/records/search", data={'sparql':sparql})
+            
+    for record_id in smart_client.loop_over_records():
+        print "not a SS patient, but here's the med list..."
         continue
         
         print "Deleting old meds ", record_id, time.time()        
