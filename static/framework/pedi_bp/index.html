@@ -3,13 +3,15 @@
   <head>
     <title>Pediatric Blood Pressure Percentiles</title>
       <style>
-        body {font-family: sans-serif;}
+        body {font-family: Arimo, sans-serif; margin: 0px;}
         .sbp {text-align: right; font-size: 1em; font-weight: bold; padding-left: 2em;}
         .dbp {text-align: left; font-size: 1em; font-weight: bold;}
         .spct {text-align: right; font-size: 70%; position: relative; top: -5px;}
         .dpct {text-align: left; font-size: 70%; position: relative; top: -5px;}
         .slash {font-size: 2em;}
+
       </style>
+      <link href='http://fonts.googleapis.com/css?family=Arimo:regular,bold' rel='stylesheet' type='text/css'>
 
       <script src='../smart/scripts/smart-api-page.js'></script>
       <script src='../jquery/jquery.js'></script>
@@ -18,19 +20,138 @@
       <script src='./raphael-min.js'></script>
       <script src='./g.raphael.js'></script>
       <script src='./util.js'></script>
+      <script src='./date.js'></script>
       <script>
 
         var p = { };
         var vitals = [];
 
+	var initialize_chart = function(elt) {
+	  elt.data("bps", []);
+	  var w = $(window).width()-30, h = $(window).height();
+	  var paper = Raphael(elt.get(0), w,h);
+	  paper.setSize(w,h);
+	  elt.data("paper", paper);
+
+	  draw_axes(elt);
+	};
+        
+        $(window).ready(function() {initialize_chart($("#bp_graph"));});
+
+	var draw_axes = function(elt){
+	  var paper = elt.data("paper"),
+	      w = paper.width, 
+              h = paper.height;
+          paper.clear();
+  	  paper.rect(0,0,w,h, 30, 30).attr({fill: "white", opacity: ".8", stroke: "none"});
+	  var bptics = [];
+	  var ntics = 8;
+	  var mintic = 0;
+	  var maxtic = 160;
+
+	  var ticstart = 200;
+	  var ticspan = (w - ticstart) / (ntics+1);
+
+	  elt.data("ticks", {start: ticstart, span: ticspan, min: mintic, max: maxtic, n: ntics});
+          var tictxtattr = {font: "12px sans-serif", opacity: .8};
+          var ticattr = {stroke: "#208fc9", opacity: .2, "stroke-width": 1.2};
+	  for (var i = 0; i < ntics+1; i++) {
+	      var ticx = ticstart+i*ticspan;
+	      var ticy = 30;
+	      var onetic = {
+			     text: paper.text(ticx, ticy, mintic+i*((maxtic-mintic)/ntics)).attr(tictxtattr),
+			     line: paper.path("M"+ticx+" "+(ticy+8)+"L"+ticx+" "+h).attr(ticattr)
+			   };
+			  
+	      bptics.push(onetic);
+	  }
+	};
+
+	var draw_bp = function(elt, p) {
+		var sbp = p.systolic_mmhg,
+	            dbp = p.diastolic_mmhg,
+                    date = p.date,
+                    spct = p.systolic_percentile,
+                    dpct = p.diastolic_percentile,
+	            date = p.date,
+                    paper = elt.data("paper");
+			      
+	  var s = paper.set();
+
+
+			      console.log("in draw_bp");
+          var ticks = elt.data("ticks");
+          function bpcoord(bp) {
+            return ticks.start + ticks.span *bp * ticks.n/ (ticks.max - ticks.min);
+          };
+
+          var sysattr = {font: "30px 'Arimo:bold', sans-serif", "text-anchor": "end", opacity: .9, fill: "#cd00b9", stroke: "none"};
+          var diasattr = {font: "30px 'Arimo:bold', sans-serif", "text-anchor": "start", opacity: .9, fill: "#6d8cb1", stroke: "none"};
+          var slashattr = {font: "40px 'Arimo', sans-serif", "text-anchor": "middle", opacity: .8, fill: "#555555", stroke: "#555555"};
+          var dateattr = {font: "12px sans-serif", "text-anchor": "left", opacity: .8, fill: "#555555", stroke: "none"};
+			
+          var xpad = 75;
+	  var datetext = paper.text(xpad, -26,date.toString("M/d/yyyy HH:mm")).attr(dateattr);
+		s.push(datetext);	      
+	  var sbptxt = paper.text(xpad, 0,sbp).attr(sysattr);
+	  s.push(sbptxt);
+	  var slash = paper.text(xpad+6, 0,"/").attr(slashattr);
+	  s.push(slash);
+          var dbptxt = paper.text((xpad+slash.getBBox().width), 0,dbp).attr(diasattr);
+	  s.push(dbptxt);
+
+
+	  var pctattr = {font: "15px 'Arimo', sans-serif"};
+			      
+	  var sbppcttxt = paper.text(sbptxt.attrs.x, sbptxt.attrs.y+22,spct+"%").attr(sysattr).attr(pctattr);
+	  s.push(sbppcttxt);
+	  var dbppcttxt = paper.text(dbptxt.attrs.x, dbptxt.attrs.y+22,dpct+"%").attr(diasattr).attr(pctattr);
+	  s.push(dbppcttxt);
+
+          console.log(sbptxt);
+          var shrink_factor = 200/80.0 ;
+	  s.push(paper.path("M"+bpcoord(sbp)+" 0L"+bpcoord(dbp)+" 0").attr(slashattr).attr({"stroke-width": 8}));
+          s.push(paper.circle(bpcoord(sbp), 0, spct/shrink_factor).attr(sysattr).attr({opacity: 1}));
+          s.push(paper.circle(bpcoord(dbp), 0, dpct/shrink_factor).attr(diasattr).attr({opacity: 1}));
+
+          return s;
+        };
+
+        var add_bp = function(elt, p) {		
+			      console.log("pushing");
+			      console.log(p);
+                elt.data("bps").push(p);
+        };
+
+        var draw_bps = function(elt) {
+          var bps = elt.data("bps");
+          var paper = elt.data("paper");
+          var rowheight = 90;
+	  var offset = 90;
+          paper.setSize($(window).width()-30, offset+rowheight * (bps.length+1));
+          draw_axes(elt);
+			      
+          for (var i = 0; i < bps.length; i++)  {
+	       var s = draw_bp(elt, elt.data("bps")[i]);
+	       s.translate(0, offset+rowheight*i);
+          }
+        };
+
+
+
 	var loader = new StateCheck(['demographics', 'vitals']).onDone(function() {
+
+       $(window).resize(function(){
+            draw_bps($("#bp_graph"));
+	});
+
 	  console.log("Got demographics and vitals");
 	  console.log(p);
 
+
           for (var i = 0; i< vitals.length; i++) {
             v = vitals[i];
-            console.log(v.vital_date.value);
-            console.log(parse_date(v.vital_date.value));
+            console.log("DATE" + v.vital_date.value);
             var age = years_apart(v.vital_date.value, p.birthday.value);
 
             console.log(age);
@@ -38,13 +159,24 @@
 		console.log(bpparams);
             var percentiles = bp_percentiles(bpparams);
 
+            add_bp($("#bp_graph"), {systolic_mmhg: v.systolic.value,
+			            diastolic_mmhg: v.diastolic.value,
+			            systolic_percentile: percentiles.systolic,
+			            diastolic_percentile: percentiles.diastolic,
+			            date: parse_date(v.vital_date.value),
+                                    height: v.height.value,
+                                    age: age
+			           });			     
+/*
             $("#bp_table").append("<tr><td>"+v.vital_date.value+"</td><td>"+
                                   "<div class='sbp'>"+v.systolic.value+"</div >"+
                                   "<div class='spct'>"+percentiles.systolic+"%</div ></td>"+
                                   "<td><span class='slash'>/</span></td>"+
                                   "<td><div class='dbp'>"+v.diastolic.value+"</div>"+
                                   "<div  class='dpct'>"+percentiles.diastolic+"%</div ></td></tr>");
+*/
           }
+            draw_bps($("#bp_graph"));
 
 	});
 
@@ -76,13 +208,46 @@
         });
 
 
+$("#add_submit").live('click', function(event){
+			     event.stopPropagation();
+
+	    var height = $('#add_height').val()/100.0;
+            var bpparams = {age: $('#add_age').val(), sex: $('input[@name=add_gender]:checked').val(), height: height, systolic: $('#add_systolic').val(), diastolic: $('#add_diastolic').val()};
+		console.log('DRAWING NEW');
+			     console.log(bpparams);
+            var percentiles = bp_percentiles(bpparams);
+
+            add_bp($("#bp_graph"), {systolic_mmhg: $('#add_systolic').val(),
+			            diastolic_mmhg: $('#add_diastolic').val(),
+			            systolic_percentile: percentiles.systolic,
+			            diastolic_percentile: percentiles.diastolic,
+			            date: new Date(),
+                                    height: height,
+                                    age: $('#add_age').val()
+			           });			     
+            draw_bps($("#bp_graph"));
+
+
+  return false;
+});
     </script>
   </head>
-  <body style="margin: none;">
+  <body >
     <div id='errors' style='display: none; width: 600px; margin: 100px auto;'></div>
-    <table id='bp_table'>
 
+    <div id='bp_graph'></div>
+
+    <table id='bp_table'>
     </table>
+
+      <table><tr><td>
+      Age (y): </td><td><input type='text' id='add_age' size='2' value='4'/></td></tr>
+	<tr><td colspan='2'>Male<input style='margin-right: 1em' type="radio" name="add_gender" value="male" checked="checked" /> Female <input type="radio" name="add_gender" value="female"  /></td></tr>
+	<tr><td> Height (cm):</td><td> <input type='text' id='add_height' size='3' value='85'/></td></tr>
+	<tr><td> Systolic (mmHg):</td><td> <input type='text' id='add_systolic' size='3' value='92'/></td></tr>
+	<tr><td> Diastolic (mmHg):</td><td> <input type='text' id='add_diastolic' size='3' value='55'/></td></tr>
+        <tr><td colspan='2'><input type='submit' id='add_submit' value='Plot another reading'></td></tr>
+</table>
     <div id='log'></div>
   </body>
 </html>
