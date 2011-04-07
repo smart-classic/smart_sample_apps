@@ -165,6 +165,18 @@ SMART_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
 
 };
 
+SMART_CLIENT.prototype.VITAL_SIGNS_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record.id + "/vital_signs/",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
+};
+
 SMART_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
 	var _this = this;
 	this.api_call( {

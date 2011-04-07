@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pediatric Blood Pressure Percentiles</title>
+      <style>
+        body {font-family: sans-serif;}
+        .sbp {text-align: right; font-size: 1em; font-weight: bold; padding-left: 2em;}
+        .dbp {text-align: left; font-size: 1em; font-weight: bold;}
+        .spct {text-align: right; font-size: 70%; position: relative; top: -5px;}
+        .dpct {text-align: left; font-size: 70%; position: relative; top: -5px;}
+        .slash {font-size: 2em;}
+      </style>
+
+      <script src='../smart/scripts/smart-api-page.js'></script>
+      <script src='../jquery/jquery.js'></script>
+      <script src='./data/cdc_height_tables.js'></script>
+      <script src='./data/nih_bp_tables.js'></script>
+      <script src='./raphael-min.js'></script>
+      <script src='./g.raphael.js'></script>
+      <script src='./util.js'></script>
+      <script>
+
+        var p = { };
+        var vitals = [];
+
+	var loader = new StateCheck(['demographics', 'vitals']).onDone(function() {
+	  console.log("Got demographics and vitals");
+	  console.log(p);
+
+          for (var i = 0; i< vitals.length; i++) {
+            v = vitals[i];
+            console.log(v.vital_date.value);
+            console.log(parse_date(v.vital_date.value));
+            var age = years_apart(v.vital_date.value, p.birthday.value);
+
+            console.log(age);
+            var bpparams = {age: age, sex: p.gender.value, height: v.height.value, systolic: v.systolic.value, diastolic: v.diastolic.value};
+		console.log(bpparams);
+            var percentiles = bp_percentiles(bpparams);
+
+            $("#bp_table").append("<tr><td>"+v.vital_date.value+"</td><td>"+
+                                  "<div class='sbp'>"+v.systolic.value+"</div >"+
+                                  "<div class='spct'>"+percentiles.systolic+"%</div ></td>"+
+                                  "<td><span class='slash'>/</span></td>"+
+                                  "<td><div class='dbp'>"+v.diastolic.value+"</div>"+
+                                  "<div  class='dpct'>"+percentiles.diastolic+"%</div ></td></tr>");
+          }
+
+	});
+
+        SMART.DEMOGRAPHICS_get(function(demos) {
+          $.extend(p, demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+                           .prefix('sp', 'http://smartplatforms.org/terms#')
+                           .where('?a foaf:givenName ?givenName')
+                           .where('?a foaf:familyName ?familyName')
+                           .where('?a foaf:gender ?gender')
+                           .where('?a sp:birthday ?birthday')
+                           .get(0));
+
+	    loader.done('demographics');
+	});
+	  
+        SMART.VITAL_SIGNS_get(function(vital_signs){
+
+          vital_signs.where('?v dc:date ?vital_date')
+                           .where('?v sp:height ?h_vu')
+                           .where('?h_vu sp:value ?height')
+                           .where('?v sp:bloodPressure ?bp')
+                           .where('?bp sp:systolic ?sys_vu')
+                           .where('?bp sp:diastolic ?dias_vu')
+                           .where('?sys_vu sp:value ?systolic')
+                           .where('?dias_vu sp:value ?diastolic')
+                           .each(function(){vitals.push(this)});
+
+          loader.done('vitals');
+        });
+
+
+    </script>
+  </head>
+  <body style="margin: none;">
+    <div id='errors' style='display: none; width: 600px; margin: 100px auto;'></div>
+    <table id='bp_table'>
+
+    </table>
+    <div id='log'></div>
+  </body>
+</html>
