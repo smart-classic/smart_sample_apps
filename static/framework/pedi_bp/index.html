@@ -77,9 +77,6 @@
                     paper = elt.data("paper");
 			      
 	  var s = paper.set();
-
-
-			      console.log("in draw_bp");
           var ticks = elt.data("ticks");
           function bpcoord(bp) {
             return ticks.start + ticks.span *bp * ticks.n/ (ticks.max - ticks.min);
@@ -111,6 +108,7 @@
           console.log(sbptxt);
           var shrink_factor = 200/80.0 ;
 	  s.push(paper.path("M"+bpcoord(sbp)+" 0L"+bpcoord(dbp)+" 0").attr(slashattr).attr({"stroke-width": 8}));
+
           s.push(paper.circle(bpcoord(sbp), 0, spct/shrink_factor).attr(sysattr).attr({opacity: 1}));
           s.push(paper.circle(bpcoord(dbp), 0, dpct/shrink_factor).attr(diasattr).attr({opacity: 1}));
 
@@ -123,9 +121,19 @@
                 elt.data("bps").push(p);
         };
 
+        function sortByDate(a,b) {
+			      var x = a.date;
+			      var y = b.date;
+			      return ( (x<y) ? -1: ((x>y)?1:0));
+        };
+
         var draw_bps = function(elt) {
           var bps = elt.data("bps");
+	  bps.sort(sortByDate);
           var paper = elt.data("paper");
+	  var di = elt.data("drawn_index");
+          if (di === undefined) di = -1;
+
           var rowheight = 90;
 	  var offset = 90;
           paper.setSize($(window).width()-30, offset+rowheight * (bps.length+1));
@@ -133,8 +141,12 @@
 			      
           for (var i = 0; i < bps.length; i++)  {
 	       var s = draw_bp(elt, elt.data("bps")[i]);
-	       s.translate(0, offset+rowheight*i);
+               var dt = (i <= di) ? 0 : 150;
+	       di = Math.max(di, i);
+               for (var j = 0; j < s.items.length; j++)
+		   s.items[j].animate({translation:[0, offset+rowheight*i]}, dt);
           }
+	  elt.data("drawn_index", di);
         };
 
 
@@ -153,10 +165,21 @@
             v = vitals[i];
             console.log("DATE" + v.vital_date.value);
             var age = years_apart(v.vital_date.value, p.birthday.value);
-
+			     
             console.log(age);
             var bpparams = {age: age, sex: p.gender.value, height: v.height.value, systolic: v.systolic.value, diastolic: v.diastolic.value};
 		console.log(bpparams);
+
+	    $('#add_age').val(Math.round(bpparams.age));
+	    $('#add_height').val(Math.round(bpparams.height*100));
+	    $('#add_diastolic').val(Math.round(bpparams.diastolic));
+	    $('#add_systolic').val(Math.round(bpparams.systolic));
+            if (bpparams.sex =='female')
+                  $('#add_female').attr("checked", true);
+            else 
+                  $('#add_male').attr("checked", true);
+
+
             var percentiles = bp_percentiles(bpparams);
 
             add_bp($("#bp_graph"), {systolic_mmhg: v.systolic.value,
@@ -242,7 +265,7 @@ $("#add_submit").live('click', function(event){
 
       <table><tr><td>
       Age (y): </td><td><input type='text' id='add_age' size='2' value='4'/></td></tr>
-	<tr><td colspan='2'>Male<input style='margin-right: 1em' type="radio" name="add_gender" value="male" checked="checked" /> Female <input type="radio" name="add_gender" value="female"  /></td></tr>
+	<tr><td colspan='2'>Male<input id='add_male' style='margin-right: 1em' type="radio" name="add_gender" value="male" checked="checked" /> Female <input id='add_female' type="radio" name="add_gender" value="female"  /></td></tr>
 	<tr><td> Height (cm):</td><td> <input type='text' id='add_height' size='3' value='85'/></td></tr>
 	<tr><td> Systolic (mmHg):</td><td> <input type='text' id='add_systolic' size='3' value='92'/></td></tr>
 	<tr><td> Diastolic (mmHg):</td><td> <input type='text' id='add_diastolic' size='3' value='55'/></td></tr>
