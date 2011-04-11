@@ -9,7 +9,7 @@
         .spct {text-align: right; font-size: 70%; position: relative; top: -5px;}
         .dpct {text-align: left; font-size: 70%; position: relative; top: -5px;}
         .slash {font-size: 2em;}
-
+        input[type='text'] {border: 1px solid black;}
       </style>
       <link href='http://fonts.googleapis.com/css?family=Arimo:regular,bold' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Kranky' rel='stylesheet' type='text/css'>
@@ -61,7 +61,7 @@
           var axis_elements = paper.set();
           paper.axis_elements = axis_elements;
 
-  	  axis_elements.push(paper.rect(0,0,w,h, 0,0).attr({fill: "white", opacity: ".8", stroke: "none"}));
+  	  axis_elements.push(paper.rect(0,0,w,h, 0,0).attr({fill: "white", opacity: "1", stroke: "none"}));
 
           slpaper.clear();
   	  slpaper.rect(0,0,w,h, 30, 30).attr({fill: "white", opacity: ".8", stroke: "none"});
@@ -248,7 +248,8 @@
 	  var offset = entrysize/2.0;
           paper.setSize(Math.max($(window).width()-60, offset+entrysize * (bps.length), paper.height));
           var more_axis = paper.axis_elements.clone();
-          more_axis.translate(entrysize);
+          console.log(more_axis.getBBox().width);
+          more_axis.translate(more_axis.getBBox().width);
           paper.axis_elements = more_axis;
 	  $(".values", elt).width(Math.min(paper.width, $(window).width()-60));
           $(".values", elt).scrollLeft(99999);
@@ -261,7 +262,7 @@
           s.animate({translation:[0, paper.height]}, 150);  
         };
 
-//      $(document).ready(function() {initialize_chart($("#bp_graph"));});
+      $(document).ready(function() {$("#add_age").focus();});
 
        $(window).resize(function(){
             draw_bps($("#bp_graph"));
@@ -388,7 +389,8 @@ $("#add_submit").live('click', function(event){
     <table id='bp_table'>
     </table>
 <form>
-      <table><tr><td>
+      <table>
+<tr><td>
       Age (y): </td><td><input type='text' id='add_age' size='2' value='4'/></td></tr>
 	<tr><td colspan='2'>Male<input id='add_male' style='margin-right: 1em' type="radio" name="add_gender" value="male" checked="checked" /> Female <input id='add_female' type="radio" name="add_gender" value="female"  /></td></tr>
 	<tr><td> Height (cm):</td><td> <input type='text' id='add_height' size='3' value='85'/></td></tr>
