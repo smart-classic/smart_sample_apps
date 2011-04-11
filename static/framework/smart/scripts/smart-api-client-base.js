@@ -665,7 +665,8 @@ SMART_frame_glue_app = function(redirect_url) {
        }};
 
    SMART.send_ready_message(function(context_info) {
-	   $("body").css("margin","0px");
+	   $("body").css("margin","0px").css("height", "100%");
+	   $("html").css("height","100%");
 
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
 	   var content_iframe = $('<iframe SEAMLESS style="width: 100%; height: 100%; display: block; border: 0px; " src="'+redirect_url+'" id="content">');

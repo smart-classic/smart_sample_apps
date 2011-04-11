@@ -12,6 +12,7 @@
 
       </style>
       <link href='http://fonts.googleapis.com/css?family=Arimo:regular,bold' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Kranky' rel='stylesheet' type='text/css'>
 
       <script src='../smart/scripts/smart-api-page.js'></script>
       <script src='../jquery/jquery.js'></script>
@@ -85,7 +86,7 @@
           var sysattr = {font: "30px 'Arimo:bold', sans-serif", "text-anchor": "end", opacity: .9, fill: "#cd00b9", stroke: "none"};
           var diasattr = {font: "30px 'Arimo:bold', sans-serif", "text-anchor": "start", opacity: .9, fill: "#6d8cb1", stroke: "none"};
           var slashattr = {font: "40px 'Arimo', sans-serif", "text-anchor": "middle", opacity: .8, fill: "#555555", stroke: "#555555"};
-          var dateattr = {font: "12px sans-serif", "text-anchor": "left", opacity: .8, fill: "#555555", stroke: "none"};
+          var dateattr = {font: "12px Arimo:bold", "text-anchor": "left", opacity: .8, fill: "#555555", stroke: "none"};
 			
           var xpad = 75;
 	  var datetext = paper.text(xpad, -26,date.toString("M/d/yyyy HH:mm")).attr(dateattr);
@@ -107,7 +108,7 @@
 
           console.log(sbptxt);
           var shrink_factor = 200/80.0 ;
-	  s.push(paper.path("M"+bpcoord(sbp)+" 0L"+bpcoord(dbp)+" 0").attr(slashattr).attr({"stroke-width": 8}));
+	  s.push(paper.path("M"+bpcoord(sbp)+" 0L"+bpcoord(dbp)+" 0").attr(slashattr).attr({"stroke-width": 5}));
 
           s.push(paper.circle(bpcoord(sbp), 0, spct/shrink_factor).attr(sysattr).attr({opacity: 1}));
           s.push(paper.circle(bpcoord(dbp), 0, dpct/shrink_factor).attr(diasattr).attr({opacity: 1}));

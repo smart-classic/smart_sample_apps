@@ -61,6 +61,7 @@ measurement (X), use the following equation:
 Z = (((X/M)**L) - 1)/LS  , l10 (?)
 Z = ln(X/M)/S            , L=0
 */
+  if (exact === null) return 0;
 
   if (exact.l == 0) 
     return Math.log(height/exact.m)/exact.s;
