@@ -11,7 +11,6 @@ from django.conf import settings
 
 def get_smart_client(resource_tokens=None):
     ret = SmartClient(settings.SS_OAUTH['consumer_key'], settings.SMART_SERVER_PARAMS, settings.SS_OAUTH, resource_tokens)
-    ret.stylesheet = "%s%s"%(settings.XSLT_STYLESHEET_LOC, "ccr_to_med_rdf.xslt")
     return ret
 
 def check_records():
@@ -30,11 +29,11 @@ def check_records():
         s = BNode()
         g.add((s, rdf.type, sp.CodedValue))
 
-        i = URIRef("http://smartplatforms.org/terms/code/alertLevel#information")
-        g.add((s, sp.code, i))
-        g.add((i, rdf.type, sp.Code))
+        severity = Namespace("http://smartplatforms.org/terms/code/alertLevel#")
+        g.add((s, sp.code, severity.information))
         g.add((s, sp.title, Literal("Information")))
         g.add((a, sp.severity, s))
+
         g.add((a, sp.notes, Literal("Patient has %s lab values!"%result_count)))
 
         print "serialized", serialize_rdf(g)
