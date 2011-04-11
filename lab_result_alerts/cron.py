@@ -20,7 +20,6 @@ def check_records():
     for record_id in smart_client.loop_over_records():
         print "Getting labs ", record_id, time.time()        
         labs = smart_client.records_X_lab_results_GET()
-        result_count = len(list(labs.triples((None, rdf.type, sp.LabResult))))
 
         g = bound_graph()
         a = BNode()
@@ -34,10 +33,13 @@ def check_records():
         g.add((s, sp.title, Literal("Information")))
         g.add((a, sp.severity, s))
 
+        # Here is a sample placeholder for CDS logic:  
+        # count up the # of lab values and report it
+        # as an information-level alert.
+        result_count = len(list(labs.triples((None, rdf.type, sp.LabResult))))
         g.add((a, sp.notes, Literal("Patient has %s lab values!"%result_count)))
-
-        print "serialized", serialize_rdf(g)
         gs =  serialize_rdf(g)
+
         a_res = smart_client.records_X_alerts_POST(data=gs, content_type="application/rdf+xml")
         print "Posted alert", time.time(), serialize_rdf(a_res)
 
