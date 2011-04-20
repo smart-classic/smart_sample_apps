@@ -18,7 +18,7 @@
       <script src='../jquery/jquery.js'></script>
       <script src='./data/cdc_height_tables.js'></script>
       <script src='./data/nih_bp_tables.js'></script>
-      <script src='./raphael-min.js'></script>
+      <script src='./raphael.js'></script>
       <script src='./g.raphael.js'></script>
       <script src='./util.js'></script>
       <script src='./date.js'></script>
@@ -32,7 +32,7 @@
           elt.data("bpscale", 1.0);
 	  var w = $(window).width() ,
               h = $(".values", elt).height()-20;
-	  console.log("elt: " + $(".values", elt).length+": " + $(".values", elt).height());
+	  console.log("elt: " + $(".values", elt).width()+": " + $(".values", elt).height());
 	  console.log(w+","+h);
 	  var paper = Raphael($(".values", elt).get(0), w,h);
 	  $(".values", elt).data("paper", paper);
@@ -41,9 +41,12 @@
 	  w = scale_elt.width();
 	  paper = Raphael(scale_elt.get(0),w,h);
 	  scale_elt.data("paper", paper);
+          console.log("Scale left: " + scale_elt.length +","+w);
+
 
 	  scale_elt = $(".scale_right", elt);
 	  w = scale_elt.width();
+          console.log("Scale right: " + scale_elt.length + ","+w);
 	  paper = Raphael(scale_elt.get(0),w,h);
 	  scale_elt.data("paper", paper);
 
@@ -53,7 +56,7 @@
 	var draw_axes = function(elt){
 	  var paper = $(".values", elt).data("paper"),
 	      slpaper = $(".scale_left", elt).data("paper"),
-	      srpaper = $(".scale_right", elt).data("paper"),
+	      srpaper = $(".scale_right", elt).data("paper");
 
 	  w = paper.width, 
           h = paper.height;
@@ -119,13 +122,14 @@
           var pad = 75;
 	  var datetext = paper.text(0, paper.height-10,date.toString("M/d/yyyy HH:mm")).attr(dateattr);
   	  s.push(datetext);	      
+
+
 	  var sbptxt = paper.text(-5, paper.height-45,sbp).attr(sysattr);
 	  s.push(sbptxt);
 	  var slash = paper.text(0, paper.height-45,"/").attr(slashattr);
 	  s.push(slash);
           var dbptxt = paper.text(5, paper.height-45, dbp).attr(diasattr);
 	  s.push(dbptxt);
-
 
 	  var pctattr = {font: 15*bpscale+"px 'Arimo:bold', sans-serif"};
 			      
@@ -179,33 +183,6 @@
              s.push(paper.text(0, bpcoord(dbp),dspecial_text).attr(insetattr));
           }
 
-          var cover = paper.rect(-50*bpscale,0,100*bpscale, paper.height-pad).attr({opacity: 0, fill: 'white'});
-
-          var detail = paper.set();
-          detail.push(paper.rect(-50, 15, 100, 70).attr({fill: 'white', opacity: .95,  stroke: 'black', "stroke-width": 0.1}));
-          bpscale = 1.0; // for hover
-
-          sysattr = {font: 25*bpscale+"px 'Arimo:bold', sans-serif", "text-anchor": "end", opacity: .9, fill: "#cd00b9", stroke: "none"};
-          diasattr = {font: 25*bpscale+"px 'Arimo:bold', sans-serif", "text-anchor": "start", opacity: .9, fill: "#6d8cb1", stroke: "none"};
-          slashattr = {font: 30*bpscale+"px 'Arimo', sans-serif", "text-anchor": "middle", opacity: .8, fill: "#555555", stroke: "#555555"};
-          dateattr = {font: 12*bpscale+"px 'Arimo:bold'", "text-anchor": "middle", opacity: .8, fill: "#555555", stroke: "none"};
-          insetattr = {font: 16*bpscale+"px 'Arimo'", "text-anchor": "middle", opacity: 1, fill: "white"};
-	  pctattr = {font: 15*bpscale+"px 'Arimo:bold', sans-serif"};
-	  detail.push(paper.text(0, 80-10,date.toString("M/d/yyyy HH:mm")).attr(dateattr));
-	  detail.push(paper.text(-5, 80-45,sbp).attr(sysattr));
-	  detail.push(paper.text(0, 80-45,"/").attr(slashattr));
-          detail.push(paper.text(5,80-45, dbp).attr(diasattr));
-	  detail.push(paper.text(0, 80-25,spct+"%").attr(sysattr).attr(pctattr));
-	  detail.push(paper.text(5, 80-25,dpct+"%").attr(diasattr).attr(pctattr));
-
-
-          detail.hide();
-          cover.mouseover(function(){ detail.toFront().show(); cover.toFront();});
-          cover.mouseout(function(){detail.hide();});
-          s.push(detail);
-          s.details = detail;
-          s.push(cover);
-
           return s;
         };
 
@@ -232,12 +209,29 @@
 	  $(".values", elt).width(Math.min(paper.width, $(window).width()-60));
           draw_axes(elt);
 
-          for (var i = 0; i < bps.length; i++)  {
-	       var s = draw_bp(elt, bps[i], entrysize);
-               s.animate({translation:[offset + entrysize*(bps.length-1) - entrysize*i]}, 0);
+
+            var onestep = function(j, max) {
+              return function() {
+                for (var i = j; i < max; i++)  {
+     	           var s = draw_bp(elt, bps[i], entrysize);
+                   s.translate(offset + entrysize*(bps.length-1) - entrysize*i, 0);
+                }
+		lasttime = new Date().getTime();
+
+              };
+            };
+          elt.hide();
+          var lasttime = new Date().getTime();
+          for (var j = 0; j < bps.length; j+= 20)
+          { 
+            setTimeout(onestep(j,Math.min(j+20, bps.length)), 1);
           }
-          $(".values", elt).scrollLeft(99999);
+          setTimeout(function(){ 
+			      elt.show();           
+			      $(".values", elt).scrollLeft(99999);
+                     });
         };
+
 
         var draw_most_recent_bp = function(elt) {
           var bps = elt.data("bps");
@@ -246,33 +240,37 @@
           var bpscale = elt.data("bpscale");
           var entrysize = 100 * bpscale;
 	  var offset = entrysize/2.0;
-          paper.setSize(Math.max($(window).width()-60, offset+entrysize * (bps.length), paper.height));
+          var avail_w    = $(window).width()-60,
+              required_w = offset+entrysize*bps.length;
+          var w = Math.min(required_w, avail_w);
+
+          paper.setSize(required_w, paper.height);
           var more_axis = paper.axis_elements.clone();
-          console.log(more_axis.getBBox().width);
           more_axis.translate(more_axis.getBBox().width);
           paper.axis_elements = more_axis;
-	  $(".values", elt).width(Math.min(paper.width, $(window).width()-60));
+	  $(".values", elt).width(w);
           $(".values", elt).scrollLeft(99999);
-
+          console.log("drawing most recent");
           var s = draw_bp(elt, bps[0], entrysize);
           s.hide();
           s.animate({translation:[offset + entrysize*(bps.length-1), -paper.height]}, 0);
           s.show();
-          s.details.hide();
           s.animate({translation:[0, paper.height]}, 150);  
+          console.log("drawn");
         };
 
       $(document).ready(function() {$("#add_age").focus();});
 
        $(window).resize(function(){
-            draw_bps($("#bp_graph"));
+//            draw_bps($("#bp_graph"));
 	});
 
 
 
 	var loader = new StateCheck(['demographics', 'vitals']).onDone(function() {
-
 	  initialize_chart($("#bp_graph"));
+          return;
+
           for (var i = 0; i< vitals.length; i++) {
             v = vitals[i];
             var age = years_apart(v.vital_date.value, p.birthday.value);
@@ -300,7 +298,7 @@
                                     age: age
 			           });			     
           }
-          draw_bps($("#bp_graph"));
+//          draw_bps($("#bp_graph"));
 
 	});
 
@@ -376,8 +374,8 @@ $("#add_submit").live('click', function(event){
 
     <div id='bp_graph' >
       <div class='scale_left' style='width: 30px;  float: left;'></div>
-      <div class='values' style='height: 400px; width: 300px; overflow-x: auto; float: left'></div>
-      <div class='scale_right' style='width: 30px; float: left;'></div>
+      <div class='values' style='height: 400px; width: 150px; overflow-x: auto; float: left'></div>
+      <div class='scale_right' style='width: 30px;  float: left;'></div>
     </div>
 <!--
    <br clear="both"/>
