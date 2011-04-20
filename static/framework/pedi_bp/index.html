@@ -30,8 +30,8 @@
 	var initialize_chart = function(elt) {
 	  elt.data("bps", []);
           elt.data("bpscale", 1.0);
-	  var w = $(window).width() ,
-              h = $(".values", elt).height()-20;
+	  var w = Math.min($(window).width(), $(".values", elt).width()),
+              h = $(".values", elt).height()-25;
 	  console.log("elt: " + $(".values", elt).width()+": " + $(".values", elt).height());
 	  console.log(w+","+h);
 	  var paper = Raphael($(".values", elt).get(0), w,h);
@@ -205,8 +205,13 @@
 
           var entrysize = 100 * bpscale;
 	  var offset = entrysize/2.0;
-          paper.setSize(Math.max($(window).width()-60, offset+entrysize * (bps.length), paper.height));
-	  $(".values", elt).width(Math.min(paper.width, $(window).width()-60));
+
+          var avail_w    = $(window).width()-60,
+              required_w = offset+entrysize*bps.length;
+          var w = Math.min(required_w, avail_w);
+
+          paper.setSize(required_w, paper.height);
+	  $(".values", elt).width(w);
           draw_axes(elt);
 
 
@@ -298,7 +303,7 @@
                                     age: age
 			           });			     
           }
-//          draw_bps($("#bp_graph"));
+          draw_bps($("#bp_graph"));
 
 	});
 
