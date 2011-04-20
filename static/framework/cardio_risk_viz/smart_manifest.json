@@ -4,7 +4,8 @@
   "author" : "Implimentation: Arjun Sanyal, Children's Hospital Boston; Design: McCandless & Posavec http://informationisbeautiful.net",
   "id" : "cardiac_risk@apps.smartplatforms.org",
   "version" : ".1a",
-
+  "optimalBrowserEnvironments": ["desktop"],
+  "supportedBrowserEnvironments": ["desktop", "tablet"],
   "base_url" : "http://localhost:8001",
   "mode" : "ui",
   "activities" : {
