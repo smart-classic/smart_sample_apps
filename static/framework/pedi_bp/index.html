@@ -32,8 +32,6 @@
           elt.data("bpscale", 1.0);
 	  var w = Math.min($(window).width(), $(".values", elt).width()),
               h = $(".values", elt).height()-25;
-	  console.log("elt: " + $(".values", elt).width()+": " + $(".values", elt).height());
-	  console.log(w+","+h);
 	  var paper = Raphael($(".values", elt).get(0), w,h);
 	  $(".values", elt).data("paper", paper);
 
@@ -41,12 +39,10 @@
 	  w = scale_elt.width();
 	  paper = Raphael(scale_elt.get(0),w,h);
 	  scale_elt.data("paper", paper);
-          console.log("Scale left: " + scale_elt.length +","+w);
 
 
 	  scale_elt = $(".scale_right", elt);
 	  w = scale_elt.width();
-          console.log("Scale right: " + scale_elt.length + ","+w);
 	  paper = Raphael(scale_elt.get(0),w,h);
 	  scale_elt.data("paper", paper);
 
@@ -255,13 +251,11 @@
           paper.axis_elements = more_axis;
 	  $(".values", elt).width(w);
           $(".values", elt).scrollLeft(99999);
-          console.log("drawing most recent");
           var s = draw_bp(elt, bps[0], entrysize);
           s.hide();
           s.animate({translation:[offset + entrysize*(bps.length-1), -paper.height]}, 0);
           s.show();
           s.animate({translation:[0, paper.height]}, 150);  
-          console.log("drawn");
         };
 
       $(document).ready(function() {$("#add_age").focus();});
@@ -274,8 +268,6 @@
 
 	var loader = new StateCheck(['demographics', 'vitals']).onDone(function() {
 	  initialize_chart($("#bp_graph"));
-          return;
-
           for (var i = 0; i< vitals.length; i++) {
             v = vitals[i];
             var age = years_apart(v.vital_date.value, p.birthday.value);
@@ -306,7 +298,6 @@
           draw_bps($("#bp_graph"));
 
 	});
-
         SMART.DEMOGRAPHICS_get(function(demos) {
           $.extend(p, demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
                            .prefix('sp', 'http://smartplatforms.org/terms#')
@@ -315,12 +306,10 @@
                            .where('?a foaf:gender ?gender')
                            .where('?a sp:birthday ?birthday')
                            .get(0));
-
 	    loader.done('demographics');
 	});
 	  
         SMART.VITAL_SIGNS_get(function(vital_signs){
-
           vital_signs.where('?v dc:date ?vital_date')
                            .where('?v sp:height ?h_vu')
                            .where('?h_vu sp:value ?height')
@@ -333,23 +322,6 @@
 
           loader.done('vitals');
         });
-
-$("#zoom_in").live('click', function(){
-  var oldz =   $("#bp_graph").data("bpscale");
-  oldz *= 1.5;
-  oldz = Math.min(oldz, 1.0);
-  $("#bp_graph").data("bpscale", oldz);
-  draw_bps($("#bp_graph"));
-});
-
-$("#zoom_out").live('click', function(){
-  var oldz =   $("#bp_graph").data("bpscale");
-  oldz /= 1.5;
-  oldz = Math.max(oldz, .01);
-  $("#bp_graph").data("bpscale", oldz);
-  draw_bps($("#bp_graph"));
-});
-
 
 $("#add_submit").live('click', function(event){
 			     event.stopPropagation();
@@ -382,12 +354,7 @@ $("#add_submit").live('click', function(event){
       <div class='values' style='height: 400px; width: 150px; overflow-x: auto; float: left'></div>
       <div class='scale_right' style='width: 30px;  float: left;'></div>
     </div>
-<!--
-   <br clear="both"/>
-   <div> <a id="zoom_in" href="#">+</a> <a id="zoom_out" href="#">-</a></div>
-    <input type='text' id='scale' value=1>
 
--->
     <br clear="both"/>
     <table id='bp_table'>
     </table>

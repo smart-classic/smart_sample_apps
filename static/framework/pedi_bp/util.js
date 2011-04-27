@@ -1,7 +1,4 @@
 var years_apart = function(d1, d2) {
- console.log("NEWD");
- console.log(parse_date(d1));
- console.log(parse_date(d2).getTime());
 
  return (parse_date(d1).getTime()-parse_date(d2).getTime())/ (1000 * 60 * 60 * 24 * 365)
 
