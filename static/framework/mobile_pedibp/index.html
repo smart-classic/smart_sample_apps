@@ -147,6 +147,17 @@ $("form").live('submit', function(event){
     </table>
 <form>
 
+
+  <div data-role="fieldcontain"> 
+    <label for="add_systolic">Systolic BP (mmHg)</label> 
+    <input type="range" name="add_systolic" id="add_systolic" value="95" min="0" max="200"  /> 
+  </div>
+
+  <div data-role="fieldcontain"> 
+    <label for="add_diastolic">Diastolic BP (mmHg)</label> 
+    <input type="range" name="add_diastolic" id="add_diastolic" value="62" min="0" max="200"  /> 
+  </div>
+
   <div data-role="fieldcontain"> 
     <label for="add_age">Age (years)</label> 
     <input type="range" name="name" id="add_age" value="4" min="0" max="18" /> 
@@ -174,15 +185,6 @@ $("form").live('submit', function(event){
   </div>
 
 
-  <div data-role="fieldcontain"> 
-    <label for="add_systolic">Systolic BP (mmHg)</label> 
-    <input type="range" name="add_systolic" id="add_systolic" value="95" min="0" max="200"  /> 
-  </div>
-
-  <div data-role="fieldcontain"> 
-    <label for="add_diastolic">Diastolic BP (mmHg)</label> 
-    <input type="range" name="add_diastolic" id="add_diastolic" value="62" min="0" max="200"  /> 
-  </div>
 </form>
   </div><!-- /content --> 
 </div><!-- /page --> 
