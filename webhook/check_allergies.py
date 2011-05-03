@@ -22,6 +22,7 @@ def get_smart_client(request):
     return ret
 
 def check_allergies(request):
+    print "checking allergies"
     sc = get_smart_client(request)
     meds = sc.records_X_medications_GET()
     allergies = sc.records_X_allergies_GET()    
