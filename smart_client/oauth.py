@@ -134,6 +134,7 @@ class OAuthSignatureMethod_HMAC_SHA1(OAuthSignatureMethod):
       if token and hasattr(token, secret_str):
         hmac_key += escape(token.secret)
       # hmac object
+      hmac_key = str(hmac_key)
       try:
         import hashlib # 2.5
         hashed = hmac.new(hmac_key, message, hashlib.sha1)

@@ -49,13 +49,10 @@ class SmartClient(OAuthClient):
         self.stylesheet = None
         
         if (not common.rdf_ontology.parsed):
-            print "unparsed."
             self.__class__.ontology_file = self.get("/ontology")
             common.rdf_ontology.parse_ontology(SmartClient.ontology_file)
-            print "parsed onto", common.rdf_ontology.parsed
             generate_api.augment(self.__class__)
             
-        print "Done init sc"
 
     def _access_resource(self, http_request, oauth_parameters = {}, with_content_type=False):
         """
@@ -99,7 +96,6 @@ class SmartClient(OAuthClient):
             """
 
             req = None
-            print url, data, content_type
             if isinstance(data, dict): data = urllib.urlencode(data)
             
             req = HTTPRequest('GET', '%s%s'%(self.baseURL, url), data=data)    
@@ -168,7 +164,6 @@ class SmartClient(OAuthClient):
         r = self.post("/apps/%s/tokens/records/first"%self.app_id)
         
         while r:
-            print r
             p = {}
             for pair in r.split('&'):
                 (k, v) = [urllib.unquote_plus(x) for x in pair.split('=')] 
