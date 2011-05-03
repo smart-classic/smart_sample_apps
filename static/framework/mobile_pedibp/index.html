@@ -37,9 +37,7 @@
 
       $(document).ready(function() {$("#add_age").focus();});
 
-
 	var loader = new StateCheck(['demographics', 'vitals']).onDone(function() {
-
           var bpparams = {
                           age: years_apart(new Date().toISOString(), p.birthday.value),
                           sex: p.gender.value
@@ -215,7 +213,7 @@ $("form").live('submit', function(event){
 
   <div data-role="fieldcontain"> 
     <label for="add_height">Height (cm)</label> 
-    <input type="range" name="add_height" id="add_height" value="" min="0" max="200"  /> 
+    <input type="range" name="add_height" id="add_height" value="0" min="0" max="200"  /> 
   </div>
 
 
