@@ -12,6 +12,8 @@
 	#result table {background: white; font-size: 3em; border-collapse: collapse; }
 	#result table th {background: #dddddd; font-size: 30%; font-style: italic;}
         input[type='text'] {border: 1px solid black;}
+	#input, #result {display: none;}
+	#loading {font-weight: bold; font-size: 1.2em;}
       </style>
       <link href='http://code.jquery.com/mobile/latest/jquery.mobile.css' rel='stylesheet' type='text/css'/> 
 
@@ -37,31 +39,53 @@
 
 
 	var loader = new StateCheck(['demographics', 'vitals']).onDone(function() {
-	  
+
+          var bpparams = {
+                          age: years_apart(new Date().toISOString(), p.birthday.value),
+                          sex: p.gender.value
+                          };
+
           for (var i = 0; i< vitals.length; i++) {
             v = vitals[i];
-            var age = years_apart(v.vital_date.value, p.birthday.value);
-			     
-            var bpparams = {age: age, sex: p.gender.value, height: v.height.value, systolic: v.systolic.value, diastolic: v.diastolic.value};
-
+			    
 	    if (i == vitals.length-1) {
-	    $('#add_age').val(Math.round(bpparams.age));
-	    $('#add_age_months').val(Math.round(12 * (bpparams.age - Math.round(bpparams.age))));
+	     $.extend(bpparams, {
+               age: years_apart(v.vital_date.value, p.birthday.value), 
+  	       sex: p.gender.value, 
+	       height: v.height.value, 
+	       systolic: v.systolic.value, 
+	       diastolic: v.diastolic.value});
+
 	    $('#add_height').val(Math.round(bpparams.height*100));
 	    $('#add_diastolic').val(Math.round(bpparams.diastolic));
 	    $('#add_systolic').val(Math.round(bpparams.systolic));
-            if (bpparams.sex =='female')
-                  $('#add_female').attr("checked", true);
-            else 
-                  $('#add_male').attr("checked", true);
-            }
+            $("#loading").hide();
+           }
+        }
 
-            var percentiles = bp_percentiles(bpparams);
+        $('#add_age').val(Math.floor(bpparams.age));
+        $('#add_age_months').val(Math.round(12 * (bpparams.age - Math.floor(bpparams.age))));
+        if (bpparams.sex =='female')
+           $('#add_female').attr("checked", true);
+        else 
+           $('#add_male').attr("checked", true);
 
-          }
+        if (vitals.length == 0) {
+          $("#loading").text("No vitals in the patient record... please supply values below.");
+        }
 
-	});
-        SMART.DEMOGRAPHICS_get(function(demos) {
+        if (bpparams.age > 18) {
+	    $("#loading").text("Error:  " + SMART.record.full_name + " is not a pediatric patient (age "+Math.round(bpparams.age)+")");
+        }
+
+       refresh_form(); 
+       $("#input").show()
+       $("#result").fadeIn();
+			     
+
+
+    });
+    SMART.DEMOGRAPHICS_get(function(demos) {
           $.extend(p, demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
                            .prefix('sp', 'http://smartplatforms.org/terms#')
                            .where('?a foaf:givenName ?givenName')
@@ -70,9 +94,9 @@
                            .where('?a sp:birthday ?birthday')
                            .get(0));
 	    loader.done('demographics');
-	});
+   });
 	  
-        SMART.VITAL_SIGNS_get(function(vital_signs){
+   SMART.VITAL_SIGNS_get(function(vital_signs){
           vital_signs.where('?v dc:date ?vital_date')
                            .where('?v sp:height ?h_vu')
                            .where('?h_vu sp:value ?height')
@@ -84,10 +108,21 @@
                            .each(function(){vitals.push(this)});
 
           loader.done('vitals');
-        });
+   });
+
+var refresh_form= function(){
+	    $('#add_height').slider("refresh");
+            $('#add_systolic').slider("refresh");
+            $('#add_diastolic').slider("refresh");
+            $('#add_age').slider("refresh");
+            $('#add_age_months').slider("refresh");
+	    $('input[name="add_gender"]').checkboxradio("refresh");
+};
 
 
-$("form input").live('change', function(){$("form").submit();});
+$("form input").live('change', function(){
+	$("form").submit();
+});
 
 $("form").live('submit', function(event){
 			     event.stopPropagation();
@@ -95,7 +130,7 @@ $("form").live('submit', function(event){
 	    var height = $('#add_height').val()/100.0;
 
             var bpparams = {age: parseInt($('#add_age').val()) + 1.0/12 * parseInt($('#add_age_months').val()) , 
-			     sex: $('input[@name=add_gender]:checked').val(), 
+			     sex: $('input[name="add_gender"]:checked').val(), 
 
 			     height: height, 
 			     systolic: $('#add_systolic').val(), 
@@ -107,7 +142,6 @@ $("form").live('submit', function(event){
 			            diastolic_mmhg: $('#add_diastolic').val(),
 			            systolic_percentile: percentiles.systolic,
 			            diastolic_percentile: percentiles.diastolic,
-			            date: new Date(),
                                     height: height,
                                     age: $('#add_age').val() + "y "+$('#add_age_months').val()+"m"
 			      };   
@@ -128,7 +162,7 @@ $("form").live('submit', function(event){
  
   <div data-role="content"> 
 
-    <div id='errors' style='display: none; width: 600px; margin: 100px auto;'></div>
+    <div id='loading' >Loading data...</div>
     <br>
     
     <div id='result'>
@@ -145,22 +179,22 @@ $("form").live('submit', function(event){
     <br clear="both"/>
     <table id='bp_table'>
     </table>
-<form>
 
+<form id='input'>
 
   <div data-role="fieldcontain"> 
     <label for="add_systolic">Systolic BP (mmHg)</label> 
-    <input type="range" name="add_systolic" id="add_systolic" value="95" min="0" max="200"  /> 
+    <input type="range" name="add_systolic" id="add_systolic" value="0" min="0" max="200"  /> 
   </div>
 
   <div data-role="fieldcontain"> 
     <label for="add_diastolic">Diastolic BP (mmHg)</label> 
-    <input type="range" name="add_diastolic" id="add_diastolic" value="62" min="0" max="200"  /> 
+    <input type="range" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200"  /> 
   </div>
 
   <div data-role="fieldcontain"> 
     <label for="add_age">Age (years)</label> 
-    <input type="range" name="name" id="add_age" value="4" min="0" max="18" /> 
+    <input type="range" name="name" id="add_age" value="0" min="0" max="18" /> 
   </div> 
 
   <div data-role="fieldcontain"> 
@@ -181,7 +215,7 @@ $("form").live('submit', function(event){
 
   <div data-role="fieldcontain"> 
     <label for="add_height">Height (cm)</label> 
-    <input type="range" name="add_height" id="add_height" value="104" min="0" max="200"  /> 
+    <input type="range" name="add_height" id="add_height" value="" min="0" max="200"  /> 
   </div>
 
 
