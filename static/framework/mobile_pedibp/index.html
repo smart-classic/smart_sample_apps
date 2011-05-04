@@ -15,11 +15,10 @@
 	#input, #result {display: none;}
 	#loading {font-weight: bold; font-size: 1.2em;}
       </style>
-      <link href='http://code.jquery.com/mobile/latest/jquery.mobile.css' rel='stylesheet' type='text/css'/> 
-
+      <link href='http://code.jquery.com/mobile/latest/jquery.mobile.css' rel='stylesheet' type='text/css'/>
       <script src='../smart/scripts/smart-api-page.js'></script>
-      <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script> 
-      <script type="text/javascript" src="http://code.jquery.com/mobile/latest/jquery.mobile.min.js"></script> 
+      <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.js"></script> 
+      <script type="text/javascript" src="http://code.jquery.com/mobile/latest/jquery.mobile.js"></script> 
       <script src='./data/cdc_height_tables.js'></script>
       <script src='./data/nih_bp_tables.js'></script>
       <script src='./util.js'></script>
@@ -80,8 +79,6 @@
        $("#input").show()
        $("#result").fadeIn();
 			     
-
-
     });
     SMART.DEMOGRAPHICS_get(function(demos) {
           $.extend(p, demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
@@ -123,7 +120,7 @@ $("form input").live('change', function(){
 });
 
 $("form").live('submit', function(event){
-			     event.stopPropagation();
+	    event.stopPropagation();
 
 	    var height = $('#add_height').val()/100.0;
 
@@ -148,7 +145,7 @@ $("form").live('submit', function(event){
 	   $("#result .dbp").text(to_display.diastolic_mmhg);
 	   $("#result .spct").text(to_display.systolic_percentile);
 	   $("#result .dpct").text(to_display.diastolic_percentile);
-
+	   return false;
 });
 
     </script>
@@ -178,13 +175,12 @@ $("form").live('submit', function(event){
     <table id='bp_table'>
     </table>
 
-<form id='input'>
+<form id="input" method="GET" action="#" data-ajax="false">
 
   <div data-role="fieldcontain"> 
     <label for="add_systolic">Systolic BP (mmHg)</label> 
     <input type="range" name="add_systolic" id="add_systolic" value="0" min="0" max="200"  /> 
   </div>
-
   <div data-role="fieldcontain"> 
     <label for="add_diastolic">Diastolic BP (mmHg)</label> 
     <input type="range" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200"  /> 
