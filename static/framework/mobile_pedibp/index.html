@@ -25,18 +25,16 @@
       <script src='./date.js'></script>
 
       <script>
-        var p = { };
-        var vitals = [];
-
         function sortByDate(a,b) {
 			      var x = a.date;
 			      var y = b.date;
 			      return ( (x<y) ? 1: ((x>y)?-1:0));
         };
 
-      $(document).ready(function() {$("#add_age").focus();});
 
-	var loader = new StateCheck(['demographics', 'vitals']).onDone(function() {
+
+
+	var process_vitals_data = function(p, vitals) {
           var bpparams = {
                           age: years_apart(new Date().toISOString(), p.birthday.value),
                           sex: p.gender.value
@@ -79,31 +77,10 @@
        $("#input").show()
        $("#result").fadeIn();
 			     
-    });
-    SMART.DEMOGRAPHICS_get(function(demos) {
-          $.extend(p, demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-                           .prefix('sp', 'http://smartplatforms.org/terms#')
-                           .where('?a foaf:givenName ?givenName')
-                           .where('?a foaf:familyName ?familyName')
-                           .where('?a foaf:gender ?gender')
-                           .where('?a sp:birthday ?birthday')
-                           .get(0));
-	    loader.done('demographics');
-   });
-	  
-   SMART.VITAL_SIGNS_get(function(vital_signs){
-          vital_signs.where('?v dc:date ?vital_date')
-                           .where('?v sp:height ?h_vu')
-                           .where('?h_vu sp:value ?height')
-                           .where('?v sp:bloodPressure ?bp')
-                           .where('?bp sp:systolic ?sys_vu')
-                           .where('?bp sp:diastolic ?dias_vu')
-                           .where('?sys_vu sp:value ?systolic')
-                           .where('?dias_vu sp:value ?diastolic')
-                           .each(function(){vitals.push(this)});
+    };
 
-          loader.done('vitals');
-   });
+	    $.when(get_demographics(), get_vitals()).then(process_vitals_data);
+
 
 var refresh_form= function(){
 	    $('#add_height').slider("refresh");
@@ -188,7 +165,7 @@ $("form").live('submit', function(event){
 
   <div data-role="fieldcontain"> 
     <label for="add_age">Age (years)</label> 
-    <input type="range" name="name" id="add_age" value="0" min="0" max="18" /> 
+    <input type="range" name="name" id="add_age" value="0" min="0" max="18" autofocus/> 
   </div> 
 
   <div data-role="fieldcontain"> 
