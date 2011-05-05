@@ -1,4 +1,5 @@
 steal.then(function(){
+
 FuncUnit.startSelenium = function(){
 	importClass(Packages.com.thoughtworks.selenium.DefaultSelenium);
 	
@@ -9,13 +10,17 @@ FuncUnit.startSelenium = function(){
 	} 
 	catch (ex) {
 		spawn(function(){
+			var jarCommand = 'java -jar '+
+				'funcunit/java/selenium-server-standalone-2.0a5.jar'+
+				' -userExtensions '+
+				'funcunit/java/user-extensions.js';
 			if (java.lang.System.getProperty("os.name").indexOf("Windows") != -1) {
-				runCommand("cmd", "/C", 'start "selenium" java -jar '+
-					FuncUnit.basePath.replace("/", "\\")+
-					'java\\selenium-server.jar')
+				var command = 'start "selenium" ' + jarCommand;
+				runCommand("cmd", "/C", command.replace(/\//g, "\\"))
 			}
 			else {
-				runCommand("sh", "-c", "java -jar funcunit/java/selenium-server.jar > selenium.log 2> selenium.log &")
+				var command = jarCommand + " > selenium.log 2> selenium.log &";
+				runCommand("sh", "-c", command);
 			}
 		})
 		var timeouts = 0, 

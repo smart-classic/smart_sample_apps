@@ -1,14 +1,21 @@
 load('steal/rhino/steal.js')
 
-steal('//steal/build/pluginify', function(s){
-	steal.pluginify("funcunit/synthetic",{
-		nojquery: true,
-		destination: "funcunit/dist/syn.js"
-	})
-	
-	steal.pluginify("funcunit",{
-		nojquery: true,
-		destination: "funcunit/dist/funcunit.js",
+load('funcunit/synthetic/build.js')
+
+steal.File('funcunit/dist').mkdir()
+steal.File('funcunit/dist/funcunit').mkdir()
+steal.File('funcunit/dist/funcunit/java').mkdir()
+steal.File('funcunit/dist/funcunit/qunit').mkdir()
+steal.File('funcunit/dist/funcunit/scripts').mkdir()
+steal.File('funcunit/dist/steal').mkdir()
+steal.File('funcunit/dist/steal/rhino').mkdir()
+/**
+ * Build funcunit, user-extensions
+ */
+steal('//steal/build/pluginify/pluginify', function(s){
+	steal.build.pluginify("funcunit",{
+		global: "true",
+		destination: "funcunit/dist/funcunit/funcunit.js",
 		packagejquery: true
 	})
 })
@@ -16,28 +23,53 @@ steal('//steal/build/pluginify', function(s){
 var i, fileName, cmd;
 
 // copy qunit, json, and jquery
-new steal.File("funcunit/qunit/qunit.css").copyTo("funcunit/dist/qunit.css")
-new steal.File("jquery/lang/json/json.js").copyTo("funcunit/resources/json.js")
+steal.File("jquery/lang/json/json.js").copyTo("funcunit/resources/json.js")
 
-// unzip the jar
-new steal.File("funcunit/java/selenium-server").mkdirs();
-runCommand("sh", "-c", "cd funcunit/java/selenium-server && jar xf ../selenium-server.jar")
+// read: wrapped, jQuery, json, syn
+var userFiles = 
+		["funcunit/java/extensions/fakesteal.js", 
+		"funcunit/resources/jquery.js", 
+		"funcunit/java/extensions/wrapped.js", 
+		"funcunit/resources/json.js", 
+		"funcunit/synthetic/dist/syn.js",
+		"funcunit/resources/selector.js"],
+	fileText, 
+	userExtensionsText = "";
+for(var i=0; i<userFiles.length; i++){
+	fileText = readFile(userFiles[i]);
+	userExtensionsText += fileText+"\n";
+	print("appending "+userFiles[i])
+}
+steal.File("funcunit/java/user-extensions.js").save(userExtensionsText);
+print("saved user-extensions.js")
 
-// copy files into selenium (assumes you have unzipped java/selenium-server.jar into its own folder there)
-new steal.File("funcunit/resources/json.js").copyTo("funcunit/java/selenium-server/core/scripts/json.js")
-new steal.File("funcunit/dist/syn.js").copyTo("funcunit/java/selenium-server/core/scripts/syn.js")
-new steal.File("funcunit/resources/wrapped.js").copyTo("funcunit/java/selenium-server/core/scripts/wrapped.js")
-new steal.File("funcunit/resources/jquery.js").copyTo("funcunit/java/selenium-server/core/scripts/jquery        .js")
+/**
+ * Build the standalone funcunit
+ */
+var copyToDist = function(path){
+	steal.File(path).copyTo("funcunit/dist/"+path)
+}
+var filesToCopy = [
+	"funcunit/qunit/qunit.css",
+	"funcunit/java/selenium-server-standalone-2.0a5.jar",
+	"funcunit/java/selenium-java-client-driver.jar",
+	"funcunit/java/user-extensions.js",
+	"funcunit/scripts/run.js",
+	"steal/rhino/js.jar",
+	"steal/rhino/env.js",
+	"steal/rhino/loader.bat",
+	"steal/rhino/loader",
+	"funcunit/envjs",
+	"funcunit/envjs.bat",
+	"funcunit/settings.js",
+	"funcunit/loader.js",
+	"steal/rhino/steal.js",
+	"steal/rhino/utils.js",
+	"steal/rhino/file.js"
+]
 
-// create the jar
-runCommand("sh", "-c", "cd funcunit/java/selenium-server && jar cvfm selenium-server.jar META-INF/MANIFEST.MF *")
-new steal.File("funcunit/java/selenium-server/selenium-server.jar").copyTo("funcunit/java/selenium-server.jar")
-new steal.File("funcunit/java/selenium-server").remove()
+for(var i = 0; i < filesToCopy.length; i++) {
+	copyToDist(filesToCopy[i])
+}
 
-// copy jars and env
-new steal.File("funcunit/java/selenium-server.jar").copyTo("funcunit/dist/selenium/selenium-server.jar")
-new steal.File("funcunit/java/selenium-java-client-driver.jar").copyTo("funcunit/dist/selenium/selenium-java-client-driver.jar")
-new steal.File("steal/rhino/js.jar").copyTo("funcunit/dist/selenium/js.jar")
-new steal.File("steal/rhino/env.js").copyTo("funcunit/dist/selenium/env.js")
-	
-print('done building')
+print('FuncUnit is built')

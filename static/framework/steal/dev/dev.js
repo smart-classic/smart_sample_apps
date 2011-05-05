@@ -1,3 +1,4 @@
+/*global  window: false, console: true, opera: true */
 /**
  * @class steal.dev
  * @parent stealjs
@@ -22,19 +23,24 @@ steal.dev = {
 		return s.replace(regs.colons, '/').
 		replace(regs.words, '$1_$2').
 		replace(regs.lowerUpper, '$1_$2').
-		replace(regs.dash, '_').toLowerCase()
+		replace(regs.dash, '_').toLowerCase();
 	},
 	isHappyName: function( name ) {
 		//make sure names are close to the current path
-		var path = steal.cur().path.replace(/\.[^$]+$/, "").split('/')
-		//make sure parts in name match
-		var parts = name.split('.')
+		var path = steal.cur().path.replace(/\.[^$]+$/, "").split('/'),
+			//make sure parts in name match
+			parts = name.split('.');
+		
 		for ( var i = 0; i < parts.length && path.length; i++ ) {
-			if ( parts[i].toLowerCase() != path[i] && this.underscore(parts[i]) != path[i] && this.underscore(parts[i]) != path[i].replace(/_controller/, "") ) {
-				this.warn("Are you sure " + name + " belongs in " + steal.cur().path)
+			if (path[i] && parts[i].toLowerCase() != path[i] && this.underscore(parts[i]) != path[i] && this.underscore(parts[i]) != path[i].replace(/_controller/, "") ) {
+				this.warn("Are you sure " + name + " belongs in " + steal.cur().path);
 			}
 		}
+		
+		
 	},
+
+	logLevel : 0,
 	/**
 	 * Adds a warning message to the console.
 	 * @codestart
@@ -43,11 +49,14 @@ steal.dev = {
 	 * @param {String} out the message
 	 */
 	warn: function( out ) {
-		if ( window.console && console.log ) {
-			console.log("steal.js WARNING: " + out)
-		} else if ( window.opera && window.opera.postError ) {
-			opera.postError("steal.js WARNING: " + out)
+		if(steal.options.logLevel < 2){
+			if ( window.console && console.log ) {
+				console.log("steal.js WARNING: " + out);
+			} else if ( window.opera && window.opera.postError ) {
+				opera.postError("steal.js WARNING: " + out);
+			}
 		}
+		
 	},
 	/**
 	 * Adds a message to the console.
@@ -57,24 +66,27 @@ steal.dev = {
 	 * @param {String} out the message
 	 */
 	log: function( out ) {
-		if ( window.console && console.log ) {
-			console.log("steal.js INFO: " + out)
-		} else if ( window.opera && window.opera.postError ) {
-			opera.postError("steal.js INFO: " + out)
+		if (steal.options.logLevel < 1) {
+			if (window.console && console.log) {
+				console.log("steal.js INFO: " + out);
+			}
+			else if (window.opera && window.opera.postError) {
+				opera.postError("steal.js INFO: " + out);
+			}
 		}
 	}
-}
+};
 
 //stuff for jmvc
 /**
- * @Constructor jQuery
- * @init blah
+ * @class jQuery
+ * @constructor blah
  */
 
 //
 /**
- * @Constructor jQuery.fn
- * @init blah
+ * @class jQuery.fn
+ * @constructor blah
  */
 //
 /**

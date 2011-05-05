@@ -2,7 +2,7 @@
 steal.plugins('funcunit/qunit',
 	'funcunit/qunit/rhino')
 	.then('resources/jquery','resources/json','resources/selector')
-	.plugins('funcunit/synthetic')
+	.plugins('funcunit/syn')
 //Now describe FuncUnit
 .then(function(){
 
@@ -15,14 +15,14 @@ var window = (function(){return this }).call(null),
 	oldFunc = window.FuncUnit;
 
 /**
- * @constructor FuncUnit
+ * @class FuncUnit
  * @tag core
  * @test test.html
- * @download http://github.com/downloads/jupiterjs/funcunit/funcunit-beta-4.zip
+ * @download http://github.com/downloads/jupiterjs/funcunit/funcunit-beta-5.zip
  * FuncUnit provides powerful functional testing as an add on to [http://docs.jquery.com/QUnit QUnit].  
  * The same tests can be run 
  * in the browser, or with Selenium.  It also lets you automate basic 
- * QUnit tests in [http://www.envjs.com/ EnvJS] (a command line browser).
+ * QUnit tests in [EnvJS](http://www.envjs.com/) - a command line browser.
  * 
  * <h2>Example:</h2>
  * The following tests that an AutoSuggest returns 5 results.  
@@ -320,9 +320,9 @@ the domain to serve from, and the speed of test execution.</p>
 <p>FuncUnit looks first in the same directory as the funcunit page you're running tests from for 
 settings.js.  For example if you're running FuncUnit like this:</p>
 @codestart
-funcunit\envjs phui\combobox\funcunit.html 
+funcunit\envjs mxui\combobox\funcunit.html 
 @codeend
-<p>It will look first for phui/combobox/settings.js.</p>
+<p>It will look first for mxui/combobox/settings.js.</p>
 <p>Then it looks in its own root directory, where a default settings.js exists.  
 This is to allow you to create different settings for different projects.</p>
 <h3>Setting Browsers</h3>
@@ -332,13 +332,26 @@ This is defined in settings.js.  If this null it will default to a standard set 
 @codestart
 browsers: ["*firefox", "*iexplore", "*safari", "*googlechrome"]
 @codeend
-<p>To define a custom path to a browser, put this in the string following the browser name like this:</p>
+
+To define a custom path to a browser, put this in the string following the browser name like this:</p>
+
 @codestart
 browsers: ["*custom /path/to/my/browser"]
 @codeend
-<p>See the 
-[http://release.seleniumhq.org/selenium-remote-control/0.9.0/doc/java/com/thoughtworks/selenium/DefaultSelenium.html#DefaultSelenium Selenium docs] 
-for more information on customizing browsers and other settings.</p>
+
+See the [http://release.seleniumhq.org/selenium-remote-control/0.9.0/doc/java/com/thoughtworks/selenium/DefaultSelenium.html#DefaultSelenium Selenium docs] for more information on customizing browsers and other settings.</p>
+
+## 64-bit Java
+
+Some users will find Selenium has trouble opening while using 64 bit java (on Windows).  You will see an error like  
+Could not start Selenium session: Failed to start new browser session.  This is because Selenium 
+looks in the 64-bit Program Files directory, and there is no Firefox there.  To fix this, change 
+browsers to include the path like this:
+
+@codestart
+FuncUnit.browsers = ["*firefox C:\\PROGRA~2\\MOZILL~1\\firefox.exe", "*iexplore"]
+@codeend
+
 <h3>Filesystem for Faster Tests</h3>
 <p>You might want to use envjs to open local funcunit pages, but test pages on your server.  This is possible, you 
 just have to change FuncUnit.href or FuncUnit.jmvcRoot.  This file can load locally while everything else is 
@@ -358,16 +371,27 @@ http://localhost:8000/funcunit/test/myapp.html.</p>
 funcunit\envjs path\to\funcunit.html
 @codeend
 
-<h3>Running Served Pages</h3>
+<h3>Running From Safari and Chrome</h3>
 <p>Certain browsers, like Safari and Chrome, don't run Selenium tests from filesystem because 
 of security resrictions.  To get around this you have to run pages served from a server.  The 
 downside of this is the test takes longer to start up, compared to loading from filesystem.</p>  
-<p>To do this, provide an absolute path in your envjs path, like this:</p>
+<p>To run served pages, you must 1) provide an absolute path in your envjs path and 2) provide an absolute path 
+in jmvcRoot.</p>
+<p>For example, to run cookbook FuncUnit tests from Google Chrome, I'd set the browsers and jmvcRoot like this:</p>
 @codestart
-funcunit\envjs http://localhost:8000/path/to/funcunit.html
+	browsers: ["*googlechrome"],
+	jmvcRoot: "http://localhost:8000/framework/",
 @codeend
-<p>and set jmvcRoot and your paths as directed in the previous section.  This will cause the command page 
-and the test pages to load from your server.</p>
+<p>then I'd start up Selenium like this:</p>
+@codestart
+funcunit\envjs http://localhost:8000/framework/cookbook/funcunit.html
+@codeend
+<p>To run Safari 5 in Windows, you should use the safariproxy browser string like this:</p>
+@codestart
+	browsers: ["*safariproxy"],
+@codeend
+
+Mac Safari is just "*safari".
 
 <h3>Slow Mode</h3>
 <p>You can slow down the amount of time between tests by setting FuncUnit.speed.  By default, FuncUnit commands 
@@ -379,8 +403,19 @@ Slow mode is useful while debugging.</p>
 <ul>
 	<li>Selenium doesn't run Chrome/Opera/Safari on the filesystem.</li>
 </ul>
+
+<h2>Troubleshooting</h2>
+
+<p>If you have trouble getting Selenium tests to run in IE, there are some settings that you can to change.  First, disable the security settings for pages that run from the filesystem.  To do this, open the Internet Options in IE and select the "Advanced" tab, and enable the option to "Allow active content to run in files on My Computer."  This is what it looks like:</p>
+
+@image jmvc/images/iesecurity.png
+
+<p>You may also get an error that the popup blocker is enabled, which prevents the tests from running.  It's actually not the popup blocker that causes this, but the fix is just as easy.  Simply disable "Protected Mode" in IE, which is also in the Internet Options:</p>
+
+@image jmvc/images/iepopups.png
+
  * 
- * @init
+ * @constructor
  * selects something in the other page
  * @param {String|Function|Object} selector FuncUnit behaves differently depending if
  * the selector is a string, a function, or an object.
@@ -398,7 +433,10 @@ Slow mode is useful while debugging.</p>
  * or <code>S.window.document</code> to the selector.  
  * 
  * @param {Number} [context] If provided, the context is the frame number in the
- * document.frames array to use as the context of the selector.
+ * document.frames array to use as the context of the selector.  For example, if you
+ * want to select something in the first iframe of the page:
+ * 
+ *     S("a.mylink",0)
  */
 FuncUnit = function(selector, context){
 	// if someone wraps a funcunit selector
@@ -406,7 +444,7 @@ FuncUnit = function(selector, context){
 		return selector;
 	}
 	if(typeof selector == "function"){
-		return FuncUnit.wait(0, selector)
+		return FuncUnit.wait(0, selector);
 	}
 	
 	return new FuncUnit.init(selector, context)
@@ -525,7 +563,7 @@ open: function( path, callback, timeout ) {
  * @param {String} path
  */
 getAbsolutePath: function( path ) {
-	if(typeof(steal) == "undefined"){
+	if(typeof(steal) == "undefined" || steal.root == null){
 		return path;
 	}
 	var fullPath, 
@@ -565,7 +603,6 @@ window : {
 },
 _opened: function() {}
 });
-
 
 (function(){
 	//the queue of commands waiting to be run
@@ -904,18 +941,11 @@ FuncUnit.init.prototype = {
 		var self = this,
 			sel = this.selector,
 			ret;
-		if(true){
-			this.selector += ":visible"
-			return this.size(0, function(){
-				self.selector = sel;
-				callback && callback();
-			})
-		}else{
-			ret = this.size() == 0;
-			this.selector = sel;
-			return ret;
-		}
-		
+		this.selector += ":visible"
+		return this.size(0, function(){
+			self.selector = sel;
+			callback && callback();
+		})
 	},
 	/**
 	 * Drags an element into another element or coordinates.  
@@ -1067,6 +1097,18 @@ FuncUnit.init.prototype = {
 
 	find : function(selector){
 		return FuncUnit(this.selector+" "+selector, this.context);
+	},
+	/**
+	 * Calls the callback function after all previous asynchronous actions have completed.  Then
+	 * is called with the funcunit object.
+	 * @param {Object} callback
+	 */
+	then : function(callback){
+		var self = this;
+		FuncUnit.wait(0, function(){
+			callback.call(self, self);
+		});
+		return this;
 	}
 };
 //do traversers
@@ -1076,7 +1118,7 @@ var traversers = ["closest",
 "next","prev","siblings","last","first"],
 	makeTraverser = function(name){
 		FuncUnit.init.prototype[name] = function(selector){
-			return FuncUnit( FuncUnit.$(this.selector, this.context, name+"Selector", selector) )
+			return FuncUnit( FuncUnit.$(this.selector, this.context, name+"Selector", selector), this.context )
 		}
 	};
 for(var i  =0; i < traversers.length; i++){
@@ -1185,6 +1227,18 @@ FuncUnit.funcs = {
  * of elements matched.
  */
 'size' : 0,
+/**
+ * @function trigger
+ * Triggers an event on a set of elements in the page.  Use it to trigger
+ * custom user events that a user can't easily simulate.  Do NOT use
+ * it to simulate 'click' and 'keypress' events, that is what .click() and .type() 
+ * are for.  This only works if the page you are testing has jQuery in it.
+ * @codestart
+ * S('#foo').trigger("myCustomEvent")
+ * @codeend
+ * @param {String} eventType A string containing a JavaScript event type, such as click or submit.
+ */
+'trigger' : 100,
 /**
  * @attr data
  * Gets data from jQuery.data or waits until data
@@ -1568,7 +1622,10 @@ for (var prop in FuncUnit.funcs) {
 
 S = FuncUnit;
 
-
+// handle case where syn was loaded before FuncUnit
+if(!FuncUnit.jquery.fn.triggerSyn){
+	FuncUnit.jquery.fn.triggerSyn = jQuery.fn.triggerSyn;
+}
 })
 //now add drivers
 .then('resources/selenium_start',

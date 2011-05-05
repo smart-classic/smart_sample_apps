@@ -61,6 +61,9 @@ test("guess type", function(){
    equals("boolean", $.Model.guessType( true )  );
    equals("number", $.Model.guessType( "1" )  );
    equals("string", $.Model.guessType( "a" )  );
+   
+   equals("string", $.Model.guessType( "1e234234324234" ) );
+   equals("string", $.Model.guessType( "-1e234234324234" ) );
 })
 
 test("wrapMany", function(){
@@ -70,13 +73,71 @@ test("wrapMany", function(){
 	equals(people[0].prettyName(),"Mr. Justin","wraps wrapping works")
 });
 
-test("binding", 1,function(){
+test("binding", 2,function(){
 	var inst = new Person({foo: "bar"});
 	
-	inst.bind("foo", function(){
+	inst.bind("foo", function(ev, val){
 		ok(true,"updated")	
+		equals(val, "baz", "values match")
 	});
 	
 	inst.attr("foo","baz");
 	
+});
+
+test("error binding", 1, function(){
+	$.Model.extend("School",{
+	   setName : function(name, success, error){
+	     if(!name){
+	        error("no name");
+	     }
+	     return error;
+	   }
+	})
+	var school = new School();
+	school.bind("error.name", function(ev, error){
+		equals(error, "no name", "error message provided")
+	})
+	school.attr("name","");
+	
+	
+})
+
+test("auto methods",function(){
+	var School = $.Model.extend("Jquery.Model.Models.School",{
+	   findAll : steal.root.join("jquery/model/test")+"/{type}.json",
+	   findOne : steal.root.join("jquery/model/test")+"/{id}.json",
+	   create : steal.root.join("jquery/model/test")+"/create.json",
+	   update : steal.root.join("jquery/model/test")+"/update{id}.json"
+	},{})
+	stop(5000);
+	School.findAll({type:"schools"}, function(schools){
+		ok(schools,"findAll Got some data back");
+		equals(schools[0].Class.shortName,"School","there are schools")
+		
+		School.findOne({id : "4"}, function(school){
+			ok(school,"findOne Got some data back");
+			equals(school.Class.shortName,"School","a single school");
+			
+			
+			new School({name: "Highland"}).save(function(){
+				equals(this.name,"Highland","create gets the right name")
+				this.update({name: "LHS"}, function(){
+					equals(this.name,"LHS","create gets the right name")
+					start();
+				})
+			})
+			
+		})
+		
+	})
+})
+
+test("isNew", function(){
+	var p = new Person();
+	ok(p.isNew(), "nothing provided is new");
+	var p2 = new Person({id: null})
+	ok(p2.isNew(), "null id is new");
+	var p3 = new Person({id: 0})
+	ok(!p3.isNew(), "0 is not new");
 })

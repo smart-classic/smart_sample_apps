@@ -143,4 +143,38 @@ test("callback", function(){
 	curVal = 2;
 	var cb2 = Car.callback('show',2)
 	cb2();
+});
+
+test("callback error", 1,function(){
+	$.Class.extend("Car",{
+		show: function( value ) {
+			equals(curVal, value)
+		}
+	},{
+		show: function( value ) {
+			
+		}
+	})
+	try{
+		Car.callback('huh');
+		ok(false, "I should have errored")
+	}catch(e){
+		ok(true, "Error was thrown")
+	}
+})
+
+test("Creating without extend", function(){
+	$.Class("Bar",{
+		ok : function(){
+			ok(true, "ok called")
+		}
+	});
+	new Bar().ok();
+	
+	Bar("Foo",{
+		dude : function(){
+			ok(true, "dude called")
+		}
+	});
+	new Foo().dude(true);
 })

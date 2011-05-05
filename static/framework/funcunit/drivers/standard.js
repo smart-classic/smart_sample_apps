@@ -12,10 +12,13 @@ steal.then(function() {
 	
 	FuncUnit._window = null;
 	var newPage = true, changing;
-	var makeArray = function(arr){
-		var narr = [];
+	var makeArray = function(arr, win){
+		if(!win){
+			win = window;
+		}
+		var narr = win.Array();
 		for (var i = 0; i < arr.length; i++) {
-			narr[i] = arr[i]
+			narr.push(arr[i])
 		}
 		return narr;
 	}
@@ -146,24 +149,21 @@ steal.then(function() {
 			selector = FuncUnit._window;
 		}
 	
-		//the following 	
-		//if the page has jQuery, use its jQuery b/c it is faster.
-		//if (FuncUnit._window.jQuery && parseFloat(FuncUnit._window.jQuery().jquery) >= 1.3) {
-		//	q = jQuery(FuncUnit._window.jQuery(selector, context).get());
-		//} else {
-		q = FuncUnit.jquery(selector, context);
-		//}
-		
+		// for trigger, we have to use the page's jquery because it uses jQuery's event system, which uses .data() in the page
+		if (FuncUnit._window.jQuery && method == 'trigger') {
+			args = makeArray(args, FuncUnit._window)
+			q = FuncUnit._window.jQuery(selector, context)
+		} else {
+			q = FuncUnit.jquery(selector, context);
+		}
 		return q[method].apply(q, args);
+		
+		
 	}
 	
 	FuncUnit.jquery(window).unload(function(){
 		if (FuncUnit._window) 
 			FuncUnit._window.close();
 	})
-		
-
-
+	
 });
-
-

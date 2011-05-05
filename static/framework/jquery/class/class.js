@@ -2,7 +2,8 @@
 // This is a modified version of John Resig's class
 // http://ejohn.org/blog/simple-javascript-inheritance/
 // It provides class level inheritance and callbacks.
-steal.plugin("jquery").then(function( $ ) {
+//@steal-clean
+steal.plugins("jquery").then(function( $ ) {
 
 	// if we are initializing a new class
 	var initializing = false,
@@ -38,7 +39,7 @@ steal.plugin("jquery").then(function( $ ) {
 
 
 	/**
-	 * @constructor jQuery.Class
+	 * @class jQuery.Class
 	 * @plugin jquery/class
 	 * @tag core
 	 * @download dist/jquery/jquery.class.js
@@ -273,13 +274,15 @@ steal.plugin("jquery").then(function( $ ) {
 	 * <h2>Demo</h2>
 	 * @demo jquery/class/class.html
 	 *
-	 * @init Creating a new instance of an object that has extended jQuery.Class
+	 * @constructor Creating a new instance of an object that has extended jQuery.Class
 	 *     calls the init prototype function and returns a new instance of the class.
 	 *
 	 */
 
 	jQuery.Class = function() {
-		if ( arguments.length ) this.extend.apply(this, arguments)
+		if (arguments.length) {
+			jQuery.Class.extend.apply(jQuery.Class, arguments);
+		}
 	};
 
 	/* @Static*/
@@ -349,10 +352,17 @@ steal.plugin("jquery").then(function( $ ) {
 			}
 
 			self = this;
-
+			//@steal-remove-start
+			for( var i =0; i< funcs.length;i++ ) {
+				if(typeof funcs[i] == "string" && typeof this[funcs[i]] !== 'function'){
+					throw ("class.js "+( this.fullName || this.Class.fullName)+" does not have a "+funcs[i]+"method!");
+				}
+			}
+			//@steal-remove-end
 			return function class_cb() {
 				var cur = args.concat(jQuery.makeArray(arguments)),
-					isString, length = funcs.length,
+					isString, 
+					length = funcs.length,
 					f = 0,
 					func;
 
@@ -483,7 +493,7 @@ steal.plugin("jquery").then(function( $ ) {
 				if ( initializing ) return;
 
 				if ( this.constructor !== Class && arguments.length ) { //we are being called w/o new
-					return this.extend.apply(this, arguments)
+					return arguments.callee.extend.apply(arguments.callee, arguments)
 				} else { //we are being called w/ new
 					return this.Class.newInstance.apply(this.Class, arguments)
 				}
@@ -507,8 +517,11 @@ steal.plugin("jquery").then(function( $ ) {
 					namespace = current;
 
 				//@steal-remove-start
-				if(!Class.nameOk){
+				if (!Class.nameOk ) {
 					steal.dev.isHappyName(fullName)
+				}
+				if(current[shortName]){
+					steal.dev.warn("class.js There's already something called "+fullName)
 				}
 				//@steal-remove-end
 				current[shortName] = Class;

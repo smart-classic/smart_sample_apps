@@ -1,5 +1,11 @@
 steal.plugins('jquery/dom/cookie','jquery/model/list').then(function($){
-
+/**
+ * @plugin jquery/model/list/local
+ * @download  http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/model/list/local/local.js
+ * @parent jQuery.Model.List
+ * Works exactly the same as [jQuery.Model.List.Cookie] except uses
+ * a local store instead of cookies.
+ */
 $.Model.List.extend("jQuery.Model.List.Local",
 {
 	retrieve : function(name){

@@ -6,7 +6,7 @@ steal.plugins('jquery/event/drag','jquery/dom/within','jquery/dom/compare').then
 	//somehow need to keep track of elements with selectors on them.  When element is removed, somehow we need to know that
 	//
 	/**
-	 * @add jQuery.event.special static
+	 * @add jQuery.event.special
 	 */
 	var eventNames = [
 	/**
@@ -49,10 +49,10 @@ steal.plugins('jquery/event/drag','jquery/dom/within','jquery/dom/compare').then
 	
 	
 	/**
-	 * @constructor jQuery.Drop
+	 * @class jQuery.Drop
 	 * @parent specialevents
 	 * @plugin jquery/event/drop
-	 * @download jquery/dist/jquery.event.drop.js
+	 * @download  http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/event/drop/drop.js
 	 * @test jquery/event/drag/qunit.html
 	 * 
 	 * Provides drop events as a special event to jQuery.  
@@ -78,7 +78,7 @@ steal.plugins('jquery/event/drag','jquery/dom/within','jquery/dom/compare').then
 	 * @codeend
 	 * A bit more complex example:
 	 * @demo jquery/event/drop/drop.html 1000
-	 * @init
+	 * @constructor
 	 * The constructor is never called directly.
 	 */
 	$.Drop = function(callbacks, element){

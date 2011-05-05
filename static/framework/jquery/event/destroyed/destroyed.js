@@ -1,11 +1,11 @@
 /**
- * @add jQuery.event.special static
+ * @add jQuery.event.special
  */
 steal.plugins('jquery/event').then(function( $ ) {
 	/**
 	 * @attribute destroyed
 	 * @parent specialevents
-	 * @download jquery/dist/jquery.event.destroyed.js
+	 * @download  http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/dom/destroyed/destroyed.js
 	 * @test jquery/event/destroyed/qunit.html
 	 * Provides a destroyed event on an element.
 	 * <p>
@@ -26,15 +26,15 @@ steal.plugins('jquery/event').then(function( $ ) {
 	 * @demo jquery/event/destroyed/destroyed_menu.html 
 	 */
 
-	var oldClean = jQuery.cleanData
+	var oldClean = jQuery.cleanData;
 
 	$.cleanData = function( elems ) {
 		for ( var i = 0, elem;
-		(elem = elems[i]) != null; i++ ) {
-			$(elem).triggerHandler("destroyed")
+		(elem = elems[i]) !== undefined; i++ ) {
+			$(elem).triggerHandler("destroyed");
 			//$.event.remove( elem, 'destroyed' );
 		}
-		oldClean(elems)
-	}
+		oldClean(elems);
+	};
 
-})
+});

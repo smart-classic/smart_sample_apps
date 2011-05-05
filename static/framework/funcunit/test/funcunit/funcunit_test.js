@@ -1,13 +1,11 @@
 module("funcunit - jQuery API",{
 	setup: function() {
 		var self = this;
-		S.open("test/myapp.html", function(){
+		S.open("//funcunit/test/myapp.html", function(){
 			self.pageIsLoaded = true;
 		}, 10000)
 	}
 })
-
-
 
 test("qUnit module setup works async", function(){
 	ok(this.pageIsLoaded, "page is loaded set before")
@@ -66,7 +64,7 @@ test("hasClass", function(){
 })
 
 test("Exists", function(){
-	var fast
+	var fast;
 	
 	S("#exists").click();
 	setTimeout(function(){
@@ -77,11 +75,14 @@ test("Exists", function(){
 	});
 	
 })
+
+test("Trigger", function(){
+	S("#trigger").trigger('myCustomEvent');
+	S("#trigger p").text("I was triggered");
+})
 test("Accessing the window", function(){
 	ok(S(S.window).width()> 20, "I can get the window's width")
 })
 test("Accessing the document", function(){
 	ok(S(S.window.document).width()> 20, "I can get the document's width")
 })
-
-

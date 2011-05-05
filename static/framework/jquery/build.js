@@ -1,8 +1,10 @@
-load('steal/file/file.js')
+// load('jquery/build.js')
+
+load('steal/rhino/steal.js')
 
 var i, fileName, cmd, 
 	plugins = [
-	"class", 
+	"class" , 
 	"controller",
 	{
 		plugin: "controller/subscribe", 
@@ -24,12 +26,6 @@ var i, fileName, cmd,
 		plugin: "event/drop",
 		exclude: ["jquery/lang/vector/vector.js", "jquery/event/livehack/livehack.js", "jquery/event/drag/drag.js"]},
 	"event/hover",
-	{
-		plugin: "model", 
-		exclude: ["jquery/class/class.js",
-				  "jquery/lang/lang.js",
-				  "jquery/event/destroyed/destroyed.js",
-				  "jquery/lang/openajax/openajax.js"]},
 	"view/ejs", 
 	"dom/closest",
 	"dom/compare",
@@ -40,12 +36,98 @@ var i, fileName, cmd,
 	"dom/fixture",
 	"dom/form_params",
 	"dom/within", 
-	"dom/cur_styles"
+	"dom/cur_styles",
+	"model",
+	{
+		plugin: "model/associations",
+		exclude: ["jquery/class/class.js",
+				  "jquery/lang/lang.js",
+				  "jquery/event/destroyed/destroyed.js",
+				  "jquery/lang/openajax/openajax.js",
+				  "jquery/model/model.js"]
+	},
+	{
+		plugin: "model/backup",
+		exclude: ["jquery/class/class.js",
+				  "jquery/lang/lang.js",
+				  "jquery/event/destroyed/destroyed.js",
+				  "jquery/lang/openajax/openajax.js",
+				  "jquery/model/model.js"]
+	},
+	{
+		plugin: "model/list",
+		exclude: ["jquery/class/class.js",
+				  "jquery/lang/lang.js",
+				  "jquery/event/destroyed/destroyed.js",
+				  "jquery/lang/openajax/openajax.js",
+				  "jquery/model/model.js"]
+	},
+	{
+		plugin: "model/list/cookie",
+		exclude: ["jquery/class/class.js",
+				  "jquery/lang/lang.js",
+				  "jquery/event/destroyed/destroyed.js",
+				  "jquery/lang/openajax/openajax.js",
+				  "jquery/model/model.js",
+				  "jquery/model/list/list.js"]
+	},
+	{
+		plugin: "model/list/local",
+		exclude: ["jquery/class/class.js",
+				  "jquery/lang/lang.js",
+				  "jquery/event/destroyed/destroyed.js",
+				  "jquery/lang/openajax/openajax.js",
+				  "jquery/model/model.js",
+				  "jquery/model/list/list.js"]
+	},
+	{
+		plugin: "model/validations",
+		exclude: ["jquery/class/class.js",
+				  "jquery/lang/lang.js",
+				  "jquery/event/destroyed/destroyed.js",
+				  "jquery/lang/openajax/openajax.js",
+				  "jquery/model/model.js"]
+	},
+	"view",
+	"view/ejs",
+	"view/jaml",
+	"view/micro",
+	"view/tmpl"
 ]
 
 
+steal.plugins('steal/build/pluginify').then( function(s){
 var plugin, exclude, fileDest, fileName;
-for(i=0; i<plugins.length; i++){
+	for(i=0; i<plugins.length; i++){
+		plugin = plugins[i];
+		exclude = [];
+		fileName = null;
+		if (typeof plugin != "string") {
+			fileName = plugin.fileName;
+			exclude = plugin.exclude || [];
+			plugin = plugin.plugin;
+		}
+		fileName = fileName || "jquery."+plugin.replace(/\//g, ".").replace(/dom\./, "").replace(/\_/, "")+".js";
+		fileDest = "jquery/dist/"+fileName
+		s.build.pluginify("jquery/"+plugin,{
+			nojquery: true,
+			destination: fileDest,
+			exclude: exclude.length? exclude: false
+		})
+		
+		
+		var outBaos = new java.io.ByteArrayOutputStream();
+		var output = new java.io.PrintStream(outBaos);
+		runCommand("java", "-jar", "steal/build/scripts/compiler.jar", "--compilation_level", "SIMPLE_OPTIMIZATIONS", "--warning_level", "QUIET", "--js", fileDest, {
+			output: output
+		});
+		
+		var minFileDest = fileDest.replace(".js", ".min.js")
+		new steal.File(minFileDest).save(outBaos.toString());
+	}
+})
+/*
+for (i = 0; i < plugins.length; i++) {
 	plugin = plugins[i];
 	exclude = [];
 	fileName = null;
@@ -54,20 +136,16 @@ for(i=0; i<plugins.length; i++){
 		exclude = plugin.exclude || [];
 		plugin = plugin.plugin;
 	}
-	fileName = fileName || "jquery."+plugin.replace(/\//g, ".").replace(/dom\./, "").replace(/\_/, "")+".js";
-	fileDest = "jquery/dist/"+fileName
-	cmd = "js steal/scripts/pluginify.js jquery/"+plugin+" -destination "+fileDest;
-	if(exclude.length)
-		cmd += " -exclude "+exclude;
-	runCommand(	"cmd", "/C", cmd)
-	
+	fileName = fileName || "jquery." + plugin.replace(/\//g, ".").replace(/dom\./, "").replace(/\_/, "") + ".js";
+	fileDest = "jquery/dist/" + fileName
 	// compress 
 	var outBaos = new java.io.ByteArrayOutputStream();
 	var output = new java.io.PrintStream(outBaos);
-	runCommand("java", "-jar", "steal/rhino/compiler.jar", "--compilation_level",
-    	"SIMPLE_OPTIMIZATIONS", "--warning_level","QUIET",  "--js", fileDest, {output: output});
+	runCommand("java", "-jar", "steal/build/scripts/compiler.jar", "--compilation_level", "SIMPLE_OPTIMIZATIONS", "--warning_level", "QUIET", "--js", fileDest, {
+		output: output
+	});
 	
-    var minFileDest = fileDest.replace(".js", ".min.js")
+	var minFileDest = fileDest.replace(".js", ".min.js")
 	new steal.File(minFileDest).save(outBaos.toString());
-	print("***"+fileName+" pluginified and compressed")
-}
+	print("***" + fileName + " pluginified and compressed")
+}*/

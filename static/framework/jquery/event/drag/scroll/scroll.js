@@ -1,13 +1,13 @@
 steal.plugins("jquery/event/drop").then(function($){ //needs drop to determine if respondable
 
 /**
- * @add jQuery.Drag prototype
+ * @add jQuery.Drag.prototype
  */
 $.Drag.prototype.
 	/**
 	 * Will scroll elements with a scroll bar as the drag moves to borders.
 	 * @plugin jquery/event/drag/scroll
-	 * @download jquery/dist/jquery.event.drag.scroll.js
+	 * @download  http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/event/drag/scroll/scroll.js
 	 * @param {jQuery} elements to scroll.  The window can be in this array.
 	 */
 	scrolls = function(elements){
@@ -60,7 +60,7 @@ $.extend($.Scrollable.prototype,{
 			location_object = $(el == document.documentElement ? window : el),
 		
 		//get the dimension and location of that object
-			dimensions = location_object.dimensionsv(),
+			dimensions = location_object.dimensionsv('outer'),
 			position = location_object.offsetv(),
 		
 		//how close our mouse is to the boundries
