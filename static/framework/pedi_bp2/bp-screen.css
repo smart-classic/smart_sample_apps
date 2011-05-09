@@ -7,13 +7,47 @@ body {
     height: 400px;
     width: 800px;
 }
+#holder2 {
+    height: 400px;
+    width: 800px;
+}
 #copy {
-    bottom: 0;
     font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
-    position: absolute;
     right: 1em;
     text-align: right;
 }
 #copy a {
     color: #fff;
+}
+
+.tablelabel {
+	font-family: verdana,arial,sans-serif;
+	font-size:12px;
+    font-weight:bold
+}
+
+table.nicetable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #a9c6c9;
+	border-collapse: collapse;
+}
+
+table.nicetable th {
+    text-align: left;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+    background-color:#c3dde0;
+}
+
+table.nicetable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+    background-color:#d4e3e5;
 }
