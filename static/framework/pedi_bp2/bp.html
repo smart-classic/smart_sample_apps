@@ -4,16 +4,36 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>BP Line Graph Prototype - v0.3</title>
         <link rel="stylesheet" href="bp-screen.css" type="text/css" media="screen">
+        <link type="text/css" href="css/ui-darkness/jquery-ui-1.8.12.custom.css" rel="stylesheet" />
         <!--<link rel="stylesheet" href="bp-print.css" type="text/css" media="print">-->
         <script src="js/cdc_height_tables.js"></script>
         <script src="js/nih_bp_tables.js"></script>
         <script src="js/raphael.js"></script>
 		<script src="js/jquery.js"></script>
         <script src="js/jquery-jtemplates.js"></script>
+        <script src="js/jquery-ui-1.8.12.custom.min.js"></script>
         <script src="js/date.js"></script>
         <script src="js/util.js"></script>
         <script src="js/popup.js"></script>
         <script src="line_graph.js"></script>
+        <script type="text/javascript">
+			$(function(){
+	
+				// Tabs
+				$('#tabs').tabs();
+				
+				//hover states on the static widgets
+				$('#dialog_link, ul#icons li').hover(
+					function() { $(this).addClass('ui-state-hover'); }, 
+					function() { $(this).removeClass('ui-state-hover'); }
+				);
+				
+			});
+		</script>
+		<style type="text/css">
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			.demoHeaders { margin-top: 2em; }
+		</style>	
     </head>
     <body>
         <p style="display:none"><textarea id="template" rows="0" cols="0"><!--
@@ -54,8 +74,17 @@
             {#/template ROW}
         --></textarea></p>
 
-        <div id="holder"></div>
-        <div id="result"></div>
+    	<div id="tabs">
+			<ul>
+                <li><a href="#holder_short">Short Term View</a></li>
+				<li><a href="#holder_long">Long Term View</a></li>
+				<li><a href="#table_view">Table View</a></li>
+			</ul>
+            <div id="holder_short"></div>
+			<div id="holder_long"></div>
+			<div id="table_view"></div>
+		</div>
+
         <p id="copy">BP Line Graph Prototype - v0.3</p>
     </body>
 </html>
