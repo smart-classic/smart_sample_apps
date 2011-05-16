@@ -6,6 +6,7 @@ var years_apart = function(d1, d2) {
  return (parse_date(d1).getTime()-parse_date(d2).getTime())/ (1000 * 60 * 60 * 24 * 365)
 
 };
+        
 	var parse_date = function(d) {
             var dp = new Date(d);
             if (isNaN(dp)) { // IE Date constructor doesn't parse ISO-8601 -JCM
