@@ -11,6 +11,18 @@ body {
     height: 400px;
     width: 800px;
 }
+
+#error {
+    font: 300 1.2em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+}
+
+#header {
+	font-family: verdana,arial,sans-serif;
+	font-size: 12px;
+    font-weight: bold;
+    display: none;
+}
+
 #copy {
     font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
     right: 1em;
@@ -23,7 +35,7 @@ body {
 .tablelabel {
 	font-family: verdana,arial,sans-serif;
 	font-size:12px;
-    font-weight:bold
+    font-weight:bold;
 }
 
 table.nicetable {

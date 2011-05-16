@@ -61,12 +61,12 @@ var updateDateRangeTable = function (valueFrom,valueTo) {
 };
 
 var filterSettings = {
-     longView: {encounter: ["Inpatient","Outpatient","Ambulatory"],
+     longView: {encounter: ["Inpatient","Ambulatory"],
                site: ["Arm","Leg"],
                position: ["Sitting","Standing"],
                dateFrom: "1980-01-01",
                dateTo: "2019-01-01"},
-    tableView: {encounter: ["Inpatient","Outpatient","Ambulatory"],
+    tableView: {encounter: ["Inpatient","Ambulatory"],
                site: ["Arm","Leg"],
                position: ["Sitting","Standing"],
                dateFrom: "1980-01-01",
@@ -78,7 +78,6 @@ var loadFilterDataLong = function () {
     filterSettings.longView.site = [];
     filterSettings.longView.position = [];
     if ($("#chkLongInpatient").attr("checked")) filterSettings.longView.encounter.push("Inpatient");
-    if ($("#chkLongOutpatient").attr("checked")) filterSettings.longView.encounter.push("Outpatient");
     if ($("#chkLongAmbulatory").attr("checked")) filterSettings.longView.encounter.push("Ambulatory");
     if ($("#chkLongArm").attr("checked")) filterSettings.longView.site.push("Arm");
     if ($("#chkLongLeg").attr("checked")) filterSettings.longView.site.push("Leg");
@@ -91,7 +90,6 @@ var loadFilterDataTable = function () {
     filterSettings.tableView.site = [];
     filterSettings.tableView.position = [];
     if ($("#chkTableInpatient").attr("checked")) filterSettings.tableView.encounter.push("Inpatient");
-    if ($("#chkTableOutpatient").attr("checked")) filterSettings.tableView.encounter.push("Outpatient");
     if ($("#chkTableAmbulatory").attr("checked")) filterSettings.tableView.encounter.push("Ambulatory");
     if ($("#chkTableArm").attr("checked")) filterSettings.tableView.site.push("Arm");
     if ($("#chkTableLeg").attr("checked")) filterSettings.tableView.site.push("Leg");
@@ -236,7 +234,7 @@ var drawViews = function (patient, zone) {
     drawGraph (shortTerm, patient.recentEncounters(3), zone);
     drawGraph (!shortTerm, pLong, zone);
     
-    printTableView ("table_view", pTable);
+    printTableView ("holder_table", pTable);
 };
 
 var drawViewsLong = function (patient, zone) {
@@ -250,7 +248,7 @@ var drawViewsLong = function (patient, zone) {
 var drawViewsTable = function (patient) {
     // Apply filters 
     var p = patient.applyFilter(filterTableEncounter).applyFilter(filterTableSite).applyFilter(filterTablePosition).applyFilter(filterTableDate); 
-    printTableView ("table_view", p);
+    printTableView ("holder_table", p);
 };
 
 var initSettings = function (shortTerm) {
@@ -538,11 +536,11 @@ var initPatient = function (p) {
         birthdate: "1994-03-27",
         sex: "female",
         data: [{timestamp: "1998-04-01T04:32:00Z", height: 85, systolic: 98, diastolic: 73, site: "Arm", position: "Standing", encounter: "Inpatient"},
-               {timestamp: "1999-05-25T06:21:00Z", height: 96, systolic: 82, diastolic: 53, site: "Leg", position: "Sitting", encounter: "Outpatient"},
+               {timestamp: "1999-05-25T06:21:00Z", height: 96, systolic: 82, diastolic: 53, site: "Leg", position: "Sitting", encounter: "Ambulatory"},
                {timestamp: "2000-01-12T15:30:00Z", height: 116, systolic: 84, diastolic: 48, site: "Arm", position: "Sitting", encounter: "Ambulatory"},
-               {timestamp: "2000-04-24T19:13:00Z", height: 118, systolic: 104, diastolic: 52, site: "Leg", position: "Sitting", encounter: "Outpatient"},
+               {timestamp: "2000-04-24T19:13:00Z", height: 118, systolic: 104, diastolic: 52, site: "Leg", position: "Sitting", encounter: "Ambulatory"},
                {timestamp: "2001-06-30T08:43:00Z", height: 125, systolic: 107, diastolic: 75, site: "Arm", position: "Standing", encounter: "Inpatient"},
-               {timestamp: "2007-12-04T14:07:00Z", height: 175, systolic: 118, diastolic: 66, site: "Leg", position: "Sitting", encounter: "Outpatient"},
+               {timestamp: "2007-12-04T14:07:00Z", height: 175, systolic: 118, diastolic: 66, site: "Leg", position: "Sitting", encounter: "Inpatient"},
                {timestamp: "2011-08-26T10:24:00Z", height: 182, systolic: 109, diastolic: 74, site: "Leg", position: "Standing", encounter: "Inpatient"}]
     };
     

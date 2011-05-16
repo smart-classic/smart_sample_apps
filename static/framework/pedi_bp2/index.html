@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>BP Line Graph Prototype - v0.3</title>
         <link rel="stylesheet" href="bp-screen.css" type="text/css" media="screen">
-        <link type="text/css" href="css/themes/ui-darkness/jquery.ui.all.css" rel="stylesheet" />
+        <link type="text/css" href="css/themes/custom/jquery.ui.all.css" rel="stylesheet" />
         <!--<link rel="stylesheet" href="bp-print.css" type="text/css" media="print">-->
         <script src='scripts/smart-api-page.js'></script>
         <script src="js/cdc_height_tables.js"></script>
@@ -20,8 +20,20 @@
 		<style type="text/css">
 			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
 			.demoHeaders { margin-top: 2em; }
-            #slider-range-long { width: 200px; }
-            #slider-range-table { width: 200px; }
+            #holder_short { margin-top: 10px }
+            #encounter_long { position: relative; float: left; margin-top: 4px; }
+            #site_long { position: relative; float: left; margin-top: 4px; }
+            #position_long { position: relative; float: left; margin-top: 4px; }
+            #slider-long { margin-left: 6px; position: relative; float: left; }
+            #slider-range-long { width: 200px; margin-top: 4px;}
+            #holder_long {  padding-top: 5px; clear:both }
+            #filters_table { float: none }
+            #encounter_table { float: left; margin-top: 4px; }
+            #site_table { float: left; margin-top: 4px; }
+            #position_table { float: left; margin-top: 4px; }
+            #slider-table { margin-left: 6px; float: left; }
+            #slider-range-table { width: 200px; margin-top: 4px;}
+            #holder_table { padding-top: 5px; clear:both }
 		</style>
         <script>       
         var get_demographics = function() {
@@ -92,7 +104,7 @@
         } else if (age > 18) {
             $("#error").text("Error:  " + SMART.record.full_name + " is not a pediatric patient (age " + Math.floor(age) + ")");
         } else {
-            $("#error").text("");
+            $("#error").text("").hide();
 
             // Assume average baby height at birth of 50cm
             var height_data = [{date: p.birthday.value, height:50}];
@@ -170,9 +182,11 @@
     </head>
     <body>
     
-    <div id='error' >Loading patient data. Please wait...</div>
+    <div id="main">
+        <div id="error" >Loading patient data. Please wait...</div>
+        <div id="header"></div>
     
-        <p style="display:none"><textarea id="template" rows="0" cols="0"><!--
+        <div style="display:none"><textarea id="template" rows="0" cols="0"><!--
             {#template MAIN}
                 <p class="tablelabel">{$T}</p>
                 <table class="nicetable">
@@ -208,7 +222,7 @@
                     <td>{$T.encounter}</td>
                 </tr>
             {#/template ROW}
-        --></textarea></p>
+        --></textarea></div>
        
     	<div id="tabs" style="display:none">
 			<ul>
@@ -220,51 +234,54 @@
                 <div id="holder_short"></div>
             </div>
             <div id="tab_long">
-                <div id="filters_long">
-                    <div id="encounter_long">
-                        <input type="checkbox" id="chkLongInpatient" onClick="updateFiltersLong()" checked/><label for="chkLongInpatient"> Inpatient </label>
-                        <input type="checkbox" id="chkLongOutpatient"  onClick="updateFiltersLong()" checked/><label for="chkLongOutpatient"> Outpatient </label>
-                        <input type="checkbox" id="chkLongAmbulatory" onClick="updateFiltersLong()" checked/><label for="chkLongAmbulatory"> Ambulatory </label>
+                <div id="wrapper_long">
+                    <div id="filters_long">
+                        <div id="encounter_long">
+                            <input type="checkbox" id="chkLongInpatient" onClick="updateFiltersLong()" checked/><label for="chkLongInpatient"> Inpatient </label>
+                            <input type="checkbox" id="chkLongAmbulatory" onClick="updateFiltersLong()" checked/><label for="chkLongAmbulatory"> Ambulatory </label>
+                        </div>
+                        <div id="site_long">
+                            <input type="checkbox" id="chkLongArm" onClick="updateFiltersLong()" checked/><label for="chkLongArm"> Arm </label>
+                            <input type="checkbox" id="chkLongLeg"  onClick="updateFiltersLong()" checked/><label for="chkLongLeg"> Leg </label>
+                        </div>
+                        <div id="position_long">
+                            <input type="checkbox" id="chkLongSitting" onClick="updateFiltersLong()" checked/><label for="chkLongSitting"> Sitting </label>
+                            <input type="checkbox" id="chkLongStanding"  onClick="updateFiltersLong()" checked/><label for="chkLongStanding"> Standing </label>
+                        </div>
+                        <div id="slider-long">
+                            <div id="label-range-long"></div>
+                            <div id="slider-range-long"></div>
+                        </div>
                     </div>
-                    <div id="site_long">
-                        <input type="checkbox" id="chkLongArm" onClick="updateFiltersLong()" checked/><label for="chkLongArm"> Arm </label>
-                        <input type="checkbox" id="chkLongLeg"  onClick="updateFiltersLong()" checked/><label for="chkLongLeg"> Leg </label>
-                    </div>
-                    <div id="position_long">
-                        <input type="checkbox" id="chkLongSitting" onClick="updateFiltersLong()" checked/><label for="chkLongSitting"> Sitting </label>
-                        <input type="checkbox" id="chkLongStanding"  onClick="updateFiltersLong()" checked/><label for="chkLongStanding"> Standing </label>
-                    </div>
+                    <div id="holder_long"></div>
                 </div>
-
-                <div id="label-range-long"></div>
-                <div id="slider-range-long"></div>
-                
-                <div id="holder_long"></div>
             </div>
             <div id="tab_table">
-                 <div id="filters_table">
-                    <div id="encounter_table">
-                        <input type="checkbox" id="chkTableInpatient" onClick="updateFiltersTable()" checked/><label for="chkTableInpatient"> Inpatient </label>
-                        <input type="checkbox" id="chkTableOutpatient"  onClick="updateFiltersTable()" checked/><label for="chkTableOutpatient"> Outpatient </label>
-                        <input type="checkbox" id="chkTableAmbulatory" onClick="updateFiltersTable()" checked/><label for="chkTableAmbulatory"> Ambulatory </label>
-                    </div>
-                    <div id="site_table">
-                        <input type="checkbox" id="chkTableArm" onClick="updateFiltersTable()" checked/><label for="chkTableArm"> Arm </label>
-                        <input type="checkbox" id="chkTableLeg"  onClick="updateFiltersTable()" checked/><label for="chkTableLeg"> Leg </label>
-                    </div>
-                    <div id="position_table">
-                        <input type="checkbox" id="chkTableSitting" onClick="updateFiltersTable()" checked/><label for="chkTableSitting"> Sitting </label>
-                        <input type="checkbox" id="chkTableStanding"  onClick="updateFiltersTable()" checked/><label for="chkTableStanding"> Standing </label>
-                    </div>
+                <div id="wrapper_table">
+                    <div id="filters_table">
+                        <div id="encounter_table">
+                            <input type="checkbox" id="chkTableInpatient" onClick="updateFiltersTable()" checked/><label for="chkTableInpatient"> Inpatient </label>
+                            <input type="checkbox" id="chkTableAmbulatory" onClick="updateFiltersTable()" /><label for="chkTableAmbulatory"> Ambulatory </label>
+                        </div>
+                        <div id="site_table">
+                            <input type="checkbox" id="chkTableArm" onClick="updateFiltersTable()" /><label for="chkTableArm"> Arm </label>
+                            <input type="checkbox" id="chkTableLeg"  onClick="updateFiltersTable()" checked/><label for="chkTableLeg"> Leg </label>
+                        </div>
+                        <div id="position_table">
+                            <input type="checkbox" id="chkTableSitting" onClick="updateFiltersTable()" checked/><label for="chkTableSitting"> Sitting </label>
+                            <input type="checkbox" id="chkTableStanding"  onClick="updateFiltersTable()" /><label for="chkTableStanding"> Standing </label>
+                        </div>
+                        <div id="slider-long">
+                            <div id="label-range-table"></div>
+                            <div id="slider-range-table"></div>
+                        </div>
+                    </div>               
+                    <div id="holder_table"></div>
                 </div>
-                
-                <div id="label-range-table"></div>
-                <div id="slider-range-table"></div>
-                
-                <div id="table_view"></div>
             </div>
 		</div>
 
         <p id="copy">BP Line Graph Prototype - v0.3</p>
+        </div>
     </body>
 </html>
