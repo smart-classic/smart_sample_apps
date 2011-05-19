@@ -1,0 +1,89 @@
+/**
+*  CSS styles for the the Blood Pressure Centiles SMART Application
+*
+*  Author: Nikolai Schwertner
+*  Revision history:
+*       2011-05-19 Cleaned up
+*/
+
+body {
+    background: #000;
+    color: #fff;
+    font: 62.5% "Trebuchet MS", sans-serif;
+    margin: 50px;
+}
+
+/* This section controls the positioning of the individual UI elements within the tabs */
+#tabs {display:none; width:720px;}
+#holder_short { padding-top: 5px; clear:both; width: 700px; height: 400px;}
+
+#encounter_long { position: relative; float: left; margin-top: 4px; }
+#site_long { position: relative; float: left; margin-top: 4px; }
+#position_long { position: relative; float: left; margin-top: 4px; }
+#slider-long { margin-left: 6px; position: relative; float: left; }
+#slider-range-long { width: 200px; margin-top: 4px;}
+#holder_long {  padding-top: 5px; clear:both;  width: 700px; height: 400px; }
+
+#filters_table { float: none; }
+#encounter_table { float: left; margin-top: 4px; }
+#site_table { float: left; margin-top: 4px; }
+#position_table { float: left; margin-top: 4px; }
+#slider-table { margin-left: 6px; float: left; }
+#slider-range-table { width: 200px; margin-top: 4px;}
+#holder_table { padding-top: 5px; clear:both; }
+
+/* Styling for the various in-page messages in the BPC app */
+
+#error {
+    font: 300 1.2em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+}
+
+#header {
+	font-family: verdana,arial,sans-serif;
+	font-size: 12px;
+    font-weight: bold;
+    display: none;
+}
+
+#copy {
+    font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+    right: 1em;
+    text-align: right;
+}
+#copy a {
+    color: #fff;
+}
+
+/* Styling for the table view */
+
+.tablelabel {
+	font-family: verdana,arial,sans-serif;
+	font-size:12px;
+    font-weight:bold;
+}
+
+table.nicetable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #a9c6c9;
+	border-collapse: collapse;
+}
+
+table.nicetable th {
+    text-align: left;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+    background-color:#c3dde0;
+}
+
+table.nicetable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+    background-color:#d4e3e5;
+}

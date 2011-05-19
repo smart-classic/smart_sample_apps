@@ -1,3 +1,5 @@
+// JS by: Josh Mandel
+
 var years_apart = function(d1, d2) {
  //console.log("NEWD");
  //console.log(parse_date(d1));
@@ -16,25 +18,3 @@ var years_apart = function(d1, d2) {
             }
 	    return dp;
 	};
-
-	  
-	var StateCheck = function(states) {
-          this.responses = {};
-	  this.callback = function(){};
-
-	  this.onDone = function(f) {
-	    this.callback = f;
-            return this;
-	  };
-
-	  this.done = function(newstate) {
-	    this.responses[newstate] = true;
-	    for (var i=0; i < states.length; i++) {
-	      if (this.responses[states[i]] !== true) 
-	        return;
-	    }
-            this.callback();
-	  };
-          return this;
-	};
-

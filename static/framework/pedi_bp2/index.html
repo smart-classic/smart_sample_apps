@@ -1,191 +1,119 @@
 <!DOCTYPE html>
+<!-- 
+/**
+*  Blood Pressure Centiles SMART Application
+*
+*  Developed by: Nikolai Schwertner
+*  Revision history:
+*       2011-05-19 Cleaned up the HTML code
+*/
+-->
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>BP Line Graph Prototype - v0.3</title>
-        <link rel="stylesheet" href="bp-screen.css" type="text/css" media="screen">
+        <title>Blood Pressure Centiles SMART Application</title>
+        <link rel="stylesheet" href="css/bpc-screen.css" type="text/css" media="screen">
         <link type="text/css" href="css/themes/custom/jquery.ui.all.css" rel="stylesheet" />
-        <!--<link rel="stylesheet" href="bp-print.css" type="text/css" media="print">-->
-        <script src='scripts/smart-api-page.js'></script>
+        <script src="js/smart/smart-api-page.js"></script>
+        <script src="js/lib/raphael.js"></script>
+		<script src="js/lib/jquery.js"></script>
+        <script src="js/lib/jquery-jtemplates.js"></script>
+        <script src="js/lib/jquery-ui-1.8.12.custom.min.js"></script>
+        <script src="js/lib/date.js"></script>
         <script src="js/cdc_height_tables.js"></script>
         <script src="js/nih_bp_tables.js"></script>
-        <script src="js/raphael.js"></script>
-		<script src="js/jquery.js"></script>
-        <script src="js/jquery-jtemplates.js"></script>
-        <script src="js/jquery-ui-1.8.12.custom.min.js"></script>
-        <script src="js/date.js"></script>
         <script src="js/util.js"></script>
         <script src="js/popup.js"></script>
-        <script src="line_graph.js"></script>
-		<style type="text/css">
-			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
-			.demoHeaders { margin-top: 2em; }
-            #holder_short { margin-top: 10px }
-            #encounter_long { position: relative; float: left; margin-top: 4px; }
-            #site_long { position: relative; float: left; margin-top: 4px; }
-            #position_long { position: relative; float: left; margin-top: 4px; }
-            #slider-long { margin-left: 6px; position: relative; float: left; }
-            #slider-range-long { width: 200px; margin-top: 4px;}
-            #holder_long {  padding-top: 5px; clear:both }
-            #filters_table { float: none }
-            #encounter_table { float: left; margin-top: 4px; }
-            #site_table { float: left; margin-top: 4px; }
-            #position_table { float: left; margin-top: 4px; }
-            #slider-table { margin-left: 6px; float: left; }
-            #slider-range-table { width: 200px; margin-top: 4px;}
-            #holder_table { padding-top: 5px; clear:both }
-		</style>
-        <script>       
-        var get_demographics = function() {
-            var dfd = $.Deferred();
-            SMART.DEMOGRAPHICS_get(function(demos) {
-            dfd.resolve(demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-                            .prefix('sp', 'http://smartplatforms.org/terms#')
-                            .where('?a foaf:givenName ?givenName')
-                            .where('?a foaf:familyName ?familyName')
-                            .where('?a foaf:gender ?gender')
-                            .where('?a sp:birthday ?birthday')
-                            .get(0));
+        <script src="js/bpc-config.js"></script>
+        <script src="js/bpc-data.js"></script>
+        <script src="js/bpc-filters.js"></script>
+        <script src="js/bpc-ui.js"></script>
+        <script src="js/bpc-graph.js"></script>
+        <script>
+            // Initiate the data retrieval, processing, and chart drawing
+            $.when(get_demographics(), get_vitals()).then( function (patient, vitals) {
+                initApp ( processData(patient, vitals) ); 
             });
-            return dfd.promise();
-        };
-              
-        var get_vitals_height = function() {
-            var dfd = $.Deferred();
-            var vitals_height = [];
-            
-            SMART.VITAL_SIGNS_get(function(vital_signs){	
-                vital_signs
-                    .where('?v dc:date ?vital_date')
-                    .where('?v sp:height ?h')
-                    .where('?h sp:value ?height')
-                    //.where('?h sp:unit m')
-                    .each(function(){vitals_height.push(this)});
-                dfd.resolve(vitals_height);
-            });
-            return dfd.promise();
-        };
-        
-        var get_vitals_bp = function() {
-            var dfd = $.Deferred();
-            var vitals_bp = [];
-            
-            SMART.VITAL_SIGNS_get(function(vital_signs){	
-                vital_signs
-                    .where('?v dc:date ?vital_date')
-                    .where('?v sp:encounter ?encounter')
-                    .where('?encounter sp:encounterType ?encounterType')
-                    .where('?encounterType sp:code ?code')
-                    .where('?v sp:bloodPressure ?bloodPressure')
-                    .where('?bloodPressure sp:systolic ?s')
-                    .where('?s sp:value ?systolic')
-                    //.where('?s sp:unit mm[Hg]')
-                    .where('?bloodPressure sp:diastolic ?d')
-                    .where('?d sp:value ?diastolic')
-                    //.where('?d sp:unit mm[Hg]')
-                    .where('?bloodPressure sp:bodyPosition ?bodyPosition')
-                    .where('?bodyPosition sp:code ?bodyPositionCode')
-                    .where('?bodyPosition dcterms:title ?bodyPositionTitle')
-                    .where('?bloodPressure sp:bodySite ?bodySite')
-                    .where('?bodySite sp:code ?bodySiteCode')
-                    .where('?bodySite dcterms:title ?bodySiteTitle')
-                    .each(function(){vitals_bp.push(this)});
-                dfd.resolve(vitals_bp);
-            });
-            return dfd.promise();
-        };
-
-	var process_vitals_data = function(p, vitals_height, vitals_bp) {
-
-        var age = years_apart(new Date().toISOString(), p.birthday.value);
-    
-        if (vitals_height.length == 0 || vitals_bp.lenght == 0) {
-            $("#error").text("Error: No vitals in the patient record");
-        } else if (age > 18) {
-            $("#error").text("Error:  " + SMART.record.full_name + " is not a pediatric patient (age " + Math.floor(age) + ")");
-        } else {
-            $("#error").text("").hide();
-
-            // Assume average baby height at birth of 50cm
-            var height_data = [{date: p.birthday.value, height:50}];
-            
-            for (var i = 0; i < vitals_height.length; i++) {
-                height_data.push({date: vitals_height[i].vital_date.value,
-                                  height: Math.round(vitals_height[i].height.value * 100)});
-            }
-
-            var patient = {
-                name: SMART.record.full_name,
-                birthdate: parse_date(p.birthday.value).toString('yyyy-MM-dd'),
-                sex: p.gender.value,
-                data: []
-            };
-            
-            for (var i = 0; i < vitals_bp.length; i++) {            
-                var mySite, myPosition, myEncounter;
-                
-                if (vitals_bp[i].bodySiteTitle.value == "Right arm") mySite = "Arm";
-                else if (vitals_bp[i].bodySiteTitle.value == "Left thigh") mySite = "Leg";
-                
-                if (vitals_bp[i].bodyPositionTitle.value == "Sitting") myPosition = "Sitting";
-                else if (vitals_bp[i].bodyPositionTitle.value == "Standing") myPosition = "Standing";
-                
-                if (vitals_bp[i].code.value == "http://smartplatforms.org/terms/code/encounterType#ambulatory") myEncounter = "Ambulatory";
-                else if (vitals_bp[i].code.value == "http://smartplatforms.org/terms/code/encounterType#inpatient") myEncounter = "Inpatient";
-
-                // Add code to update the patient data records with extrapolated height
-                // ...
-                // ... For now, here is a *very* inefficient function which picks the closest height data point.
-                var myHeight = function (recordDate) {            
-                    var closestHeight = height_data[0].height;
-                    var closestHeightDate = height_data[0].date;
-                    for (var j = 0; j < height_data.length; j++) {
-                        if ( Math.abs(years_apart(height_data[j].date, recordDate)) < Math.abs(years_apart(closestHeightDate, recordDate)) ) {
-                            var closestHeight = height_data[j].height;
-                            var closestHeightDate = height_data[j].date;
-                        }
-                    }
-                    return closestHeight;
-                } (vitals_bp[i].vital_date.value);
-                
-                patient.data.push ({timestamp: vitals_bp[i].vital_date.value, 
-                    height: myHeight,
-                    systolic: Math.round(vitals_bp[i].systolic.value),
-                    diastolic: Math.round(vitals_bp[i].diastolic.value), 
-                    site: mySite,
-                    position: myPosition, 
-                    encounter: myEncounter}
-                );
-            }
-            
-            patient.data.sort(function (a,b) {
-                      var x = a.timestamp;
-                      var y = b.timestamp;
-                      return ( (x<y) ? -1: ((x>y)?1:0));
-            });
-            
-            /*
-            height_data.sort(function (a,b) {
-                      var x = a.date;
-                      var y = b.date;
-                      return ( (x<y) ? -1: ((x>y)?1:0));
-            });
-            */
-            
-            // intialize Line Graph
-            initLG (patient);
-        }
-    };
-
-	$.when(get_demographics(), get_vitals_height(),get_vitals_bp()).then(process_vitals_data);
-    </script>
+        </script>
     </head>
     <body>
-    
-    <div id="main">
-        <div id="error" >Loading patient data. Please wait...</div>
-        <div id="header"></div>
-    
+
+        <div id="main">
+            <div id="error" >Loading patient data. Please wait...</div>
+            <div id="header"></div>
+            <div id="tabs">
+                <ul>
+                    <li><a href="#tab_short">Short Term View</a></li>
+                    <li><a href="#tab_long">Long Term View</a></li>
+                    <li><a href="#tab_table">Table View</a></li>
+                </ul>
+                <div id="tab_short">
+                    <div id="holder_short"></div>
+                </div>
+                <div id="tab_long">
+                    <div id="wrapper_long">
+                        <div id="filters_long">
+                            <div id="encounter_long">
+                                <input type="checkbox" id="chkLongInpatient" onClick="updateFiltersLong()" checked/>
+                                <label for="chkLongInpatient"> Inpatient </label>
+                                <input type="checkbox" id="chkLongAmbulatory" onClick="updateFiltersLong()" checked/>
+                                <label for="chkLongAmbulatory"> Ambulatory </label>
+                            </div>
+                            <div id="site_long">
+                                <input type="checkbox" id="chkLongArm" onClick="updateFiltersLong()" checked/>
+                                <label for="chkLongArm"> Arm </label>
+                                <input type="checkbox" id="chkLongLeg"  onClick="updateFiltersLong()" checked/>
+                                <label for="chkLongLeg"> Leg </label>
+                            </div>
+                            <div id="position_long">
+                                <input type="checkbox" id="chkLongSitting" onClick="updateFiltersLong()" checked/>
+                                <label for="chkLongSitting"> Sitting </label>
+                                <input type="checkbox" id="chkLongStanding"  onClick="updateFiltersLong()" checked/>
+                                <label for="chkLongStanding"> Standing </label>
+                            </div>
+                            <div id="slider-long">
+                                <div id="label-range-long"></div>
+                                <div id="slider-range-long"></div>
+                            </div>
+                        </div>
+                        <div id="holder_long"></div>
+                    </div>
+                </div>
+                <div id="tab_table">
+                    <div id="wrapper_table">
+                        <div id="filters_table">
+                            <div id="encounter_table">
+                                <input type="checkbox" id="chkTableInpatient" onClick="updateFiltersTable()" checked/>
+                                <label for="chkTableInpatient"> Inpatient </label>
+                                <input type="checkbox" id="chkTableAmbulatory" onClick="updateFiltersTable()" />
+                                <label for="chkTableAmbulatory"> Ambulatory </label>
+                            </div>
+                            <div id="site_table">
+                                <input type="checkbox" id="chkTableArm" onClick="updateFiltersTable()" />
+                                <label for="chkTableArm"> Arm </label>
+                                <input type="checkbox" id="chkTableLeg"  onClick="updateFiltersTable()" checked/>
+                                <label for="chkTableLeg"> Leg </label>
+                            </div>
+                            <div id="position_table">
+                                <input type="checkbox" id="chkTableSitting" onClick="updateFiltersTable()" checked/>
+                                <label for="chkTableSitting"> Sitting </label>
+                                <input type="checkbox" id="chkTableStanding"  onClick="updateFiltersTable()" />
+                                <label for="chkTableStanding"> Standing </label>
+                            </div>
+                            <div id="slider-long">
+                                <div id="label-range-table"></div>
+                                <div id="slider-range-table"></div>
+                            </div>
+                        </div>               
+                        <div id="holder_table"></div>
+                    </div>
+                </div>
+            </div>
+
+            <p id="copy">BPC SMART Application - v0.4</p>
+        </div>
+        
+        <!-- jTemplates template for the table view -->
         <div style="display:none"><textarea id="template" rows="0" cols="0"><!--
             {#template MAIN}
                 <p class="tablelabel">{$T}</p>
@@ -223,65 +151,5 @@
                 </tr>
             {#/template ROW}
         --></textarea></div>
-       
-    	<div id="tabs" style="display:none">
-			<ul>
-                <li><a href="#tab_short">Short Term View</a></li>
-                <li><a href="#tab_long">Long Term View</a></li>
-				<li><a href="#tab_table">Table View</a></li>
-			</ul>
-            <div id="tab_short">
-                <div id="holder_short"></div>
-            </div>
-            <div id="tab_long">
-                <div id="wrapper_long">
-                    <div id="filters_long">
-                        <div id="encounter_long">
-                            <input type="checkbox" id="chkLongInpatient" onClick="updateFiltersLong()" checked/><label for="chkLongInpatient"> Inpatient </label>
-                            <input type="checkbox" id="chkLongAmbulatory" onClick="updateFiltersLong()" checked/><label for="chkLongAmbulatory"> Ambulatory </label>
-                        </div>
-                        <div id="site_long">
-                            <input type="checkbox" id="chkLongArm" onClick="updateFiltersLong()" checked/><label for="chkLongArm"> Arm </label>
-                            <input type="checkbox" id="chkLongLeg"  onClick="updateFiltersLong()" checked/><label for="chkLongLeg"> Leg </label>
-                        </div>
-                        <div id="position_long">
-                            <input type="checkbox" id="chkLongSitting" onClick="updateFiltersLong()" checked/><label for="chkLongSitting"> Sitting </label>
-                            <input type="checkbox" id="chkLongStanding"  onClick="updateFiltersLong()" checked/><label for="chkLongStanding"> Standing </label>
-                        </div>
-                        <div id="slider-long">
-                            <div id="label-range-long"></div>
-                            <div id="slider-range-long"></div>
-                        </div>
-                    </div>
-                    <div id="holder_long"></div>
-                </div>
-            </div>
-            <div id="tab_table">
-                <div id="wrapper_table">
-                    <div id="filters_table">
-                        <div id="encounter_table">
-                            <input type="checkbox" id="chkTableInpatient" onClick="updateFiltersTable()" checked/><label for="chkTableInpatient"> Inpatient </label>
-                            <input type="checkbox" id="chkTableAmbulatory" onClick="updateFiltersTable()" /><label for="chkTableAmbulatory"> Ambulatory </label>
-                        </div>
-                        <div id="site_table">
-                            <input type="checkbox" id="chkTableArm" onClick="updateFiltersTable()" /><label for="chkTableArm"> Arm </label>
-                            <input type="checkbox" id="chkTableLeg"  onClick="updateFiltersTable()" checked/><label for="chkTableLeg"> Leg </label>
-                        </div>
-                        <div id="position_table">
-                            <input type="checkbox" id="chkTableSitting" onClick="updateFiltersTable()" checked/><label for="chkTableSitting"> Sitting </label>
-                            <input type="checkbox" id="chkTableStanding"  onClick="updateFiltersTable()" /><label for="chkTableStanding"> Standing </label>
-                        </div>
-                        <div id="slider-long">
-                            <div id="label-range-table"></div>
-                            <div id="slider-range-table"></div>
-                        </div>
-                    </div>               
-                    <div id="holder_table"></div>
-                </div>
-            </div>
-		</div>
-
-        <p id="copy">BP Line Graph Prototype - v0.3</p>
-        </div>
     </body>
 </html>
