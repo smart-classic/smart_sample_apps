@@ -100,7 +100,7 @@ var get_vitals = function() {
 };
 
 /**
-* Registers a callback for obtaining the vitals data from SMART (asynchronous)
+* Constructs a new patient object from the data provided
 *
 * @param {Object} demographics Array of objects. Parameters include:
 *                                   birthday as date, 
