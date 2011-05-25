@@ -22190,6 +22190,12 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
 		this.cookie_name ='smart_oauth_cookie' + message.activity_id;               
 		document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
+		var cookie_was_set = document.cookie.match(this.cookie_name);
+		if (!cookie_was_set) {
+		    $("body").prepend("<b>Error: Could not set SMART Authorization cookie.</b><br>\
+                                          Please ensure that your browser accepts third-party cookies \
+                                          or white-list the domain for <i><nobr>" + window.location+"</nobr></i>");
+		}
             }
 
     	var _this = this;
