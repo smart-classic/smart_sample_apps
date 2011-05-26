@@ -79,18 +79,14 @@ var get_vitals = function() {
             .where('?d sp:unit \"mm[Hg]\"')
             .where('?bloodPressure sp:bodyPosition ?bodyPosition')
             .where('?bodyPosition sp:code ?bodyPositionCode')
-            .where('?bodyPosition dcterms:title ?bodyPositionTitle')
             .where('?bloodPressure sp:bodySite ?bodySite')
             .where('?bodySite sp:code ?bodySiteCode')
-            .where('?bodySite dcterms:title ?bodySiteTitle')
             .each(function(){vitals.bpData.push({
                 vital_date: this.vital_date.value,
                 systolic: this.systolic.value,
                 diastolic: this.diastolic.value,
                 bodyPositionCode: this.bodyPositionCode.value,
                 bodySiteCode: this.bodySiteCode.value,
-                bodyPositionTitle: this.bodyPositionTitle.value,
-                bodySiteTitle: this.bodySiteTitle.value,
                 encounterTypeCode: this.code.value
             })});
             
