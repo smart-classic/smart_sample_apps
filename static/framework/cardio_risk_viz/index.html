@@ -23,7 +23,6 @@
         var report_missing_data = function(p){
           var a = [];
           if (p.gender.value != 'male' && p.gender.value != 'female') a.push('Gender is required')
-          if (p.age.value < 45 || p.age.value > 80) a.push('Age must be between 45 and 80 years old') 
           if (p.sbp.value < 105 || p.sbp.value > 200) a.push('Systolic blood pressure must be between 105 and 200mm/Hg')
           if (p.cholesterol.value < 140 || p.cholesterol.value > 400) a.push('Total cholesterol must be between 140 and 400mm/dL')
           if (p.HDL.value < 30 || p.HDL.value > 150) a.push('HDL cholesterol must be between 30 and 150mm/dL')
@@ -135,6 +134,11 @@
             alert('The risk score is only valid for ages less than 80 years old.\n\nShowing results based on age of 80 years;');
             p.age.value = 80;
           }
+          else if (p.age.value < 45) {
+            alert('The risk score is only valid for ages above 44 years old.\n\nShowing results based on age of 45 years;');
+            p.age.value = 45;
+          }
+
 
           SMART.LAB_RESULTS_get(function(labs){
             labs.where("?l rdf:type sp:LabResult")
