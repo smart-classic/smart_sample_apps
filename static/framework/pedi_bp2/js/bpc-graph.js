@@ -18,14 +18,10 @@
 //       [ ] Test and revise
 
 // The canvases for the short and long term graphs
-var r_short, r_long;
+var r_short, r_long_s, r_long_d;
 
-/**
-* Document onLoad event handler (jQuery style)
-*/  
-$(document).ready(function() {
-    // Add things to do upon document loading
-}); // end document.ready handler
+var evenSpacing = false;
+
 
 /**
 * Initializes the BPC app with a new patient
@@ -34,18 +30,28 @@ $(document).ready(function() {
 */
 var initApp = function (newPatient) {
 
-    // Update the global patient handle
-    patient = newPatient;
-    
-    // Initialize the patient object
-    initPatient (patient);
-    
-    // Draw the views
-    $("#tabs").show();
-    drawViews (patient,zone);
-    
-    // Initialize the UI
-    initUI ();
+    if (newPatient) {
+        // Update the global patient handle
+        patient = newPatient;
+        
+        // Initialize the patient object
+        initPatient (patient);
+        
+        // Draw the views
+        $("#tabs").show();
+        drawViews (patient,zone);
+        
+        // Initialize the UI
+        initUI ();
+        
+        var i = patient.data.length - 1;
+        if (i >= 0) initCalculator ({
+                       age: patient.data[i].age, 
+                       sex: patient.sex, 
+                       height: patient.data[i].height, 
+                       systolic: patient.data[i].systolic, 
+                       diastolic: patient.data[i].diastolic});
+    }
 }
 
 /**
@@ -58,11 +64,9 @@ var drawViews = function (patient, zone) {
 
     // Load toggle filter settings from the page
     loadFilterSettingsLong ();
-    loadFilterSettingsTable ();
 
     // Apply the tag filters 
     var pLong = applyLongFilters (patient); 
-    var pTable = applyTableFilters (patient);
 
     // Clear the canvases
     clearGraphs();
@@ -71,10 +75,11 @@ var drawViews = function (patient, zone) {
     drawGraph (true, patient.recentEncounters(3), zone);
     
     // Draw the long term view
-    drawGraph (false, pLong, zone);
+    drawGraph (false, pLong, zone, true);
+    drawGraph (false, pLong, zone, false);
     
     // Render the table view
-    printTableView ("holder_table", pTable);
+    printTableView ("holder_table", pLong);
 };
 
 /**
@@ -92,7 +97,8 @@ var redrawViewLong = function (patient, zone) {
     clearGraphsLong();
     
     // Draw the long term view graph
-    drawGraph (false, p, zone);
+    drawGraph (false, p, zone, true);
+    drawGraph (false, p, zone, false);
 };
 
 /**
@@ -104,7 +110,7 @@ var redrawViewLong = function (patient, zone) {
 var redrawViewTable = function (patient) {
 
     // Apply filters 
-    var p = applyTableFilters (patient);
+    var p = applyLongFilters (patient);
     
     // Generate the table output
     printTableView ("holder_table", p);
@@ -129,7 +135,8 @@ var clearGraphsShort = function () {
 * Clears the long term view canvas
 */
 var clearGraphsLong = function () {
-    if (r_long) r_long.clear();
+    if (r_long_s) r_long_s.clear();
+    if (r_long_d) r_long_d.clear();
 };
 
 /**
@@ -139,12 +146,15 @@ var clearGraphsLong = function () {
 * @param {Object} patient The patient data object
 * @param {Object} zone The zones object
 */
-var drawGraph = function (shortTerm, patient, zone) {
+var drawGraph = function (shortTerm, patient, zone, systolic) {
 
     var r; // handle for the drawing canvas
 
     // Load the appropriate settings object
-    var s = getSettings (shortTerm);
+    var s = getSettings (shortTerm, systolic);
+    
+    // Don't draw in hidden canvas (to avoid Raphael text label placement bug)
+    if ($("#" + s.divID).is(':hidden')) {return;}
     
     // Calculate some view specific settings
     if (!shortTerm) {
@@ -174,21 +184,27 @@ var drawGraph = function (shortTerm, patient, zone) {
     
     // Update the local canvas handle
     if (shortTerm) r = r_short;
-    else r = r_long;
+    r = r_long_s;
+    //else if (systolic) r = r_long_s;
+    //else r = r_long_d;
     
     // If needed, construct a new canvas object
     if (!r) {
         r = Raphael(s.divID, s.width, s.height);
         if (shortTerm) r_short = r;
-        else r_long = r;
+        else r_long_s = r;
+        //else if (systolic) r_long_s = r;
+        //else r_long_d = r;
     }
         
     // Draw the grid
     r.drawGrid(s.leftgutter + .5, s.topgutter + .5, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, s.gridCols, s.gridRows, s.gridColor);
       
     // Draw the percentiles axis (needs to be reworked as a function and tested for correct scaling)
-    r.drawVAxisLabels (s.leftgutter - 15, s.topgutter + .5,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel, s.txt2);
-       
+    r.drawVAxisLabels (s.leftgutter - 15, s.topgutter + .5,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel, s.txt2, shortTerm);
+    
+    if (evenSpacing && (!shortTerm && !systolic)) r.drawHAxisLabels (s.leftgutter, s.height - 70, s.width - s.leftgutter - s.rightgutter, 5, patient.startUnixTime, patient.endUnixTime, s.txt2);
+    
     // Draw the zones
     if (!shortTerm) r.drawZones(s.leftgutter + .5, s.topgutter + .5, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zone);
     
@@ -198,24 +214,32 @@ var drawGraph = function (shortTerm, patient, zone) {
         label = r.set(),
         //is_label_visible = false,
         //leave_timer,
-        blanket = r.set();
+        blanket = r.set(),
+        legendX = s.width - s.rightgutter - 3,
+        legendY = s.height - s.bottomgutter - 3;
 
     // Initialize popup
-    label.push(r.text(60, 12, "22 Sep 2008 - Inpatient").attr(s.txt1));
-    label.push(r.text(60, 27, "BP: 96/75 mmHg (79%/63%)").attr(s.txt));
-    label.push(r.text(60, 42, "5 year-old, 75 cm").attr(s.txt));
-    label.push(r.text(60, 57, "Other: Arm, Sitting").attr(s.txt));
+    label.push(r.text(20, 12, "22 Sep 2008 - Inpatient").attr(s.txt1).attr({"text-anchor":"start"}));
+    label.push(r.text(45, 27, "5y 8m, 75 cm, male").attr(s.txt).attr({"text-anchor":"start"}));
+    label.push(r.text(45, 42, "96/75 mmHg (79%/63%)").attr(s.txt).attr({"text-anchor":"start"}));
+    label.push(r.text(45, 57, "Arm, Sitting, Auscultation").attr(s.txt).attr({"text-anchor":"start"}));
+    label.push(r.text(40, 27, "Patient:").attr(s.txt3).attr({"text-anchor":"end"}));
+    label.push(r.text(40, 42, "BP:").attr(s.txt3).attr({"text-anchor":"end"}));
+    label.push(r.text(40, 57, "Other:").attr(s.txt3).attr({"text-anchor":"end"}));
     label.hide();
-    var frame = r.popup(100, 100, label, "right").attr({fill: "#000", stroke: "#666", "stroke-width": 2, "fill-opacity": .9}).hide();  
+    var frame = r.popup(100, 100, label, "right").attr({fill: "#000", stroke: "#666", "stroke-width": 2, "fill-opacity": .8}).hide();  
      
     // Initialize the two path arrays (SVG path format)
     var pS = [], pD = [];
+      
+    var minDX = 30;
+    var lastX;
       
     // Build the line graph and draw the data points
     for (var i = 0, ii = patient.data.length; i < ii; i++) {     
 
         // Method for drawing a dot on the plane
-        var drawDot = function (x, y, percentile, data) {
+        var drawDot = function (x, y, percentile, data, gender) {
         
             // Get the correct color hue for the dot
             var colorhue = getDotColorhue (zone, percentile);
@@ -236,15 +260,18 @@ var drawGraph = function (shortTerm, patient, zone) {
                 //clearTimeout(leave_timer);
                 
                 // Display the label box
+                label[0].attr({text: data.date + " - " + data.encounter});//.stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, animation_duration * is_label_visible);
+                label[1].attr({text: getYears(data.age) + "y " + getMonths(data.age) + "m, " + data.height + " cm, " + gender});//.show().stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, animation_duration * is_label_visible);
+                label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.sPercentile + "%/" + data.dPercentile + "%)"});//.show().stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, animation_duration * is_label_visible);
+                label[3].attr({text: data.site + ", " + data.position + ", " + data.method});//.show().stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, animation_duration * is_label_visible);
+                
+                var animation_duration = 200; //milliseconds
                 var side = "right";
                 if (x + frame.getBBox().width > s.width) side = "left";
                 var ppp = r.popup(x, y, label, side, 1);
-                //var animation_duration = 200; //milliseconds
-                frame.attr({path: ppp.path}).show();//.stop().animate({path: ppp.path}, animation_duration * is_label_visible);
-                label[0].attr({text: data.date + " - " + data.encounter}).translate(ppp.dx, ppp.dy).show();//.stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, animation_duration * is_label_visible);
-                label[1].attr({text: "BP: " + data.systolic + "/" + data.diastolic + " mmHg (" + data.sPercentile + "%/" + data.dPercentile + "%)"}).translate(ppp.dx, ppp.dy).show();//.show().stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, animation_duration * is_label_visible);
-                label[2].attr({text: data.age + " year-old, " + data.height + " cm"}).translate(ppp.dx, ppp.dy).show();//.show().stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, animation_duration * is_label_visible);
-                label[3].attr({text: "Other: " + data.site + ", " + data.position}).translate(ppp.dx, ppp.dy).show();//.show().stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, animation_duration * is_label_visible);
+                label.translate(ppp.dx, ppp.dy).attr({opacity: 0}).show().stop().animateWith(frame, {opacity: 1}, animation_duration); // animation_duration * is_label_visible);
+                //label.show();
+                frame.attr({path: ppp.path}).attr({opacity: 0}).show().stop().animate({opacity: 1}, animation_duration);// * is_label_visible);
                 //is_label_visible = true;
                 
                 // Size the dot up
@@ -269,19 +296,22 @@ var drawGraph = function (shortTerm, patient, zone) {
             var x = Math.round (scale (patient.data[i].unixTime,patient.startUnixTime,patient.endUnixTime,s.startX,s.endX));
             
             // Build the two path increments for the systolic and diastolic graphs
-            var pathAdvance = function (first, x, percentile) { 
+            var pathAdvance = function (first, x, percentile, flag) { 
                 var path = [];
                 var y = Math.round(s.height - s.bottomgutter - s.Y * percentile);
                 if (first) path = ["M", x, y];
                 path = path.concat(["L", x, y]);
-                drawDot (x, y, percentile, patient.data[i]);  // draw the data point circle
+                if (flag) drawDot (x, y, percentile, patient.data[i], patient.sex);  // draw the data point circle
                 return path;
             };
-            pS = pS.concat (pathAdvance (!i, x, patient.data[i].sPercentile));
-            pD = pD.concat (pathAdvance (!i, x, patient.data[i].dPercentile));
+            pS = pS.concat (pathAdvance (!i, x, patient.data[i].sPercentile, systolic));
+            pD = pD.concat (pathAdvance (!i, x, patient.data[i].dPercentile, !systolic));
 
-            // Draw the corresponding date text label beneath the X axis
-            r.text(x + 15, s.height - 70, patient.data[i].date).attr(s.txt2).rotate(60).translate(0, 40).toBack();
+            if (!evenSpacing && !systolic && (!lastX || (x - lastX) >= minDX)) {
+                // Draw the corresponding date text label beneath the X axis
+                r.text(x + 15, s.height - 70, patient.data[i].date).attr(s.txt2).rotate(60).translate(0, 40).toBack();
+                lastX = x;
+            }
         } else {
             // Calculate the x coordinate for this data point
             var x,dx;
@@ -300,7 +330,7 @@ var drawGraph = function (shortTerm, patient, zone) {
             // Draw the pair of circles for the blood pressure reading
             var spawnCircle = function (x, value, percentile) { 
                 var y = Math.round(s.height - s.bottomgutter - s.Y * value);
-                drawDot (x, y, percentile, patient.data[i]);  // draw the data point circle
+                drawDot (x, y, percentile, patient.data[i], patient.sex);  // draw the data point circle
             };
             spawnCircle (x, patient.data[i].diastolic, patient.data[i].dPercentile);
             spawnCircle (x, patient.data[i].systolic, patient.data[i].sPercentile);
@@ -312,14 +342,54 @@ var drawGraph = function (shortTerm, patient, zone) {
     
     // Draw the two line graphs
     if (!shortTerm && pS.length > 0 && pD.length > 0) {
-        pathS.attr({path: pS});
-        pathD.attr({path: pD});
+        if (systolic) pathS.attr({path: pS});
+        else pathD.attr({path: pD});
     }
     
     // Bring the popup box and the mouse over triggers to the front
     frame.toFront();
-    for (var i = 0; i < label.length; i++) label[i].toFront();
+    label.toFront();
     blanket.toFront();
+    
+    if (!shortTerm) {
+        var mytext;
+        if (systolic) mytext = "Systolic";
+        else mytext = "Diastolic";
+        r.text(s.width - s.rightgutter + 20, Math.round(s.topgutter + ((s.height-s.topgutter-s.bottomgutter)/2)), mytext).attr({font: '20px Helvetica, Arial', fill: "#555"}).rotate(90);
+    }
+    
+            if (shortTerm || (!shortTerm && !systolic)) {
+            var legend = r.getLegend (legendX,legendY,zone,s);
+    
+            // Generate a mouse over rectangle (invisible)
+            var legendFrame = r.rect (legendX-20, legendY-20, 20, 20, 10).attr({color: "#000", fill: "#000", stroke: "#444", "stroke-width": 2, opacity: .8})
+            var legendBlanket = r.rect (legendX-20, legendY-20, 20, 20).attr({fill: "#fff", opacity: 0});
+            var legendL = r.text(legendX-10, legendY-10, "i").attr({font: '14px Times New Roman', "font-weight":"bold", "font-style": "italic", fill: "#555"});
+            
+            // Event handlers for the mouse over zone
+            var animation_duration = 200; //milliseconds
+            legendBlanket.hover(function () {
+                legendBlanket.attr({x: legendX-160, y: legendY-150, width: 160, height: 150});
+                legendFrame.stop().animate({x: legendX-160, y: legendY-150, width: 160, height: 150, r: 10, fill: "#000", stroke: "#444"}, animation_duration);
+                legend.stop().animate({opacity: 1}, animation_duration);
+                legendL.stop().animate({opacity: 0}, animation_duration);
+            }, function () {
+                legendBlanket.attr({x: legendX-20, y: legendY-20, width: 20, height: 20});
+                legendL.stop().animate({opacity: 1}, animation_duration);
+                legend.stop().animate({opacity: 0}, animation_duration);;
+                legendFrame.stop().animate({x: legendX-20, y: legendY-20, width: 20, height: 20, r: 10, fill: "#000", stroke: "#444"}, animation_duration);
+            });
+                        
+            legendFrame.toFront();
+            legendL.toFront();
+            legend.toFront();
+            
+            
+            blanket.toFront();
+            
+            legendBlanket.toFront();
+            legend.attr({opacity: 0}).show();
+            }
 };
 
 /**
@@ -342,13 +412,33 @@ Raphael.fn.drawGrid = function (x, y, w, h, wv, hv, color) {
 /**
 * Draws the vertical axis labels
 */
-Raphael.fn.drawVAxisLabels = function (x, y, h, hv, maxValue, axisLabel, styling) {
+Raphael.fn.drawVAxisLabels = function (x, y, h, hv, maxValue, axisLabel, styling, all) {
     var stepDelta = h / hv;
-    for (var i = 0; i <= hv; i++) {
-        var label = maxValue - i*(maxValue / hv);
-        this.text(x, Math.round(y + i * stepDelta), label).attr(styling).toBack();
+    if (all) {
+        for (var i = 0; i <= hv; i++) {
+            var label = maxValue - i*(maxValue / hv);
+            this.text(x, Math.round(y + i * stepDelta), label).attr(styling).toBack();
+        }
+    } else {
+        for (var i = 1; i < hv; i++) {
+            var label = maxValue - i*(maxValue / hv);
+            this.text(x, Math.round(y + i * stepDelta), label).attr(styling).toBack();
+        }
     }
-    this.text(x, Math.round(y - 20), axisLabel).attr(styling).toBack();
+    if (axisLabel && all) this.text(x, Math.round(y - 20), axisLabel).attr(styling).toBack();
+    if (axisLabel && !all) this.text(x, Math.round(y - 10), axisLabel).attr(styling).toBack();
+};
+
+/**
+* Draws the horizotal axis labels
+*/
+Raphael.fn.drawHAxisLabels = function (x, y, w, wv, minDate, maxDate, styling) {
+    var stepDelta = w / wv;
+    var stepGamma = (maxDate - minDate) / wv;
+    for (var i = 0; i <= wv; i++) {
+        var label = parse_date (minDate + i*stepGamma).toString("MMM yyyy");
+        this.text(Math.round(x + i * stepDelta) + 10 , y-5, label).attr(styling).rotate(60).translate(0, 40).toBack();
+    }
 };
 
 /**
@@ -362,6 +452,28 @@ Raphael.fn.drawZones = function (x, y, w, h, zone) {
         this.rect(x + .5, currentY + .5, w,zoneH).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zone[i].colorhue, .9, .8] + ")", opacity: zone[i].opacity}).toBack();
         currentY = currentY + zoneH;
     }
+};
+
+/**
+* Draws the legend
+*/
+Raphael.fn.getLegend = function (x, y, zone, settings) {
+    
+    var legend = this.set();
+    var width = 160, height = 150;
+    
+    //legend.push(this.rect (x, y, 160, 150, 10).attr({color: "#000", fill: "#000", stroke: "#444", opacity: .8}));
+    legend.push(this.text(x - width + 35, y - height + 15, "Legend").attr({font: '12px Helvetica, Arial', fill: "#555"}));
+    
+    for (var i = zone.length - 1; i >= 0; i--) {
+        colorhue = zone[i].colorhue;
+        legend.push(this.circle(x - width + 20, y - height + (5-i)*24 + 10, 6).attr({color: "hsb(" + [colorhue, .8, 1] + ")", fill: "hsb(" + [colorhue, .5, .4] + ")", stroke: "hsb(" + [colorhue, .5, 1] + ")", "stroke-width": 2}));
+        legend.push(this.text(x - width + 36, y - height + (5-i)*24 + 10, zone[i].definition).attr({font: '10px Helvetica, Arial', fill: "#fff", "text-anchor": "start"}));
+    }
+    
+    legend.hide();
+    
+    return legend;
 };
 
 

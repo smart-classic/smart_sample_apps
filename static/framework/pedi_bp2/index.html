@@ -5,6 +5,7 @@
 *
 *  Developed by: Nikolai Schwertner
 *  Revision history:
+*       2011-05-26 Added Josh's calculator code
 *       2011-05-19 Cleaned up the HTML code
 */
 -->
@@ -37,24 +38,30 @@
         </script>
     </head>
     <body>
-
         <div id="main">
+            <div id="headings">
+                <table width="786">
+                <tr><td align="left" valign="center"><div id="title">Blood Pressure Centiles SMART Application</div></td>
+                <td align="right">
+                <div id="logo"><a href="http://www.smartplatforms.org/" target="_blank"><img src="images/smart-logo.png" border="0" width="65" height="40" alt="SMART Logo" /></a></div>
+                </td></tr></table>
+            </div>
             <div id="error" >Loading patient data. Please wait...</div>
-            <div id="header"></div>
             <div id="tabs">
                 <ul>
                     <li><a href="#tab_short">Short Term View</a></li>
                     <li><a href="#tab_long">Long Term View</a></li>
                     <li><a href="#tab_table">Table View</a></li>
+					<li><a href="#tab_calculator">Calculator</a></li>
                 </ul>
                 <div id="tab_short">
                     <div id="holder_short"></div>
                 </div>
                 <div id="tab_long">
-                    <div id="wrapper_long">
-                        <div id="filters_long">
+                    <div id="wrapper_long" class="tab_wrapper">
+                        <div id="filters">
                             <div id="encounter_long">
-                                <input type="checkbox" id="chkLongInpatient" onClick="updateFiltersLong()" checked/>
+                                <input type="checkbox" id="chkLongInpatient" onClick="updateFiltersLong()" />
                                 <label for="chkLongInpatient"> Inpatient </label>
                                 <input type="checkbox" id="chkLongAmbulatory" onClick="updateFiltersLong()" checked/>
                                 <label for="chkLongAmbulatory"> Ambulatory </label>
@@ -62,14 +69,20 @@
                             <div id="site_long">
                                 <input type="checkbox" id="chkLongArm" onClick="updateFiltersLong()" checked/>
                                 <label for="chkLongArm"> Arm </label>
-                                <input type="checkbox" id="chkLongLeg"  onClick="updateFiltersLong()" checked/>
+                                <input type="checkbox" id="chkLongLeg"  onClick="updateFiltersLong()" />
                                 <label for="chkLongLeg"> Leg </label>
                             </div>
                             <div id="position_long">
                                 <input type="checkbox" id="chkLongSitting" onClick="updateFiltersLong()" checked/>
                                 <label for="chkLongSitting"> Sitting </label>
-                                <input type="checkbox" id="chkLongStanding"  onClick="updateFiltersLong()" checked/>
+                                <input type="checkbox" id="chkLongStanding"  onClick="updateFiltersLong()" />
                                 <label for="chkLongStanding"> Standing </label>
+                            </div>
+                            <div id="method_long">
+                                <input type="checkbox" id="chkLongAuscultation" onClick="updateFiltersLong()" checked/>
+                                <label for="chkLongAuscultation"> Auscultation </label>
+                                <input type="checkbox" id="chkLongMachine"  onClick="updateFiltersLong()" />
+                                <label for="chkLongMachine"> Machine </label>
                             </div>
                             <div id="slider-long">
                                 <div id="label-range-long"></div>
@@ -80,37 +93,80 @@
                     </div>
                 </div>
                 <div id="tab_table">
-                    <div id="wrapper_table">
-                        <div id="filters_table">
-                            <div id="encounter_table">
-                                <input type="checkbox" id="chkTableInpatient" onClick="updateFiltersTable()" checked/>
-                                <label for="chkTableInpatient"> Inpatient </label>
-                                <input type="checkbox" id="chkTableAmbulatory" onClick="updateFiltersTable()" />
-                                <label for="chkTableAmbulatory"> Ambulatory </label>
-                            </div>
-                            <div id="site_table">
-                                <input type="checkbox" id="chkTableArm" onClick="updateFiltersTable()" />
-                                <label for="chkTableArm"> Arm </label>
-                                <input type="checkbox" id="chkTableLeg"  onClick="updateFiltersTable()" checked/>
-                                <label for="chkTableLeg"> Leg </label>
-                            </div>
-                            <div id="position_table">
-                                <input type="checkbox" id="chkTableSitting" onClick="updateFiltersTable()" checked/>
-                                <label for="chkTableSitting"> Sitting </label>
-                                <input type="checkbox" id="chkTableStanding"  onClick="updateFiltersTable()" />
-                                <label for="chkTableStanding"> Standing </label>
-                            </div>
-                            <div id="slider-long">
-                                <div id="label-range-table"></div>
-                                <div id="slider-range-table"></div>
-                            </div>
-                        </div>               
+                    <div id="wrapper_table" class="tab_wrapper">
                         <div id="holder_table"></div>
                     </div>
                 </div>
+				<div id="tab_calculator">
+					<div id="calculator_main">
+                        <div id='result'>
+                          <table>
+                        <tr><th>Systolic</th><th></th><th>Diastolic</th></tr>
+                        <tr>
+                          <td><span class="spct"></span>%</td>
+                          <td><span class="slash">/</span></td>
+                          <td><span class="dpct"></span>%</td>
+                        </tr>
+                          </table>
+                        </div>
+
+                        <br clear="both"/>
+                        <table id='bp_table'>
+                        </table>
+
+                        <form id="input" method="GET" action="#" data-ajax="false">
+
+                          <table>
+                            <tr>
+                                <td class="inputLabel"><label for="add_systolic">Systolic BP (mmHg)</label></td>
+                                <td><input type="number" name="add_systolic2" id="add_systolic" value="0" min="0" max="200" size="2"  /></td>
+                            </tr>
+                            <tr>
+                                <td class="inputLabel"><label for="add_diastolic">Diastolic BP (mmHg)</label></td>
+                                <td><input type="number" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200" size="2" /></td>
+                            </tr>
+                            <tr>
+                                <td class="inputLabel"><label for="add_age">Age (years)</label></td>
+                                <td><input type="number" name="name" id="add_age" value="0" min="0" max="18" size="2" autofocus/></td>
+                            </tr>
+                            <tr>
+                                <td class="inputLabel"><label for="add_age_months"> + Age (months)</label></td>
+                                <td><input type="number" name="name" id="add_age_months" value="0" min="0" max="11" size="2" /></td>
+                            </tr>
+                            <tr>
+                                <td class="inputLabel"><label for="add_height">Height (cm)</label></td>
+                                <td><input type="number" name="add_height" id="add_height" value="0" min="0" max="200" size="2" /></td>
+                            </tr>
+                          </table>
+                         
+                          <div id="gender_select" data-role="fieldcontain"> 
+                            <fieldset data-role="controlgroup" data-type="horizontal"> 
+                              <legend>Gender</legend> 
+                              <input type="radio" name="add_gender" id="add_male" value="male" checked="checked" /> 
+                              <label for="add_male">Male</label> 
+
+                              <input type="radio" name="add_gender" id="add_female" value="female" /> 
+                              <label for="add_female">Female</label> 
+                            </fieldset> 
+                          </div> 
+
+                        </form>
+                    </div>
+                    <div id="calculator_thresholds">
+                        <div id='result2'>
+                          <table>
+                            <tr><th>Thresholds</th></tr>
+                            <tr>
+                              <td><span id="calculator_thresholds_out"></span></td>
+                            </tr>
+                          </table>
+                        </div>
+                    </div>
+                    <div id="clearall">&nbsp;</div>
+                </div>
             </div>
 
-            <p id="copy">BPC SMART Application - v0.4</p>
+            <p id="copy">v0.5</p>
         </div>
         
         <!-- jTemplates template for the table view -->
@@ -134,6 +190,7 @@
                     <th>Percentiles</th>
                     <th>Site</th>
                     <th>Position</th>
+                    <th>Method</th>
                     <th>Encounter</th>
                 </tr>
             {#/template HEAD}
@@ -141,12 +198,13 @@
             {#template ROW}
                 <tr>
                     <td>{$T.date}</td>
-                    <td>{$T.age} year-old</td>
+                    <td>{getYears($T.age)}y {getMonths($T.age)}m</td>
                     <td>{$T.height} cm</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
                     <td>{$T.sPercentile}%/{$T.dPercentile}%</td>
                     <td>{$T.site}</td>
                     <td>{$T.position}</td>
+                    <td>{$T.method}</td>
                     <td>{$T.encounter}</td>
                 </tr>
             {#/template ROW}

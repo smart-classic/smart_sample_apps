@@ -81,12 +81,15 @@ var get_vitals = function() {
             .where('?bodyPosition sp:code ?bodyPositionCode')
             .where('?bloodPressure sp:bodySite ?bodySite')
             .where('?bodySite sp:code ?bodySiteCode')
+            .where('?bloodPressure sp:method ?method')
+            .where('?method sp:code ?methodCode')
             .each(function(){vitals.bpData.push({
                 vital_date: this.vital_date.value,
                 systolic: this.systolic.value,
                 diastolic: this.diastolic.value,
                 bodyPositionCode: this.bodyPositionCode.value,
                 bodySiteCode: this.bodySiteCode.value,
+                methodCode: this.methodCode.value,
                 encounterTypeCode: this.code.value
             })});
             
@@ -105,9 +108,12 @@ var get_vitals = function() {
 *                                   heightData as list of objects,
 *                                   bpData as list of objects
 *
-* @returns {Object} Patient object constructed from the data
+* @returns {Object} Patient object constructed from the data or null
 */  
 var processData = function(demographics, vitals) {
+
+    // Load the settings
+    var s = getSettings ();
 
     // Local aliases for the two vitals data lists
     var vitals_height = vitals.heightData,
@@ -127,8 +133,9 @@ var processData = function(demographics, vitals) {
         // Clear the error message
         $("#error").text("").hide();
 
-        // Initialize the height data array (Assume average height at birth of 50cm)
-        var height_data = [{date: demographics.birthday, height:50}];
+        // Initialize the height data array //(Assume average height at birth of 50cm)
+        var height_data = [];
+        //var height_data = [{date: demographics.birthday, height:50}];
 
         // Copy the height data into the height data array converting the heights to centimeters
         for (var i = 0; i < vitals_height.length; i++) {
@@ -144,12 +151,7 @@ var processData = function(demographics, vitals) {
         });
 
         // Initialize a new patient object with the proper demographics
-        var patient = {
-            name: SMART.record.full_name,
-            birthdate: parse_date(demographics.birthday).toString('yyyy-MM-dd'),
-            sex: demographics.gender,
-            data: []
-        };
+        var patient = new Patient(SMART.record.full_name, parse_date(demographics.birthday).toString(s.dateFormat), demographics.gender);
 
         // Add the blood pressure data records to the patient object
         for (var i = 0; i < vitals_bp.length; i++) {  
@@ -166,18 +168,23 @@ var processData = function(demographics, vitals) {
                         var closestHeightDate = height_data[j].date;
                     }
                 }
-                return closestHeight;
+                return {date: closestHeightDate, value: closestHeight};
             } (vitals_bp[i].vital_date);
 
-            // Add the data record to the patient object
-            patient.data.push ({timestamp: vitals_bp[i].vital_date, 
-                height: myHeight,
-                systolic: Math.round(vitals_bp[i].systolic),
-                diastolic: Math.round(vitals_bp[i].diastolic), 
-                site: getTermLabel (vitals_bp[i].bodySiteCode),
-                position: getTermLabel (vitals_bp[i].bodyPositionCode), 
-                encounter: getTermLabel (vitals_bp[i].encounterTypeCode)}
-            );
+            if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= 1.0) {
+                // Add the data record to the patient object
+                patient.data.push ({timestamp: vitals_bp[i].vital_date, 
+                    height: myHeight.value,
+                    systolic: Math.round(vitals_bp[i].systolic),
+                    diastolic: Math.round(vitals_bp[i].diastolic), 
+                    site: getTermLabel (vitals_bp[i].bodySiteCode),
+                    position: getTermLabel (vitals_bp[i].bodyPositionCode),
+                    method: getTermLabel (vitals_bp[i].methodCode),
+                    encounter: getTermLabel (vitals_bp[i].encounterTypeCode)}
+                );
+            } else {
+                console.log ("Warning: Skipping record (Reason: no height data within 1 year");
+            }
         }
 
         return patient;
@@ -191,69 +198,24 @@ var processData = function(demographics, vitals) {
 */
 var initPatient = function (patient) {
 
+    // Initialize the settings object
+    var s = getSettings ();
+
     // Load the sample patient when no data is provided
     if (!patient) patient = getSamplePatient ();
-
+         
     // Sort the patient data records by timestamp
     patient.data.sort(function (a,b) {
         var x = a.timestamp;
         var y = b.timestamp;
         return ( (x<y) ? -1: ((x>y)?1:0));
     });
-    
-    // Method: Generates a patient label
-    patient.toString = function() {
-        return this.name + " (" + this.sex + ", DOB: " + this.birthdate + ")";
-    };
-    
-    // Method: Spawns a clone of a patient
-    patient.clone = function() {
-        // For shallow copying use "jQuery.extend({}, this);"
-        return jQuery.extend(true, {}, this);
-    };
-    
-    // Method: Returns a patent with the n most recent encounters data
-    patient.recentEncounters = function (n) {
-        var p = this.clone();
-        p.data = [];
-        
-        for (var i = this.data.length - 1, dateCounter = 0, lastDate; i >= 0 && dateCounter < n; i--) {
-            p.data.push (this.data[i]);
-            newDate = this.data[i].date;
-            if (!lastDate || newDate != lastDate) {
-                lastDate = newDate;
-                dateCounter++;
-            }
-        }
-        
-        p.data.reverse();
-        
-        return p;
-    }
-    
-    // Method: Applies a filter to the patient object and returns a new patient object
-    patient.applyFilter = function (filter) {       
-        var p = this.clone();
-        p.data = [];
-        
-        for (var i = 0; i < this.data.length; i++) {
-            if (filter(this.data[i])) p.data.push (this.data[i]);
-        }
-        
-        // The unix timestamps of the first and last encounters
-        if (p.data.length > 0) {
-            p.startUnixTime = p.data[0].unixTime;
-            p.endUnixTime = p.data[p.data.length - 1].unixTime;
-        }
-        
-        return p;
-    };
-           
+         
     // Calculate the age and percentiles for the patient encounters
     for (var i = 0, ii = patient.data.length; i < ii; i++) {
     
         // Calculate age and percentiles
-        patient.data[i].age = Math.floor( years_apart( patient.data[i].timestamp , patient.birthdate ) );       
+        patient.data[i].age = years_apart( patient.data[i].timestamp , patient.birthdate );
         var percentiles = bp_percentiles ({height: patient.data[i].height / 100,   // convert height to meters from centimeters
                                            age: patient.data[i].age, 
                                            sex: patient.sex, 
@@ -264,7 +226,7 @@ var initPatient = function (patient) {
         
         // Convert the date into the output format and standard unix timestamp
         var d = parse_date (patient.data[i].timestamp);
-        patient.data[i].date = d.toString('dd MMM yyyy');
+        patient.data[i].date = d.toString(s.dateFormat);
         patient.data[i].unixTime = d.getTime();
     }
         
@@ -272,3 +234,68 @@ var initPatient = function (patient) {
     patient.startUnixTime = patient.data[0].unixTime;
     patient.endUnixTime = patient.data[patient.data.length - 1].unixTime;
 };
+
+function Patient (name, birthdate, sex) {
+    this.name = name;
+    this.birthdate = birthdate;
+    this.sex = sex;
+    this.data = [];
+};
+
+// Method: Generates a patient label
+Patient.prototype.toString = function() {
+    var s = getSettings();
+    var d = parse_date (this.birthdate);
+    return this.name + " (" + this.sex + ", DOB: " + d.toString(s.dateFormat) + ")";
+};
+
+// Method: Spawns a clone of a patient
+Patient.prototype.clone = function() {
+    // For shallow copying use "jQuery.extend({}, this);"
+    return jQuery.extend(true, new Patient (), this);
+};
+
+// Method: Returns a patent with the n most recent encounters data
+Patient.prototype.recentEncounters = function (n) {
+    var p = this.clone();
+    p.data = [];
+    
+    for (var i = this.data.length - 1, dateCounter = 0, lastDate; i >= 0 && dateCounter < n; i--) {
+        p.data.push (this.data[i]);
+        newDate = this.data[i].date;
+        if (!lastDate || newDate != lastDate) {
+            lastDate = newDate;
+            dateCounter++;
+        }
+    }
+    
+    p.data.reverse();
+    
+    return p;
+}
+
+// Method: Applies a filter to the patient object and returns a new patient object
+Patient.prototype.applyFilter = function (filter) {       
+    var p = this.clone();
+    p.data = [];
+    
+    for (var i = 0; i < this.data.length; i++) {
+        if (filter(this.data[i])) p.data.push (this.data[i]);
+    }
+    
+    // The unix timestamps of the first and last encounters
+    if (p.data.length > 0) {
+        p.startUnixTime = p.data[0].unixTime;
+        p.endUnixTime = p.data[p.data.length - 1].unixTime;
+    }
+    
+    return p;
+};
+
+var getYears = function (age) {
+    return Math.floor(age);
+}
+
+var getMonths = function (age) {
+    return Math.floor((age*12)%12);
+}

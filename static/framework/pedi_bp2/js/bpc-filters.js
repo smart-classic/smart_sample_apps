@@ -12,16 +12,11 @@ var filterSettings = getSampleFilterSettings ();
 * Event handler for the long term view toggle filter buttons
 */
 var updateFiltersLong = function () {
+    //disableControls ();
     loadFilterSettingsLong ();
     redrawViewLong (patient,zone);
-};
-
-/**
-* Event handler for the table term view toggle filter buttons
-*/
-var updateFiltersTable = function () {
-    loadFilterSettingsTable ();
     redrawViewTable (patient);
+    //enableControls ();
 };
 
 /**
@@ -29,13 +24,6 @@ var updateFiltersTable = function () {
 */
 var loadFilterSettingsLong = function () {
     loadFilterSettings (filterSettings.longView, "Long");
-};
-
-/**
-* Wrapper for loading the new toggle button filter settings in the table view
-*/
-var loadFilterSettingsTable = function () {
-    loadFilterSettings (filterSettings.tableView, "Table");
 };
 
 /**
@@ -48,12 +36,15 @@ var loadFilterSettings = function (settingsObj, checkboxSuffix) {
     settingsObj.encounter = [];
     settingsObj.site = [];
     settingsObj.position = [];
+    settingsObj.method = [];
     if ($("#chk"+checkboxSuffix+"Inpatient").attr("checked")) settingsObj.encounter.push("Inpatient");
     if ($("#chk"+checkboxSuffix+"Ambulatory").attr("checked")) settingsObj.encounter.push("Ambulatory");
     if ($("#chk"+checkboxSuffix+"Arm").attr("checked")) settingsObj.site.push("Arm");
     if ($("#chk"+checkboxSuffix+"Leg").attr("checked")) settingsObj.site.push("Leg");
     if ($("#chk"+checkboxSuffix+"Sitting").attr("checked")) settingsObj.position.push("Sitting");
     if ($("#chk"+checkboxSuffix+"Standing").attr("checked")) settingsObj.position.push("Standing");
+    if ($("#chk"+checkboxSuffix+"Auscultation").attr("checked")) settingsObj.method.push("Auscultation");
+    if ($("#chk"+checkboxSuffix+"Machine").attr("checked")) settingsObj.method.push("Machine");
 };
 
 /**
@@ -65,17 +56,8 @@ var loadFilterSettings = function (settingsObj, checkboxSuffix) {
 var updateDateRangeLong = function (valueFrom,valueTo) {
     setDateRangeLong (valueFrom,valueTo);
     redrawViewLong (patient,zone);
-};
-
-/**
-* Event handler for the table view date range slider
-*
-* @param {Integer} valueFrom The from value of the slider (0-100)
-* @param {Integer} valueTo The to value of the slider (0-100)
-*/
-var updateDateRangeTable = function (valueFrom,valueTo) {
-    setDateRangeTable (valueFrom,valueTo);
     redrawViewTable (patient);
+
 };
 
 /**
@@ -88,15 +70,6 @@ var setDateRangeLong = function (valueFrom, valueTo) {
     setDateRange (valueFrom, valueTo, filterSettings.longView, "label-range-long");
 };
 
-/**
-* Updates the slider label and filter settings for the table view
-*
-* @param {Integer} valueFrom The from value of the slider (0-100)
-* @param {Integer} valueTo The to value of the slider (0-100)
-*/
-var setDateRangeTable = function (valueFrom, valueTo) {
-    setDateRange (valueFrom, valueTo, filterSettings.tableView, "label-range-table");
-};
 
 /**
 * Generalized updater for a slider label and filter settings
@@ -107,6 +80,8 @@ var setDateRangeTable = function (valueFrom, valueTo) {
 * @param {String} divID The ID attribute of the slider's label div tag
 */
 var setDateRange = function (valueFrom, valueTo, settingsObj, divID) {
+
+    var s = getSettings ();
 
     // Get the date range for the current patient object
     var startTime = patient.startUnixTime,
@@ -121,8 +96,8 @@ var setDateRange = function (valueFrom, valueTo, settingsObj, divID) {
     settingsObj.dateTo = parse_date(toTime).toString('yyyy-MM-dd');
     
     // Convert the slider range dates to the display format
-    fromTime = parse_date(fromTime).toString('dd MMM yyyy');
-    toTime = parse_date(toTime).toString('dd MMM yyyy');
+    fromTime = parse_date(fromTime).toString(s.dateFormat);
+    toTime = parse_date(toTime).toString(s.dateFormat);
     
     // Update the slider label
     $( "#" + divID ).text( fromTime + " - " + toTime );
@@ -140,23 +115,20 @@ var filterLongEncounter = function (record) {
 };
     
 var filterLongSite = function (record) {
-    return inList (record.site, filterSettings.longView.site);
+    var site = record.site.toLowerCase();
+    if (site.indexOf("arm") != -1) {
+        return inList ("Arm", filterSettings.longView.site);
+    } else if (site.indexOf("leg") != -1) {
+        return inList ("Leg", filterSettings.longView.site);
+    } else return false;
 };
     
 var filterLongPosition = function (record) {
     return inList (record.position, filterSettings.longView.position);
 };
 
-var filterTableEncounter = function (record) {
-    return inList (record.encounter, filterSettings.tableView.encounter);
-};
-    
-var filterTableSite = function (record) {
-    return inList (record.site, filterSettings.tableView.site);
-};
-    
-var filterTablePosition = function (record) {
-    return inList (record.position, filterSettings.tableView.position);
+var filterLongMethod = function (record) {
+    return inList (record.method, filterSettings.longView.method);
 };
 
 /**
@@ -171,10 +143,6 @@ var filterLongDate = function (record) {
     return filterSettings.longView.dateFrom <= date && date <= filterSettings.longView.dateTo;
 };
 
-var filterTableDate = function (record) {
-    var date = parse_date(record.unixTime).toString('yyyy-MM-dd');
-    return filterSettings.tableView.dateFrom <= date && date <= filterSettings.tableView.dateTo;
-};
 
 /**
 * Utility for checking of the presence of a value within a list of values
@@ -218,19 +186,6 @@ var applyLongFilters = function (patient) {
     return patient.applyFilter(filterLongEncounter)
                   .applyFilter(filterLongSite)
                   .applyFilter(filterLongPosition)
-                  .applyFilter(filterLongDate);
-};
-
-/**
-* Wrapper for applying all filters for the table view on a patient object
-*
-* @param {Object} patient The patient object to be run through the filters
-*
-* @returns {Object} A new patient object resulting from the filters application
-*/
-var applyTableFilters = function (patient) {
-    return patient.applyFilter(filterTableEncounter)
-                  .applyFilter(filterTableSite)
-                  .applyFilter(filterTablePosition)
-                  .applyFilter(filterTableDate);
+                  .applyFilter(filterLongDate)
+                  .applyFilter(filterLongMethod);
 };
