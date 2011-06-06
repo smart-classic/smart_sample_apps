@@ -2,17 +2,17 @@
   "name" : "PediBPC",
   "description" : "Display pediatric blood pressures with calculated percentiles",
   "author" : "Nikolai Schwertner",
-  "id" : "pedi_bp2@apps.smartplatforms.org",
+  "id" : "pedi_bpc@apps.smartplatforms.org",
   "version" : ".1a",
 
   "base_url" : "http://localhost:8001",
   "mode" : "ui",
   "activities" : {
-    "main" :              "{base_url}/framework/pedi_bp2/bootstrap.html",
-    "view_medications" :  "{base_url}/framework/pedi_bp2/bootstrap.html"
+    "main" :              "{base_url}/framework/pedi_bpc/bootstrap.html",
+    "view_medications" :  "{base_url}/framework/pedi_bpc/bootstrap.html"
   },
 	
   "web_hooks" : { },
 
-  "icon" :  "{base_url}/framework/pedi_bp2/icon.png"
+  "icon" :  "{base_url}/framework/pedi_bpc/icon.png"
 }

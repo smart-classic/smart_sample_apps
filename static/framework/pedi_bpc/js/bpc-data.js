@@ -2,6 +2,7 @@
 //
 // Author: Nikolai Schwertner
 // Revision history:
+//     2011-06-06 Misc improvements; Refactored
 //     2011-05-19 Misc code improvements; Inline documentation
 //     2011-05-18 Initial split from main code
 //
@@ -171,8 +172,9 @@ var processData = function(demographics, vitals) {
                 return {date: closestHeightDate, value: closestHeight};
             } (vitals_bp[i].vital_date);
 
+            
+            // Add the record to the patient object only if the nearest height reading is within 1 year
             if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= 1.0) {
-                // Add the data record to the patient object
                 patient.data.push ({timestamp: vitals_bp[i].vital_date, 
                     height: myHeight.value,
                     systolic: Math.round(vitals_bp[i].systolic),
@@ -183,7 +185,7 @@ var processData = function(demographics, vitals) {
                     encounter: getTermLabel (vitals_bp[i].encounterTypeCode)}
                 );
             } else {
-                console.log ("Warning: Skipping record (Reason: no height data within 1 year");
+                console.log ("Warning: Skipping record (Reason: no height data within 1 year)");
             }
         }
 
@@ -235,6 +237,13 @@ var initPatient = function (patient) {
     patient.endUnixTime = patient.data[patient.data.length - 1].unixTime;
 };
 
+/**
+* Constructor for a new patient object
+*
+* @param {String} name The name of the patient
+* @param {String} birthdate The date of birth of the patient
+* @param {String} sex ('male' or 'female')
+*/
 function Patient (name, birthdate, sex) {
     this.name = name;
     this.birthdate = birthdate;
@@ -242,20 +251,32 @@ function Patient (name, birthdate, sex) {
     this.data = [];
 };
 
-// Method: Generates a patient label
+/**
+* Returns the patient object label string
+*/
 Patient.prototype.toString = function() {
     var s = getSettings();
     var d = parse_date (this.birthdate);
     return this.name + " (" + this.sex + ", DOB: " + d.toString(s.dateFormat) + ")";
 };
 
-// Method: Spawns a clone of a patient
+/**
+* Spawns a clone of a patient
+*
+* @returns {Object} a clone of the patient object
+*/
 Patient.prototype.clone = function() {
     // For shallow copying use "jQuery.extend({}, this);"
     return jQuery.extend(true, new Patient (), this);
 };
 
-// Method: Returns a patent with the n most recent encounters data
+/**
+* Returns a copy of the patient object containing the n most recent encounters data
+*
+* @param {Integer} n The number of encounters to return
+*
+* @returns {Object} a clone of the patient object
+*/
 Patient.prototype.recentEncounters = function (n) {
     var p = this.clone();
     p.data = [];
@@ -263,18 +284,26 @@ Patient.prototype.recentEncounters = function (n) {
     for (var i = this.data.length - 1, dateCounter = 0, lastDate; i >= 0 && dateCounter < n; i--) {
         p.data.push (this.data[i]);
         newDate = this.data[i].date;
+        // TO DO: The comparison criteria here should be inexact (only compare the date, etc)
         if (!lastDate || newDate != lastDate) {
             lastDate = newDate;
             dateCounter++;
         }
     }
     
+    // reverse the data
     p.data.reverse();
     
     return p;
 }
-
-// Method: Applies a filter to the patient object and returns a new patient object
+ 
+/**
+* Applies a filter to the patient object and returns a new patient object
+*
+* @param {Function} filter The filter method to apply
+*
+* @returns {Object} the resultant patient
+*/
 Patient.prototype.applyFilter = function (filter) {       
     var p = this.clone();
     p.data = [];
@@ -292,10 +321,24 @@ Patient.prototype.applyFilter = function (filter) {
     return p;
 };
 
+/**
+* Extracts the years from the age
+*
+* @param {Number} the age of the patient in years
+*
+* @returns {Integer} the years in the patient's age
+*/
 var getYears = function (age) {
     return Math.floor(age);
 }
 
+/**
+* Extracts the months from the age
+*
+* @param {Number} the age of the patient in years
+*
+* @returns {Integer} the months in the patient's age
+*/
 var getMonths = function (age) {
     return Math.floor((age*12)%12);
 }

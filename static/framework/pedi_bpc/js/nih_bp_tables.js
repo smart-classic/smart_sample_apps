@@ -2,6 +2,11 @@
 //                             http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf
 // Retrieved 4/6/2011
 // JS by:  Josh Mandel
+// Revisions:
+//      2011-06-02  Added BP Thresholds search method (NJS)
+//
+//    TO DO:
+//       [ ] Validate the thresholds resolver algorithm
 
 
 /**
@@ -14,7 +19,9 @@
 *                      systolic in mmHg, 
 *                      diastolic in mmHg
 *
-* @returns {Boolean} True if the parameter is an array
+* @returns {Object} Parameters include:
+                       systolic in percentile,
+                       diastolic in percentile
 */
 var bp_percentiles = (function() {
 
@@ -26,6 +33,8 @@ var bp_percentiles = (function() {
         dbp = patient.diastolic;
 
     var zht = find_height_zscore(patient);
+    
+    
     var zsys = (sbp - calc_mu(age, zht, bpregression[sex].systolic)) / bpregression[sex].systolic.sigma;
     var zdias = (dbp - calc_mu(age, zht, bpregression[sex].diastolic)) / bpregression[sex].diastolic.sigma;
 
@@ -33,6 +42,8 @@ var bp_percentiles = (function() {
       systolic: Math.round(Math.cdf(zsys)*100),
       diastolic: Math.round(Math.cdf(zdias)*100)
     };
+    
+    
   };
 
   var calc_mu = function(y, zht, params) {
@@ -110,7 +121,6 @@ var bp_percentiles = (function() {
   return ret;
 })();
 
-
 Math.erf = function(x) {
     var sign = 1;
     if (x < 0)
@@ -134,4 +144,65 @@ Math.erf = function(x) {
 
 Math.cdf = function(x) {
   return 0.5 * (1 + Math.erf(x/Math.sqrt(2)));
+};
+
+/**
+* Find systolic and diastolic BP values corresponding to the given percentiles
+*
+* @param {Object} p Parameters include:
+*                      height in meters, 
+*                      age in years, 
+*                      sex ('male' or 'female'), 
+*                      systolic in percentile, 
+*                      diastolic in percentile
+*
+* @returns {Object} Parameters include:
+                       systolic in mmHg,
+                       diastolic in mmHg
+*/
+var bp_thresholds = function(patient) {
+  
+    // Initialize local variables
+    var age = patient.age,
+        height = patient.height,
+        sex = patient.sex,
+        systolic = patient.systolic,
+        diastolic = patient.diastolic;
+    
+    // Set the search bounds as tight as possible to speed up the search
+    var lows = 40, lowd = 40,
+        highs = 160, highd = 160;
+        
+    // Binary search for finding the solution
+    while (lows < highs - 1 || lowd < highd - 1) {
+        
+        // Calculate the current search values
+        var mids = Math.floor((highs + lows) / 2);
+        var midd = Math.floor((highd + lowd) / 2);
+        
+        // Calculate the percentiles for the current search values
+        var res = bp_percentiles ({age: age, height: height, sex: sex, systolic: mids, diastolic: midd});
+        
+        // When no solution is possible, stop the search
+        if (!res.systolic || !res.diastolic) {
+            return {
+                systolic: null,
+                diastolic: null
+            };
+        }
+        
+        // Update the lower and upper bounds
+        if (res.systolic < systolic) lows = mids;
+        else if (res.systolic >= systolic) highs = mids;
+        
+        if (res.diastolic < diastolic) lowd = midd;
+        else if (res.diastolic >= diastolic) highd = midd;
+    }
+    
+    // Return the result
+    return {
+        systolic: highs,
+        diastolic: highd
+    };
+    
 };

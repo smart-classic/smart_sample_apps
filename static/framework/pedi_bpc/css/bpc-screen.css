@@ -1,0 +1,97 @@
+/**
+*  CSS styles for the the Blood Pressure Centiles SMART Application
+*
+*  Author: Nikolai Schwertner
+*  Revision history:
+*       2011-06-06 Refactored
+*       2011-06-02 Additional styling
+*       2011-05-19 Cleaned up
+*/
+
+body {
+    background: #000;
+    color: #fff;
+    font: 62.5% "Trebuchet MS", sans-serif;
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 50px;
+}
+
+/* This section controls the positioning of the individual UI elements within the tabs */
+#tabs {display:none; width:780px;}
+.toggle-set { position: relative; float: left; margin-top: 4px; }
+#filter_timerange { position: relative; float: left; margin-left: 6px; }
+#slider-timerange { width: 150px; margin-top: 4px;}
+#holder_short { padding-top: 5px; clear:both; width: 760px; height: 400px; }
+#holder_long   { padding-top: 5px; clear:both; width: 760px; height: 420px; }
+#holder_table { padding-top: 5px; clear:both; }
+
+/* Styling for the calculator */
+.spct {text-align: right;  position: relative; font-weight: bold;}
+.dpct {text-align: left;  position: relative; font-weight: bold;}
+.slash {padding-left: .4em; padding-right: .4em; font-weight: narrow;}
+#result-percentiles table, #result-thresholds table {background: white; color: #000; font-size: 3em; border-collapse: collapse; }
+#result-percentiles table th, #result-thresholds table th {background: #dddddd; font-size: 30%; font-style: italic;}
+#result-thresholds table td {font-size: 50%; padding: 5px}
+input[type='text'] {border: 1px solid black;}
+#gender_select {width: 140px}
+.inputLabel {text-align: right}
+#calculator_main {float:left}
+#calculator_thresholds {float:left; padding-left:20px}
+#clearall {clear:both}
+
+/* Styling for the various in-page messages in the BPC app */
+#header {
+    font-family: verdana,arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+}
+#title {
+    font-family: verdana,arial,sans-serif;
+    font-size: 20px;
+    color: #555;
+}
+#error { font: 300 1.2em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif}
+#copy {
+    font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+    right: 1em;
+    text-align: right;
+}
+#copy a {
+    color: #fff;
+}
+
+/* Styling for the table view */
+
+.tablelabel {
+    font-family: verdana,arial,sans-serif;
+    font-size:12px;
+    font-weight:bold;
+}
+
+table.nicetable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #a9c6c9;
+    border-collapse: collapse;
+}
+
+table.nicetable th {
+    text-align: left;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #a9c6c9;
+    background-color:#c3dde0;
+}
+
+table.nicetable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #a9c6c9;
+    background-color:#d4e3e5;
+}

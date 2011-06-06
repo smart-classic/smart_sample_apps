@@ -5,8 +5,9 @@
 *
 *  Developed by: Nikolai Schwertner
 *  Revision history:
-*       2011-05-26 Added Josh's calculator code
-*       2011-05-19 Cleaned up the HTML code
+*       2011-06-06 Code refactoring
+*       2011-06-02 Modified the table template to output the method and the month/year format
+*       2011-05-26 Added JCM's calculator code
 */
 -->
 <html lang="en">
@@ -17,7 +18,7 @@
         <link type="text/css" href="css/themes/custom/jquery.ui.all.css" rel="stylesheet" />
         <script src="js/smart/smart-api-page.js"></script>
         <script src="js/lib/raphael.js"></script>
-		<script src="js/lib/jquery.js"></script>
+        <script src="js/lib/jquery.js"></script>
         <script src="js/lib/jquery-jtemplates.js"></script>
         <script src="js/lib/jquery-ui-1.8.12.custom.min.js"></script>
         <script src="js/lib/date.js"></script>
@@ -39,6 +40,8 @@
     </head>
     <body>
         <div id="main">
+        
+            <!-- Page header -->
             <div id="headings">
                 <table width="786">
                 <tr><td align="left" valign="center"><div id="title">Blood Pressure Centiles SMART Application</div></td>
@@ -47,72 +50,78 @@
                 </td></tr></table>
             </div>
             <div id="error" >Loading patient data. Please wait...</div>
+            
+            <!-- Tabs -->
             <div id="tabs">
+            
                 <ul>
                     <li><a href="#tab_short">Short Term View</a></li>
                     <li><a href="#tab_long">Long Term View</a></li>
                     <li><a href="#tab_table">Table View</a></li>
-					<li><a href="#tab_calculator">Calculator</a></li>
+                    <li><a href="#tab_calculator">Calculator</a></li>
                 </ul>
+                
                 <div id="tab_short">
                     <div id="holder_short"></div>
                 </div>
+                
                 <div id="tab_long">
                     <div id="wrapper_long" class="tab_wrapper">
                         <div id="filters">
-                            <div id="encounter_long">
-                                <input type="checkbox" id="chkLongInpatient" onClick="updateFiltersLong()" />
-                                <label for="chkLongInpatient"> Inpatient </label>
-                                <input type="checkbox" id="chkLongAmbulatory" onClick="updateFiltersLong()" checked/>
-                                <label for="chkLongAmbulatory"> Ambulatory </label>
+                            <div id="filter_encounter" class="toggle-set">
+                                <input type="checkbox" id="chkFilterInpatient" onClick="updateFilters()" />
+                                <label for="chkFilterInpatient"> Inpatient </label>
+                                <input type="checkbox" id="chkFilterAmbulatory" onClick="updateFilters()" checked/>
+                                <label for="chkFilterAmbulatory"> Ambulatory </label>
                             </div>
-                            <div id="site_long">
-                                <input type="checkbox" id="chkLongArm" onClick="updateFiltersLong()" checked/>
-                                <label for="chkLongArm"> Arm </label>
-                                <input type="checkbox" id="chkLongLeg"  onClick="updateFiltersLong()" />
-                                <label for="chkLongLeg"> Leg </label>
+                            <div id="filter_site" class="toggle-set">
+                                <input type="checkbox" id="chkFilterArm" onClick="updateFilters()" checked/>
+                                <label for="chkFilterArm"> Arm </label>
+                                <input type="checkbox" id="chkFilterLeg"  onClick="updateFilters()" />
+                                <label for="chkFilterLeg"> Leg </label>
                             </div>
-                            <div id="position_long">
-                                <input type="checkbox" id="chkLongSitting" onClick="updateFiltersLong()" checked/>
-                                <label for="chkLongSitting"> Sitting </label>
-                                <input type="checkbox" id="chkLongStanding"  onClick="updateFiltersLong()" />
-                                <label for="chkLongStanding"> Standing </label>
+                            <div id="filter_position" class="toggle-set">
+                                <input type="checkbox" id="chkFilterSitting" onClick="updateFilters()" checked/>
+                                <label for="chkFilterSitting"> Sitting </label>
+                                <input type="checkbox" id="chkFilterStanding"  onClick="updateFilters()" />
+                                <label for="chkFilterStanding"> Standing </label>
                             </div>
-                            <div id="method_long">
-                                <input type="checkbox" id="chkLongAuscultation" onClick="updateFiltersLong()" checked/>
-                                <label for="chkLongAuscultation"> Auscultation </label>
-                                <input type="checkbox" id="chkLongMachine"  onClick="updateFiltersLong()" />
-                                <label for="chkLongMachine"> Machine </label>
+                            <div id="filter_method" class="toggle-set">
+                                <input type="checkbox" id="chkFilterAuscultation" onClick="updateFilters()" checked/>
+                                <label for="chkFilterAuscultation"> Auscultation </label>
+                                <input type="checkbox" id="chkFilterMachine"  onClick="updateFilters()" />
+                                <label for="chkFilterMachine"> Machine </label>
                             </div>
-                            <div id="slider-long">
-                                <div id="label-range-long"></div>
-                                <div id="slider-range-long"></div>
+                            <div id="filter_timerange">
+                                <div id="label-timerange"></div>
+                                <div id="slider-timerange"></div>
                             </div>
                         </div>
                         <div id="holder_long"></div>
                     </div>
-                </div>
+                </div> <!-- long term tab -->
+                
                 <div id="tab_table">
                     <div id="wrapper_table" class="tab_wrapper">
                         <div id="holder_table"></div>
                     </div>
                 </div>
-				<div id="tab_calculator">
-					<div id="calculator_main">
-                        <div id='result'>
+                
+                <div id="tab_calculator">
+                    <div id="calculator_main">
+                    
+                        <div id='result-percentiles'>
                           <table>
-                        <tr><th>Systolic</th><th></th><th>Diastolic</th></tr>
-                        <tr>
-                          <td><span class="spct"></span>%</td>
-                          <td><span class="slash">/</span></td>
-                          <td><span class="dpct"></span>%</td>
-                        </tr>
+                            <tr><th>Systolic</th><th></th><th>Diastolic</th></tr>
+                            <tr>
+                              <td><span class="spct"></span>%</td>
+                              <td><span class="slash">/</span></td>
+                              <td><span class="dpct"></span>%</td>
+                            </tr>
                           </table>
                         </div>
 
                         <br clear="both"/>
-                        <table id='bp_table'>
-                        </table>
 
                         <form id="input" method="GET" action="#" data-ajax="false">
 
@@ -153,7 +162,7 @@
                         </form>
                     </div>
                     <div id="calculator_thresholds">
-                        <div id='result2'>
+                        <div id='result-thresholds'>
                           <table>
                             <tr><th>Thresholds</th></tr>
                             <tr>
@@ -163,10 +172,11 @@
                         </div>
                     </div>
                     <div id="clearall">&nbsp;</div>
-                </div>
-            </div>
+                </div> <!-- calculator tab -->
+                
+            </div> <!-- tabs -->
 
-            <p id="copy">v0.5</p>
+            <p id="copy">v0.6</p>
         </div>
         
         <!-- jTemplates template for the table view -->

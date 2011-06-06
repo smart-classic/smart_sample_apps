@@ -2,12 +2,14 @@
 //
 // Author: Nikolai Schwertner
 // Revision history:
+//     2011-06-06 Refactored
 //     2011-05-19 Added inline documentation; added getTermLabel function
 //     2011-05-18 Initial split from main code
 //
 //    TO DO:
-//       [ ] Add data formatting settings for the screen output
+//       [X] Add data formatting settings for the screen output
 //       [ ] Implement a mechanism for loading the settings from data files
+//       [ ] Add vertical displacement for the graphs (so as not to abuse the gutter in the long term view)
 
 
 /**
@@ -20,7 +22,6 @@
 var getSettings = function (shortTerm, systolic) {
     return {
         // the id of the div tag where the graphics will live
-        //divID: (shortTerm? "holder_short":(systolic?"holder_long_systolic":"holder_long_diastolic")),
         divID: (shortTerm? "holder_short":"holder_long"),
         
         // dimensions for the drawing area (in pixels)
@@ -54,10 +55,20 @@ var getSettings = function (shortTerm, systolic) {
         txt2: {font: '10px Helvetica, Arial', fill: "#fff"},  // Axis labels styling
         txt3: {font: '12px Helvetica, Arial', fill: "#666"},  // Styling for the popup label line headers
         
+        // X axis definitons
+        minDX: 30,  // minimum spacing between each two consecutive labels
+        
         // Y axis definitions
         max: (shortTerm? 160:100),  // maximum value of the data (plotted on the Y axis); this is either mmHg or percentile
         vLabels: (shortTerm? 8:10), // number of labels to display for the Y axis
         vAxisLabel: (shortTerm? "mmHg":(systolic?"Percentile":null)), // text to be displayed as the units label
+        
+        // Legend settings
+        txt4: {font: '14px Times New Roman', "font-weight":"bold", "font-style": "italic", fill: "#555"},  // the legend "i" icon text style
+        txt5: {font: '12px Helvetica, Arial', fill: "#555"},  // the legend title text style
+        txt6: {font: '10px Helvetica, Arial', fill: "#fff", "text-anchor": "start"}, // the legend items text style
+        legendWidth: 160,
+        legendHeight: 150,
         
         // Date format
         dateFormat: "dd MMM yyyy"
@@ -103,14 +114,12 @@ var getSamplePatient = function () {
 * @returns {Object} Filter settings object
 */
 var getSampleFilterSettings = function () {
-    return {
-        longView: {encounter: ["Inpatient","Ambulatory"],
-                   site: ["Arm","Leg"],
-                   position: ["Sitting","Standing"],
-                   method: ["Auscultation","Machine"],
-                   dateFrom: "1980-01-01",
-                   dateTo: "2019-01-01"}
-    };
+    return {encounter: ["Inpatient","Ambulatory"],
+            site: ["Arm","Leg"],
+            position: ["Sitting","Standing"],
+            method: ["Auscultation","Machine"],
+            dateFrom: "1980-01-01",
+            dateTo: "2019-01-01"};
 };
 
 /**
