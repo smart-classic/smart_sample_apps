@@ -675,7 +675,7 @@ SMART_frame_glue_app = function(redirect_url) {
 	   $("html").css("height","100%");
 
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
-	   var content_iframe = $('<iframe SEAMLESS style="width: 100%; height: 100%; display: block; border: 0px; " src="'+redirect_url+'" id="content">');
+	   var content_iframe = $('<iframe SEAMLESS frameBorder="0" style="width: 100%; height: 100%; display: block; border: 0px; " src="'+redirect_url+'" id="content">');
 	   $('body').append(content_iframe);
 	   content_iframe.hide();
 	   content_iframe.data("finished_dom", false);
