@@ -33,16 +33,17 @@ var bp_percentiles = (function() {
         dbp = patient.diastolic;
 
     var zht = find_height_zscore(patient);
-    
-    
+       
     var zsys = (sbp - calc_mu(age, zht, bpregression[sex].systolic)) / bpregression[sex].systolic.sigma;
     var zdias = (dbp - calc_mu(age, zht, bpregression[sex].diastolic)) / bpregression[sex].diastolic.sigma;
 
+      
+    var f = patient.round_results ? Math.round : function(x){return x;};
+ 
     return {
-      systolic: Math.round(Math.cdf(zsys)*100),
-      diastolic: Math.round(Math.cdf(zdias)*100)
+	systolic: f(Math.cdf(zsys)*100),
+	diastolic: f(Math.cdf(zdias)*100)
     };
-    
     
   };
 
@@ -142,6 +143,28 @@ Math.erf = function(x) {
     return sign*y;
 };
 
+// whole-integer z-sores by percent
+Math.zscore_for_percent = [
+   -Infinity, -2.326, -2.054, -1.881, -1.751, -1.645, -1.555, 
+   -1.476, -1.405, -1.341, -1.282, -1.227, -1.175, -1.126, 
+   -1.08, -1.036, -0.994, -0.954, -0.915, -0.878, -0.842, 
+   -0.806, -0.772, -0.739, -0.706, -0.674, -0.643, -0.613, 
+   -0.583, -0.553, -0.524, -0.496, -0.468, -0.44, -0.412, 
+   -0.385, -0.358, -0.332, -0.305, -0.279, -0.253, -0.228,
+   -0.202, -0.176, -0.151, -0.126, -0.1, -0.075, -0.05, 
+   -0.025, 0, 0.025, 0.05, 0.075, 0.1, 0.126, 0.151, 0.176,
+    0.202, 0.228, 0.253, 0.279, 0.305, 0.332, 0.358, 0.385,
+    0.412, 0.44, 0.468, 0.496, 0.524, 0.553, 0.583, 0.613,
+    0.643, 0.674, 0.706, 0.739, 0.772, 0.806, 0.842, 0.878, 
+    0.915, 0.954, 0.994, 1.036, 1.08, 1.126, 1.175, 1.227,
+    1.282, 1.341, 1.405, 1.476, 1.555, 1.645, 1.751, 1.881,
+    2.054, 2.326, Infinity];
+
+// converts percentiles to z-scores (rouding to nearest percent)
+Math.probit = function(p) {
+    return Math.zscore_for_percent[Math.round(p * 100)];
+};
+
 Math.cdf = function(x) {
   return 0.5 * (1 + Math.erf(x/Math.sqrt(2)));
 };
@@ -161,48 +184,58 @@ Math.cdf = function(x) {
                        diastolic in mmHg
 */
 var bp_thresholds = function(patient) {
-  
     // Initialize local variables
     var age = patient.age,
         height = patient.height,
         sex = patient.sex,
         systolic = patient.systolic,
         diastolic = patient.diastolic;
+
+    var null_result = 	{ 
+	systolic: null, 
+	diastolic: null
+    };
+    
+    if (isNaN(patient.age) || 
+	isNaN(patient.height) || 
+	isNaN(patient.systolic) || 
+	isNaN(patient.diastolic))
+	return null_result;
     
     // Set the search bounds as tight as possible to speed up the search
-    var lows = 40, lowd = 40,
-        highs = 160, highd = 160;
-        
+    var lows = 0, lowd = 0,
+        highs = 200, highd = 200,
+        THRESHOLD = patient.result_precision || 1,
+        LOOP_COUNT = 0, 
+        MAX_LOOP_COUNT = 20;
+
     // Binary search for finding the solution
-    while (lows < highs - 1 || lowd < highd - 1) {
-        
+    do {
         // Calculate the current search values
-        var mids = Math.floor((highs + lows) / 2);
-        var midd = Math.floor((highd + lowd) / 2);
+        var mids = (highs + lows) / 2;
+        var midd = (highd + lowd) / 2;
         
         // Calculate the percentiles for the current search values
         var res = bp_percentiles ({age: age, height: height, sex: sex, systolic: mids, diastolic: midd});
-        
-        // When no solution is possible, stop the search
-        if (!res.systolic || !res.diastolic) {
-            return {
-                systolic: null,
-                diastolic: null
-            };
-        }
-        
-        // Update the lower and upper bounds
-        if (res.systolic < systolic) lows = mids;
+
+	if (res.systolic < systolic) lows = mids;
         else if (res.systolic >= systolic) highs = mids;
-        
+
         if (res.diastolic < diastolic) lowd = midd;
         else if (res.diastolic >= diastolic) highd = midd;
-    }
-    
+
+	if (LOOP_COUNT++ >= MAX_LOOP_COUNT)
+	    return null_result;
+	
+    } while ( Math.abs(res.systolic - systolic) > THRESHOLD ||
+	      Math.abs(res.diastolic - diastolic) > THRESHOLD );
+
     // Return the result
-    return {
-        systolic: highs,
-        diastolic: highd
-    };
+    var f = patient.round_results ? Math.round : function(x){return x;};
     
+    return {
+        systolic: f(highs),
+        diastolic: f(highd)
+    };    
+
 };

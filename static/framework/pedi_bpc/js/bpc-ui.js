@@ -44,7 +44,8 @@ var initCalculator = function(bpparams) {
 
              height: height/100.0, 
              systolic: $('#add_systolic').val(), 
-             diastolic: $('#add_diastolic').val()};
+	     diastolic: $('#add_diastolic').val(),
+  	     round_results: true };
        
         var percentiles = bp_percentiles(bpparams);
         

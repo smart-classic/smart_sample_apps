@@ -12,39 +12,9 @@
 */
 var find_height_zscore = function(p) {
   var age = 12 * p.age, 
-      sex = p.sex,
-      height = 100 * p.height;
-
-  // Heuristic:  use stature data for older children
-  // or length data for younger children.
-  // Note: there is overlap from 24mo-36mo.
-  var ref = CDC_STATURE_DATA;
-  if (age <= 35.5)
-      ref = CDC_LENGTH_DATA;
-  ref = ref[sex];
-
-  function mean(a,b,weight) {
-    return b * weight + a * (1-weight);
-  };
-
-  var exact = null;
-  for (var i = 0; i < ref.length; i++) {
-    if (age == ref[i].age) {
-      exact = ref[i];
-      break;
-    }
-    else if (age > ref[i].age && age < ref[i+1].age) {
-      var weight = (age-ref[i].age) / (ref[i+1].age-ref[i].age);
-      var exact = { 
-                    sex: sex, 
-                    age: age, 
-                    l:   mean(ref[i].l, ref[i+1].l, weight),
-                    m:   mean(ref[i].m, ref[i+1].m, weight),
-                    s:   mean(ref[i].s, ref[i+1].s, weight)
-                 };
-      break;
-    }
-  }
+    sex = p.sex,
+    height = 100 * p.height,
+    exact = find_height_parameters(age, sex);
 
 /*
 From CDC:  
@@ -68,6 +38,53 @@ Z = ln(X/M)/S            , L=0
   return (Math.pow(height/exact.m, exact.l)-1) / (exact.l * exact.s);
 
 };
+
+var find_height_threshold = function(p) {
+  var age = 12 * p.age, 
+      sex = p.sex,
+      target = Math.probit(p.target / 100.0),
+      exact = find_height_parameters(age, sex);
+  if (exact.l == 0)
+      return Math.exp(exact.s * target) * exact.m;
+  return Math.pow(exact.s * exact.l * target + 1, 1.0/exact.l) * exact.m;
+};
+
+var find_height_parameters = function(age, sex) {
+
+  function mean(a,b,weight) {
+    return b * weight + a * (1-weight);
+  };
+
+
+  // Heuristic:  use height data preferentially
+  // over length data for younger children.
+  // (Since there is overlap from 24mo-36mo.)
+  var ref = CDC_STATURE_DATA;
+  if (age <= 24)
+      ref = CDC_LENGTH_DATA;
+  ref = ref[sex];
+
+  var exact = null;
+  for (var i = 0; i < ref.length-1; i++) {
+    if (age == ref[i].age) {
+      exact = ref[i];
+      break;
+    }
+    else if (age > ref[i].age && age < ref[i+1].age) {
+      var weight = (age-ref[i].age) / (ref[i+1].age-ref[i].age);
+      var exact = { 
+                    sex: sex, 
+                    age: age, 
+                    l:   mean(ref[i].l, ref[i+1].l, weight),
+                    m:   mean(ref[i].m, ref[i+1].m, weight),
+                    s:   mean(ref[i].s, ref[i+1].s, weight)
+                 };
+      break;
+    }
+  }
+  return exact;
+}
+
 
 var CDC_LENGTH_DATA = {
 'male': [

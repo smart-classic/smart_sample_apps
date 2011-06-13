@@ -222,7 +222,8 @@ var initPatient = function (patient) {
                                            age: patient.data[i].age, 
                                            sex: patient.sex, 
                                            systolic: patient.data[i].systolic, 
-                                           diastolic: patient.data[i].diastolic});
+                                           diastolic: patient.data[i].diastolic,
+					   round_results: true});
         patient.data[i].sPercentile = percentiles.systolic;
         patient.data[i].dPercentile = percentiles.diastolic;
         
