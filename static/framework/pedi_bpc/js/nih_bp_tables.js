@@ -236,8 +236,8 @@ var bp_thresholds = function(patient) {
 	      Math.abs(res.diastolic - diastolic) >= THRESHOLD);
     
     if (patient.round_results) {
-	highs = Math.round(highs);
-	highd = Math.round(highd);
+	highs = Math.ceil(highs);
+	highd = Math.ceil(highd);
 
 	do {
 	    if (res.systolic == systolic)
