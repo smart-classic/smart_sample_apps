@@ -10,6 +10,7 @@
 //       [X] Add data formatting settings for the screen output
 //       [ ] Implement a mechanism for loading the settings from data files
 //       [ ] Add vertical displacement for the graphs (so as not to abuse the gutter in the long term view)
+//       [ ] The legend height/width should be calculated based on the dynamic legend content
 
 
 /**
@@ -60,7 +61,7 @@ var getSettings = function (shortTerm, systolic) {
         
         // Y axis definitions
         max: (shortTerm? 160:100),  // maximum value of the data (plotted on the Y axis); this is either mmHg or percentile
-        vLabels: (shortTerm? 8:10), // number of labels to display for the Y axis
+        vLabels: (shortTerm? 16:10), // number of labels to display for the Y axis
         vAxisLabel: (shortTerm? "mmHg":(systolic?"Percentile":null)), // text to be displayed as the units label
         
         // Legend settings
@@ -68,7 +69,7 @@ var getSettings = function (shortTerm, systolic) {
         txt5: {font: '12px Helvetica, Arial', fill: "#555"},  // the legend title text style
         txt6: {font: '10px Helvetica, Arial', fill: "#fff", "text-anchor": "start"}, // the legend items text style
         legendWidth: 160,
-        legendHeight: 150,
+        legendHeight: 130,
         
         // Date format
         dateFormat: "dd MMM yyyy"
@@ -84,8 +85,8 @@ var getSettings = function (shortTerm, systolic) {
 var getZoneData = function (){
     // IMPORTANT: Percents should sum up to 100
     return [{definition:"Hypotension (< 1%)",      percent: 1,  colorhue: .7,  opacity: .4},
-            {definition:"Pre-hypotension (< 5%)",  percent: 4,  colorhue: .9, opacity: .3},
-            {definition:"Normal",           percent: 85, colorhue: .3, opacity: .2},
+            //{definition:"Pre-hypotension (< 5%)",  percent: 4,  colorhue: .9, opacity: .3},
+            {definition:"Normal",           percent: 89, colorhue: .3, opacity: .2},
             {definition:"Pre-hypertension (> 90%)", percent: 5,  colorhue: .1, opacity: .3},
             {definition:"Hypertension (> 95%)",     percent: 5,  colorhue: 0,  opacity: .4}]; 
 };

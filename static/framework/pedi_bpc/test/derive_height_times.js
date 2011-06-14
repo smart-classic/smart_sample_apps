@@ -12,8 +12,8 @@ rate of growth-for-age.
 
 // we'll figure out what's needed to move 
 // from BP_PERCENTILE --> BP_PERCENTILE + BP_DELTA
-var BP_PERCENTILE = 50;
-var BP_DELTA = 1;
+var BP_PERCENTILE = 90;
+var BP_DELTA = 0.5;
 
 // explore changes for a child in this height percentile?
 var HEIGHT_PERCENTILE = 50; 
@@ -21,6 +21,7 @@ var HEIGHT_PERCENTILE = 50;
 var MIN_AGE = 1;  // min age in years
 var MAX_AGE = 18; // max age in years
 var AGE_STEP = 1; // age step in years
+var SANITY_THRESHOLD = 1; // try also 0.1
 
 var sexes =['male', 'female'];
 
@@ -48,7 +49,8 @@ $.each(sexes, function(i, sex) {
 				 diastolic: bp.diastolic});
 
     // (Sanity check the result.)
-    if (Math.abs(meanbp.systolic - BP_PERCENTILE) > 1 || Math.abs(meanbp.diastolic - BP_PERCENTILE) > 1) {
+	
+    if (Math.abs(meanbp.systolic - BP_PERCENTILE) > SANITY_THRESHOLD || Math.abs(meanbp.diastolic - BP_PERCENTILE) > SANITY_THRESHOLD) {
       console.log("The threshold binary search algorithm produced invalid output.");
       break;
     }

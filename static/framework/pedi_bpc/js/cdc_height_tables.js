@@ -12,7 +12,7 @@
 */
 var find_height_zscore = function(p) {
   var age = 12 * p.age, 
-    sex = p.sex,
+      sex = p.sex,
     height = 100 * p.height,
     exact = find_height_parameters(age, sex);
 

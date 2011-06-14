@@ -33,7 +33,7 @@ var bp_percentiles = (function() {
         dbp = patient.diastolic;
 
     var zht = find_height_zscore(patient);
-       
+    
     var zsys = (sbp - calc_mu(age, zht, bpregression[sex].systolic)) / bpregression[sex].systolic.sigma;
     var zdias = (dbp - calc_mu(age, zht, bpregression[sex].diastolic)) / bpregression[sex].diastolic.sigma;
 
@@ -190,7 +190,7 @@ var bp_thresholds = function(patient) {
         sex = patient.sex,
         systolic = patient.systolic,
         diastolic = patient.diastolic;
-
+    
     var null_result = 	{ 
 	systolic: null, 
 	diastolic: null
@@ -208,13 +208,13 @@ var bp_thresholds = function(patient) {
         THRESHOLD = patient.result_precision || 1,
         LOOP_COUNT = 0, 
         MAX_LOOP_COUNT = 20;
-
+        
     // Binary search for finding the solution
     do {
         // Calculate the current search values
         var mids = (highs + lows) / 2;
         var midd = (highd + lowd) / 2;
-
+        
         // Calculate the percentiles for the current search values
         var res = bp_percentiles ({ age: age, 
 				    height: height, 
@@ -222,10 +222,10 @@ var bp_thresholds = function(patient) {
 				    systolic: mids, 
 				    diastolic: midd, 
 				    round_results: patient.round_results})
-
-	if (res.systolic < systolic) lows = mids;
+        
+        if (res.systolic < systolic) lows = mids;
         else if (res.systolic >= systolic) highs = mids;
-
+        
         if (res.diastolic < diastolic) lowd = midd;
         else if (res.diastolic >= diastolic) highd = midd;
 
@@ -258,11 +258,101 @@ var bp_thresholds = function(patient) {
 	highs++;
 	highd++;
     };
-
+    
     // Return the result
     return {
         systolic: highs,
         diastolic: highd
-    };    
-
+    };
+    
 };
+
+var HEIGHT_STALENESS_DATA = 
+[{sex: 'male', age: 1, height_stale_after: 0.2},
+{sex: 'male', age: 2, height_stale_after: 0.2},
+{sex: 'male', age: 3, height_stale_after: 0.2},
+{sex: 'male', age: 4, height_stale_after: 0.2},
+{sex: 'male', age: 5, height_stale_after: 0.2},
+{sex: 'male', age: 6, height_stale_after: 0.08},
+{sex: 'male', age: 7, height_stale_after: 0.2},
+{sex: 'male', age: 8, height_stale_after: 0.2},
+{sex: 'male', age: 9, height_stale_after: 0.2},
+{sex: 'male', age: 10, height_stale_after: 0.2},
+{sex: 'male', age: 11, height_stale_after: 0.2},
+{sex: 'male', age: 12, height_stale_after: 0.2},
+{sex: 'male', age: 13, height_stale_after: 0.2},
+{sex: 'male', age: 14, height_stale_after: 0.2},
+{sex: 'male', age: 15, height_stale_after: 0.2},
+{sex: 'male', age: 16, height_stale_after: 0.2},
+{sex: 'male', age: 17, height_stale_after: 0.2},
+{sex: 'male', age: 18, height_stale_after: 0.2},
+{sex: 'female', age: 1, height_stale_after: 0.5},
+{sex: 'female', age: 2, height_stale_after: 0.75},
+{sex: 'female', age: 3, height_stale_after: 1.25},
+{sex: 'female', age: 4, height_stale_after: 1.25},
+{sex: 'female', age: 5, height_stale_after: 1.25},
+{sex: 'female', age: 6, height_stale_after: 1.25},
+{sex: 'female', age: 7, height_stale_after: 1.5},
+{sex: 'female', age: 8, height_stale_after: 1.75},
+{sex: 'female', age: 9, height_stale_after: 2.25},
+{sex: 'female', age: 10, height_stale_after: 2.25},
+{sex: 'female', age: 11, height_stale_after: 2},
+{sex: 'female', age: 12, height_stale_after: 1.75},
+{sex: 'female', age: 13, height_stale_after: 2.25},
+{sex: 'female', age: 14, height_stale_after: 4.5},
+{sex: 'female', age: 15, height_stale_after: 8.5},
+{sex: 'female', age: 16, height_stale_after: 14.5},
+{sex: 'female', age: 17, height_stale_after: 22},
+{sex: 'female', age: 18, height_stale_after: 30.75}];
+
+/*
+var HEIGHT_STALENESS_DATA = 
+[{sex: 'male', age: 1, height_stale_after: 0.5},
+{sex: 'male', age: 2, height_stale_after: 0.5},
+{sex: 'male', age: 3, height_stale_after: 0.75},
+{sex: 'male', age: 4, height_stale_after: 1},
+{sex: 'male', age: 5, height_stale_after: 1},
+{sex: 'male', age: 6, height_stale_after: 1},
+{sex: 'male', age: 7, height_stale_after: 1.25},
+{sex: 'male', age: 8, height_stale_after: 1.25},
+{sex: 'male', age: 9, height_stale_after: 1.75},
+{sex: 'male', age: 10, height_stale_after: 1.75},
+{sex: 'male', age: 11, height_stale_after: 1.75},
+{sex: 'male', age: 12, height_stale_after: 1.75},
+{sex: 'male', age: 13, height_stale_after: 1.25},
+{sex: 'male', age: 14, height_stale_after: 1.5},
+{sex: 'male', age: 15, height_stale_after: 2},
+{sex: 'male', age: 16, height_stale_after: 3.5},
+{sex: 'male', age: 17, height_stale_after: 6.5},
+{sex: 'male', age: 18, height_stale_after: 11.5},
+{sex: 'female', age: 1, height_stale_after: 0.5},
+{sex: 'female', age: 2, height_stale_after: 0.75},
+{sex: 'female', age: 3, height_stale_after: 1.25},
+{sex: 'female', age: 4, height_stale_after: 1.25},
+{sex: 'female', age: 5, height_stale_after: 1.25},
+{sex: 'female', age: 6, height_stale_after: 1.25},
+{sex: 'female', age: 7, height_stale_after: 1.5},
+{sex: 'female', age: 8, height_stale_after: 1.75},
+{sex: 'female', age: 9, height_stale_after: 2.25},
+{sex: 'female', age: 10, height_stale_after: 2.25},
+{sex: 'female', age: 11, height_stale_after: 2},
+{sex: 'female', age: 12, height_stale_after: 1.75},
+{sex: 'female', age: 13, height_stale_after: 2.25},
+{sex: 'female', age: 14, height_stale_after: 4.5},
+{sex: 'female', age: 15, height_stale_after: 8.5},
+{sex: 'female', age: 16, height_stale_after: 14.5},
+{sex: 'female', age: 17, height_stale_after: 22},
+{sex: 'female', age: 18, height_stale_after: 30.75}];
+*/
+
+var getHeightStaleness = function (sex, age) {
+	var res;
+	for (var i = 0; i < HEIGHT_STALENESS_DATA.length; i++) {
+		if (HEIGHT_STALENESS_DATA[i].sex == sex && HEIGHT_STALENESS_DATA[i].age == getYears(age)) {
+			res = HEIGHT_STALENESS_DATA[i].height_stale_after;
+			break;
+		}
+	}
+	console.log (sex + "," + age + " -> " + res);
+	return res;
+}

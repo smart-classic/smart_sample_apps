@@ -108,6 +108,10 @@ var filterMethod = function (record) {
     return inList (record.method, filterSettings.method);
 };
 
+var filterValid = function (record) {
+    return record.height && record.sPercentile && record.dPercentile;
+};
+
 /**
 * Filter plugin functions for the date range filters
 *

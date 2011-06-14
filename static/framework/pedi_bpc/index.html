@@ -49,7 +49,7 @@
                 <div id="logo"><a href="http://www.smartplatforms.org/" target="_blank"><img src="images/smart-logo.png" border="0" width="65" height="40" alt="SMART Logo" /></a></div>
                 </td></tr></table>
             </div>
-            <div id="error" >Loading patient data. Please wait...</div>
+            <div id="error" ><img style="border-color:#A00;border-width:3px;" src="images/ajax-loader.gif" alt="Loading"/></div>
             
             <!-- Tabs -->
             <div id="tabs">
@@ -108,8 +108,10 @@
                 </div>
                 
                 <div id="tab_calculator">
+					<div id="result-label">
+					</div>
                     <div id="calculator_main">
-                    
+					
                         <div id='result-percentiles'>
                           <table>
                             <tr><th>Systolic</th><th></th><th>Diastolic</th></tr>
@@ -127,24 +129,18 @@
 
                           <table>
                             <tr>
-                                <td class="inputLabel"><label for="add_systolic">Systolic BP (mmHg)</label></td>
-                                <td><input type="number" name="add_systolic2" id="add_systolic" value="0" min="0" max="200" size="2"  /></td>
+                                <td class="inputLabel"><label for="add_systolic">BP</label></td>
+                                <td><input type="number" name="add_systolic2" id="add_systolic" value="0" min="0" max="200" size="2"  /> /</td>
+								<td><input type="number" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200" size="2" /> mmHg</td>
                             </tr>
                             <tr>
-                                <td class="inputLabel"><label for="add_diastolic">Diastolic BP (mmHg)</label></td>
-                                <td><input type="number" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200" size="2" /></td>
-                            </tr>
+                                <td class="inputLabel"><label for="add_age">Age</label></td>
+                                <td><input type="number" name="name" id="add_age" value="0" min="0" max="18" size="2" autofocus/> y</td>
+								<td><input type="number" name="name" id="add_age_months" value="0" min="0" max="11" size="2" /> m</td>
+							</tr>
                             <tr>
-                                <td class="inputLabel"><label for="add_age">Age (years)</label></td>
-                                <td><input type="number" name="name" id="add_age" value="0" min="0" max="18" size="2" autofocus/></td>
-                            </tr>
-                            <tr>
-                                <td class="inputLabel"><label for="add_age_months"> + Age (months)</label></td>
-                                <td><input type="number" name="name" id="add_age_months" value="0" min="0" max="11" size="2" /></td>
-                            </tr>
-                            <tr>
-                                <td class="inputLabel"><label for="add_height">Height (cm)</label></td>
-                                <td><input type="number" name="add_height" id="add_height" value="0" min="0" max="200" size="2" /></td>
+                                <td class="inputLabel"><label for="add_height">Height</label></td>
+                                <td colspan=2><input type="number" name="add_height" id="add_height" value="0" min="0" max="200" size="2" /> cm</td>
                             </tr>
                           </table>
                          
@@ -209,9 +205,9 @@
                 <tr>
                     <td>{$T.date}</td>
                     <td>{getYears($T.age)}y {getMonths($T.age)}m</td>
-                    <td>{$T.height} cm</td>
+                    <td>{#if $T.height}{$T.height} cm{#else}-{#/if}</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
-                    <td>{$T.sPercentile}%/{$T.dPercentile}%</td>
+                    <td>{#if $T.sPercentile && $T.dPercentile}{$T.sPercentile}%/{$T.dPercentile}%{#else}-{#/if}</td>
                     <td>{$T.site}</td>
                     <td>{$T.position}</td>
                     <td>{$T.method}</td>

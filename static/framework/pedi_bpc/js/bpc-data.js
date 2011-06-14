@@ -174,9 +174,16 @@ var processData = function(demographics, vitals) {
 
             
             // Add the record to the patient object only if the nearest height reading is within 1 year
-            if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= 1.0) {
+            var age = years_apart( vitals_bp[i].vital_date, patient.birthdate );
+            var height;
+            if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= getHeightStaleness (demographics.gender,age)) {
+                height = myHeight.value;
+        	} else {
+        		height = undefined;
+            }
+                
                 patient.data.push ({timestamp: vitals_bp[i].vital_date, 
-                    height: myHeight.value,
+                    height: height,
                     systolic: Math.round(vitals_bp[i].systolic),
                     diastolic: Math.round(vitals_bp[i].diastolic), 
                     site: getTermLabel (vitals_bp[i].bodySiteCode),
@@ -184,9 +191,6 @@ var processData = function(demographics, vitals) {
                     method: getTermLabel (vitals_bp[i].methodCode),
                     encounter: getTermLabel (vitals_bp[i].encounterTypeCode)}
                 );
-            } else {
-                console.log ("Warning: Skipping record (Reason: no height data within 1 year)");
-            }
         }
 
         return patient;
@@ -218,14 +222,16 @@ var initPatient = function (patient) {
     
         // Calculate age and percentiles
         patient.data[i].age = years_apart( patient.data[i].timestamp , patient.birthdate );
-        var percentiles = bp_percentiles ({height: patient.data[i].height / 100,   // convert height to meters from centimeters
-                                           age: patient.data[i].age, 
-                                           sex: patient.sex, 
-                                           systolic: patient.data[i].systolic, 
-                                           diastolic: patient.data[i].diastolic,
-					   round_results: true});
-        patient.data[i].sPercentile = percentiles.systolic;
-        patient.data[i].dPercentile = percentiles.diastolic;
+		if (patient.data[i].height) {
+			var percentiles = bp_percentiles ({height: patient.data[i].height / 100,   // convert height to meters from centimeters
+											   age: patient.data[i].age, 
+											   sex: patient.sex, 
+											   systolic: patient.data[i].systolic, 
+											   diastolic: patient.data[i].diastolic,
+						   round_results: true});
+			patient.data[i].sPercentile = percentiles.systolic;
+			patient.data[i].dPercentile = percentiles.diastolic;
+		}
         
         // Convert the date into the output format and standard unix timestamp
         var d = parse_date (patient.data[i].timestamp);
@@ -283,10 +289,11 @@ Patient.prototype.recentEncounters = function (n) {
     p.data = [];
     
     for (var i = this.data.length - 1, dateCounter = 0, lastDate; i >= 0 && dateCounter < n; i--) {
-        p.data.push (this.data[i]);
-        newDate = this.data[i].date;
-        // TO DO: The comparison criteria here should be inexact (only compare the date, etc)
+	
+        newDate = parse_date(this.data[i].date).toString("yyyy-MM-dd");
+		
         if (!lastDate || newDate != lastDate) {
+		    p.data.push (this.data[i]);
             lastDate = newDate;
             dateCounter++;
         }

@@ -36,7 +36,7 @@ var initCalculator = function(bpparams) {
 
     $("form").live('submit', function(event){
         event.stopPropagation();
-
+		
         var height = $('#add_height').val();
 
         var bpparams = {age: parseInt($('#add_age').val()) + 1.0/12 * parseInt($('#add_age_months').val()) , 
@@ -46,6 +46,14 @@ var initCalculator = function(bpparams) {
              systolic: $('#add_systolic').val(), 
 	     diastolic: $('#add_diastolic').val(),
   	     round_results: true };
+		
+		if (getYears(bpparams.age) && getMonths(bpparams.age) && bpparams.height && bpparams.sex) {
+			$("#result-label").text(getYears(bpparams.age) + "y " + getMonths(bpparams.age) + "m, "
+									+ Math.round(bpparams.height * 100) + " cm, " + bpparams.sex + ", "
+									+ bpparams.systolic + "/" + bpparams.diastolic + " mmHg");
+		} else {
+			$("#result-label").text("Please enter patient data");
+		}
        
         var percentiles = bp_percentiles(bpparams);
         

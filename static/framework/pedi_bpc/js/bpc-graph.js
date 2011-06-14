@@ -147,6 +147,9 @@ var clearGraphsLong = function () {
 var drawGraph = function (shortTerm, patient, zone, systolic) {
 
     var r; // handle for the drawing canvas
+	
+	var patient = patient;
+	if (!shortTerm) patient = patient.applyFilter(filterValid);
 
     // Load the appropriate settings object
     var s = getSettings (shortTerm, systolic);
@@ -178,7 +181,7 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
         s.gridCols = patient.data.length * 3;
     }
     
-    s.Y = (s.height - s.bottomgutter - s.topgutter) / s.max;  // The Y distance per percentile    
+    s.Y = (s.height - s.bottomgutter - s.topgutter) / s.max;  // The Y distance per percentile
     
     // Update the local canvas handle
     if (shortTerm) r = r_short;
@@ -236,7 +239,11 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
             // Draw the circle
             var dot = r.circle(x, y, s.dotSize).attr({color: "hsb(" + [colorhue, .8, 1] + ")", fill: "hsb(" + [colorhue, .5, .4] + ")", stroke: "hsb(" + [colorhue, .5, 1] + ")", "stroke-width": 2});
             var dotLabel = {attr: function () {}};
-            if (s.showDotLabel) dotLabel = r.text(x, y, percentile + "%").attr(s.txt2).toFront();
+            if (s.showDotLabel) {
+				var labelText = "-";
+				if (percentile) labelText = percentile + "%";
+				dotLabel = r.text(x, y, labelText).attr(s.txt2).toFront();
+			}
             
             // Generate a mouse over rectangle (invisible)
             blanket.push(r.rect(x-s.blanketSize/2, y-s.blanketSize/2, s.blanketSize, s.blanketSize).attr({stroke: "none", fill: "#fff", opacity: 0}));
@@ -248,8 +255,10 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
                 
                 // Display the label box
                 label[0].attr({text: data.date + " - " + data.encounter});
-                label[1].attr({text: getYears(data.age) + "y " + getMonths(data.age) + "m, " + data.height + " cm, " + gender});
-                label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.sPercentile + "%/" + data.dPercentile + "%)"});
+                if (data.height) label[1].attr({text: getYears(data.age) + "y " + getMonths(data.age) + "m, " + data.height + " cm, " + gender});
+				else label[1].attr({text: getYears(data.age) + "y " + getMonths(data.age) + "m, ? cm, " + gender});
+                if (data.sPercentile && data.dPercentile) label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.sPercentile + "%/" + data.dPercentile + "%)"});
+				else label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg"});
                 label[3].attr({text: data.site + ", " + data.position + ", " + data.method});
                 
                 var animation_duration = 200; //milliseconds
@@ -286,8 +295,8 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
                 if (flag) drawDot (x, y, percentile, patient.data[i], patient.sex);  // draw the data point circle
                 return path;
             };
-            pS = pS.concat (pathAdvance (!i, x, patient.data[i].sPercentile, systolic));
-            pD = pD.concat (pathAdvance (!i, x, patient.data[i].dPercentile, !systolic));
+            pS = pS.concat (pathAdvance (!i, x+2, patient.data[i].sPercentile, systolic));
+            pD = pD.concat (pathAdvance (!i, x+2, patient.data[i].dPercentile, !systolic));
 
             if (!systolic && (!lastX || (x - lastX) >= s.minDX)) {
                 // Draw the corresponding date text label beneath the X axis
@@ -404,8 +413,8 @@ Raphael.fn.drawVAxisLabels = function (x, y, h, hv, maxValue, axisLabel, styling
         }
     } else {
         for (var i = 1; i < hv; i++) {
-            var label = maxValue - i*(maxValue / hv);
-            this.text(x, Math.round(y + i * stepDelta), label).attr(styling).toBack();
+            var label = maxValue - i*(maxValue / hv) + " %";
+            this.text(x - 5, Math.round(y + i * stepDelta), label).attr(styling).toBack();
         }
     }
     if (axisLabel && all) this.text(x, Math.round(y - 20), axisLabel).attr(styling).toBack();
@@ -449,8 +458,8 @@ Raphael.fn.getLegend = function (x, y, zone, settings) {
     
     for (var i = zone.length - 1; i >= 0; i--) {
         colorhue = zone[i].colorhue;
-        legend.push(this.circle(x - width + 20, y - height + (5-i)*24 + 10, 6).attr({color: "hsb(" + [colorhue, .8, 1] + ")", fill: "hsb(" + [colorhue, .5, .4] + ")", stroke: "hsb(" + [colorhue, .5, 1] + ")", "stroke-width": 2}));
-        legend.push(this.text(x - width + 36, y - height + (5-i)*24 + 10, zone[i].definition).attr(settings.txt6));
+        legend.push(this.circle(x - width + 20, y - height + (zone.length-i)*24 + 15, 6).attr({color: "hsb(" + [colorhue, .8, 1] + ")", fill: "hsb(" + [colorhue, .5, .4] + ")", stroke: "hsb(" + [colorhue, .5, 1] + ")", "stroke-width": 2}));
+        legend.push(this.text(x - width + 36, y - height + (zone.length-i)*24 + 15, zone[i].definition).attr(settings.txt6));
     }
     
     legend.hide();
