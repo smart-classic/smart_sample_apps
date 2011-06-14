@@ -214,9 +214,14 @@ var bp_thresholds = function(patient) {
         // Calculate the current search values
         var mids = (highs + lows) / 2;
         var midd = (highd + lowd) / 2;
-        
+
         // Calculate the percentiles for the current search values
-        var res = bp_percentiles ({age: age, height: height, sex: sex, systolic: mids, diastolic: midd});
+        var res = bp_percentiles ({ age: age, 
+				    height: height, 
+				    sex: sex, 
+				    systolic: mids, 
+				    diastolic: midd, 
+				    round_results: patient.round_results})
 
 	if (res.systolic < systolic) lows = mids;
         else if (res.systolic >= systolic) highs = mids;
@@ -227,15 +232,37 @@ var bp_thresholds = function(patient) {
 	if (LOOP_COUNT++ >= MAX_LOOP_COUNT)
 	    return null_result;
 	
-    } while ( Math.abs(res.systolic - systolic) > THRESHOLD ||
-	      Math.abs(res.diastolic - diastolic) > THRESHOLD );
+    } while ( Math.abs(res.systolic - systolic) >= THRESHOLD ||
+	      Math.abs(res.diastolic - diastolic) >= THRESHOLD);
+    
+    if (patient.round_results) {
+	highs = Math.round(highs);
+	highd = Math.round(highd);
+
+	do {
+	    if (res.systolic == systolic)
+		highs--;
+	    
+	    if (res.diastolic == diastolic)
+		highd--;
+	    
+	    res = bp_percentiles ({age: age, 
+				   height: height, 
+				   sex: sex, 
+				   systolic: highs, 
+				   diastolic: highd, 
+				   round_results: true})
+	    
+	} while (res.systolic == systolic ||
+		 res.diastolic == diastolic);
+	highs++;
+	highd++;
+    };
 
     // Return the result
-    var f = patient.round_results ? Math.round : function(x){return x;};
-    
     return {
-        systolic: f(highs),
-        diastolic: f(highd)
+        systolic: highs,
+        diastolic: highd
     };    
 
 };
