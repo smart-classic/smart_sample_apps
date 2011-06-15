@@ -26,12 +26,12 @@ var getSettings = function (shortTerm, systolic) {
         divID: (shortTerm? "holder_short":"holder_long"),
         
         // dimensions for the drawing area (in pixels)
-        width: 760,
+        width: (shortTerm? 320:760),
         height: (shortTerm? 400:(systolic?420:420)),
         
         // margins to be left around the main grid (for labels etc)
-        leftgutter: (shortTerm? 80:40), 
-        rightgutter: (shortTerm? 180:40),
+        leftgutter: (shortTerm? 60:40), 
+        rightgutter: (shortTerm? 60:40),
         bottomgutter: (shortTerm? 70:(systolic?230:70)),
         topgutter: (shortTerm? 30:(systolic?30:190)),
         

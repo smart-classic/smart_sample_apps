@@ -47,7 +47,7 @@ var initCalculator = function(bpparams) {
 	     diastolic: $('#add_diastolic').val(),
   	     round_results: true };
 		
-		if (getYears(bpparams.age) && getMonths(bpparams.age) && bpparams.height && bpparams.sex) {
+		if (bpparams.age && bpparams.height && bpparams.sex) {
 			$("#result-label").text(getYears(bpparams.age) + "y " + getMonths(bpparams.age) + "m, "
 									+ Math.round(bpparams.height * 100) + " cm, " + bpparams.sex + ", "
 									+ bpparams.systolic + "/" + bpparams.diastolic + " mmHg");

@@ -20,7 +20,7 @@
         <script src="js/lib/raphael.js"></script>
         <script src="js/lib/jquery.js"></script>
         <script src="js/lib/jquery-jtemplates.js"></script>
-        <script src="js/lib/jquery-ui-1.8.12.custom.min.js"></script>
+        <script src="js/lib/jquery-ui-1.8.13.custom.min.js"></script>
         <script src="js/lib/date.js"></script>
         <script src="js/cdc_height_tables.js"></script>
         <script src="js/nih_bp_tables.js"></script>
@@ -63,6 +63,85 @@
                 
                 <div id="tab_short">
                     <div id="holder_short"></div>
+					
+					<style>
+	.toggler { width: 400px; height: 310px; padding-top: 20px; padding-bottom: 20px;}
+	#buttonShow { padding: .5em 1em; text-decoration: none; }
+	#buttonHide { padding: .5em 1em; text-decoration: none; }
+	#effect { width: 350px;  height: 300px; padding: 0.4em; position: relative; }
+	#effect h3 { margin: 0; padding: 0.4em; text-align: center; }
+	</style>
+	<script>
+	$(function() {
+		// run the currently selected effect
+		function showHelp() {
+			// get effect type from 
+			var selectedEffect = $( "#effectTypes" ).val();
+
+			// most effect types need no options passed by default
+			var options = {};
+
+			// run the effect
+			$( "#effect" ).show( selectedEffect, options, 1000 );
+		};
+		
+		// run the currently selected effect
+		function hideHelp() {
+			// get effect type from 
+			var selectedEffect = $( "#effectTypes" ).val();
+
+			// most effect types need no options passed by default
+			var options = {};
+
+			// run the effect
+			$( "#effect" ).hide( selectedEffect, options, 1000 );
+		};
+
+		// set effect from select menu value
+		$( "#buttonHide" ).click(function() {
+			hideHelp();
+			return false;
+		});
+		
+		$( "#buttonShow" ).click(function() {
+			showHelp();
+			return false;
+		});
+
+		$( "#effect" ).hide();
+	});
+	</script>
+
+
+
+<div id="help_short">
+
+<div class="toggler">
+	<div id="effect">
+		<h3>Help: Short term view</h3>
+		<p>
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac ipsum nec mi tincidunt aliquet. Quisque vehicula arcu sed felis euismod consequat. Nulla enim mi, porttitor quis porttitor eget, euismod sed lorem. Proin consequat pharetra dui, eu pretium risus ultrices sed. Curabitur ligula tellus, vehicula vel luctus quis, vehicula eget elit. Aliquam vitae elit nibh, in dapibus nunc. Suspendisse potenti. Donec molestie ipsum non dolor consectetur quis venenatis odio sollicitudin. Donec elementum, neque lobortis dapibus sodales, est purus adipiscing turpis, eu viverra eros augue vel quam. Aliquam in augue id neque pulvinar consequat tincidunt ac justo. Vivamus mollis fringilla magna, at volutpat libero euismod nec. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec libero lacus, facilisis ut condimentum at, pretium eget libero. Sed et augue sed turpis vehicula accumsan. Nulla volutpat sollicitudin augue, vitae malesuada nisl molestie vel. Ut augue nulla, accumsan nec congue dignissim, laoreet et orci.  
+		</p>
+		<p>&nbsp;</p>
+		<p align="center"><a href="#" id="buttonHide" class="ui-state-default ui-corner-all">OK</a></p>
+	</div>
+</div>
+
+<select name="effects" id="effectTypes">
+	<option value="blind">Blind</option>
+	<option value="clip">Clip</option>
+	<option value="drop">Drop</option>
+	<option value="slide" selected>Slide</option>
+</select>
+
+<!--<input type="hidden" name="effects" id="effectTypes" value="slide"/>-->
+
+<!--<a href="#" id="buttonShow" class="ui-state-default ui-corner-all">Help</a>-->
+
+
+</div>
+<div class="clearall">&nbsp;</div>
+					
                 </div>
                 
                 <div id="tab_long">
@@ -167,7 +246,7 @@
                           </table>
                         </div>
                     </div>
-                    <div id="clearall">&nbsp;</div>
+                    <div class="clearall">&nbsp;</div>
                 </div> <!-- calculator tab -->
                 
             </div> <!-- tabs -->
@@ -180,10 +259,14 @@
             {#template MAIN}
                 <p class="tablelabel">{$T}</p>
                 <table class="nicetable">
-                    {#include HEAD}
-                    {#foreach $T.data as record}
-                        {#include ROW root=$T.record}
-                    {#/for}
+					<thead>
+						{#include HEAD}
+					</thead>
+					<tbody>
+						{#foreach $T.data as record}
+							{#include ROW root=$T.record}
+						{#/for}
+					</tbody>
                 </table>
             {#/template MAIN}
             

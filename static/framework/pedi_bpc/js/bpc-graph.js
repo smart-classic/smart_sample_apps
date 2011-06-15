@@ -77,6 +77,9 @@ var drawViews = function (patient, zone) {
     drawGraph (false, pLong, zone, true);
     drawGraph (false, pLong, zone, false);
     
+	// Reverse the data order
+	pLong.data.reverse();
+	
     // Render the table view
     printTableView ("holder_table", pLong);
 };
@@ -110,6 +113,9 @@ var redrawViewTable = function (patient) {
 
     // Apply filters 
     var p = applyFilters (patient);
+	
+	// Reverse the data order
+	p.data.reverse();
     
     // Generate the table output
     printTableView ("holder_table", p);
@@ -262,8 +268,18 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
                 label[3].attr({text: data.site + ", " + data.position + ", " + data.method});
                 
                 var animation_duration = 200; //milliseconds
+				
                 var side = "right";
-                if (x + frame.getBBox().width > s.width) side = "left";
+                if (x + frame.getBBox().width > s.width) {
+					if (x >= frame.getBBox().width) {
+						side = "left";
+					} else if (y >= frame.getBBox().height) {
+						side = "top";
+					} else {
+						side = "bottom";
+					}
+				}
+				
                 var ppp = r.popup(x, y, label, side, 1);
                 label.translate(ppp.dx, ppp.dy).attr({opacity: 0}).show().stop().animateWith(frame, {opacity: 1}, animation_duration);
                 frame.attr({path: ppp.path}).attr({opacity: 0}).show().stop().animate({opacity: 1}, animation_duration);
@@ -382,6 +398,34 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
         legendBlanket.toFront();
         legend.attr({opacity: 0}).show();
     }
+	
+	if (shortTerm) {
+		var helpFrame = r.rect (s.width-80, 10, 20, 20, 10).attr({color: "#000", fill: "#000", stroke: "#444", "stroke-width": 2, opacity: .8})
+		var helpBlanket = r.rect (s.width-80, 10, 20, 20).attr({fill: "#fff", opacity: 0, cursor:"pointer"});
+		var helpL = r.text(s.width-70, 20, "?").attr(s.txt4).attr({"font-style":""});
+		
+		var animation_duration = 200; //milliseconds
+			helpBlanket.hover(function () {
+				helpFrame.stop().animate({fill: "#333"}, animation_duration);
+			}, function () {
+				helpFrame.stop().animate({fill: "#000"}, animation_duration);
+			});
+		
+		
+			helpBlanket.click(function () {
+							// get effect type from 
+				var selectedEffect = $( "#effectTypes" ).val();
+
+				// most effect types need no options passed by default
+				var options = {};
+
+				// run the effect
+				$( "#effect" ).show( selectedEffect, options, 1000 );
+				//alert ("clicked help");
+			});
+			
+		helpBlanket.toFront();
+	}
 };
 
 /**

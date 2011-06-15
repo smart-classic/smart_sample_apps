@@ -23,9 +23,10 @@ body {
 .toggle-set { position: relative; float: left; margin-top: 4px; }
 #filter_timerange { position: relative; float: left; margin-left: 6px; }
 #slider-timerange { width: 150px; margin-top: 4px;}
-#holder_short { padding-top: 5px; clear:both; width: 760px; height: 400px; }
+#holder_short { padding-top: 5px; float:left; width: 320px; height: 400px; }
 #holder_long   { padding-top: 5px; clear:both; width: 760px; height: 420px; }
 #holder_table { padding-top: 5px; clear:both; }
+#help_short {float:left;}
 
 /* Styling for the calculator */
 .spct {text-align: right;  position: relative; font-weight: bold;}
@@ -40,7 +41,7 @@ input[type='text'] {border: 1px solid black;}
 .inputLabel {text-align: right}
 #calculator_main {float:left}
 #calculator_thresholds {float:left; padding-left:20px}
-#clearall {clear:both}
+.clearall {clear:both}
 
 /* Styling for the various in-page messages in the BPC app */
 #header {
@@ -98,7 +99,10 @@ table.nicetable th {
 
 table.nicetable td {
     border-width: 1px;
-    padding: 8px;
+    padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 8px;
+	padding-right: 8px;
     border-style: solid;
     border-color: #a9c6c9;
     background-color:#d4e3e5;
