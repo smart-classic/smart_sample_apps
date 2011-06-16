@@ -59,6 +59,7 @@
                     <li><a href="#tab_long">Long Term View</a></li>
                     <li><a href="#tab_table">Table View</a></li>
                     <li><a href="#tab_calculator">Calculator</a></li>
+					<li><a href="#tab_references">References</a></li>
                 </ul>
                 
                 <div id="tab_short">
@@ -66,7 +67,7 @@
 					
 					<style>
 	.toggler { width: 400px; height: 310px; padding-top: 20px; padding-bottom: 20px;}
-	#buttonShow { padding: .5em 1em; text-decoration: none; }
+	#buttonWarn { padding: .5em 1em; text-decoration: none; }
 	#buttonHide { padding: .5em 1em; text-decoration: none; }
 	#effect { width: 350px;  height: 300px; padding: 0.4em; position: relative; }
 	#effect h3 { margin: 0; padding: 0.4em; text-align: center; }
@@ -96,15 +97,18 @@
 			// run the effect
 			$( "#effect" ).hide( selectedEffect, options, 1000 );
 		};
-
-		// set effect from select menu value
-		$( "#buttonHide" ).click(function() {
-			hideHelp();
-			return false;
-		});
 		
-		$( "#buttonShow" ).click(function() {
-			showHelp();
+		$( "#buttonWarn" ).click(function() {
+			var age = years_apart(new Date().toISOString(), patient.birthdate);
+			$("#alert-message").text(patient.name + " is not a pediatric patient (age " + Math.floor(age) + ")");
+			$( "#dialog-message" ).dialog({
+				modal: true,
+				buttons: {
+					Ok: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});
 			return false;
 		});
 
@@ -122,21 +126,34 @@
 		<p>
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac ipsum nec mi tincidunt aliquet. Quisque vehicula arcu sed felis euismod consequat. Nulla enim mi, porttitor quis porttitor eget, euismod sed lorem. Proin consequat pharetra dui, eu pretium risus ultrices sed. Curabitur ligula tellus, vehicula vel luctus quis, vehicula eget elit. Aliquam vitae elit nibh, in dapibus nunc. Suspendisse potenti. Donec molestie ipsum non dolor consectetur quis venenatis odio sollicitudin. Donec elementum, neque lobortis dapibus sodales, est purus adipiscing turpis, eu viverra eros augue vel quam. Aliquam in augue id neque pulvinar consequat tincidunt ac justo. Vivamus mollis fringilla magna, at volutpat libero euismod nec. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec libero lacus, facilisis ut condimentum at, pretium eget libero. Sed et augue sed turpis vehicula accumsan. Nulla volutpat sollicitudin augue, vitae malesuada nisl molestie vel. Ut augue nulla, accumsan nec congue dignissim, laoreet et orci.  
 		</p>
-		<p>&nbsp;</p>
-		<p align="center"><a href="#" id="buttonHide" class="ui-state-default ui-corner-all">OK</a></p>
 	</div>
 </div>
 
+<!--
 <select name="effects" id="effectTypes">
 	<option value="blind">Blind</option>
 	<option value="clip">Clip</option>
 	<option value="drop">Drop</option>
+	<option value="fade">Fade</option>
 	<option value="slide" selected>Slide</option>
 </select>
+-->
 
-<!--<input type="hidden" name="effects" id="effectTypes" value="slide"/>-->
+<input type="hidden" name="effects" id="effectTypes" value="slide"/>
 
-<!--<a href="#" id="buttonShow" class="ui-state-default ui-corner-all">Help</a>-->
+<!--<a href="#" id="buttonWarn" class="ui-state-default ui-corner-all">Test age warning dialog</a>-->
+
+
+<div id="dialog-message" title="Warning">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+		<span id="alert-message"></span>
+	</p>
+	<p>
+		The BPC application will only display the available blood pressure data up to age 18 for this patient.
+		Any data after age 18 will be ignored!
+	</p>
+</div>
 
 
 </div>
@@ -248,6 +265,19 @@
                     </div>
                     <div class="clearall">&nbsp;</div>
                 </div> <!-- calculator tab -->
+				
+				<div id="tab_references">
+					<ul>
+						<li>
+							<p>The Fourth Report on the Diagnosis, Evaluation, and Treatment of High 
+							Blood Pressure in Children and Adolescents
+							National Heart, Lung, and Blood Institute, NIH (<a href="http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf" target="_blank">http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf</a>)</p>
+						</li>
+						<li>
+							<p>CDC Clinical Growth Charts (<a href="http://www.cdc.gov/growthcharts/clinical_charts.htm" target="_blank">http://www.cdc.gov/growthcharts/clinical_charts.htm</a>)</p>
+						</li>
+					</ul>
+				</div>
                 
             </div> <!-- tabs -->
 
@@ -291,10 +321,10 @@
                     <td>{#if $T.height}{$T.height} cm{#else}-{#/if}</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
                     <td>{#if $T.sPercentile && $T.dPercentile}{$T.sPercentile}%/{$T.dPercentile}%{#else}-{#/if}</td>
-                    <td>{$T.site}</td>
-                    <td>{$T.position}</td>
-                    <td>{$T.method}</td>
-                    <td>{$T.encounter}</td>
+                    <td>{#if $T.site}{$T.site}{#else}-{#/if}</td>
+                    <td>{#if $T.position}{$T.position}{#else}-{#/if}</td>
+                    <td>{#if $T.method}{$T.method}{#else}-{#/if}</td>
+                    <td>{#if $T.encounter}{$T.encounter}{#else}-{#/if}</td>
                 </tr>
             {#/template ROW}
         --></textarea></div>

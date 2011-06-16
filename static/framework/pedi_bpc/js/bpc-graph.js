@@ -259,13 +259,27 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
             var timer, i = 0;
             rect.hover(function () {
                 
+				var otherInfo = "";
+				
+				if (data.site) otherInfo += data.site;
+				if (data.position) {
+					if (otherInfo) otherInfo += ", ";
+					otherInfo += data.position;
+				}
+				if (data.method) {
+					if (otherInfo) otherInfo += ", ";
+					otherInfo += data.method;
+				}
+				
+				if (!otherInfo) otherInfo = "none";
+				
                 // Display the label box
-                label[0].attr({text: data.date + " - " + data.encounter});
+                label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"")});
                 if (data.height) label[1].attr({text: getYears(data.age) + "y " + getMonths(data.age) + "m, " + data.height + " cm, " + gender});
 				else label[1].attr({text: getYears(data.age) + "y " + getMonths(data.age) + "m, ? cm, " + gender});
                 if (data.sPercentile && data.dPercentile) label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.sPercentile + "%/" + data.dPercentile + "%)"});
 				else label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg"});
-                label[3].attr({text: data.site + ", " + data.position + ", " + data.method});
+                label[3].attr({text: otherInfo});
                 
                 var animation_duration = 200; //milliseconds
 				
@@ -364,6 +378,40 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
         else mytext = "Diastolic";
         r.text(s.width - s.rightgutter + 20, Math.round(s.topgutter + ((s.height-s.topgutter-s.bottomgutter)/2)), mytext).attr({font: '20px Helvetica, Arial', fill: "#555"}).rotate(90);
     }
+	
+	if (shortTerm) {
+		//var helpFrame = r.rect (s.width-s.rightgutter, 10, 20, 20, 10).attr({color: "#000", fill: "#000", stroke: "#444", "stroke-width": 2, opacity: .8})
+		var helpBlanket = r.rect (s.width-s.rightgutter-55, 13, 60, 15).attr({fill: "#fff", opacity: 0, cursor:"pointer"});
+		var helpL = r.text(s.width-s.rightgutter, 20, "Help >>").attr({"text-anchor":"end"}).attr(s.txt2).attr({fill: "#555"});
+		
+		var animation_duration = 200; //milliseconds
+			helpBlanket.hover(function () {
+				//helpFrame.stop().animate({fill: "#333"}, animation_duration);
+				helpL.stop().animate({fill: "#fff"}, animation_duration);
+			}, function () {
+				//helpFrame.stop().animate({fill: "#000"}, animation_duration);
+				helpL.stop().animate({fill: "#555"}, animation_duration);
+			});
+		
+		
+			helpBlanket.click(function () {
+				
+				// get effect type 
+				var selectedEffect = $( "#effectTypes" ).val();
+				
+				if ($("#effect").is(':hidden')) {
+					$( "#effect" ).show( selectedEffect, {}, 1000 );
+					helpL.attr({text:"Help <<"});
+				} else {
+					helpL.attr({text:"Help >>"});
+					$( "#effect" ).hide( selectedEffect, {}, 1000 );
+				}
+			});
+		
+		var helpTrigger = r.set();
+		//helpTrigger.push (helpFrame);
+		helpTrigger.push (helpL);
+	}
     
     // Generate the legend for the short term and long term diastolic views
     if (shortTerm || (!shortTerm && !systolic)) {
@@ -381,7 +429,15 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
             legendFrame.stop().animate({x: legendX-s.legendWidth, y: legendY-s.legendHeight, width: s.legendWidth, height: s.legendHeight, r: 10, fill: "#000", stroke: "#444"}, animation_duration);
             legend.stop().animate({opacity: 1}, animation_duration);
             legendL.stop().animate({opacity: 0}, animation_duration);
+			if (helpTrigger) {
+				//helpBlanket.show();
+				//helpTrigger.stop().animate({opacity: 1}, animation_duration);
+			}	
         }, function () {
+			if (helpTrigger) {
+				//helpBlanket.hide();
+				//helpTrigger.stop().animate({opacity: 0}, animation_duration);
+			}	
             legendBlanket.attr({x: legendX-20, y: legendY-20, width: 20, height: 20});
             legendL.stop().animate({opacity: 1}, animation_duration);
             legend.stop().animate({opacity: 0}, animation_duration);;
@@ -396,36 +452,14 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
         blanket.toFront();
         
         legendBlanket.toFront();
+		
+		if (helpTrigger) {
+			helpTrigger.toFront();
+			helpBlanket.toFront();
+		}
+		
         legend.attr({opacity: 0}).show();
     }
-	
-	if (shortTerm) {
-		var helpFrame = r.rect (s.width-80, 10, 20, 20, 10).attr({color: "#000", fill: "#000", stroke: "#444", "stroke-width": 2, opacity: .8})
-		var helpBlanket = r.rect (s.width-80, 10, 20, 20).attr({fill: "#fff", opacity: 0, cursor:"pointer"});
-		var helpL = r.text(s.width-70, 20, "?").attr(s.txt4).attr({"font-style":""});
-		
-		var animation_duration = 200; //milliseconds
-			helpBlanket.hover(function () {
-				helpFrame.stop().animate({fill: "#333"}, animation_duration);
-			}, function () {
-				helpFrame.stop().animate({fill: "#000"}, animation_duration);
-			});
-		
-		
-			helpBlanket.click(function () {
-							// get effect type from 
-				var selectedEffect = $( "#effectTypes" ).val();
-
-				// most effect types need no options passed by default
-				var options = {};
-
-				// run the effect
-				$( "#effect" ).show( selectedEffect, options, 1000 );
-				//alert ("clicked help");
-			});
-			
-		helpBlanket.toFront();
-	}
 };
 
 /**
@@ -461,8 +495,8 @@ Raphael.fn.drawVAxisLabels = function (x, y, h, hv, maxValue, axisLabel, styling
             this.text(x - 5, Math.round(y + i * stepDelta), label).attr(styling).toBack();
         }
     }
-    if (axisLabel && all) this.text(x, Math.round(y - 20), axisLabel).attr(styling).toBack();
-    if (axisLabel && !all) this.text(x, Math.round(y - 10), axisLabel).attr(styling).toBack();
+    if (axisLabel && all) this.text(x, Math.round(y - 20), axisLabel).attr(styling).attr({"font-weight":"bold"}).toBack();
+    if (axisLabel && !all) this.text(x, Math.round(y - 10), axisLabel).attr(styling).attr({"font-weight":"bold"}).toBack();
 };
 
 /**

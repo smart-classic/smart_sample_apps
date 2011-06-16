@@ -267,42 +267,43 @@ var bp_thresholds = function(patient) {
     
 };
 
-var HEIGHT_STALENESS_DATA = [{"sex":"male","age":1,"height_stale_after":0.5},
-			     {"sex":"male","age":2,"height_stale_after":0.5},
-			     {"sex":"male","age":3,"height_stale_after":0.75},
-			     {"sex":"male","age":4,"height_stale_after":1},
-			     {"sex":"male","age":5,"height_stale_after":1},
-			     {"sex":"male","age":6,"height_stale_after":1.25},
-			     {"sex":"male","age":7,"height_stale_after":1.25},
-			     {"sex":"male","age":8,"height_stale_after":1.5},
-			     {"sex":"male","age":9,"height_stale_after":1.75},
-			     {"sex":"male","age":10,"height_stale_after":2},
-			     {"sex":"male","age":11,"height_stale_after":2},
-			     {"sex":"male","age":12,"height_stale_after":1.75},
-			     {"sex":"male","age":13,"height_stale_after":1.5},
-			     {"sex":"male","age":14,"height_stale_after":1.5},
-			     {"sex":"male","age":15,"height_stale_after":2.25},
-			     {"sex":"male","age":16,"height_stale_after":3.75},
-			     {"sex":"male","age":17,"height_stale_after":6.75},
-			     {"sex":"male","age":18,"height_stale_after":11.75},
-			     {"sex":"female","age":1,"height_stale_after":0.5},
-			     {"sex":"female","age":2,"height_stale_after":0.75},
-			     {"sex":"female","age":3,"height_stale_after":1.25},
-			     {"sex":"female","age":4,"height_stale_after":1.25},
-			     {"sex":"female","age":5,"height_stale_after":1.25},
-			     {"sex":"female","age":6,"height_stale_after":1.5},
-			     {"sex":"female","age":7,"height_stale_after":1.75},
-			     {"sex":"female","age":8,"height_stale_after":2},
-			     {"sex":"female","age":9,"height_stale_after":2.25},
-			     {"sex":"female","age":10,"height_stale_after":2.5},
-			     {"sex":"female","age":11,"height_stale_after":2},
-			     {"sex":"female","age":12,"height_stale_after":2},
-			     {"sex":"female","age":13,"height_stale_after":2.75},
-			     {"sex":"female","age":14,"height_stale_after":4.75},
-			     {"sex":"female","age":15,"height_stale_after":9},
-			     {"sex":"female","age":16,"height_stale_after":15.25},
-			     {"sex":"female","age":17,"height_stale_after":23.25},
-			     {"sex":"female","age":18,"height_stale_after":32}]
+var HEIGHT_STALENESS_DATA = [
+				{"sex":"male","age":1,"height_stale_after":0.5},
+			    {"sex":"male","age":2,"height_stale_after":0.5},
+			    {"sex":"male","age":3,"height_stale_after":0.75},
+			    {"sex":"male","age":4,"height_stale_after":1},
+			    {"sex":"male","age":5,"height_stale_after":1},
+				{"sex":"male","age":6,"height_stale_after":1.25},
+				{"sex":"male","age":7,"height_stale_after":1.25},
+				{"sex":"male","age":8,"height_stale_after":1.5},
+				{"sex":"male","age":9,"height_stale_after":1.75},
+			    {"sex":"male","age":10,"height_stale_after":2},
+			    {"sex":"male","age":11,"height_stale_after":2},
+			    {"sex":"male","age":12,"height_stale_after":1.75},
+			    {"sex":"male","age":13,"height_stale_after":1.5},
+			    {"sex":"male","age":14,"height_stale_after":1.5},
+			    {"sex":"male","age":15,"height_stale_after":2.25},
+			    {"sex":"male","age":16,"height_stale_after":3.75},
+			    {"sex":"male","age":17,"height_stale_after":6.75},
+			    {"sex":"male","age":18,"height_stale_after":11.75},
+			    {"sex":"female","age":1,"height_stale_after":0.5},
+			    {"sex":"female","age":2,"height_stale_after":0.75},
+			    {"sex":"female","age":3,"height_stale_after":1.25},
+			    {"sex":"female","age":4,"height_stale_after":1.25},
+			    {"sex":"female","age":5,"height_stale_after":1.25},
+			    {"sex":"female","age":6,"height_stale_after":1.5},
+			    {"sex":"female","age":7,"height_stale_after":1.75},
+			    {"sex":"female","age":8,"height_stale_after":2},
+			    {"sex":"female","age":9,"height_stale_after":2.25},
+			    {"sex":"female","age":10,"height_stale_after":2.5},
+			    {"sex":"female","age":11,"height_stale_after":2},
+			    {"sex":"female","age":12,"height_stale_after":2},
+			    {"sex":"female","age":13,"height_stale_after":2.75},
+			    {"sex":"female","age":14,"height_stale_after":4.75},
+			    {"sex":"female","age":15,"height_stale_after":9},
+			    {"sex":"female","age":16,"height_stale_after":15.25},
+			    {"sex":"female","age":17,"height_stale_after":23.25},
+			    {"sex":"female","age":18,"height_stale_after":32}];
 
 var getHeightStaleness = function (sex, age) {
 	var res;
@@ -312,6 +313,5 @@ var getHeightStaleness = function (sex, age) {
 			break;
 		}
 	}
-	console.log (sex + "," + age + " -> " + res);
 	return res;
 }

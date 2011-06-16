@@ -26,9 +26,6 @@ var SANITY_THRESHOLD = 1; // try also 0.1
 var sexes =['male', 'female'];
 
 var compute_times = function() {
-
-var results = [];
-
 $.each(sexes, function(i, sex) {
   for (var age = MIN_AGE; age <= MAX_AGE; age+= AGE_STEP) {
 
@@ -80,12 +77,10 @@ $.each(sexes, function(i, sex) {
       var hearlier = find_height_threshold({age: age+timestep/12 , sex: sex, target: HEIGHT_PERCENTILE}) / 100.0;
       if (hearlier - mean_height < heightstep) {
         console.log(sex+"\t"+age+"\t"+timestep*-1)
-	  results.push({sex: sex, age: age, height_stale_after: (-1*timestep)});
+        $("#results").append("<tr><td>"+sex+"</td><td>"+age+"</td><td>"+(-1*timestep)+"</td></tr>");
         break;
       }
     }
   }
 });
-
-return results;
 };

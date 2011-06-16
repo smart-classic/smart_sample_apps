@@ -88,10 +88,12 @@ var setDateRange = function (valueFrom, valueTo) {
 * @returns {Boolean} True if the patient data record is allowed through the filter
 */
 var filterEncounter = function (record) {
+	if (!record.encounter) return true;
     return inList (record.encounter, filterSettings.encounter);
 };
     
 var filterSite = function (record) {
+	if (!record.site) return true;
     var site = record.site.toLowerCase();
     if (site.indexOf("arm") != -1) {
         return inList ("Arm", filterSettings.site);
@@ -101,15 +103,21 @@ var filterSite = function (record) {
 };
     
 var filterPosition = function (record) {
+	if (!record.position) return true;
     return inList (record.position, filterSettings.position);
 };
 
 var filterMethod = function (record) {
+	if (!record.method) return true;
     return inList (record.method, filterSettings.method);
 };
 
 var filterValid = function (record) {
     return record.height && record.sPercentile && record.dPercentile;
+};
+
+var filterPediatric = function (record) {
+    return record.age < 18;
 };
 
 /**
@@ -168,5 +176,6 @@ var applyFilters = function (patient) {
                   .applyFilter(filterSite)
                   .applyFilter(filterPosition)
                   .applyFilter(filterDate)
-                  .applyFilter(filterMethod);
+                  .applyFilter(filterMethod)
+				  .applyFilter(filterPediatric);
 };

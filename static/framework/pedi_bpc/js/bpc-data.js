@@ -68,9 +68,6 @@ var get_vitals = function() {
         // Query the RDF for the blood pressure data
         vital_signs
             .where('?v dc:date ?vital_date')
-            .where('?v sp:encounter ?encounter')
-            .where('?encounter sp:encounterType ?encounterType')
-            .where('?encounterType sp:code ?code')
             .where('?v sp:bloodPressure ?bloodPressure')
             .where('?bloodPressure sp:systolic ?s')
             .where('?s sp:value ?systolic')
@@ -78,20 +75,23 @@ var get_vitals = function() {
             .where('?bloodPressure sp:diastolic ?d')
             .where('?d sp:value ?diastolic')
             .where('?d sp:unit \"mm[Hg]\"')
-            .where('?bloodPressure sp:bodyPosition ?bodyPosition')
-            .where('?bodyPosition sp:code ?bodyPositionCode')
-            .where('?bloodPressure sp:bodySite ?bodySite')
-            .where('?bodySite sp:code ?bodySiteCode')
-            .where('?bloodPressure sp:method ?method')
-            .where('?method sp:code ?methodCode')
+			.optional('?v sp:encounter ?encounter')
+            .optional('?encounter sp:encounterType ?encounterType')
+            .optional('?encounterType sp:code ?code')
+            .optional('?bloodPressure sp:bodyPosition ?bodyPosition')
+            .optional('?bodyPosition sp:code ?bodyPositionCode')
+            .optional('?bloodPressure sp:bodySite ?bodySite')
+            .optional('?bodySite sp:code ?bodySiteCode')
+            .optional('?bloodPressure sp:method ?method')
+            .optional('?method sp:code ?methodCode')
             .each(function(){vitals.bpData.push({
                 vital_date: this.vital_date.value,
                 systolic: this.systolic.value,
                 diastolic: this.diastolic.value,
-                bodyPositionCode: this.bodyPositionCode.value,
-                bodySiteCode: this.bodySiteCode.value,
-                methodCode: this.methodCode.value,
-                encounterTypeCode: this.code.value
+                bodyPositionCode: this.bodyPositionCode && this.bodyPositionCode.value,
+                bodySiteCode: this.bodySiteCode && this.bodySiteCode.value,
+                methodCode: this.methodCode && this.methodCode.value,
+                encounterTypeCode: this.code && this.code.value
             })});
             
         dfd.resolve(vitals);
@@ -122,14 +122,26 @@ var processData = function(demographics, vitals) {
 
     // Caculate the current age of the patient
     var age = years_apart(new Date().toISOString(), demographics.birthday);
-
+	
+	// Display warning message if the patient has reached age 18
+	if (age >= 18) {
+		$("#alert-message").text(SMART.record.full_name + " is not a pediatric patient (age " + getYears(age) + ")");
+		$( "#dialog-message" ).dialog({
+			modal: true,
+			buttons: {
+				Ok: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	}
+	
     // Display appropriate error message
     if (vitals_height.length == 0 || vitals_bp.lenght == 0) {
         $("#error").text("Error: No vitals in the patient record");
-    } else if (age > 18) {
-        $("#error").text("Error:  " + SMART.record.full_name + " is not a pediatric patient (age " + Math.floor(age) + ")");
     } else {
-        // No errors detected -> proceed with full data processing
+        
+		// No errors detected -> proceed with full data processing
 
         // Clear the error message
         $("#error").text("").hide();
@@ -220,9 +232,9 @@ var initPatient = function (patient) {
     // Calculate the age and percentiles for the patient encounters
     for (var i = 0, ii = patient.data.length; i < ii; i++) {
     
-        // Calculate age and percentiles
+        // Calculate age and percentiles (child must have height and be at least 1 year old)
         patient.data[i].age = years_apart( patient.data[i].timestamp , patient.birthdate );
-		if (patient.data[i].height) {
+		if (patient.data[i].height && patient.data[i].age >= 1 ) {
 			var percentiles = bp_percentiles ({height: patient.data[i].height / 100,   // convert height to meters from centimeters
 											   age: patient.data[i].age, 
 											   sex: patient.sex, 

@@ -10,14 +10,13 @@
 
 </head>
 <body>
-  <textarea id='results' style="width: 100%; height: 100%;"></textarea>
+  <table id='results'>
+    <tr><th>Sex</th><th>Age (months)</th><th>BPs Stale After... (months)</th></tr>
+  </table>
 <script>
 </script>
 <script>
-var r = compute_times();
-r = JSON.stringify(r);
-r = r.replace(/},/g, "},\n");
-$("#results").val("var HEIGHT_STALENESS_DATA = "+r);
+compute_times();
 </script>
 </body>
 </html>
