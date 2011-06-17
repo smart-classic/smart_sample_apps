@@ -395,18 +395,24 @@ var drawGraph = function (shortTerm, patient, zone, systolic) {
 		
 		
 			helpBlanket.click(function () {
+				var displayed = false;
+			
+				return function () {
 				
-				// get effect type 
-				var selectedEffect = $( "#effectTypes" ).val();
-				
-				if ($("#effect").is(':hidden')) {
-					$( "#effect" ).show( selectedEffect, {}, 1000 );
-					helpL.attr({text:"Help <<"});
-				} else {
-					helpL.attr({text:"Help >>"});
-					$( "#effect" ).hide( selectedEffect, {}, 1000 );
-				}
-			});
+					// get effect type 
+					var selectedEffect = $( "#effectTypes" ).val();
+					
+					if (!displayed) {
+						$( "#effect" ).stop().show( selectedEffect, {}, 1000 );
+						helpL.attr({text:"Help <<"});
+						displayed = true;
+					} else {
+						helpL.attr({text:"Help >>"});
+						$( "#effect" ).stop().hide( selectedEffect, {}, 1000 );
+						displayed = false;
+					}
+				};
+			} ());
 		
 		var helpTrigger = r.set();
 		//helpTrigger.push (helpFrame);

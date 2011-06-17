@@ -20,7 +20,7 @@ var initCalculator = function(bpparams) {
     $('#add_diastolic').val(Math.round(bpparams.diastolic));
     $('#add_systolic').val(Math.round(bpparams.systolic));
     $('#add_age').val(Math.floor(bpparams.age));
-    $('#add_age_months').val(Math.round(12 * (bpparams.age - Math.floor(bpparams.age))));
+    $('#add_months').val(Math.round(12 * (bpparams.age - Math.floor(bpparams.age))));
     if (bpparams.sex =='female')
         $('#add_female').attr("checked", true);
     else 
@@ -39,7 +39,7 @@ var initCalculator = function(bpparams) {
 		
         var height = $('#add_height').val();
 
-        var bpparams = {age: parseInt($('#add_age').val()) + 1.0/12 * parseInt($('#add_age_months').val()) , 
+        var bpparams = {age: parseInt($('#add_age').val()) + 1.0/12 * parseInt($('#add_months').val()) , 
              sex: $('input[name="add_gender"]:checked').val(), 
 
              height: height/100.0, 

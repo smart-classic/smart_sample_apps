@@ -63,8 +63,8 @@ var get_vitals = function() {
             .each(function(){vitals.heightData.push({
                 vital_date: this.vital_date.value,
                 height: this.height.value
-            })});
-            
+            })});			
+			
         // Query the RDF for the blood pressure data
         vital_signs
             .where('?v dc:date ?vital_date')
@@ -76,23 +76,50 @@ var get_vitals = function() {
             .where('?d sp:value ?diastolic')
             .where('?d sp:unit \"mm[Hg]\"')
 			.optional('?v sp:encounter ?encounter')
-            .optional('?encounter sp:encounterType ?encounterType')
-            .optional('?encounterType sp:code ?code')
             .optional('?bloodPressure sp:bodyPosition ?bodyPosition')
-            .optional('?bodyPosition sp:code ?bodyPositionCode')
             .optional('?bloodPressure sp:bodySite ?bodySite')
-            .optional('?bodySite sp:code ?bodySiteCode')
             .optional('?bloodPressure sp:method ?method')
-            .optional('?method sp:code ?methodCode')
-            .each(function(){vitals.bpData.push({
-                vital_date: this.vital_date.value,
-                systolic: this.systolic.value,
-                diastolic: this.diastolic.value,
-                bodyPositionCode: this.bodyPositionCode && this.bodyPositionCode.value,
-                bodySiteCode: this.bodySiteCode && this.bodySiteCode.value,
-                methodCode: this.methodCode && this.methodCode.value,
-                encounterTypeCode: this.code && this.code.value
-            })});
+            .each(function(){
+			
+				var res;
+			
+			    if (this.encounter)  {
+					res = vital_signs.where(this.encounter.toString() +  ' sp:encounterType ?encounterType').where('?encounterType sp:code ?code');
+					if (res.length === 1) {
+						this.code = res[0].code;
+					}
+				}
+				
+				if (this.bodyPosition)  {
+					res = vital_signs.where(this.bodyPosition.toString() +  ' sp:code ?bodyPositionCode');
+					if (res.length === 1) {
+						this.bodyPositionCode = res[0].bodyPositionCode;
+					}
+				}
+				
+				if (this.bodySite)  {
+					res = vital_signs.where(this.bodySite.toString() +  ' sp:code ?bodySiteCode');
+					if (res.length === 1) {
+						this.bodySiteCode = res[0].bodySiteCode;
+					}
+				}
+				
+				if (this.method)  {
+					res = vital_signs.where(this.method.toString() +  ' sp:code ?methodCode');
+					if (res.length === 1) {
+						this.methodCode = res[0].methodCode;
+					}
+				}
+			
+				vitals.bpData.push({
+					vital_date: this.vital_date.value,
+					systolic: this.systolic.value,
+					diastolic: this.diastolic.value,
+					bodyPositionCode: this.bodyPositionCode && this.bodyPositionCode.value,
+					bodySiteCode: this.bodySiteCode && this.bodySiteCode.value,
+					methodCode: this.methodCode && this.methodCode.value,
+					encounterTypeCode: this.code && this.code.value});
+			});
             
         dfd.resolve(vitals);
     });
@@ -125,7 +152,7 @@ var processData = function(demographics, vitals) {
 	
 	// Display warning message if the patient has reached age 18
 	if (age >= 18) {
-		$("#alert-message").text(SMART.record.full_name + " is not a pediatric patient (age " + getYears(age) + ")");
+		$("#alert-message").text(SMART.record.full_name + " is " + getYears(age) + " years old!");
 		$( "#dialog-message" ).dialog({
 			modal: true,
 			buttons: {
