@@ -7,3 +7,4 @@ settings.py
 .pydevproject
 production.js
 production.css
+.DS_Store
