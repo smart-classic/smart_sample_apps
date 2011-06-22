@@ -2,6 +2,7 @@
 //                             http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf
 // Retrieved 4/6/2011
 // JS by:  Josh Mandel
+//
 // Revisions:
 //      2011-06-02  Added BP Thresholds search method (NJS)
 //
@@ -177,7 +178,8 @@ Math.cdf = function(x) {
 *                      age in years, 
 *                      sex ('male' or 'female'), 
 *                      systolic in percentile, 
-*                      diastolic in percentile
+*                      diastolic in percentile,
+*                      round_results (true or false)
 *
 * @returns {Object} Parameters include:
                        systolic in mmHg,
@@ -240,10 +242,10 @@ var bp_thresholds = function(patient) {
 	highd = Math.ceil(highd);
 
 	do {
-	    if (res.systolic == systolic)
+	    if (res.systolic === systolic)
 		highs--;
 	    
-	    if (res.diastolic == diastolic)
+	    if (res.diastolic === diastolic)
 		highd--;
 	    
 	    res = bp_percentiles ({age: age, 
@@ -253,8 +255,8 @@ var bp_thresholds = function(patient) {
 				   diastolic: highd, 
 				   round_results: true})
 	    
-	} while (res.systolic == systolic ||
-		 res.diastolic == diastolic);
+	} while (res.systolic === systolic ||
+		 res.diastolic === diastolic);
 	highs++;
 	highd++;
     };
@@ -266,52 +268,3 @@ var bp_thresholds = function(patient) {
     };
     
 };
-
-var HEIGHT_STALENESS_DATA = [
-				{"sex":"male","age":1,"height_stale_after":0.5},
-			    {"sex":"male","age":2,"height_stale_after":0.5},
-			    {"sex":"male","age":3,"height_stale_after":0.75},
-			    {"sex":"male","age":4,"height_stale_after":1},
-			    {"sex":"male","age":5,"height_stale_after":1},
-				{"sex":"male","age":6,"height_stale_after":1.25},
-				{"sex":"male","age":7,"height_stale_after":1.25},
-				{"sex":"male","age":8,"height_stale_after":1.5},
-				{"sex":"male","age":9,"height_stale_after":1.75},
-			    {"sex":"male","age":10,"height_stale_after":2},
-			    {"sex":"male","age":11,"height_stale_after":2},
-			    {"sex":"male","age":12,"height_stale_after":1.75},
-			    {"sex":"male","age":13,"height_stale_after":1.5},
-			    {"sex":"male","age":14,"height_stale_after":1.5},
-			    {"sex":"male","age":15,"height_stale_after":2.25},
-			    {"sex":"male","age":16,"height_stale_after":3.75},
-			    {"sex":"male","age":17,"height_stale_after":6.75},
-			    {"sex":"male","age":18,"height_stale_after":11.75},
-			    {"sex":"female","age":1,"height_stale_after":0.5},
-			    {"sex":"female","age":2,"height_stale_after":0.75},
-			    {"sex":"female","age":3,"height_stale_after":1.25},
-			    {"sex":"female","age":4,"height_stale_after":1.25},
-			    {"sex":"female","age":5,"height_stale_after":1.25},
-			    {"sex":"female","age":6,"height_stale_after":1.5},
-			    {"sex":"female","age":7,"height_stale_after":1.75},
-			    {"sex":"female","age":8,"height_stale_after":2},
-			    {"sex":"female","age":9,"height_stale_after":2.25},
-			    {"sex":"female","age":10,"height_stale_after":2.5},
-			    {"sex":"female","age":11,"height_stale_after":2},
-			    {"sex":"female","age":12,"height_stale_after":2},
-			    {"sex":"female","age":13,"height_stale_after":2.75},
-			    {"sex":"female","age":14,"height_stale_after":4.75},
-			    {"sex":"female","age":15,"height_stale_after":9},
-			    {"sex":"female","age":16,"height_stale_after":15.25},
-			    {"sex":"female","age":17,"height_stale_after":23.25},
-			    {"sex":"female","age":18,"height_stale_after":32}];
-
-var getHeightStaleness = function (sex, age) {
-	var res;
-	for (var i = 0; i < HEIGHT_STALENESS_DATA.length; i++) {
-		if (HEIGHT_STALENESS_DATA[i].sex == sex && HEIGHT_STALENESS_DATA[i].age == getYears(age)) {
-			res = HEIGHT_STALENESS_DATA[i].height_stale_after;
-			break;
-		}
-	}
-	return res;
-}

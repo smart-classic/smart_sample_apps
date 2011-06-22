@@ -4,52 +4,65 @@
 *  Blood Pressure Centiles SMART Application
 *
 *  Developed by: Nikolai Schwertner
+*
 *  Revision history:
-*       2011-06-06 Code refactoring
+*       2011-06-21 Refactored
 *       2011-06-02 Modified the table template to output the method and the month/year format
 *       2011-05-26 Added JCM's calculator code
 */
 -->
 <html lang="en">
+
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Blood Pressure Centiles SMART Application</title>
-        <link rel="stylesheet" href="css/bpc-screen.css" type="text/css" media="screen">
-        <link type="text/css" href="css/themes/custom/jquery.ui.all.css" rel="stylesheet" />
-        <script src="js/smart/smart-api-page.js"></script>
-        <script src="js/lib/raphael.js"></script>
-        <script src="js/lib/jquery.js"></script>
-        <script src="js/lib/jquery-jtemplates.js"></script>
-        <script src="js/lib/jquery-ui-1.8.13.custom.min.js"></script>
-        <script src="js/lib/date.js"></script>
-        <script src="js/cdc_height_tables.js"></script>
-        <script src="js/nih_bp_tables.js"></script>
-        <script src="js/util.js"></script>
-        <script src="js/popup.js"></script>
-        <script src="js/bpc-config.js"></script>
-        <script src="js/bpc-data.js"></script>
-        <script src="js/bpc-filters.js"></script>
-        <script src="js/bpc-ui.js"></script>
-        <script src="js/bpc-graph.js"></script>
-        <script>
-            // Initiate the data retrieval, processing, and chart drawing
-            $.when(get_demographics(), get_vitals()).then( function (patient, vitals) {
-                initApp ( processData(patient, vitals) ); 
-            });
-        </script>
+        
+        <!-- BPC stylesheets-->
+        <link rel="stylesheet" href="css/bpc-screen.css" type="text/css" media="screen" />
+        
+        <!-- jQuert UI custom theme-->
+        <link rel="stylesheet" href="css/themes/custom/jquery.ui.all.css" type="text/css" media="screen" />
+        
+        <!-- SMART Connector -->
+        <script src="js/smart/smart-api-page.js" type="text/javascript"></script>
+        
+        <!-- Standard JS Libraries -->
+        <script src="js/lib/jquery.js" type="text/javascript"></script>
+        <script src="js/lib/jquery-jtemplates.js" type="text/javascript"></script>
+        <script src="js/lib/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="js/lib/jquery-ui-1.8.13.custom.min.js" type="text/javascript"></script>
+        <script src="js/lib/raphael.js" type="text/javascript"></script>
+        <script src="js/lib/date.js" type="text/javascript"></script>
+        
+        <!-- BPC Utilities -->
+        <script src="js/cdc_height_tables.js" type="text/javascript"></script>
+        <script src="js/nih_bp_tables.js" type="text/javascript"></script>
+        <script src="js/util.js" type="text/javascript"></script>
+        <script src="js/popup.js" type="text/javascript"></script>
+        
+        <!-- BPC App Modules -->
+        <script src="js/bpc-config.js" type="text/javascript"></script>
+        <script src="js/bpc-data.js" type="text/javascript"></script>
+        <script src="js/bpc-filters.js" type="text/javascript"></script>
+        <script src="js/bpc-ui.js" type="text/javascript"></script>
+        <script src="js/bpc-graph.js" type="text/javascript"></script>
     </head>
+    
     <body>
         <div id="main">
         
             <!-- Page header -->
             <div id="headings">
                 <table width="786">
-                <tr><td align="left" valign="center"><div id="title">Blood Pressure Centiles SMART Application</div></td>
-                <td align="right">
-                <div id="logo"><a href="http://www.smartplatforms.org/" target="_blank"><img src="images/smart-logo.png" border="0" width="65" height="40" alt="SMART Logo" /></a></div>
-                </td></tr></table>
+                    <tr>
+                        <td align="left" valign="center"><div id="title">Blood Pressure Centiles SMART Application</div></td>
+                        <td align="right">
+                            <div id="logo"><a href="http://www.smartplatforms.org/" target="_blank"><img src="images/smart-logo.png" border="0" width="65" height="40" alt="SMART Logo" /></a></div>
+                        </td>
+                    </tr>
+                </table>
             </div>
-            <div id="error" ><img style="border-color:#A00;border-width:3px;" src="images/ajax-loader.gif" alt="Loading"/></div>
+            <div id="info" ><img style="border-color:#A00;border-width:3px;" src="images/ajax-loader.gif" alt="Loading"/></div>
             
             <!-- Tabs -->
             <div id="tabs">
@@ -64,149 +77,76 @@
                 
                 <div id="tab_short">
                     <div id="holder_short"></div>
-					
-					<style>
-	.toggler { width: 400px; height: 310px; padding-top: 20px; padding-bottom: 20px;}
-	#buttonWarn { padding: .5em 1em; text-decoration: none; }
-	#buttonHide { padding: .5em 1em; text-decoration: none; }
-	#effect { width: 400px;  height: 300px; padding: 0.4em; position: relative; }
-	#effect h3 { margin: 0; padding: 0.4em; text-align: center; }
-	</style>
-	<script>
-	$(function() {
-		// run the currently selected effect
-		function showHelp() {
-			// get effect type from 
-			var selectedEffect = $( "#effectTypes" ).val();
-
-			// most effect types need no options passed by default
-			var options = {};
-
-			// run the effect
-			$( "#effect" ).show( selectedEffect, options, 1000 );
-		};
-		
-		// run the currently selected effect
-		function hideHelp() {
-			// get effect type from 
-			var selectedEffect = $( "#effectTypes" ).val();
-
-			// most effect types need no options passed by default
-			var options = {};
-
-			// run the effect
-			$( "#effect" ).hide( selectedEffect, options, 1000 );
-		};
-		
-		$( "#buttonWarn" ).click(function() {
-			var age = years_apart(new Date().toISOString(), patient.birthdate);
-			$("#alert-message").text(patient.name + " is not a pediatric patient (age " + Math.floor(age) + ")");
-			$( "#dialog-message" ).dialog({
-				modal: true,
-				buttons: {
-					Ok: function() {
-						$( this ).dialog( "close" );
-					}
-				}
-			});
-			return false;
-		});
-
-		$( "#effect" ).hide();
-	});
-	</script>
-
-
-
-<div id="help_short">
-
-<div class="toggler">
-	<div id="effect">
-		<h3>About the Short Term View</h3>
-		<table>
-			<tr>
-				<td valign="top"><img src="images/bpc-short-term-help.png" alt="short term view illustration" /></td>
-				<td>
-					<p align="justify">
-						The short term view displays the blood pressure readings from the last 
-						three encounters with the patient where such data is available. The last 
-						blood pressure reading for each day constitutes one encounter.
-					</p>
-					<p align="justify">
-						Each encounter is represented by a pair of circles. The vertical position 
-						of each circle corresponds to the actual reading value (in mmHg) on the 
-						vertical axis. The circle on top is the systolic blood pressure reading, 
-						and the circle below is the diastolic blood pressure reading. The numbers 
-						inside the circles show the normalized percentiles for the reading 
-						(where available). Hovering with the mouse over each circle reaveals
-						additional details about the reading.
-					</p>
-					<p align="justify">
-						See the reference page for further information on the subject.
-					</p>
-				</td>
-			</tr>
-		</table>
-	</div>
-</div>
-
-<!--
-<select name="effects" id="effectTypes">
-	<option value="blind">Blind</option>
-	<option value="clip">Clip</option>
-	<option value="drop">Drop</option>
-	<option value="fade">Fade</option>
-	<option value="slide" selected>Slide</option>
-</select>
--->
-
-<input type="hidden" name="effects" id="effectTypes" value="slide"/>
-
-<!--<a href="#" id="buttonWarn" class="ui-state-default ui-corner-all">Test age warning dialog</a>-->
-
-
-<div id="dialog-message" title="Warning">
-	<p>
-		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
-		<span id="alert-message"></span>
-	</p>
-	<p>
-		The BPC application will only display the available blood pressure data up to age 18 for this patient.
-		Any data after age 18 will be ignored!
-	</p>
-</div>
-
-
-</div>
-<div class="clearall">&nbsp;</div>
-					
+                    <div id="help_short">
+                        <div class="help-panel">
+                            <input type="hidden" name="effects" id="effectType" value="slide"/>
+                            <div id="help-content">
+                                <h3>About the Short Term View</h3>
+                                <table>
+                                    <tr>
+                                        <td valign="top"><img src="images/bpc-short-term-help.png" alt="short term view illustration" /></td>
+                                        <td>
+                                            <p align="justify">
+                                                The short term view displays the blood pressure readings from the last 
+                                                three encounters with the patient where such data is available. The last 
+                                                blood pressure reading for each day constitutes one encounter.
+                                            </p>
+                                            <p align="justify">
+                                                Each encounter is represented by a pair of circles. The vertical position 
+                                                of each circle corresponds to the actual reading value (in mmHg) on the 
+                                                vertical axis. The circle on top is the systolic blood pressure reading, 
+                                                and the circle below is the diastolic blood pressure reading. The numbers 
+                                                inside the circles show the normalized percentiles for the reading 
+                                                (where available). Hovering with the mouse over each circle reaveals
+                                                additional details about the reading.
+                                            </p>
+                                            <p align="justify">
+                                                See the reference page for further information on the subject.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="dialog-message" title="Warning">
+                            <p>
+                                <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+                                <span id="alert-message"></span>
+                            </p>
+                            <p>
+                                The BPC application will only display the available blood pressure data up to age 18 for this patient.
+                                Any data after age 18 will be ignored!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="clearall">&nbsp;</div>
                 </div>
                 
                 <div id="tab_long">
                     <div id="wrapper_long" class="tab_wrapper">
                         <div id="filters">
                             <div id="filter_encounter" class="toggle-set">
-                                <input type="checkbox" id="chkFilterInpatient" onClick="updateFilters()" />
+                                <input type="checkbox" id="chkFilterInpatient" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterInpatient"> Inpatient </label>
-                                <input type="checkbox" id="chkFilterAmbulatory" onClick="updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterAmbulatory" onClick="BPC.updateFilters()" checked/>
                                 <label for="chkFilterAmbulatory"> Ambulatory </label>
                             </div>
                             <div id="filter_site" class="toggle-set">
-                                <input type="checkbox" id="chkFilterArm" onClick="updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterArm" onClick="BPC.updateFilters()" checked/>
                                 <label for="chkFilterArm"> Arm </label>
-                                <input type="checkbox" id="chkFilterLeg"  onClick="updateFilters()" />
+                                <input type="checkbox" id="chkFilterLeg"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterLeg"> Leg </label>
                             </div>
                             <div id="filter_position" class="toggle-set">
-                                <input type="checkbox" id="chkFilterSitting" onClick="updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterSitting" onClick="BPC.updateFilters()" checked/>
                                 <label for="chkFilterSitting"> Sitting </label>
-                                <input type="checkbox" id="chkFilterStanding"  onClick="updateFilters()" />
+                                <input type="checkbox" id="chkFilterStanding"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterStanding"> Standing </label>
                             </div>
                             <div id="filter_method" class="toggle-set">
-                                <input type="checkbox" id="chkFilterAuscultation" onClick="updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterAuscultation" onClick="BPC.updateFilters()" checked/>
                                 <label for="chkFilterAuscultation"> Auscultation </label>
-                                <input type="checkbox" id="chkFilterMachine"  onClick="updateFilters()" />
+                                <input type="checkbox" id="chkFilterMachine"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterMachine"> Machine </label>
                             </div>
                             <div id="filter_timerange">
@@ -227,138 +167,132 @@
                 <div id="tab_calculator">
 					<div id="result-label">
 					</div>
-                    <div id="calculator_main">
-					
-                        <div id='result-percentiles'>
+                    <div id="calculator-inputs" class="calc-panel">
+                        <script type="text/javascript">
+                            (function () {
+                                "use strict";
+                                
+                                BPC.initCalculatorValidation = function() {
+                                
+                                    // Initialization settings for the jQuery Validate plugin
+                                    $("#input").validate({
+                                        rules: {
+                                            add_systolic: {
+                                                required: false,
+                                                digits: true,
+                                                min: 0,
+                                                max: 300
+                                            },
+                                            add_diastolic: {
+                                                required: false,
+                                                digits: true,
+                                                min: 0,
+                                                max: 300
+                                            },
+                                            add_age: {
+                                                required: true,
+                                                digits: true,
+                                                min: 0,
+                                                max: 18
+                                            },
+                                            add_months: {
+                                                required: true,
+                                                digits: true,
+                                                min: 0,
+                                                max: 11
+                                            },
+                                            add_height: {
+                                                required: true,
+                                                digits: true,
+                                                min: 0,
+                                                max: 300
+                                            },
+                                            add_gender: "required"
+                                        },
+                                        messages: {
+                                            add_systolic: {
+                                                required: "",
+                                                digits: "",
+                                                min: "",
+                                                max: ""
+                                            },
+                                            add_diastolic: {
+                                                required: "",
+                                                digits: "",
+                                                min: "",
+                                                max: ""
+                                            },
+                                            add_age: {
+                                                required: "",
+                                                digits: "",
+                                                min: "",
+                                                max: ""
+                                            },
+                                            add_months: {
+                                                required: "",
+                                                digits: "",
+                                                min: "",
+                                                max: ""
+                                            },
+                                            add_height: {
+                                                required: "",
+                                                digits: "",
+                                                min: "",
+                                                max: ""
+                                            },
+                                            add_gender: ""
+                                        },
+                                        errorClass: "input-invalid",
+                                        validClass: "input-valid"
+                                    });
+                                };
+                            }());
+                        </script>
+						<form id="input" method="GET" action="#" data-ajax="false">
+                            <table>
+                                <tr><th colspan=3>Patient</th></tr>
+                                <tr>
+                                    <td class="inputLabel"><label for="add_systolic">BP</label></td>
+                                    <td><input type="number" name="add_systolic" id="add_systolic" value="0" min="0" max="200" size="2"  /> /</td>
+                                    <td><input type="number" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200" size="2" /> mmHg</td>
+                                </tr>
+                                <tr>
+                                    <td class="inputLabel"><label for="add_age">Age</label></td>
+                                    <td><input type="number" name="add_age" id="add_age" value="0" min="0" max="18" size="2" autofocus/> y</td>
+                                    <td><input type="number" name="add_months" id="add_months" value="0" min="0" max="11" size="2" /> m</td>
+                                </tr>
+                                <tr>
+                                    <td class="inputLabel"><label for="add_height">Height</label></td>
+                                    <td colspan=2><input type="number" name="add_height" id="add_height" value="0" min="0" max="200" size="2" /> cm</td>
+                                </tr>
+                                <tr>
+                                    <td class="inputLabel"><label for="add_gender">Gender</label></td>
+                                    <td colspan=2>
+                                      <input type="radio" name="add_gender" id="add_male" value="male" checked="checked" /> 
+                                      <label for="add_male">Male</label> 
+                                      <input type="radio" name="add_gender" id="add_female" value="female" /> 
+                                      <label for="add_female">Female</label> 
+                                    </td>
+                                </tr>
+                            </table>
+						</form>
+                    </div>
+                    <div id="calculator-results-panel">
+					    <div id='result-percentiles' class="calc-panel">
                           <table>
                             <tr><th>Systolic</th><th></th><th>Diastolic</th></tr>
                             <tr>
-                              <td><span class="spct"></span>%</td>
+                              <td><span class="spct">%</span></td>
                               <td><span class="slash">/</span></td>
-                              <td><span class="dpct"></span>%</td>
+                              <td><span class="dpct">%</span></td>
                             </tr>
                           </table>
                         </div>
-
-                        <br clear="both"/>
-						
-						
-<script src="js/lib/jquery.validate.min.js" type="text/javascript"></script>
-
-<script>
-$(document).ready(function() {
-	$("#input").validate({
-		rules: {
-			add_systolic: {
-				required: false,
-				digits: true,
-				min: 0,
-				max: 300
-			},
-			add_diastolic: {
-				required: false,
-				digits: true,
-				min: 0,
-				max: 300
-			},
-			add_age: {
-				required: true,
-				digits: true,
-				min: 0,
-				max: 18
-			},
-			add_months: {
-				required: true,
-				digits: true,
-				min: 0,
-				max: 11
-			},
-			add_height: {
-				required: true,
-				digits: true,
-				min: 0,
-				max: 300
-			},
-			add_gender: "required"
-		},
-		messages: {
-			add_systolic: {
-				required: "",
-				digits: "",
-				min: "",
-				max: ""
-			},
-			add_diastolic: {
-				required: "",
-				digits: "",
-				min: "",
-				max: ""
-			},
-			add_age: {
-				required: "",
-				digits: "",
-				min: "",
-				max: ""
-			},
-			add_months: {
-				required: "",
-				digits: "",
-				min: "",
-				max: ""
-			},
-			add_height: {
-				required: "",
-				digits: "",
-				min: "",
-				max: ""
-			},
-			add_gender: ""
-		},
-		errorClass: "input-invalid",
-		validClass: "input-valid"
-	});
-
-});
-</script>
-
-                        <form id="input" method="GET" action="#" data-ajax="false">
-
-                          <table>
-                            <tr>
-                                <td class="inputLabel"><label for="add_systolic">BP</label></td>
-                                <td><input type="number" name="add_systolic" id="add_systolic" value="0" min="0" max="200" size="2"  /> /</td>
-								<td><input type="number" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200" size="2" /> mmHg</td>
-                            </tr>
-                            <tr>
-                                <td class="inputLabel"><label for="add_age">Age</label></td>
-                                <td><input type="number" name="add_age" id="add_age" value="0" min="0" max="18" size="2" autofocus/> y</td>
-								<td><input type="number" name="add_months" id="add_months" value="0" min="0" max="11" size="2" /> m</td>
-							</tr>
-                            <tr>
-                                <td class="inputLabel"><label for="add_height">Height</label></td>
-                                <td colspan=2><input type="number" name="add_height" id="add_height" value="0" min="0" max="200" size="2" /> cm</td>
-                            </tr>
-                          </table>
-                         
-                          <div id="gender_select" data-role="fieldcontain"> 
-                            <fieldset data-role="controlgroup" data-type="horizontal"> 
-                              <legend>Gender</legend> 
-                              <input type="radio" name="add_gender" id="add_male" value="male" checked="checked" /> 
-                              <label for="add_male">Male</label> 
-
-                              <input type="radio" name="add_gender" id="add_female" value="female" /> 
-                              <label for="add_female">Female</label> 
-                            </fieldset> 
-                          </div> 
-
-                        </form>
-                    </div>
-                    <div id="calculator_thresholds">
-                        <div id='result-thresholds'>
+                        <div id='result-thresholds' class="calc-panel">
                           <table>
                             <tr><th>Thresholds</th></tr>
                             <tr>
-                              <td><span id="calculator_thresholds_out"></span></td>
+                              <td><span id="calculator-thresholds-out"></span></td>
                             </tr>
                           </table>
                         </div>
@@ -369,19 +303,25 @@ $(document).ready(function() {
 				<div id="tab_references">
 					<ul>
 						<li>
-							<p>The Fourth Report on the Diagnosis, Evaluation, and Treatment of High 
-							Blood Pressure in Children and Adolescents
-							National Heart, Lung, and Blood Institute, NIH (<a href="http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf" target="_blank">http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf</a>)</p>
+							<p>
+                                The Fourth Report on the Diagnosis, Evaluation, and Treatment of High 
+                                Blood Pressure in Children and Adolescents
+                                National Heart, Lung, and Blood Institute, NIH 
+                                (<a href="http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf" target="_blank">http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf</a>)
+                            </p>
 						</li>
 						<li>
-							<p>CDC Clinical Growth Charts (<a href="http://www.cdc.gov/growthcharts/clinical_charts.htm" target="_blank">http://www.cdc.gov/growthcharts/clinical_charts.htm</a>)</p>
+							<p>
+                                CDC Clinical Growth Charts
+                                (<a href="http://www.cdc.gov/growthcharts/clinical_charts.htm" target="_blank">http://www.cdc.gov/growthcharts/clinical_charts.htm</a>)
+                            </p>
 						</li>
 					</ul>
 				</div>
                 
             </div> <!-- tabs -->
 
-            <p id="copy">v0.6</p>
+            <div id="copy">v0.7</div>
         </div>
         
         <!-- jTemplates template for the table view -->
@@ -417,7 +357,7 @@ $(document).ready(function() {
             {#template ROW}
                 <tr>
                     <td>{$T.date}</td>
-                    <td>{getYears($T.age)}y {getMonths($T.age)}m</td>
+                    <td>{BPC.getYears($T.age)}y {BPC.getMonths($T.age)}m</td>
                     <td>{#if $T.height}{$T.height} cm{#else}-{#/if}</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
                     <td>{#if $T.sPercentile && $T.dPercentile}{$T.sPercentile}%/{$T.dPercentile}%{#else}-{#/if}</td>
@@ -429,4 +369,5 @@ $(document).ready(function() {
             {#/template ROW}
         --></textarea></div>
     </body>
+    
 </html>
