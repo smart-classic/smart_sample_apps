@@ -77,10 +77,10 @@ class SmartClient(OAuthClient):
             if (http_request.data):
                 path +=  "?"+http_request.data
         else:
-            data = http_request.data or {}
+            data = http_request.data or ""
         conn.request(http_request.method, path, data, header)
         r = conn.getresponse()
-        if (r.status == httplib.NOT_FOUND): raise Exception( "404")
+        if (r.status != 200): raise Exception( "SMART API request found unexpected status: %s"%r.status)
         data = r.read()
         conn.close()
         return data

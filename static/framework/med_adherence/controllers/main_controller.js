@@ -5,7 +5,7 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 },
 /* @Prototype */
 {
-	load : function() {
+	"{window} load" : function() {
 		this.pending_timers = [];
 
 		var _this = this;
