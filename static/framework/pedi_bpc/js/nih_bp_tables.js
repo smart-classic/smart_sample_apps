@@ -42,8 +42,8 @@ var bp_percentiles = (function() {
     var f = patient.round_results ? Math.round : function(x){return x;};
  
     return {
-	systolic: f(Math.cdf(zsys)*100),
-	diastolic: f(Math.cdf(zdias)*100)
+    systolic: f(Math.cdf(zsys)*100),
+    diastolic: f(Math.cdf(zdias)*100)
     };
     
   };
@@ -193,16 +193,17 @@ var bp_thresholds = function(patient) {
         systolic = patient.systolic,
         diastolic = patient.diastolic;
     
-    var null_result = 	{ 
-	systolic: null, 
-	diastolic: null
+    var null_result =     { 
+        systolic: null, 
+        diastolic: null
     };
     
     if (isNaN(patient.age) || 
-	isNaN(patient.height) || 
-	isNaN(patient.systolic) || 
-	isNaN(patient.diastolic))
-	return null_result;
+        isNaN(patient.height) || 
+        isNaN(patient.systolic) || 
+        isNaN(patient.diastolic)) {
+            return null_result;
+    }
     
     // Set the search bounds as tight as possible to speed up the search
     var lows = 0, lowd = 0,
@@ -219,11 +220,11 @@ var bp_thresholds = function(patient) {
         
         // Calculate the percentiles for the current search values
         var res = bp_percentiles ({ age: age, 
-				    height: height, 
-				    sex: sex, 
-				    systolic: mids, 
-				    diastolic: midd, 
-				    round_results: patient.round_results})
+                    height: height, 
+                    sex: sex, 
+                    systolic: mids, 
+                    diastolic: midd, 
+                    round_results: patient.round_results})
         
         if (res.systolic < systolic) lows = mids;
         else if (res.systolic >= systolic) highs = mids;
@@ -231,34 +232,34 @@ var bp_thresholds = function(patient) {
         if (res.diastolic < diastolic) lowd = midd;
         else if (res.diastolic >= diastolic) highd = midd;
 
-	if (LOOP_COUNT++ >= MAX_LOOP_COUNT)
-	    return null_result;
-	
+    if (LOOP_COUNT++ >= MAX_LOOP_COUNT)
+        return null_result;
+    
     } while ( Math.abs(res.systolic - systolic) >= THRESHOLD ||
-	      Math.abs(res.diastolic - diastolic) >= THRESHOLD);
+          Math.abs(res.diastolic - diastolic) >= THRESHOLD);
     
     if (patient.round_results) {
-	highs = Math.ceil(highs);
-	highd = Math.ceil(highd);
+		highs = Math.ceil(highs);
+		highd = Math.ceil(highd);
 
-	do {
-	    if (res.systolic === systolic)
-		highs--;
-	    
-	    if (res.diastolic === diastolic)
-		highd--;
-	    
-	    res = bp_percentiles ({age: age, 
-				   height: height, 
-				   sex: sex, 
-				   systolic: highs, 
-				   diastolic: highd, 
-				   round_results: true})
-	    
-	} while (res.systolic === systolic ||
-		 res.diastolic === diastolic);
-	highs++;
-	highd++;
+		do {
+			if (res.systolic === systolic)
+			highs--;
+			
+			if (res.diastolic === diastolic)
+			highd--;
+			
+			res = bp_percentiles ({age: age, 
+					   height: height, 
+					   sex: sex, 
+					   systolic: highs, 
+					   diastolic: highd, 
+					   round_results: true})
+			
+		} while (res.systolic === systolic ||
+				 res.diastolic === diastolic);
+		highs++;
+		highd++;
     };
     
     // Return the result

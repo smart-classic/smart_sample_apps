@@ -1,7 +1,9 @@
 // Filters and filter handlers for the BPC app
 //
 // Author: Nikolai Schwertner
+//
 // Revision history:
+//	   2011-06-27 Refactored code
 //     2011-05-19 Restructured filter loaders to reduce code duplication
 //     2011-05-18 Initial split from main code
 
@@ -29,19 +31,38 @@ if (!BPC) {
     * Filter settings loader
     */
     BPC.loadFilterSettings = function () {
+	
         var f = BPC.filterSettings;
+		
         f.encounter = [];
         f.site = [];
         f.position = [];
         f.method = [];
-        if ($("#chkFilterInpatient").attr("checked")) f.encounter.push("Inpatient");
-        if ($("#chkFilterAmbulatory").attr("checked")) f.encounter.push("Ambulatory");
-        if ($("#chkFilterArm").attr("checked")) f.site.push("Arm");
-        if ($("#chkFilterLeg").attr("checked")) f.site.push("Leg");
-        if ($("#chkFilterSitting").attr("checked")) f.position.push("Sitting");
-        if ($("#chkFilterStanding").attr("checked")) f.position.push("Standing");
-        if ($("#chkFilterAuscultation").attr("checked")) f.method.push("Auscultation");
-        if ($("#chkFilterMachine").attr("checked")) f.method.push("Machine");
+		
+        if ($("#chkFilterInpatient").attr("checked")) {
+			f.encounter.push("Inpatient");
+		}
+        if ($("#chkFilterAmbulatory").attr("checked")) {
+			f.encounter.push("Ambulatory");
+		}
+        if ($("#chkFilterArm").attr("checked")) {
+			f.site.push("Arm");
+		}
+        if ($("#chkFilterLeg").attr("checked")) {
+			f.site.push("Leg");
+		}
+        if ($("#chkFilterSitting").attr("checked")) {
+			f.position.push("Sitting");
+		}
+        if ($("#chkFilterStanding").attr("checked")) {
+			f.position.push("Standing");
+		}
+        if ($("#chkFilterAuscultation").attr("checked")) {
+			f.method.push("Auscultation");
+		}
+        if ($("#chkFilterMachine").attr("checked")) {
+			f.method.push("Machine");
+		}
     };
 
     /**
@@ -65,15 +86,15 @@ if (!BPC) {
     */
     BPC.setDateRange = function (valueFrom, valueTo) {
 
-        var s = BPC.getViewSettings ();
-
-        // Get the date range for the current patient object
-        var startTime = BPC.patient.startUnixTime,
-            endTime = BPC.patient.endUnixTime;
+        var s = BPC.getViewSettings (),
+			startTime = BPC.patient.startUnixTime,
+            endTime = BPC.patient.endUnixTime,
+			fromTime,
+			toTime;
             
         // Convert the slider values to unix dates
-        var fromTime = BPC.scale (valueFrom, 0, 100, startTime, endTime),
-            toTime = BPC.scale (valueTo, 0, 100, startTime, endTime);
+        fromTime = BPC.scale (valueFrom, 0, 100, startTime, endTime);
+        toTime = BPC.scale (valueTo, 0, 100, startTime, endTime);
         
         // Convert the values to the standard format and update the settings
         BPC.filterSettings.dateFrom = parse_date(fromTime).toString('yyyy-MM-dd');
@@ -86,9 +107,29 @@ if (!BPC) {
         // Update the slider label
         $( "#label-timerange" ).text( fromTime + " - " + toTime );
     };
+	
+	/**
+    * Utility for checking of the presence of a value within a list of values
+    *
+    * @param {String} value The target value to be searched for
+    * @param {String Array} values The list of values to be searched through
+    *
+    * @returns {Boolean} True if the value was found in the list of values
+    */
+    var inList = function (value, values) {
+		var i;
+		
+        for (i = 0; i < values.length; i++) {
+			if (value === values[i]) {
+				return true;
+			}
+		}
+		
+        return false;
+    };
 
     /**
-    * Filter plugin functions for the various toggle filters
+    * Filter plugin functions for the various toggle filters (undefined values fall through the filters)
     *
     * @param {Object} record The patient data record to be processed
     *
@@ -99,13 +140,21 @@ if (!BPC) {
     };
         
     BPC.filterSite = function (record) {
-        if (!record.site) return true;
-        var site = record.site.toLowerCase();
+		var site;
+		
+        if (!record.site) {
+			return true;
+		}
+        
+		site = record.site.toLowerCase();
+		
         if (site.indexOf("arm") !== -1) {
             return inList ("Arm", BPC.filterSettings.site);
         } else if (site.indexOf("leg") !== -1) {
             return inList ("Leg", BPC.filterSettings.site);
-        } else return false;
+        } else {
+			return false;
+		}
     };
         
     BPC.filterPosition = function (record) {
@@ -136,20 +185,6 @@ if (!BPC) {
         return BPC.filterSettings.dateFrom <= date && date <= BPC.filterSettings.dateTo;
     };
 
-
-    /**
-    * Utility for checking of the presence of a value within a list of values
-    *
-    * @param {String} value The target value to be searched for
-    * @param {String Array} values The list of values to be searched through
-    *
-    * @returns {Boolean} True if the value was found in the list of values
-    */
-    var inList = function (value, values) {
-        for (var i = 0; i < values.length; i++) if (value === values[i]) return true;
-        return false;
-    };
-
     /**
     * Linear scaling function mapping a point X from the domain [x1,x2] to the range [y1,y2]
     *
@@ -162,25 +197,30 @@ if (!BPC) {
     * @returns {Number}
     */
     BPC.scale = function (X, x1, x2, y1, y2) {
-        if (x1 === x2) return y1 + (y2-y1)/2;
-        var a = (y2-y1)/(x2-x1);
-        var b = y1 - a*x1;
+        var a, b;
+		
+		if (x1 === x2) {
+			return y1 + (y2-y1)/2;
+		}
+		
+        a = (y2-y1)/(x2-x1);
+        b = y1 - a*x1;
+		
         return a*X + b;
     };
 
     /**
-    * Wrapper for applying all filters to a patient object
+    * Method for applying all filters to a patient object
     *
-    * @param {Object} patient The patient object to be run through the filters
-    *
-    * @returns {Object} A new patient object resulting from the filters application
+    * @returns {Object} A new patient object resulting from the filters application. The original
+						object remains unaltered.
     */
-    BPC.applyFilters = function (patient) {
-        return patient.applyFilter(BPC.filterEncounter)
-                      .applyFilter(BPC.filterSite)
-                      .applyFilter(BPC.filterPosition)
-                      .applyFilter(BPC.filterDate)
-                      .applyFilter(BPC.filterMethod)
-                      .applyFilter(BPC.filterPediatric);
+    BPC.Patient.prototype.applyFilters = function (patient) {
+        return this.applyFilter(BPC.filterEncounter)
+				   .applyFilter(BPC.filterSite)
+				   .applyFilter(BPC.filterPosition)
+				   .applyFilter(BPC.filterDate)
+				   .applyFilter(BPC.filterMethod)
+				   .applyFilter(BPC.filterPediatric);
     };
 }());

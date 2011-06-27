@@ -53,10 +53,9 @@ if (!BPC) {
     */  
     BPC.get_vitals = function() {
         
-        var dfd = $.Deferred();
-        
-        // Template for the vitals object thrown by the callback
-        var vitals = {heightData: [],
+        var dfd = $.Deferred(),
+			// Template for the vitals object thrown by the callback
+			vitals = {heightData: [],
                       bpData: []};
         
         SMART.VITAL_SIGNS_get(function(vital_signs){
@@ -67,10 +66,12 @@ if (!BPC) {
                 .where('?v sp:height ?h')
                 .where('?h sp:value ?height')
                 .where('?h sp:unit \"m\"')
-                .each(function(){vitals.heightData.push({
-                    vital_date: this.vital_date.value,
-                    height: this.height.value
-                })});			
+                .each(function(){
+					vitals.heightData.push({
+						vital_date: this.vital_date.value,
+						height: this.height.value
+					});
+				});			
                 
             // Query the RDF for the blood pressure data
             vital_signs
@@ -154,6 +155,8 @@ if (!BPC) {
             patient,
             age,
             height,
+			myHeight,
+			getClosestHeight,
             i;
 
         // Caculate the current age of the patient
@@ -192,47 +195,51 @@ if (!BPC) {
 
             // Sort the height data array
             height_data.sort(function (a,b) {
-                      var x = a.date;
-                      var y = b.date;
-                      return ( (x<y) ? -1: ((x>y)?1:0));
+                var x = a.date,
+					y = b.date;
+                
+				return ( (x<y) ? -1: ((x>y)?1:0));
             });
 
             // Initialize a new patient object with the proper demographics
             patient = new BPC.Patient(SMART.record.full_name, parse_date(demographics.birthday).toString(s.dateFormat), demographics.gender);
 
+			// Inner function for looking up the closest height for a given date
+			getClosestHeight = function (recordDate) { 
+                
+				var closestHeight = height_data[0].height,
+					closestHeightDate = height_data[0].date,
+					j;
+					
+				for (j = 0; j < height_data.length; j++) {
+					if ( Math.abs(years_apart(height_data[j].date, recordDate)) < Math.abs(years_apart(closestHeightDate, recordDate)) ) {
+						closestHeight = height_data[j].height;
+						closestHeightDate = height_data[j].date;
+					}
+				}
+				
+				return {date: closestHeightDate, value: closestHeight};
+                    
+            };
+			
             // Add the blood pressure data records to the patient object
             for (i = 0; i < vitals_bp.length; i++) {  
 
                 // Add code to update the patient data records with extrapolated height
                 // ...
                 // ... For now, here is a *very* inefficient function which picks the closest height data point.
-                var myHeight = function (recordDate) { 
-                
-                    var closestHeight = height_data[0].height,
-                        closestHeightDate = height_data[0].date,
-                        j;
-                        
-                    for (j = 0; j < height_data.length; j++) {
-                        if ( Math.abs(years_apart(height_data[j].date, recordDate)) < Math.abs(years_apart(closestHeightDate, recordDate)) ) {
-                            closestHeight = height_data[j].height;
-                            closestHeightDate = height_data[j].date;
-                        }
-                    }
-                    
-                    return {date: closestHeightDate, value: closestHeight};
-                    
-                } (vitals_bp[i].vital_date);
+                myHeight = getClosestHeight (vitals_bp[i].vital_date);
 
-                
-                // Add the record to the patient object only if the nearest height reading is within 1 year
                 age = years_apart( vitals_bp[i].vital_date, patient.birthdate );
 
+				// Set the height to undefined when there is no height data within the staleness horizon
                 if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= BPC.getHeightStaleness (demographics.gender,age)) {
                     height = myHeight.value;
                 } else {
                     height = undefined;
                 }
-                    
+                
+				// Add the data point to the patient object
                 patient.data.push ({timestamp: vitals_bp[i].vital_date, 
                     height: height,
                     systolic: Math.round(vitals_bp[i].systolic),
@@ -257,16 +264,19 @@ if (!BPC) {
 
         var s = BPC.getViewSettings (),
             percentiles,
-            i,
-            ii;
+            i, ii, d;
 
         // Load the sample patient when no data is provided
-        if (!patient) patient = BPC.getSamplePatient ();
+        if (!patient) {
+			patient = BPC.getSamplePatient ();
+		}
              
         // Sort the patient data records by timestamp
         patient.data.sort(function (a,b) {
-            var x = a.timestamp;
-            var y = b.timestamp;
+		
+            var x = a.timestamp,
+				y = b.timestamp;
+				
             return ( (x<y) ? -1: ((x>y)?1:0));
         });
              
@@ -287,7 +297,7 @@ if (!BPC) {
             }
             
             // Convert the date into the output format and standard unix timestamp
-            var d = parse_date (patient.data[i].timestamp);
+            d = parse_date (patient.data[i].timestamp);
             patient.data[i].date = d.toString(s.dateFormat);
             patient.data[i].unixTime = d.getTime();
         }
@@ -315,8 +325,10 @@ if (!BPC) {
     * Returns the patient object label string
     */
     BPC.Patient.prototype.toString = function() {
-        var s = BPC.getViewSettings();
-        var d = parse_date (this.birthdate);
+    
+        var s = BPC.getViewSettings(),
+            d = parse_date (this.birthdate);
+            
         return this.name + " (" + this.sex + ", DOB: " + d.toString(s.dateFormat) + ")";
     };
 
@@ -339,11 +351,15 @@ if (!BPC) {
     */
     BPC.Patient.prototype.recentEncounters = function (n) {
         var p = this.clone(),
-            newDate;
+            newDate,
+            dateCounter,
+            lastDate,
+            i;
             
         p.data = [];
         
-        for (var i = this.data.length - 1, dateCounter = 0, lastDate; i >= 0 && dateCounter < n; i--) {
+		// only include the last three encounters (the last data point of a day)
+        for (i = this.data.length - 1, dateCounter = 0, lastDate; i >= 0 && dateCounter < n; i--) {
         
             newDate = parse_date(this.data[i].date).toString("yyyy-MM-dd");
             
@@ -354,11 +370,11 @@ if (!BPC) {
             }
         }
         
-        // reverse the data
+        // need to reverse the array to restore the canonical order
         p.data.reverse();
         
         return p;
-    }
+    };
      
     /**
     * Applies a filter to the patient object and returns a new patient object
@@ -368,14 +384,19 @@ if (!BPC) {
     * @returns {Object} the resultant patient
     */
     BPC.Patient.prototype.applyFilter = function (filter) {       
-        var p = this.clone();
+        var i,
+            p = this.clone();
+            
         p.data = [];
         
-        for (var i = 0; i < this.data.length; i++) {
-            if (filter(this.data[i])) p.data.push (this.data[i]);
+		// Run the filter
+        for (i = 0; i < this.data.length; i++) {
+            if (filter(this.data[i])) {
+				p.data.push (this.data[i]);
+			}
         }
         
-        // The unix timestamps of the first and last encounters
+        // Set the unix timestamps of the first and last encounters
         if (p.data.length > 0) {
             p.startUnixTime = p.data[0].unixTime;
             p.endUnixTime = p.data[p.data.length - 1].unixTime;
@@ -393,7 +414,7 @@ if (!BPC) {
     */
     BPC.getYears = function (age) {
         return Math.floor(age);
-    }
+    };
 
     /**
     * Extracts the months from the age
@@ -404,5 +425,5 @@ if (!BPC) {
     */
     BPC.getMonths = function (age) {
         return Math.floor((age*12)%12);
-    }
+    };
 }());

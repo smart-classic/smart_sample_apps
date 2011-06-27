@@ -256,13 +256,16 @@ if (!BPC) {
         ];
 
         return function (sex, age) {
+        
             var res, i;
+            
             for (i = 0; i < HEIGHT_STALENESS_DATA.length; i++) {
                 if (HEIGHT_STALENESS_DATA[i].sex === sex && HEIGHT_STALENESS_DATA[i].age === BPC.getYears(age)) {
                     res = HEIGHT_STALENESS_DATA[i].height_stale_after;
                     break;
                 }
             }
+
             return res;
         };
     }());
