@@ -4,3 +4,6 @@
 [submodule "static/framework/funcunit"]
 	path = static/framework/funcunit
 	url = https://github.com/jupiterjs/funcunit.git
+[submodule "static/framework/jquery"]
+	path = static/framework/jquery
+	url = https://github.com/jupiterjs/jquerymx
