@@ -4,4 +4,6 @@
  * Ben Adida
  */
 
-window.parent.SMART_frame_glue_page();
+if (window.parent.SMART_frame_glue_page) {
+	window.parent.SMART_frame_glue_page();
+}

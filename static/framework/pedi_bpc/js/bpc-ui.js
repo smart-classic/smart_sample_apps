@@ -21,10 +21,14 @@ if (!BPC) {
     */  
     $(document).ready(function() {
         
-		// Fire up the SMART API calls and initialize the application asynchronously
-        $.when(BPC.get_demographics(), BPC.get_vitals()).then( function (patient, vitals) {
-                    BPC.initApp ( BPC.processData(patient, vitals) ); 
-        });
+		if ( typeof SMART === "undefined" ) {
+			$("#info").text("Error: SMART Connect interface not found");
+		} else {
+			// Fire up the SMART API calls and initialize the application asynchronously
+			$.when(BPC.get_demographics(), BPC.get_vitals()).then( function (patient, vitals) {
+						BPC.initApp ( BPC.processData(patient, vitals) ); 
+			});
+		}
 		
 		// Add other things to do upon document loading here...
 		
