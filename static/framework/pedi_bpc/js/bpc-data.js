@@ -176,7 +176,7 @@ if (!BPC) {
         }
         
         // Display appropriate error message
-        if (vitals_height.length === 0 || vitals_bp.lenght === 0) {
+        if (vitals_height.length === 0 || vitals_bp.length === 0) {
             $("#info").text("Error: No vitals in the patient record");
         } else {
             
