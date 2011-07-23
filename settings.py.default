@@ -112,8 +112,6 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'surescripts_connector',
-    'nlp_extractor'
 )
 
 # sessions in filesystem
