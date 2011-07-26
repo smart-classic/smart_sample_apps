@@ -609,6 +609,8 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	var r = d.childNodes[0];
 	if (r.nodeName !== "RDF" && r.nodeName !== "rdf:RDF")
 	    r = d.childNodes[1];
+        if (r.attributes === null)
+            r = d.childNodes[1];
 
 	
 	for ( var i = 0; i < r.attributes.length; i++) {

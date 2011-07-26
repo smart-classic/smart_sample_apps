@@ -21,9 +21,9 @@ $.Model.extend('ApiType',
 			this.ontology = ont;
 			
 			// Get all types
-			var types = ont.where("?cls api:name ?class_name")			
-			   			   .where("?cls api:name_plural ?class_plural_name")			
-		   				   .where("?cls api:example ?class_example");
+			var types = ont.where("?cls rdf:type owl:Class")			
+			               .where("?cls rdfs:label ?class_name")			
+		   		       .optional("?cls api:example ?class_example");
 			
 			for (var i = 0; i < types.length; i++) {
 				ApiType.create(types[i]);
@@ -81,8 +81,7 @@ $.Model.extend('ApiType',
 		var ret = new ApiType({
 			type: t.cls.value._string,
 			name: t.class_name.value,
-			plural_name: t.class_plural_name.value,
-			example: t.class_example.value
+			example: t.class_example && t.class_example.value  || ""
 		});
 		this.types.push(ret);
 		return ret;
@@ -310,6 +309,7 @@ $.Model.extend('ApiCallGroup',
 			groups.sort(function(a,b) {if (a.group_name === b.group_name) return 0; if (a.group_name > b.group_name) return -1; return 1;});
 			
 			var t= ApiType.find_type(target);
+
 			var p = {
 					   group_name: t.name,
 					   group_members: groups,
