@@ -5,7 +5,7 @@ jQuery.Controller.extend('MedList.Controllers.MainController',
 },
 /* @Prototype */
 {
-    load: function() {
+    "{window} load": function() {
 	$("#UserDisplay").html("");
 	$("#MedList").med_list_med_list();
     }

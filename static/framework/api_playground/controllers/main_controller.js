@@ -5,7 +5,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 },
 /* @Prototype */
 {
-	load : function() {	
+	"{window} load" : function() {	
 		$(window).resize(function() {
 			h = $(window).height();		
 			$("#type-nav").css("min-height", h+"px");

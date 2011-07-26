@@ -328,20 +328,21 @@
                 this.sbp = p.sbp.value;
             },
             move = function (dx, dy) {
-              var cx = this.ox + dx
-              if (cx >= min_x && cx < max_x) {
-                this.attr({cx: cx});
-                // this.attr({fill: 'hsl(18, 88, '+ 63 + (cx - min_x) + ')'});
-                this.sbp = Math.round(cx - min_x); 
-                t.attr({
+              var cx = this.ox + dx;
+              
+              if (cx < min_x) {
+                cx = min_x;
+              } else if (cx > max_x) {
+                cx = max_x;
+              }
+              
+              this.attr({cx: cx});
+              // this.attr({fill: 'hsl(18, 88, '+ 63 + (cx - min_x) + ')'});
+              this.sbp = Math.round(cx - min_x); 
+              t.attr({
                   text: this.sbp,
                   x: cx
-                })
-              } else if (cx < min_x) {
-                this.attr({cx: min_x})
-              } else if (cx > max_x) {
-                this.attr({cx: max_x})
-              }
+              });
             },
             up = function () {
               this.sbp = Math.round(this.attr('cx') - min_x);

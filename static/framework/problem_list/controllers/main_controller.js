@@ -5,7 +5,7 @@ jQuery.Controller.extend('ProblemList.Controllers.MainController',
 },
 /* @Prototype */
 {
-    load: function() {
+    "{window} load": function() {
 	$("#UserDisplay").html("");
 	$("#ProblemList").problem_list_problem_list();
     }

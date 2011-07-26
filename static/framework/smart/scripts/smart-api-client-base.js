@@ -76,6 +76,12 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
 		this.cookie_name ='smart_oauth_cookie' + message.activity_id;               
 		document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
+		var cookie_was_set = document.cookie.match(this.cookie_name);
+		if (!cookie_was_set) {
+		    $("body").prepend("<b>Error: Could not set SMART Authorization cookie.</b><br>\
+                                          Please ensure that your browser accepts third-party cookies \
+                                          or white-list the domain for <i><nobr>" + window.location+"</nobr></i>");
+		}
             }
 
     	var _this = this;
@@ -163,6 +169,18 @@ SMART_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
 		callback(rdf);
 	});
 
+};
+
+SMART_CLIENT.prototype.VITAL_SIGNS_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record.id + "/vital_signs/",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback(rdf);
+	});
 };
 
 SMART_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
@@ -653,10 +671,11 @@ SMART_frame_glue_app = function(redirect_url) {
        }};
 
    SMART.send_ready_message(function(context_info) {
-	   $("body").css("margin","0px");
+	   $("body").css("margin","0px").css("height", "100%");
+	   $("html").css("height","100%");
 
 	   redirect_url += "?cookie_name="+SMART.cookie_name;
-	   var content_iframe = $('<iframe SEAMLESS style="width: 100%; height: 100%; display: block; border: 0px; " src="'+redirect_url+'" id="content">');
+	   var content_iframe = $('<iframe SEAMLESS frameBorder="0" style="width: 100%; height: 100%; display: block; border: 0px; " src="'+redirect_url+'" id="content">');
 	   $('body').append(content_iframe);
 	   content_iframe.hide();
 	   content_iframe.data("finished_dom", false);

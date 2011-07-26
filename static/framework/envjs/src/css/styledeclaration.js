@@ -1,7 +1,0 @@
-
-/**
- * @author thatcher
- */
-CSSStyleDeclaration = function(){
-
-};

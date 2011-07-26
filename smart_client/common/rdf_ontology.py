@@ -178,7 +178,6 @@ parsed = False
                 
 def parse_ontology(f):
     m = parse_rdf(f)
-    print "parsed ", m
     global api_calls 
     global api_types
     global parsed

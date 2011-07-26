@@ -1,5 +1,6 @@
 steal.plugins(  
 	      'jquery/controller',                    // a widget factory
+	      'jquery/controller/view',                    // a widget factory
 	      'jquery/controller/subscribe',  // subscribe to OpenAjax.hub
 	      'jquery/view/ejs',                              // client side templates
 	      'jquery/model',                                 // Ajax wrappers

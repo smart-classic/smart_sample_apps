@@ -49,13 +49,10 @@ class SmartClient(OAuthClient):
         self.stylesheet = None
         
         if (not common.rdf_ontology.parsed):
-            print "unparsed."
             self.__class__.ontology_file = self.get("/ontology")
             common.rdf_ontology.parse_ontology(SmartClient.ontology_file)
-            print "parsed onto", common.rdf_ontology.parsed
             generate_api.augment(self.__class__)
             
-        print "Done init sc"
 
     def _access_resource(self, http_request, oauth_parameters = {}, with_content_type=False):
         """
@@ -80,10 +77,10 @@ class SmartClient(OAuthClient):
             if (http_request.data):
                 path +=  "?"+http_request.data
         else:
-            data = http_request.data or {}
+            data = http_request.data or ""
         conn.request(http_request.method, path, data, header)
         r = conn.getresponse()
-        if (r.status == httplib.NOT_FOUND): raise Exception( "404")
+        if (r.status != 200): raise Exception( "SMART API request found unexpected status: %s"%r.status)
         data = r.read()
         conn.close()
         return data
@@ -99,7 +96,6 @@ class SmartClient(OAuthClient):
             """
 
             req = None
-            print url, data, content_type
             if isinstance(data, dict): data = urllib.urlencode(data)
             
             req = HTTPRequest('GET', '%s%s'%(self.baseURL, url), data=data)    
@@ -168,7 +164,6 @@ class SmartClient(OAuthClient):
         r = self.post("/apps/%s/tokens/records/first"%self.app_id)
         
         while r:
-            print r
             p = {}
             for pair in r.split('&'):
                 (k, v) = [urllib.unquote_plus(x) for x in pair.split('=')] 

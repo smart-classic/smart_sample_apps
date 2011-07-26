@@ -1,0 +1,21 @@
+{
+  "name" : "PediBP-Mobile",
+  "description" : "Mobile display of pediatric blood pressures with calculated percentiles",
+  "author" : "Josh Mandel",
+  "id" : "mobile_pedibp@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "optimalBrowserEnvironments": ["mobile"],
+  "supportedBrowserEnvironments": ["mobile"],
+
+  "base_url" : "http://localhost:8001",
+  "mode" : "ui",
+  "activities" : {
+    "main" :              "{base_url}/framework/mobile_pedibp/bootstrap.html",
+    "view_medications" :  "{base_url}/framework/mobile_pedibp/bootstrap.html"
+  },
+	
+  "web_hooks" : { },
+
+  "icon" :  "{base_url}/framework/mobile_pedibp/icon.png"
+}

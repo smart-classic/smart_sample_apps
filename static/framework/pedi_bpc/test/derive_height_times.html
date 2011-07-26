@@ -1,0 +1,23 @@
+<html>
+<head>
+<script>
+
+</script>
+<script src="../js/lib/jquery.js"></script>
+<script src="../js/cdc_height_tables.js"></script>
+<script src="../js/nih_bp_tables.js"></script>
+<script src="derive_height_times.js"></script>
+
+</head>
+<body>
+  <textarea id='results' style="width: 100%; height: 100%;"></textarea>
+<script>
+</script>
+<script>
+var r = compute_times();
+r = JSON.stringify(r);
+r = r.replace(/},/g, "},\n");
+$("#results").val("var HEIGHT_STALENESS_DATA = "+r);
+</script>
+</body>
+</html>

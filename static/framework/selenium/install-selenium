@@ -1,5 +1,0 @@
-// sets up selenium in the projects directory
-
-// check out core and rc
-runCommand("cmd", "/C", "cd selenium/build && svn checkout http://selenium.googlecode.com/svn/selenium-rc/trunk rc")
-runCommand("cmd", "/C", "cd selenium/build && svn checkout http://selenium.googlecode.com/svn/selenium-core/trunk selenium-core")

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pediatric Blood Pressure Percentiles</title>
+      <style>
+        body {font-family: sans-serif; margin: 0px;}
+        .sbp {text-align: right; font-size: 1em; font-weight: bold;}
+        .dbp {text-align: left; font-size: 1em; font-weight: bold;}
+        .spct {text-align: right;  position: relative; font-weight: bold;}
+        .dpct {text-align: left;  position: relative; font-weight: bold;}
+        .slash {padding-left: .4em; padding-right: .4em; font-weight: narrow;}
+	#result table {background: white; font-size: 3em; border-collapse: collapse; }
+	#result table th {background: #dddddd; font-size: 30%; font-style: italic;}
+        input[type='text'] {border: 1px solid black;}
+	#input, #result {display: none;}
+	#loading {font-weight: bold; font-size: 1.2em;}
+      </style>
+      <link href='http://code.jquery.com/mobile/latest/jquery.mobile.css' rel='stylesheet' type='text/css'/>
+      <script src='../smart/scripts/smart-api-page.js'></script>
+      <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.js"></script> 
+      <script type="text/javascript" src="http://code.jquery.com/mobile/latest/jquery.mobile.js"></script> 
+      <script src='./data/cdc_height_tables.js'></script>
+      <script src='./data/nih_bp_tables.js'></script>
+      <script src='./util.js'></script>
+      <script src='./date.js'></script>
+
+      <script>
+        function sortByDate(a,b) {
+			      var x = a.date;
+			      var y = b.date;
+			      return ( (x<y) ? 1: ((x>y)?-1:0));
+        };
+
+
+
+
+	var process_vitals_data = function(p, vitals) {
+          var bpparams = {
+                          age: years_apart(new Date().toISOString(), p.birthday.value),
+                          sex: p.gender.value
+                          };
+
+          for (var i = 0; i< vitals.length; i++) {
+            v = vitals[i];
+			    
+	    if (i == vitals.length-1) {
+	     $.extend(bpparams, {
+               age: years_apart(v.vital_date.value, p.birthday.value), 
+  	       sex: p.gender.value, 
+	       height: v.height.value, 
+	       systolic: v.systolic.value, 
+	       diastolic: v.diastolic.value});
+
+	    $('#add_height').val(Math.round(bpparams.height*100));
+	    $('#add_diastolic').val(Math.round(bpparams.diastolic));
+	    $('#add_systolic').val(Math.round(bpparams.systolic));
+            $("#loading").hide();
+           }
+        }
+
+        $('#add_age').val(Math.floor(bpparams.age));
+        $('#add_age_months').val(Math.round(12 * (bpparams.age - Math.floor(bpparams.age))));
+        if (bpparams.sex =='female')
+           $('#add_female').attr("checked", true);
+        else 
+           $('#add_male').attr("checked", true);
+
+        if (vitals.length == 0) {
+          $("#loading").text("No vitals in the patient record... please supply values below.");
+        }
+
+        if (bpparams.age > 18) {
+	    $("#loading").text("Error:  " + SMART.record.full_name + " is not a pediatric patient (age "+Math.round(bpparams.age)+")");
+        }
+
+       refresh_form(); 
+       $("#input").show()
+       $("#result").fadeIn();
+			     
+    };
+
+	    $.when(get_demographics(), get_vitals()).then(process_vitals_data);
+
+
+var refresh_form= function(){
+	    $('#add_height').slider("refresh");
+            $('#add_systolic').slider("refresh");
+            $('#add_diastolic').slider("refresh");
+            $('#add_age').slider("refresh");
+            $('#add_age_months').slider("refresh");
+	    $('input[name="add_gender"]').checkboxradio("refresh");
+};
+
+
+$("form input").live('change', function(){
+	$("form").submit();
+});
+
+$("form").live('submit', function(event){
+	    event.stopPropagation();
+
+	    var height = $('#add_height').val()/100.0;
+
+            var bpparams = {age: parseInt($('#add_age').val()) + 1.0/12 * parseInt($('#add_age_months').val()) , 
+			     sex: $('input[name="add_gender"]:checked').val(), 
+
+			     height: height, 
+			     systolic: $('#add_systolic').val(), 
+			     diastolic: $('#add_diastolic').val()};
+       
+	    var percentiles = bp_percentiles(bpparams);
+
+            var to_display = {systolic_mmhg: $('#add_systolic').val(),
+			            diastolic_mmhg: $('#add_diastolic').val(),
+			            systolic_percentile: percentiles.systolic,
+			            diastolic_percentile: percentiles.diastolic,
+                                    height: height,
+                                    age: $('#add_age').val() + "y "+$('#add_age_months').val()+"m"
+			      };   
+
+	   $("#result .sbp").text(to_display.systolic_mmhg);
+	   $("#result .dbp").text(to_display.diastolic_mmhg);
+	   $("#result .spct").text(to_display.systolic_percentile);
+	   $("#result .dpct").text(to_display.diastolic_percentile);
+	   return false;
+});
+
+    </script>
+  </head>
+  <body >
+
+<div data-role="page"> 
+
+ 
+  <div data-role="content"> 
+
+    <div id='loading' >Loading data...</div>
+    <br>
+    
+    <div id='result'>
+      <table>
+	<tr><th>Systolic</th><th></th><th>Diastolic</th></tr>
+	<tr>
+	  <td><span class="spct"></span>%</td>
+	  <td><span class="slash">/</span></td>
+	  <td><span class="dpct"></span>%</td>
+	</tr>
+      </table>
+    </div>
+
+    <br clear="both"/>
+    <table id='bp_table'>
+    </table>
+
+<form id="input" method="GET" action="#" data-ajax="false">
+
+  <div data-role="fieldcontain"> 
+    <label for="add_systolic">Systolic BP (mmHg)</label> 
+    <input type="range" name="add_systolic" id="add_systolic" value="0" min="0" max="200"  /> 
+  </div>
+  <div data-role="fieldcontain"> 
+    <label for="add_diastolic">Diastolic BP (mmHg)</label> 
+    <input type="range" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200"  /> 
+  </div>
+
+  <div data-role="fieldcontain"> 
+    <label for="add_age">Age (years)</label> 
+    <input type="range" name="name" id="add_age" value="0" min="0" max="18" autofocus/> 
+  </div> 
+
+  <div data-role="fieldcontain"> 
+    <label for="add_age_months"> + Age (months)</label> 
+    <input type="range" name="name" id="add_age_months" value="0" min="0" max="11" /> 
+  </div> 
+ 
+  <div data-role="fieldcontain"> 
+    <fieldset data-role="controlgroup" data-type="horizontal"> 
+      <legend>Gender</legend> 
+      <input type="radio" name="add_gender" id="add_male" value="male" checked="checked" /> 
+      <label for="add_male">Male</label> 
+
+      <input type="radio" name="add_gender" id="add_female" value="female" /> 
+      <label for="add_female">Female</label> 
+    </fieldset> 
+  </div> 
+
+  <div data-role="fieldcontain"> 
+    <label for="add_height">Height (cm)</label> 
+    <input type="range" name="add_height" id="add_height" value="0" min="0" max="200"  /> 
+  </div>
+
+
+</form>
+  </div><!-- /content --> 
+</div><!-- /page --> 
+  </body>
+</html>

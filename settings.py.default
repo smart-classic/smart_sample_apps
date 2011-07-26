@@ -104,13 +104,14 @@ TEMPLATE_DIRS = (
     APP_HOME + "/templates"
 )
 
+CONCURRENT_THREADING = False
+
 INSTALLED_APPS = (
+    'django_concurrent_test_server',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'surescripts_connector',
-    'nlp_extractor'
 )
 
 # sessions in filesystem

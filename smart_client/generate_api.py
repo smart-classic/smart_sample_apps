@@ -50,7 +50,6 @@ def make_generic_call(call):
     def c(self, *args, **kwargs):
         kwargs['_client'] = self
         url = fill_url_template(call, **kwargs)
-        print "gencall: ", url
         data = kwargs.get('data', None) 
         content_type = kwargs.get('content_type', None)
         f = getattr(self, str(call.method).lower())          
@@ -68,4 +67,3 @@ def augment(client_class):
 Returns RDF Graph containing:  %s
      """%(c.method, c.path, c.description, c.target)
         setattr(client_class, call_name(c), call)
-    print dir(client_class)
