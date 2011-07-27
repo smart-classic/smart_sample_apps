@@ -69,8 +69,8 @@ def choose_limb():
 		return "368209003"
 	return "61396006"
 
-methods = { "http://smartplatforms.org/terms/code/bloodPressureMethod#auscultation": "Auscultation",
-            "http://smartplatforms.org/terms/code/bloodPressureMethod#machine": "Machine"
+methods = { "Auscultation": "http://smartplatforms.org/terms/code/bloodPressureMethod#auscultation",
+            "Machine": "http://smartplatforms.org/terms/code/bloodPressureMethod#machine"
 }
 def choose_method():
 	n = random.uniform(0, 1)
@@ -190,8 +190,8 @@ $bp
   limb = choose_limb()
   limbn = limbs[limb]
 
-  method = choose_method()
-  methodn = methods[method]
+  methodn = choose_method()
+  method = methods[methodn]
 
 
   if include_height:
