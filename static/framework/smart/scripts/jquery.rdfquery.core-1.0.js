@@ -711,9 +711,9 @@
     /** @ignore */
     value: function (v) {
       if (v === '-INF') {
-        return -Infinity;
+        return -1 / 0;
       } else if (v === 'INF' || v === '+INF') {
-        return Infinity;
+        return 1 / 0;
       } else {
         return parseFloat(v);
       }
@@ -4067,7 +4067,7 @@
               }
             }
           } else if (hasAttributeNS(p, rdfNs, 'datatype')) {
-            o = p.childNodes[0].nodeValue;
+            o = p.childNodes[0] ? p.childNodes[0].nodeValue : "";
             object = $.rdf.literal(o, { datatype: getAttributeNS(p, rdfNs, 'datatype') });
           } else if (p.getElementsByTagName('*').length > 0) {
             for (j = 0; j < p.childNodes.length; j += 1) {
@@ -4084,7 +4084,7 @@
             }
           } else if (p.childNodes.length > 0) {
             o = p.childNodes[0].nodeValue;
-            object = $.rdf.literal(literalOpts.lang ? o : '"' + o + '"', literalOpts);
+              object = $.rdf.literal(literalOpts.lang ? o : '"' + o.replace(/"/g, '\\"') + '"', literalOpts);
           } else {
             oTriples = parseRdfXmlDescription(p, false, base, lang);
             if (oTriples.length > 0) {
