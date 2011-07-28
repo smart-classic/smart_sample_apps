@@ -1,0 +1,49 @@
+1.  Quick example of creating a new medical record based on some demographics:
+
+PYTHONPATH=../.. python send_data.py --path /records/ --method POST --data example_rdf/create_patient_example.xml
+
+
+
+2.  Quick example of querying for the SMART Medical Record URI given an
+external med rec number:
+
+PYTHONPATH=../.. python query_patients.py --external-medrec-number 123456 --external-medrec-system http://my.emr.site/
+
+
+
+3.  Now for writing data to the patient record. This example
+demonstrates the use of "external IDs" (identifiers that your app uses
+to maintain a persistent handle on a piece of data that it posts to
+the record).  In this case, we post a med with a URI of
+urn:smart_external_id:fexofendadine180, and we later add a fill to it
+by referring to its external id:
+
+  # first...
+  PYTHONPATH=../.. python send_data.py --path /records/231811960711/medications/ --method POST --data example_rdf/med_example_step_1.xml 
+
+  # later...
+  PYTHONPATH=../.. python send_data.py --path /records/231811960711/medications/ --method POST --data example_rdf/med_example_step_2.xml 
+
+
+4.  And some labs:
+
+PYTHONPATH=../.. python send_data.py --path /records/091857730931/lab_results/ --method POST --data example_rdf/new_lab_quantitative_value.xml 
+
+PYTHONPATH=../.. python send_data.py --path /records/091857730931/lab_results/ --method POST --data example_rdf/new_lab_quantitative_ratio.xml 
+
+PYTHONPATH=../.. python send_data.py --path /records/091857730931/lab_results/ --method POST --data example_rdf/new_lab_quantitative_range.xml 
+
+PYTHONPATH=../.. python send_data.py --path /records/091857730931/lab_results/ --method POST --data example_rdf/new_lab_nominal.xml 
+
+PYTHONPATH=../.. python send_data.py --path /records/091857730931/lab_results/ --method POST --data example_rdf/new_lab_ordinal.xml 
+
+PYTHONPATH=../.. python send_data.py --path /records/091857730931/lab_results/ --method POST --data example_rdf/new_lab_narrative.xml 
+
+5.  And an encounter
+
+PYTHONPATH=../.. python send_data.py --path /records/091857730931/encounters/ --method POST --data example_rdf/encounter.xml
+
+
+5.  And some vital signs:
+
+PYTHONPATH=../.. python send_data.py --path /records/091857730931/vital_signs/ --method POST --data example_rdf/vital_signs.xml

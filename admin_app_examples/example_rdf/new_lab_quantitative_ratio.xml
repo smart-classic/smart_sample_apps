@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:sp="http://smartplatforms.org/terms#"
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <sp:LabResult>
+    <sp:quantitativeResult>
+      <sp:QuantitativeResult>
+        <sp:value>
+	<sp:ValueRatio>
+	 <sp:numerator>
+          <sp:ValueAndUnit>
+            <sp:value>1</sp:value>
+          </sp:ValueAndUnit>
+	 </sp:numerator>
+	 <sp:denominator>
+          <sp:ValueAndUnit>
+            <sp:value>128</sp:value>
+          </sp:ValueAndUnit>
+	 </sp:denominator>
+	</sp:ValueRatio>
+        </sp:value>
+      </sp:QuantitativeResult>
+    </sp:quantitativeResult>
+    <sp:labName>
+      <sp:CodedValue>
+        <dcterms:title>Squamous UrnS Ql HPF</dcterms:title>
+        <sp:code rdf:resource="http://loinc.org/codes/12258-0"/>
+      </sp:CodedValue>
+    </sp:labName>
+    <sp:accessionNumber>A690187509</sp:accessionNumber>
+    <sp:specimenCollected>
+      <sp:Attribution>
+        <sp:startTime>2007-04-03</sp:startTime>
+      </sp:Attribution>
+    </sp:specimenCollected>
+  </sp:LabResult>
+</rdf:RDF>
