@@ -49,7 +49,7 @@ if (!BPC) {
         $('#add_diastolic').val(Math.round(bpparams.diastolic));
         $('#add_systolic').val(Math.round(bpparams.systolic));
         $('#add_age').val(Math.floor(bpparams.age));
-        $('#add_months').val(Math.round(12 * (bpparams.age - Math.floor(bpparams.age))));
+        $('#add_months').val(Math.floor(12 * (bpparams.age - Math.floor(bpparams.age))));
         if (bpparams.sex === 'female') {
             $('#add_female').attr("checked", true);
         } else {
