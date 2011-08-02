@@ -3,7 +3,13 @@
   <head>
     <title>API Playground</title>
     <script src="../smart/scripts/smart-api-page.js"></script>
-	<script type='text/javascript' src='../steal/steal.js?api_playground,development'></script>
+    <script type='text/javascript' src='resources/payload_definitions.js'></script>
+    <script type='text/javascript' src='resources/parse_payloads.js'></script>
+    <script type='text/javascript' src='../steal/steal.js?api_playground,development'></script>
+
+
+    <link rel="stylesheet" href="resources/jsconsole/console.css" type="text/css" />
+
   </head>
 
   <body>
@@ -15,7 +21,25 @@
 	<div id='interpolation-fields'></div>
 	
 	<textarea id='payload'></textarea>
-	<div id='response'></div>
+	<div id='response'>
+<form class="input">
+  <textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
+</form>
+<div id="console">
+  <ul id="output"></ul>
+</div>
+
+	  
+	</div>
+
+
+
+
 	</div>
   </body>
+
+    <script src="resources/jsconsole/prettify.packed.js"></script>
+    <script src="resources/jsconsole/EventSource.js"></script>
+    <script src="resources/jsconsole/console.js"></script>
+
 </html>

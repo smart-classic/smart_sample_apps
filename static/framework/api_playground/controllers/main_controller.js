@@ -15,8 +15,6 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		this.calls = {};
 		this.payload_box = $("#payload");
 		this.response_box = $("#response");
-		window.jash = new Jash(this.response_box.get(0));
-		window.jash.main();
 
 		this.payload_box.hide();
 		this.response_box.hide();
@@ -28,7 +26,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     
     'ontology_parsed subscribe': function(topic, element) {
 		$("#type-nav").html(this.view('groups', {groups: ApiCallGroup.get_top_groups()}));
-		$("#wrap").css({marginLeft: $("#type-nav").width()});
+
     }, 
 
     ".type click": function(el, ev ){
@@ -104,7 +102,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     "BUTTON.complete-call click": function(el, ev) {
     	$(".cancel-call").attr("DISABLED", "true");
 		$(".complete-call").attr("DISABLED", "true");
-	
+
     	$("#interpolation-fields INPUT").each(function() {
 			$i = $(this);
 			var field_name = $i.attr("field_name");    		
@@ -120,26 +118,25 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 	r = SMART.process_rdf(contentType, data);
     	//console.log("got data" + contentType + data);
 	window.response = r;
-	window.jash.clear();
-	window.jash.output.value = data;
-	window.jash.output.value += "\n\n------------\n";
-	window.jash.output.value += window.jash.defaultText;
-	window.jash.output.value += "\n";
-	window.jash.output.value += "Triples in RDF graph returned: " + response.where('?s ?p ?o.').length+"\n\n";
-	window.jash.output.value += "To explore the graph, try:\n";
-	window.jash.output.value += "  > response.source_xml\n";
-	window.jash.output.value += "  > response.where('?s ?p ?o.').length\n";
-	window.jash.output.value += "  > response.where('?s ?p ?o.')[0].s \n";
+
+	window.SOC = window.SOC || new smart_parser.Collection();
+	SOC.parse_rdf_payload(r);
+	$("#sandbox")[0].contentWindow.SMART_OBJECTS = SOC;
+	$("#sandbox")[0].contentWindow.response = r;
+
     	this.response_box.show();
-	window.jash.print("\nTo explore type or paste commands in the textbox below, then press Enter.");
-	window.jash.input.focus();
+
+	var sample_command = "SMART_OBJECTS.by_type('"+ApiType.find_type(this.selected_call.target).name+"')";
+	postJSConsole(sample_command);
+
+	$("#exec").val(sample_command);
     	$(".cancel-call").removeAttr("DISABLED");
 		$(".complete-call").removeAttr("DISABLED");
     	$("#interpolation-fields INPUT").each(function() {
 			$i = $(this);
     		$i.removeAttr("DISABLED");
     	});
-
+	$("#exec").focus();
     	this.selected_top_group.group_type.fetchParameters();		
     }
     
