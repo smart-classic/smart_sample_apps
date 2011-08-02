@@ -9,32 +9,6 @@
   context.smart_parser.type_definitions = type_definitions;
 
 
-  type_definitions["<http://smartplatforms.org/terms#AbnormalFlagNumericNom_DOMAIN_ECID>"] = { 
-    name: "AbnormalFlagNumericNom_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/terms#AbnormalFlagNumericNom_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/cemterms#AbnormalFlagNumericNom_DOMAIN_ECID>"] = { 
     name: "AbnormalFlagNumericNom_DOMAIN_ECID",
     uri: "<http://smartplatforms.org/cemterms#AbnormalFlagNumericNom_DOMAIN_ECID>",
@@ -43,17 +17,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#AbnormalFlagNumericNom_DOMAIN_ECID>"] = { 
+    name: "AbnormalFlagNumericNom_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/terms#AbnormalFlagNumericNom_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -86,17 +86,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -112,17 +112,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -138,17 +138,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -164,17 +164,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -190,7 +190,7 @@
       {
         name: "identifier", 
         uri: "<http://smartplatforms.org/terms#identifier>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -223,17 +223,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -249,17 +249,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -304,22 +304,22 @@
       {
         name: "country-name", 
         uri: "<http://www.w3.org/2006/vcard/ns#country-name>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "locality", 
         uri: "<http://www.w3.org/2006/vcard/ns#locality>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "postal-code", 
         uri: "<http://www.w3.org/2006/vcard/ns#postal-code>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "street-address", 
         uri: "<http://www.w3.org/2006/vcard/ns#street-address>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -381,17 +381,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -424,7 +424,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -457,17 +457,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -483,7 +483,7 @@
       {
         name: "notes", 
         uri: "<http://smartplatforms.org/terms#notes>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -517,17 +517,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -543,7 +543,7 @@
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -641,17 +641,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -667,17 +667,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -693,17 +693,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -719,7 +719,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -735,17 +735,17 @@
       {
         name: "endDate", 
         uri: "<http://smartplatforms.org/terms#endDate>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "endTime", 
         uri: "<http://smartplatforms.org/terms#endTime>",
-        allow_list: true,
+        allow_list: true
       },
       {
         name: "startDate", 
         uri: "<http://smartplatforms.org/terms#startDate>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -826,17 +826,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -852,17 +852,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -919,17 +919,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -945,17 +945,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -971,17 +971,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1014,17 +1014,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1040,17 +1040,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1116,32 +1116,6 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/terms#BodyLocationQualifier_VALUESET_ECID>"] = { 
-    name: "BodyLocationQualifier_VALUESET_ECID",
-    uri: "<http://smartplatforms.org/terms#BodyLocationQualifier_VALUESET_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/cemterms#BodyLocationQualifier_VALUESET_ECID>"] = { 
     name: "BodyLocationQualifier_VALUESET_ECID",
     uri: "<http://smartplatforms.org/cemterms#BodyLocationQualifier_VALUESET_ECID>",
@@ -1150,17 +1124,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#BodyLocationQualifier_VALUESET_ECID>"] = { 
+    name: "BodyLocationQualifier_VALUESET_ECID",
+    uri: "<http://smartplatforms.org/terms#BodyLocationQualifier_VALUESET_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1176,17 +1176,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1202,17 +1202,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1245,17 +1245,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1271,17 +1271,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1331,7 +1331,7 @@
       {
         name: "capability", 
         uri: "<http://smartplatforms.org/terms#capability>",
-        allow_list: true,
+        allow_list: true
       } 
     ],
     object_properties: [  
@@ -1381,17 +1381,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1407,17 +1407,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1433,7 +1433,7 @@
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -1506,17 +1506,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1532,17 +1532,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1575,17 +1575,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1601,17 +1601,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1644,17 +1644,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1670,17 +1670,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1696,17 +1696,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1722,17 +1722,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1748,7 +1748,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1832,17 +1832,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1858,7 +1858,7 @@
       {
         name: "real", 
         uri: "<http://smartplatforms.org/terms#real>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1874,7 +1874,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1907,17 +1907,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -1933,17 +1933,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2105,17 +2105,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2142,7 +2142,7 @@
       {
         name: "hasDateTime", 
         uri: "<http://smartplatforms.org/terms#hasDateTime>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2158,7 +2158,7 @@
       {
         name: "hasDateTime", 
         uri: "<http://smartplatforms.org/terms#hasDateTime>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2174,7 +2174,7 @@
       {
         name: "hasDateTime", 
         uri: "<http://smartplatforms.org/terms#hasDateTime>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2190,7 +2190,7 @@
       {
         name: "hasDateTime", 
         uri: "<http://smartplatforms.org/terms#hasDateTime>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2206,7 +2206,7 @@
       {
         name: "hasDateTime", 
         uri: "<http://smartplatforms.org/terms#hasDateTime>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2250,17 +2250,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2276,17 +2276,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2311,32 +2311,6 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/cemterms#DeltaFlagCodedNom_DOMAIN_ECID>"] = { 
-    name: "DeltaFlagCodedNom_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/cemterms#DeltaFlagCodedNom_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/terms#DeltaFlagCodedNom_DOMAIN_ECID>"] = { 
     name: "DeltaFlagCodedNom_DOMAIN_ECID",
     uri: "<http://smartplatforms.org/terms#DeltaFlagCodedNom_DOMAIN_ECID>",
@@ -2345,17 +2319,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/cemterms#DeltaFlagCodedNom_DOMAIN_ECID>"] = { 
+    name: "DeltaFlagCodedNom_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/cemterms#DeltaFlagCodedNom_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2371,17 +2371,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2397,17 +2397,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2423,17 +2423,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2449,17 +2449,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2475,52 +2475,52 @@
       {
         name: "birthday", 
         uri: "<http://smartplatforms.org/terms#birthday>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "ethnicity", 
         uri: "<http://smartplatforms.org/terms#ethnicity>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "familyName", 
         uri: "<http://xmlns.com/foaf/0.1/familyName>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "gender", 
         uri: "<http://xmlns.com/foaf/0.1/gender>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "givenName", 
         uri: "<http://xmlns.com/foaf/0.1/givenName>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "mbox", 
         uri: "<http://xmlns.com/foaf/0.1/mbox>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "name", 
         uri: "<http://xmlns.com/foaf/0.1/name>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "preferredLanguage", 
         uri: "<http://smartplatforms.org/terms#preferredLanguage>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "race", 
         uri: "<http://smartplatforms.org/terms#race>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "zipcode", 
         uri: "<http://smartplatforms.org/terms#zipcode>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -2565,17 +2565,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2591,17 +2591,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2693,17 +2693,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2719,12 +2719,12 @@
       {
         name: "endDate", 
         uri: "<http://smartplatforms.org/terms#endDate>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "startDate", 
         uri: "<http://smartplatforms.org/terms#startDate>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -2764,17 +2764,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2790,7 +2790,7 @@
       {
         name: "hasDateTime", 
         uri: "<http://smartplatforms.org/terms#hasDateTime>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2806,17 +2806,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2832,17 +2832,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2875,33 +2875,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
-  type_definitions["<http://smartplatforms.org/terms#Expression_DOMAIN_ECID>"] = { 
-    name: "Expression_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/terms#Expression_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2917,17 +2891,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#Expression_DOMAIN_ECID>"] = { 
+    name: "Expression_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/terms#Expression_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2943,7 +2943,7 @@
       {
         name: "identifier", 
         uri: "<http://smartplatforms.org/terms#identifier>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -2959,7 +2959,7 @@
       {
         name: "identifier", 
         uri: "<http://smartplatforms.org/terms#identifier>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -2981,7 +2981,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3044,7 +3044,7 @@
       {
         name: "identifier", 
         uri: "<http://smartplatforms.org/terms#identifier>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3159,17 +3159,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3185,17 +3185,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3228,7 +3228,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3321,17 +3321,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3428,17 +3428,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3471,17 +3471,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3497,17 +3497,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3523,17 +3523,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3549,12 +3549,12 @@
       {
         name: "accessionNumber", 
         uri: "<http://smartplatforms.org/terms#accessionNumber>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "notes", 
         uri: "<http://smartplatforms.org/terms#notes>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -3612,17 +3612,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3661,17 +3661,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3704,17 +3704,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3730,7 +3730,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3746,7 +3746,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3779,17 +3779,17 @@
       {
         name: "endDate", 
         uri: "<http://smartplatforms.org/terms#endDate>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "instructions", 
         uri: "<http://smartplatforms.org/terms#instructions>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "startDate", 
         uri: "<http://smartplatforms.org/terms#startDate>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -3835,17 +3835,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3861,7 +3861,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3877,17 +3877,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3903,7 +3903,7 @@
       {
         name: "value", 
         uri: "<http://smartplatforms.org/terms#value>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3919,7 +3919,7 @@
       {
         name: "value", 
         uri: "<http://smartplatforms.org/terms#value>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -3997,32 +3997,6 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/cemterms#Odor_DOMAIN_ECID>"] = { 
-    name: "Odor_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/cemterms#Odor_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/terms#Odor_DOMAIN_ECID>"] = { 
     name: "Odor_DOMAIN_ECID",
     uri: "<http://smartplatforms.org/terms#Odor_DOMAIN_ECID>",
@@ -4031,17 +4005,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/cemterms#Odor_DOMAIN_ECID>"] = { 
+    name: "Odor_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/cemterms#Odor_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -4681,32 +4681,6 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/terms#OrderComment_DOMAIN_ECID>"] = { 
-    name: "OrderComment_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/terms#OrderComment_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/cemterms#OrderComment_DOMAIN_ECID>"] = { 
     name: "OrderComment_DOMAIN_ECID",
     uri: "<http://smartplatforms.org/cemterms#OrderComment_DOMAIN_ECID>",
@@ -4715,17 +4689,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#OrderComment_DOMAIN_ECID>"] = { 
+    name: "OrderComment_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/terms#OrderComment_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -4758,17 +4758,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -4784,17 +4784,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5107,7 +5107,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5138,32 +5138,6 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/terms#OrderPriority_DOMAIN_ECID>"] = { 
-    name: "OrderPriority_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/terms#OrderPriority_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/cemterms#OrderPriority_DOMAIN_ECID>"] = { 
     name: "OrderPriority_DOMAIN_ECID",
     uri: "<http://smartplatforms.org/cemterms#OrderPriority_DOMAIN_ECID>",
@@ -5172,17 +5146,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#OrderPriority_DOMAIN_ECID>"] = { 
+    name: "OrderPriority_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/terms#OrderPriority_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5207,32 +5207,6 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/terms#OrderSetId_DOMAIN_ECID>"] = { 
-    name: "OrderSetId_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/terms#OrderSetId_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/cemterms#OrderSetId_DOMAIN_ECID>"] = { 
     name: "OrderSetId_DOMAIN_ECID",
     uri: "<http://smartplatforms.org/cemterms#OrderSetId_DOMAIN_ECID>",
@@ -5241,17 +5215,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#OrderSetId_DOMAIN_ECID>"] = { 
+    name: "OrderSetId_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/terms#OrderSetId_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5284,17 +5284,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5310,17 +5310,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5353,17 +5353,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5379,17 +5379,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5601,17 +5601,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5644,17 +5644,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5670,17 +5670,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5806,17 +5806,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5832,17 +5832,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5875,17 +5875,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5901,17 +5901,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5927,7 +5927,7 @@
       {
         name: "value", 
         uri: "<http://smartplatforms.org/terms#value>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -5943,7 +5943,7 @@
       {
         name: "name", 
         uri: "<http://xmlns.com/foaf/0.1/name>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -5982,17 +5982,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6008,17 +6008,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6091,7 +6091,7 @@
       {
         name: "role", 
         uri: "<http://smartplatforms.org/terms#role>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -6148,17 +6148,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6174,17 +6174,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6200,7 +6200,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6279,52 +6279,52 @@
       {
         name: "birthday", 
         uri: "<http://smartplatforms.org/terms#birthday>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "ethnicity", 
         uri: "<http://smartplatforms.org/terms#ethnicity>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "familyName", 
         uri: "<http://xmlns.com/foaf/0.1/familyName>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "gender", 
         uri: "<http://xmlns.com/foaf/0.1/gender>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "givenName", 
         uri: "<http://xmlns.com/foaf/0.1/givenName>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "mbox", 
         uri: "<http://xmlns.com/foaf/0.1/mbox>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "name", 
         uri: "<http://xmlns.com/foaf/0.1/name>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "preferredLanguage", 
         uri: "<http://smartplatforms.org/terms#preferredLanguage>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "race", 
         uri: "<http://smartplatforms.org/terms#race>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "zipcode", 
         uri: "<http://smartplatforms.org/terms#zipcode>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6340,7 +6340,7 @@
       {
         name: "identifier", 
         uri: "<http://smartplatforms.org/terms#identifier>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6473,17 +6473,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6499,17 +6499,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6525,12 +6525,12 @@
       {
         name: "name", 
         uri: "<http://xmlns.com/foaf/0.1/name>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "ncpdpID", 
         uri: "<http://smartplatforms.org/terms#ncpdpID>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -6552,7 +6552,7 @@
       {
         name: "identifier", 
         uri: "<http://smartplatforms.org/terms#identifier>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6585,7 +6585,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6618,17 +6618,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6644,17 +6644,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6670,17 +6670,17 @@
       {
         name: "endDate", 
         uri: "<http://smartplatforms.org/terms#endDate>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "notes", 
         uri: "<http://smartplatforms.org/terms#notes>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "startDate", 
         uri: "<http://smartplatforms.org/terms#startDate>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -6725,17 +6725,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6751,17 +6751,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6777,17 +6777,17 @@
       {
         name: "sourceCode", 
         uri: "<http://smartplatforms.org/terms#sourceCode>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "translationFidelity", 
         uri: "<http://smartplatforms.org/terms#translationFidelity>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6803,62 +6803,62 @@
       {
         name: "birthday", 
         uri: "<http://smartplatforms.org/terms#birthday>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "deaNumber", 
         uri: "<http://smartplatforms.org/terms#deaNumber>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "ethnicity", 
         uri: "<http://smartplatforms.org/terms#ethnicity>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "familyName", 
         uri: "<http://xmlns.com/foaf/0.1/familyName>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "gender", 
         uri: "<http://xmlns.com/foaf/0.1/gender>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "givenName", 
         uri: "<http://xmlns.com/foaf/0.1/givenName>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "mbox", 
         uri: "<http://xmlns.com/foaf/0.1/mbox>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "name", 
         uri: "<http://xmlns.com/foaf/0.1/name>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "npiNumber", 
         uri: "<http://smartplatforms.org/terms#npiNumber>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "preferredLanguage", 
         uri: "<http://smartplatforms.org/terms#preferredLanguage>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "race", 
         uri: "<http://smartplatforms.org/terms#race>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "zipcode", 
         uri: "<http://smartplatforms.org/terms#zipcode>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6874,7 +6874,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6907,17 +6907,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6933,7 +6933,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -6949,7 +6949,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7087,17 +7087,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7113,7 +7113,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7251,17 +7251,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7277,17 +7277,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7343,17 +7343,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7369,17 +7369,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7471,17 +7471,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7514,17 +7514,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7540,17 +7540,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7566,17 +7566,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7592,17 +7592,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7635,17 +7635,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7678,7 +7678,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7694,7 +7694,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -7978,7 +7978,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8011,17 +8011,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8037,17 +8037,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8097,7 +8097,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -8437,7 +8437,7 @@
       {
         name: "hasDateTime", 
         uri: "<http://smartplatforms.org/terms#hasDateTime>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8499,17 +8499,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8525,17 +8525,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8560,32 +8560,6 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/cemterms#SubstitutionStatus_DOMAIN_ECID>"] = { 
-    name: "SubstitutionStatus_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/cemterms#SubstitutionStatus_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/terms#SubstitutionStatus_DOMAIN_ECID>"] = { 
     name: "SubstitutionStatus_DOMAIN_ECID",
     uri: "<http://smartplatforms.org/terms#SubstitutionStatus_DOMAIN_ECID>",
@@ -8594,17 +8568,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/cemterms#SubstitutionStatus_DOMAIN_ECID>"] = { 
+    name: "SubstitutionStatus_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/cemterms#SubstitutionStatus_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8620,7 +8620,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8695,7 +8695,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8728,17 +8728,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8771,17 +8771,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8797,17 +8797,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8823,17 +8823,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8849,62 +8849,62 @@
       {
         name: "birthday", 
         uri: "<http://smartplatforms.org/terms#birthday>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "department", 
         uri: "<http://smartplatforms.org/terms#department>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "ethnicity", 
         uri: "<http://smartplatforms.org/terms#ethnicity>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "familyName", 
         uri: "<http://xmlns.com/foaf/0.1/familyName>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "gender", 
         uri: "<http://xmlns.com/foaf/0.1/gender>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "givenName", 
         uri: "<http://xmlns.com/foaf/0.1/givenName>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "mbox", 
         uri: "<http://xmlns.com/foaf/0.1/mbox>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "name", 
         uri: "<http://xmlns.com/foaf/0.1/name>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "preferredLanguage", 
         uri: "<http://smartplatforms.org/terms#preferredLanguage>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "race", 
         uri: "<http://smartplatforms.org/terms#race>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "role", 
         uri: "<http://smartplatforms.org/terms#role>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "zipcode", 
         uri: "<http://smartplatforms.org/terms#zipcode>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8937,7 +8937,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -8953,12 +8953,12 @@
       {
         name: "unit", 
         uri: "<http://smartplatforms.org/terms#unit>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "value", 
         uri: "<http://smartplatforms.org/terms#value>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -9088,32 +9088,6 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/terms#VerifiedMethod_DOMAIN_ECID>"] = { 
-    name: "VerifiedMethod_DOMAIN_ECID",
-    uri: "<http://smartplatforms.org/terms#VerifiedMethod_DOMAIN_ECID>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "identifier", 
-        uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
-      },
-      {
-        name: "system", 
-        uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
-      } 
-    ],
-    object_properties: [  
-    ]
-  };
-
-
   type_definitions["<http://smartplatforms.org/cemterms#VerifiedMethod_DOMAIN_ECID>"] = { 
     name: "VerifiedMethod_DOMAIN_ECID",
     uri: "<http://smartplatforms.org/cemterms#VerifiedMethod_DOMAIN_ECID>",
@@ -9122,17 +9096,43 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#VerifiedMethod_DOMAIN_ECID>"] = { 
+    name: "VerifiedMethod_DOMAIN_ECID",
+    uri: "<http://smartplatforms.org/terms#VerifiedMethod_DOMAIN_ECID>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -9148,17 +9148,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -9174,12 +9174,12 @@
       {
         name: "unit", 
         uri: "<http://smartplatforms.org/terms#unit>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "value", 
         uri: "<http://smartplatforms.org/terms#value>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -9201,7 +9201,7 @@
       {
         name: "date", 
         uri: "<http://purl.org/dc/elements/1.1/date>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [ 
@@ -9288,7 +9288,7 @@
       {
         name: "string", 
         uri: "<http://smartplatforms.org/terms#string>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -9321,17 +9321,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -9347,17 +9347,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -9373,17 +9373,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  
@@ -9399,17 +9399,17 @@
       {
         name: "identifier", 
         uri: "<http://purl.org/dc/terms/identifier>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "system", 
         uri: "<http://smartplatforms.org/terms#system>",
-        allow_list: false,
+        allow_list: false
       },
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false,
+        allow_list: false
       } 
     ],
     object_properties: [  

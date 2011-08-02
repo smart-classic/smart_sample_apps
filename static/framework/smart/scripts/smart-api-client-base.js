@@ -549,49 +549,6 @@ SMART_CLIENT.prototype.node_name = function(node) {
     return node;
 };
 
-SMART_CLIENT.prototype.to_json = function(rdf) {
-
-	var triples = rdf.where("?s ?p ?o");
-	var resources = {};
-	
-	for (var i = 0; i < triples.length; i++) {
-	
-		var t = triples[i];
-		var s = t.s;
-		var p = t.p;
-		var o = t.o;
-		
-		if (resources[s.value._string] === undefined)
-			resources[s.value._string] = {uri: this.node_name(s)};
-
-		if (resources[s.value._string][p.value._string] === undefined)
-			resources[s.value._string][p.value._string] = [];
-		
-		if (p.value._string === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" )
-		{
-			if (resources[o.value._string] === undefined)
-			{
-				resources[o.value._string] = [];
-				resources[o.value._string].uri = this.node_name(o);
-			}
-			
-			resources[o.value._string].push(resources[s.value._string]);
-		}
-
-		if (o.type !== "literal" && resources[o.value._string] === undefined )
-			resources[o.value._string] = {uri: this.node_name(o)};
-
-		if (t.o.type === "literal")
-			resources[s.value._string][p.value._string].push(o.value);
-		else if (p.value._string !== "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" )
-			resources[s.value._string][p.value._string].push(resources[o.value._string]);
-		else // avoid circular structures to maintain JSON.stringify-ability.
-			resources[s.value._string][p.value._string].push(o.value._string);
-		
-	}
-	
-	return resources;	
-},
 
 SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 
@@ -629,9 +586,6 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 
 	// abstract method to instantiate a list of objects from the rdf store.
 	var _this = this;
-	rdf.to_json = function() {
-		return _this.to_json(rdf);
-	};
 	rdf.source_xml = data;
 	return rdf;
 }

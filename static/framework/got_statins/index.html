@@ -11,38 +11,50 @@
   </a> 
 	<script  src='../smart/scripts/smart-api-page.js'></script>
 	<script>
-			SMART.MEDS_get_all(function(meds) {
-			
-				var statin = meds.where("?m rdf:type sp:Medication")
-						 .where("?m sp:drugName ?c")
-						 .where("?c dcterms:title ?drugname");
-				
-				var answer = false;
-								 
-				for (var i = 0; i < statin.length; i++) {
-					if (is_a_statin(statin[i].drugname.value))
-						answer = true;
-				}								 
-				
-				document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "No.";
-			});
+
+	SMART.api_call({
+	  method: 'GET',
+	  url: "/records/" + SMART.record.id + "/order_med_amb/",
+	  data: {} },function(ct, data) {
+	  
+	var meds = SMART.process_rdf(ct, data);
+	meds.prefix("cemterms", "http://smartplatforms.org/cemterms#");
+	
+	
+	var statin = meds.where("?m rdf:type cemterms:OrderMedAmb")
+	.where("?m cemterms:orderable ?o")
+	.where("?o cemterms:orderableItem ?oi")
+	.where("?oi sp:code ?c")
+	.where("?c dcterms:title ?drugname");	  
+	
+	var answer = false;
+	
+	for (var i = 0; i < statin.length; i++) {
+	 console.log(statin[i].drugname.value);
+	       if (is_a_statin(statin[i].drugname.value))
+		   answer = true;
+          }
+
+	  document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "No.";
+
+	});
 		
-		var is_a_statin = function(drug) {
-			if (drug.match(/statin$/i)) return true;
-			if (drug.match(/Advicor/i)) return true;
-			if (drug.match(/Altoprev/i)) return true;
-			if (drug.match(/Caduet/i)) return true;
-			if (drug.match(/Crestor/i)) return true;
-			if (drug.match(/Lescol/i)) return true;
-			if (drug.match(/Lipitor/i)) return true;
-			if (drug.match(/Mevacor/i)) return true;
-			if (drug.match(/Pravachol/i)) return true;
-			if (drug.match(/Simcor/i)) return true;
-			if (drug.match(/Vytorin/i)) return true;
-			if (drug.match(/Zocor/i)) return true;
-			
-			return false;
-	    }
+   var is_a_statin = function(drug) {
+      if (drug.match(/statin/i)) return true;
+      if (drug.match(/Advicor/i)) return true;
+      if (drug.match(/Altoprev/i)) return true;
+      if (drug.match(/Caduet/i)) return true;
+      if (drug.match(/Crestor/i)) return true;
+      if (drug.match(/Lescol/i)) return true;
+      if (drug.match(/Lipitor/i)) return true;
+      if (drug.match(/Mevacor/i)) return true;
+      if (drug.match(/Pravachol/i)) return true;
+      if (drug.match(/Simcor/i)) return true;
+      if (drug.match(/Vytorin/i)) return true;
+      if (drug.match(/Zocor/i)) return true;
+
+      return false;
+   }
 		
 	</script>
   </body>

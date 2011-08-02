@@ -119,15 +119,17 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     	//console.log("got data" + contentType + data);
 	window.response = r;
 
-	window.SOC = window.SOC || new smart_parser.Collection();
-	SOC.parse_rdf_payload(r);
-	$("#sandbox")[0].contentWindow.SMART_OBJECTS = SOC;
-	$("#sandbox")[0].contentWindow.response = r;
+	window.SMART_OBJECTS = window.SMART_OBJECTS || new smart_parser.Collection();
+	SMART_OBJECTS.parse_rdf_payload(r);
 
     	this.response_box.show();
+	$("#output").html();
+	postJSConsole(':help', true);
 
+	
 	var sample_command = "SMART_OBJECTS.by_type('"+ApiType.find_type(this.selected_call.target).name+"')";
 	postJSConsole(sample_command);
+
 
 	$("#exec").val(sample_command);
     	$(".cancel-call").removeAttr("DISABLED");
