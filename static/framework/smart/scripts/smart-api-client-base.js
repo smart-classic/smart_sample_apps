@@ -12,7 +12,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
     this.message_receivers = {};
 
     var procureChannel = function(event){
-	var app_instance_uuid = event.data.match(/^app_instance_uuid=(.*)$/);
+	var app_instance_uuid = event.data.match(/^"app_instance_uuid=(.*)"$/);
 	if (!app_instance_uuid) return;
 
 	if (window.removeEventListener) window.removeEventListener('message', procureChannel, false);
@@ -24,7 +24,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 
     if (window.addEventListener) window.addEventListener('message', procureChannel, false);
     else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
-    window.parent.postMessage("procure_channel", "*");
+    window.parent.postMessage('"procure_channel"', "*");
 
     this.is_ready = false;
     this.ready = function(callback) {
@@ -40,41 +40,42 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
     this.bind_channel = function(scope) {
 	this.channel = Channel.build({window: frame, origin: "*", scope: scope, debugOutput: debug});
 	
-	this.channel.bind("activityforeground", this.callback(function() {
+	this.channel.bind("foreground", this.callback(function() {
 	    if (this.message_receivers.foreground !== undefined)
 		this.message_receivers.foreground();
 	}));
 	
-	this.channel.bind("activitybackground", this.callback(function() {
+	this.channel.bind("background", this.callback(function() {
 	    if (this.message_receivers.background !== undefined)
 		this.message_receivers.background();
 	}));
 	
-	this.channel.bind("activitydestroy", this.callback(function() {
-	    document.cookie = this.cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
-	    if (this.message_receivers.background !== undefined)
+	this.channel.bind("destroy", this.callback(function() {
+	    if (this.message_receivers.destroy !== undefined)
 		this.message_receivers.destroy();
 	}));
 
-	_this.channel.call({method: "ready", 
-			    params: {},
-			    success: sc.callback(sc.received_setup)
-			   });
+	this.channel.bind("ready", function(trans, message) {
+	    sc.received_setup(message);
+	});
 
     };
 
-        this.received_setup = function(message) {
-			    
-	    this.user = message.user;
-	    this.record = message.record;
-	    this.credentials = message.credentials;
-	    this.ready_data = message.ready_data;
-	    this.iframe_width=message.iframe_width;
-	    this.iframe_height=message.iframe_height;
-	    
-	    this.is_ready = true;
-	    if (this.ready_callback) this.ready_callback();
-	};
+    this.received_setup = function(message) {
+	
+	this.context = message.context;
+	this.uuid = message.uuid;
+	
+	this.user = message.context.user;
+	this.record = message.context.record;
+	
+	this.credentials = message.credentials;
+	this.ready_data = message.ready_data;
+	
+ 	this.is_ready = true;
+	if (this.ready_callback) this.ready_callback();
+	
+    };
 
 	this.api_call = function(options, callback) {
 	    this.channel.call({method: "api_call",
@@ -537,9 +538,6 @@ SMART_CLIENT.prototype.node_name = function(node) {
 
 
 SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
-
-	if (contentType !== "xml")
-		throw "getRDF expected an XML document... got " + contentType;
 
 	// Get the triples into jquery.rdf
 	var d = this.createXMLDocument(data);

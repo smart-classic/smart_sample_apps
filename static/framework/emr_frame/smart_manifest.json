@@ -1,0 +1,17 @@
+{
+  "name" : "EMR Frame",
+  "description" : "Sample EMR Frame App",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "emr-frame@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "base_url" : "http://localhost:8001",
+  "mode" : "ui",
+  "activities" : {
+    "main" :              "{base_url}/framework/emr_frame/index.html"
+  },
+	
+  "web_hooks" : { },
+
+  "icon" :  "{base_url}/framework/emr_frame/icon.png"
+}

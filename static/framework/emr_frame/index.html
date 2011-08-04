@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EMR Frame Demo App</title>
+
+    <script  src='../smart/scripts/smart-api-client.js'></script>
+    <script  src='http://303.snarked.com:7001/static/smart_common/resources/smart-api-container.js'>
+    </script>
+    
+    <script>
+      SMART_HELPER = {};
+      SMART_CONTAINER = new SMART_CONTAINER(SMART_HELPER);
+  
+      var app_instance_tmp = {};
+      
+      SMART_HELPER.get_manifest = function (app_instance, callback) {  
+      
+      var uuid = app_instance.uuid;
+      SMART.channel.call({method: "launch_app",
+          params: app_instance, 
+          success: function(updated_app_instance) {
+            app_instance_tmp[uuid] = updated_app_instance;
+            callback(app_instance_tmp[uuid].manifest);
+          }
+        });
+      };
+
+SMART_HELPER.get_credentials = function (app_instance, callback){
+          callback(app_instance_tmp[app_instance.uuid].credentials);
+};
+
+SMART_HELPER.get_iframe = function (app_instance, callback){
+    var frame_id = "app_content_iframe_"+app_instance.uuid;
+
+    $('body').append(
+	'<iframe SEAMLESS src="about:blank"'+
+	     ' id="'+frame_id+'" width="100%" height="100%"> </iframe>');
+    
+    var frame = $("#"+frame_id);
+    callback(frame[0]);
+};
+
+SMART_HELPER.on_app_launch_complete = function(app_instance) {
+      delete app_instance_tmp[app_instance.uuid];
+};
+
+// calls back wtih the response to an API call.  
+// (implemented as passthrough to a back-end REST server)
+SMART_HELPER.handle_api = function(app_instance, call_info, callback) {
+      SMART.channel.call({method: "api_call_delegated",
+          params: {
+                    originating_app_uuid: app_instance.uuid,
+                    call_info: call_info
+                  }, 
+          success: function(r) {callback(r.data);}
+        });
+};
+
+SMART.ready(function() {
+
+  SMART_CONTAINER.launch_app("got-statins@apps.smartplatforms.org", SMART.context);
+
+});
+    </script>
+
+  </head>
+  <body>
+    Welcome to your EMR Frame.<br>
+  </body>
+</html>
