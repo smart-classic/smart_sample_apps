@@ -9,9 +9,10 @@
   <a id="TheAnswer" style="font-weight: bold; font-size: 120pt; font-family: Arial, sans-serif; text-decoration: none; color: black;">
   	... 
   </a> 
-	<script  src='../smart/scripts/smart-api-page.js'></script>
+	<script  src='../smart/scripts/smart-api-client.js'></script>
 	<script>
-
+	  
+SMART.ready(function(){
 	SMART.api_call({
 	  method: 'GET',
 	  url: "/records/" + SMART.record.id + "/order_med_amb/",
@@ -55,7 +56,7 @@
 
       return false;
    }
-		
+});		
 	</script>
   </body>
 </html>

@@ -24688,96 +24688,81 @@ $.extend($.ui.tabs.prototype, {
         }
     };
 })();/*
- * SMArt API client
+ * SMART API client
  * Josh Mandel
  * Ben Adida
  */
 
 var SMART_CLIENT = function(smart_server_origin, frame) {
     var debug = false;
+    var _this = this;
+    var sc = this;
+    
+    this.message_receivers = {};
+
+    var procureChannel = function(event){
+	var app_instance_uuid = event.data.match(/^app_instance_uuid=(.*)$/);
+	if (!app_instance_uuid) return;
+
+	if (window.removeEventListener) window.removeEventListener('message', procureChannel, false);
+	else if(window.detachEvent) window.detachEvent('onmessage', procureChannel);
+
+	app_instance_uuid = app_instance_uuid[1];
+	sc.bind_channel(app_instance_uuid);
+    };
+
+    if (window.addEventListener) window.addEventListener('message', procureChannel, false);
+    else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
+    window.parent.postMessage("procure_channel", "*");
+
+    this.is_ready = false;
+    this.ready = function(callback) {
+	this.ready_callback = callback;
+	if (this.is_ready) this.ready_callback();
+    };
+
+    this.callback = function(f) {
 	var _this = this;
-	this.message_receivers = {};
-	this.send_ready_message = function(ready_callback) {
-		this.smart_server_origin = smart_server_origin;
-		this.frame = frame;
-		var _this = this;
+	return function() {return f.apply(_this, arguments);};
+    },
 
-		_this.channel = Channel.build({window: frame, origin: "*", scope:"not_ready", debugOutput: debug});
-		_this.ready_callback = ready_callback;
-		var params = {}
-		if (_this.app_name!== undefined) { params.app_name = _this.app_name; }
-		_this.channel.call({method: "ready", 
-				    params: params,
-				    success: _this.callback(_this.received_setup)
-		    });
-	};
+    this.bind_channel = function(scope) {
+	this.channel = Channel.build({window: frame, origin: "*", scope: scope, debugOutput: debug});
+	
+	this.channel.bind("activityforeground", this.callback(function() {
+	    if (this.message_receivers.foreground !== undefined)
+		this.message_receivers.foreground();
+	}));
+	
+	this.channel.bind("activitybackground", this.callback(function() {
+	    if (this.message_receivers.background !== undefined)
+		this.message_receivers.background();
+	}));
+	
+	this.channel.bind("activitydestroy", this.callback(function() {
+	    document.cookie = this.cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
+	    if (this.message_receivers.background !== undefined)
+		this.message_receivers.destroy();
+	}));
 
-	this.callback = function(f) {
-	    var _this = this;
-	    return function() {return f.apply(_this, arguments);};
-	},
+	_this.channel.call({method: "ready", 
+			    params: {},
+			    success: sc.callback(sc.received_setup)
+			   });
+
+    };
 
         this.received_setup = function(message) {
-	    this.channel.destroy();
-	    this.channel = Channel.build({window: frame, origin: "*", scope: message.activity_id, debugOutput: debug});
-
-	    this.channel.bind("activityforeground", this.callback(function() {
-			if (this.message_receivers.foreground !== undefined)
-			    this.message_receivers.foreground();
-		    }));
-
-	    this.channel.bind("activitybackground", this.callback(function() {
-			if (this.message_receivers.background !== undefined)
-			this.message_receivers.background();
-		    }));
-
-	    this.channel.bind("activitydestroy", this.callback(function() {
-		    document.cookie = this.cookie_name+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
-			if (this.message_receivers.background !== undefined)
-				this.message_receivers.destroy();
-		    }));
 			    
 	    this.user = message.user;
 	    this.record = message.record;
 	    this.credentials = message.credentials;
 	    this.ready_data = message.ready_data;
-	    this.cookie_name = "";
 	    this.iframe_width=message.iframe_width;
 	    this.iframe_height=message.iframe_height;
-
-
-	    if (message.credentials && message.credentials.oauth_cookie !== undefined ){
-		var existing_cookies = document.cookie.split(";");
-		var n = existing_cookies.length;
-		var smart_cookie_names = [];
-
-		for (var c = 0; c < n; c++) {
-		    var old_cookie_name = existing_cookies[c].split("=")[0];
-		    if (old_cookie_name.match("smart_oauth_cookie") !== null) {
-			smart_cookie_names.push(old_cookie_name);
-		    }
-		}
-
-		n = smart_cookie_names.length;
-		for (var c = 5; c < n; c++) { // Limit to 5 cookies per app domain any given time to prevent too long a header
-		    document.cookie = smart_cookie_names[c]+'=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT;';
-		}
-
-		this.cookie_name ='smart_oauth_cookie' + message.activity_id;               
-		document.cookie = this.cookie_name+'='+escape(message.credentials.oauth_cookie)+";path=/";
-		var cookie_was_set = document.cookie.match(this.cookie_name);
-		if (!cookie_was_set) {
-		    $("body").prepend("<b>Error: Could not set SMART Authorization cookie.</b><br>\
-                                          Please ensure that your browser accepts third-party cookies \
-                                          or white-list the domain for <i><nobr>" + window.location+"</nobr></i>");
-		}
-            }
-
-    	var _this = this;
-	    this.CAPABILITIES_get(function() {
-		    _this.ready_callback({user: message.user, record: message.record}, _this.ready_data);
-		});
 	    
+	    this.is_ready = true;
+	    if (this.ready_callback) this.ready_callback();
 	};
 
 	this.api_call = function(options, callback) {
@@ -24821,6 +24806,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	this.restart_activity = function(callback) {
 	    this.channel.call({method: "restart_activity", params: {}, success: callback||function(){}});
 	};
+}
 
 SMART_CLIENT.prototype.ONTOLOGY_get = function(callback) {
 	var _this = this;
@@ -25238,49 +25224,6 @@ SMART_CLIENT.prototype.node_name = function(node) {
     return node;
 };
 
-SMART_CLIENT.prototype.to_json = function(rdf) {
-
-	var triples = rdf.where("?s ?p ?o");
-	var resources = {};
-	
-	for (var i = 0; i < triples.length; i++) {
-	
-		var t = triples[i];
-		var s = t.s;
-		var p = t.p;
-		var o = t.o;
-		
-		if (resources[s.value._string] === undefined)
-			resources[s.value._string] = {uri: this.node_name(s)};
-
-		if (resources[s.value._string][p.value._string] === undefined)
-			resources[s.value._string][p.value._string] = [];
-		
-		if (p.value._string === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" )
-		{
-			if (resources[o.value._string] === undefined)
-			{
-				resources[o.value._string] = [];
-				resources[o.value._string].uri = this.node_name(o);
-			}
-			
-			resources[o.value._string].push(resources[s.value._string]);
-		}
-
-		if (o.type !== "literal" && resources[o.value._string] === undefined )
-			resources[o.value._string] = {uri: this.node_name(o)};
-
-		if (t.o.type === "literal")
-			resources[s.value._string][p.value._string].push(o.value);
-		else if (p.value._string !== "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" )
-			resources[s.value._string][p.value._string].push(resources[o.value._string]);
-		else // avoid circular structures to maintain JSON.stringify-ability.
-			resources[s.value._string][p.value._string].push(o.value._string);
-		
-	}
-	
-	return resources;	
-},
 
 SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 
@@ -25317,89 +25260,10 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 	rdf.prefix("dcterms", "http://purl.org/dc/terms/");
 
 	// abstract method to instantiate a list of objects from the rdf store.
-	var _this = this;
-	rdf.to_json = function() {
-		return _this.to_json(rdf);
-	};
 	rdf.source_xml = data;
 	return rdf;
 }
 
-}
 
-
-SMART_frame_glue_app = function(redirect_url) {	
-   if (redirect_url === undefined)
-       redirect_url = "index.html";
-
-   window.onload = function() {
-       document.body.innerHTML = '<img id="loading" src="http://sample-apps.smartplatforms.org/framework/smart/images/ajax-loader.gif">';
-   };
-
-
-   var check_loaded_handler = function(iframe_to_load) {
-	   var dom = iframe_to_load.data("finished_dom");
-	   var api_page= iframe_to_load.data("loaded_api_page");
-	      if (api_page === true)
-	    	  return;
-	   
-		  if (dom === false )
-		  {
-		   $("body").prepend("<B>SMArt App Loading Error</b>: 30 seconds passed, and app DOM failed to load:  <br>" + iframe_to_load.attr("src"));
-		  }
-		  else
-		  {
-		   $("body").prepend("<B>SMArt App Loading Error</b>: 30 seconds passed, and app DOM loaded, but never loaded smart-api-page.js");
-		  }	
-   }
-   
-   SMART = new SMART_CLIENT(null, window.top);
- 
-   SMART.message_receivers = {foreground: function() {
-	   // Default behavior on 'foregrounded' event: reload
-	   var src = $('#content').get(0).src;
-	   $('#content').get(0).src = src;
-       }};
-
-   SMART.send_ready_message(function(context_info) {
-	   $("body").css("margin","0px").css("height", "100%");
-	   $("html").css("height","100%");
-
-	   redirect_url += "?cookie_name="+SMART.cookie_name;
-	   var content_iframe = $('<iframe SEAMLESS frameBorder="0" style="width: 100%; height: 100%; display: block; border: 0px; " src="'+redirect_url+'" id="content">');
-	   $('body').append(content_iframe);
-	   content_iframe.hide();
-	   content_iframe.data("finished_dom", false);
-	   content_iframe.data("loaded_api_page", false);
-	   
-	   setTimeout(function(){check_loaded_handler(content_iframe)},30000);
-	   
-	   content_iframe.load(function() {
- 		    content_iframe.data("finished_dom", true);
-			$('#loading').remove();
-			content_iframe.show();
-	   });
-   });
-};
-
-
-SMART_frame_glue_page = function(callback) {
-	$('#content').data("loaded_api_page", true);
-	$('#content').get(0).contentWindow.SMART = SMART;
-	if (typeof callback === "function")	
-		callback();
-};
-
-function getDocHeight(D) {
-    if (D === undefined) {
-	D = document;
-    }
-
-    return Math.max(
-		    Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
-		    Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
-		    Math.max(D.body.clientHeight, D.documentElement.clientHeight)
-		    );
-};
-
-SMART_frame_glue_app(window.SMART_redirect_url);
+SMART = new SMART_CLIENT(null, window.parent);
+SMART.message_receivers = {};
