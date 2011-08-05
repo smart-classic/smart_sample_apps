@@ -6,22 +6,20 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 /* @Prototype */
 {
 	"{window} load" : function() {	
-		$(window).resize(function() {
-			h = $(window).height();		
-			$("#type-nav").css("min-height", h+"px");
-		});
-		$(window).resize();
-	
-		this.calls = {};
-		this.payload_box = $("#payload");
-		this.response_box = $("#response");
+	    var _this = this;
+	    SMART.ready(function() {
+		console.log("SMART api playgroudn loading");
+		_this.calls = {};
+		_this.payload_box = $("#payload");
+		_this.response_box = $("#response");
 
-		this.payload_box.hide();
-		this.response_box.hide();
+		_this.payload_box.hide();
+		_this.response_box.hide();
 		ApiType.interpolations.record_id = SMART.record.id;
 		ApiType.addInterpolationValue("record_id", SMART.record.id);
 		ApiType.find_all_types_and_calls();
-		
+		console.log("loaded");
+	    });
     },
     
     'ontology_parsed subscribe': function(topic, element) {
@@ -123,19 +121,18 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 	SMART_OBJECTS.parse_rdf_payload(r);
 
     	this.response_box.show();
-	$("#output").html();
+	$("#output").html("");
 	postJSConsole(':help', true);
 
 	
 	var sample_command = "SMART_OBJECTS.by_type('"+ApiType.find_type(this.selected_call.target).name+"')";
 	postJSConsole(sample_command);
 
-
 	$("#exec").val(sample_command);
     	$(".cancel-call").removeAttr("DISABLED");
-		$(".complete-call").removeAttr("DISABLED");
+	$(".complete-call").removeAttr("DISABLED");
     	$("#interpolation-fields INPUT").each(function() {
-			$i = $(this);
+	    $i = $(this);
     		$i.removeAttr("DISABLED");
     	});
 	$("#exec").focus();
