@@ -24697,7 +24697,8 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
     var debug = false;
     var _this = this;
     var sc = this;
-    
+    var channel = null;
+
     this.message_receivers = {};
 
     var procureChannel = function(event){
@@ -24727,24 +24728,24 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
     },
 
     this.bind_channel = function(scope) {
-	this.channel = Channel.build({window: frame, origin: "*", scope: scope, debugOutput: debug});
+	channel = Channel.build({window: frame, origin: "*", scope: scope, debugOutput: debug});
 	
-	this.channel.bind("foreground", this.callback(function() {
+	channel.bind("foreground", this.callback(function() {
 	    if (this.message_receivers.foreground !== undefined)
 		this.message_receivers.foreground();
 	}));
 	
-	this.channel.bind("background", this.callback(function() {
+	channel.bind("background", this.callback(function() {
 	    if (this.message_receivers.background !== undefined)
 		this.message_receivers.background();
 	}));
 	
-	this.channel.bind("destroy", this.callback(function() {
+	channel.bind("destroy", this.callback(function() {
 	    if (this.message_receivers.destroy !== undefined)
 		this.message_receivers.destroy();
 	}));
 
-	this.channel.bind("ready", function(trans, message) {
+	channel.bind("ready", function(trans, message) {
 	    sc.received_setup(message);
 	});
 
@@ -24767,7 +24768,7 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
     };
 
 	this.api_call = function(options, callback) {
-	    this.channel.call({method: "api_call",
+	    channel.call({method: "api_call",
 			       params: 
 			{
 			'func' : options.url,
@@ -24779,35 +24780,36 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 		});
 	};
 
-	this.start_activity = function(activity_name, app_id, ready_data, callback) {
-		if (arguments.length < 4) {
-			return this.start_activity(activity_name, null,  app_id, ready_data);
-		}
+    this.api_call_delegated = function(app_instance, call_info, success) {
+	console.log("API call del");
+	console.log(app_instance);
+	console.log(call_info);
 
-		this.channel.call({method: "start_activity",
-			       params: {
-			'name' : activity_name,
-			'app' : app_id,
-			'ready_data': ready_data
-			},
-				   success: function(r){callback(r.contentType, r.data)}
-		});
-	};
-
-	
-	this.end_activity = function(response, callback) {
-	    this.channel.call({method: "end_activity",
-			       params: {
-			'response': response
-		    },
-			       success: callback||function(){}
-		});
-	};
-
-	this.restart_activity = function(callback) {
-	    this.channel.call({method: "restart_activity", params: {}, success: callback||function(){}});
-	};
-}
+	channel.call({method: "api_call_delegated",
+		      params: 
+		      {
+			  app_instance: {
+			      uuid: app_instance.uuid,
+			      context: app_instance.context,
+			      credentials: app_instance.credentials,
+			      manifest: app_instance.manifest
+			  },
+			  
+			  call_info: call_info
+		      },
+		      success: success
+		     });
+    };
+    
+    this.launch_app_delegated = function(app_instance, success) {
+	channel.call({
+	    method: "launch_app_delegated",
+            params: app_instance, 
+            success: success
+	});
+    };
+    
+};
 
 SMART_CLIENT.prototype.ONTOLOGY_get = function(callback) {
 	var _this = this;

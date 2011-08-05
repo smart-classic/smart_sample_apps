@@ -6,68 +6,56 @@
     <script  src='../smart/scripts/smart-api-client.js'></script>
     <script  src='http://303.snarked.com:7001/static/smart_common/resources/smart-api-container.js'>
     </script>
-    
+
     <script>
-      SMART_HELPER = {};
-      SMART_CONTAINER = new SMART_CONTAINER(SMART_HELPER);
-  
-      var app_instance_tmp = {};
+     SMART.ready(function() {
+
+       SMART_CONTAINER.launch_app("got-statins@apps.smartplatforms.org", $.extend({elt: "#gotstatins"}, SMART.context));
+       SMART_CONTAINER.launch_app("med-adherence@apps.smartplatforms.org", $.extend({elt: "#adherence"}, SMART.context));
+       SMART_CONTAINER.launch_app("api-playground@apps.smartplatforms.org", $.extend({elt: "#playground"}, SMART.context));
       
-      SMART_HELPER.get_manifest = function (app_instance, callback) {  
-      
-      var uuid = app_instance.uuid;
-      SMART.channel.call({method: "launch_app",
-          params: app_instance, 
-          success: function(updated_app_instance) {
-            app_instance_tmp[uuid] = updated_app_instance;
-            callback(app_instance_tmp[uuid].manifest);
-          }
-        });
-      };
-
-      SMART_HELPER.get_credentials = function (app_instance, callback){
-          callback(app_instance_tmp[app_instance.uuid].credentials);
-      };
-
-      SMART_HELPER.get_iframe = function (app_instance, callback){
-      var frame_id = "app_content_iframe_"+app_instance.uuid;
-
-      $('body').append(
-      '<iframe SEAMLESS src="about:blank"'+
-	       ' id="'+frame_id+'" width="100%" style="zoom: 70%;" height="40%"> </iframe>');
-    
-      var frame = $("#"+frame_id);
-      callback(frame[0]);
-};
-
-SMART_HELPER.on_app_launch_complete = function(app_instance) {
-      delete app_instance_tmp[app_instance.uuid];
-};
-
-// calls back wtih the response to an API call.  
-// (implemented as passthrough to a back-end REST server)
-SMART_HELPER.handle_api = function(app_instance, call_info, callback) {
-      SMART.channel.call({method: "api_call_delegated",
-          params: {
-                    originating_app_uuid: app_instance.uuid,
-                    call_info: call_info
-                  }, 
-          success: function(r) {callback(r.data);}
-        });
-};
-
-SMART.ready(function() {
-
-  SMART_CONTAINER.launch_app("got-statins@apps.smartplatforms.org", SMART.context);
-  setTimeout(function(){
-  SMART_CONTAINER.launch_app("api-playground@apps.smartplatforms.org", SMART.context);
-      }, 200);
-
-});
+     });
     </script>
 
   </head>
   <body>
     Welcome to your EMR Frame.<br>
+
+      <iframe SEAMLESS src="about:blank" id="gotstatins" width="290px" height="280px" style="float:left"> </iframe>
+      <iframe SEAMLESS src="about:blank" id="adherence" width="600px" height="280px" style="float:left"> </iframe>
+      <iframe SEAMLESS src="about:blank" id="playground" width="100%" height="500px"> </iframe>
   </body>
+    
+    <script>
+      SMART_HELPER = {};
+      SMART_CONTAINER = new SMART_CONTAINER(SMART_HELPER);
+  
+      SMART_HELPER.on_app_launch_begin = function(app_instance, callback) {
+        SMART.launch_app_delegated(app_instance, 
+            function(updated_app_instance) {
+              $.extend(app_instance, updated_app_instance);
+              callback(app_instance.manifest);
+            });        
+      };
+      
+      SMART_HELPER.get_manifest = function (app_instance, callback) {  
+          callback(app_instance.manifest);
+      };
+      
+      SMART_HELPER.get_credentials = function (app_instance, callback){
+          callback(app_instance.credentials);
+      };
+
+      SMART_HELPER.get_iframe = function (app_instance, callback){
+        var frame_id = app_instance.context.elt;
+        callback($(frame_id)[0]);
+      };
+
+      SMART_HELPER.handle_api = function(app_instance, call_info, callback) {
+        SMART.api_call_delegated( app_instance, 
+                                  call_info, 
+                                  function(r) { callback(r.data); }
+                                );
+      };
+    </script>
 </html>

@@ -6,14 +6,17 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 /* @Prototype */
 {
 	"{window} load" : function() {
-		this.pending_timers = [];
-
-		var _this = this;
-			Smart.Models.Med.get(function(data) {
-				_this.meds = data;
-				Smart.Models.Med.findDispenseEvents();
-				_this.initialize_ui();
-			});
+	    var _this = this;
+	    
+	    SMART.ready(function() {
+		_this.pending_timers = [];
+		
+		Smart.Models.Med.get(function(data) {
+		    _this.meds = data;
+		    Smart.Models.Med.findDispenseEvents();
+		    _this.initialize_ui();
+		});
+	    });
 	},
 
 	initialize_ui : function() {
