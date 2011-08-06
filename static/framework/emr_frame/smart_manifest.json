@@ -6,7 +6,7 @@
   "version" : ".1a",
 
   "base_url" : "http://localhost:8001",
-  "mode" : "ui",
+  "mode" : "frame_ui",
   "activities" : {
     "main" :              "{base_url}/framework/emr_frame/index.html"
   },

@@ -8,7 +8,7 @@
   "base_url" : "http://localhost:8001",
   "mode" : "ui",
   "activities" : {
-    "main" :  "{base_url}/framework/api_playground/bootstrap.html"
+    "main" :  "{base_url}/framework/api_playground/index.html"
   },
 	
   "web_hooks" : { },

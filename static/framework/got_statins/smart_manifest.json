@@ -8,8 +8,8 @@
   "base_url" : "http://localhost:8001",
   "mode" : "ui",
   "activities" : {
-    "main" :              "{base_url}/framework/got_statins/bootstrap.html",
-    "view_medications" :  "{base_url}/framework/got_statins/bootstrap.html"
+    "main" :              "{base_url}/framework/got_statins/index.html",
+    "view_medications" :  "{base_url}/framework/got_statins/index.html"
   },
 	
   "web_hooks" : { },

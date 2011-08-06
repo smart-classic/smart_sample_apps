@@ -24693,7 +24693,7 @@ $.extend($.ui.tabs.prototype, {
  * Ben Adida
  */
 
-var SMART_CLIENT = function(smart_server_origin, frame) {
+var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
     var debug = false;
     var _this = this;
     var sc = this;
@@ -24755,63 +24755,80 @@ var SMART_CLIENT = function(smart_server_origin, frame) {
 	
 	this.context = message.context;
 	this.uuid = message.uuid;
+	this.credentials = message.credentials;
+	this.manifest = message.manifest;
 	
 	this.user = message.context.user;
 	this.record = message.context.record;
 	
-	this.credentials = message.credentials;
+
 	this.ready_data = message.ready_data;
 	
  	this.is_ready = true;
+
+	if (this.manifest.mode == "ui" || this.manifest.mode == "frame_ui")
+	    this.assign_ui_handlers();
+	
+	if (this.manifest.mode == "frame_ui")
+	    this.assign_frame_ui_handlers();
+
 	if (this.ready_callback) this.ready_callback();
 	
     };
 
+    this.assign_ui_handlers = function() {
 	this.api_call = function(options, callback) {
 	    channel.call({method: "api_call",
-			       params: 
-			{
-			'func' : options.url,
-			'method' : options.method,
-			'params' : options.data,
-			'contentType' : options.contentType || "application/x-www-form-urlencoded"
-			},
-			success: function(r) { callback(r.contentType, r.data); }
-		});
+			  params: 
+			  {
+			      'func' : options.url,
+			      'method' : options.method,
+			      'params' : options.data,
+			      'contentType' : options.contentType || "application/x-www-form-urlencoded"
+			  },
+			  success: function(r) { callback(r.contentType, r.data); }
+			 });
+	};
+    }
+
+    this.assign_frame_ui_handlers = function() {
+	this.api_call_delegated = function(app_instance, call_info, success) {
+	    channel.call({method: "api_call_delegated",
+			  params: {
+			      app_instance: {
+				  uuid: app_instance.uuid,
+				  context: app_instance.context,
+				  credentials: app_instance.credentials,
+				  manifest: app_instance.manifest
+			      },
+			      
+			      call_info: call_info
+			  },
+			  success: success
+			 });
+	};
+	
+	this.launch_app_delegated = function(app_instance, success) {
+	    channel.call({
+		method: "launch_app_delegated",
+		params: app_instance, 
+		success: success
+	    });
 	};
 
-    this.api_call_delegated = function(app_instance, call_info, success) {
-	console.log("API call del");
-	console.log(app_instance);
-	console.log(call_info);
-
-	channel.call({method: "api_call_delegated",
-		      params: 
-		      {
-			  app_instance: {
-			      uuid: app_instance.uuid,
-			      context: app_instance.context,
-			      credentials: app_instance.credentials,
-			      manifest: app_instance.manifest
-			  },
-			  
-			  call_info: call_info
-		      },
-		      success: success
-		     });
-    };
-    
-    this.launch_app_delegated = function(app_instance, success) {
-	channel.call({
-	    method: "launch_app_delegated",
-            params: app_instance, 
-            success: success
-	});
-    };
-    
+	this.MANIFESTS_get = function(success) {
+	    SMART.api_call({
+		url: "/apps/manifests",
+		method: "GET"
+	    }, function(ct, data) {
+		success(data)
+	    });
+	};
+    }
+   
 };
 
-SMART_CLIENT.prototype.ONTOLOGY_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.ONTOLOGY_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -24823,7 +24840,7 @@ SMART_CLIENT.prototype.ONTOLOGY_get = function(callback) {
 	});
 };
 
-SMART_CLIENT.prototype.FULFILLMENTS_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.FULFILLMENTS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -24836,7 +24853,7 @@ SMART_CLIENT.prototype.FULFILLMENTS_get = function(callback) {
 
 };
 
-SMART_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -24849,7 +24866,7 @@ SMART_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
 
 };
 
-SMART_CLIENT.prototype.VITAL_SIGNS_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.VITAL_SIGNS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -24861,7 +24878,7 @@ SMART_CLIENT.prototype.VITAL_SIGNS_get = function(callback) {
 	});
 };
 
-SMART_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -24876,7 +24893,7 @@ SMART_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
 
 	
 
-SMART_CLIENT.prototype.MEDS_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.MEDS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -24889,9 +24906,9 @@ SMART_CLIENT.prototype.MEDS_get = function(callback) {
 
 };
 
-SMART_CLIENT.prototype.MEDS_get_all = SMART_CLIENT.prototype.MEDS_get;
+SMART_CONNECT_CLIENT.prototype.MEDS_get_all = SMART_CONNECT_CLIENT.prototype.MEDS_get;
 
-SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
+SMART_CONNECT_CLIENT.prototype.MEDS_post = function(data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
@@ -24903,7 +24920,7 @@ SMART_CLIENT.prototype.MEDS_post = function(data, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.MEDS_delete = function(callback) {
+SMART_CONNECT_CLIENT.prototype.MEDS_delete = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'DELETE',
@@ -24914,7 +24931,7 @@ SMART_CLIENT.prototype.MEDS_delete = function(callback) {
 	});
 };
 
-SMART_CLIENT.prototype.MED_delete = function(uri, callback) {
+SMART_CONNECT_CLIENT.prototype.MED_delete = function(uri, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'DELETE',
@@ -24925,7 +24942,7 @@ SMART_CLIENT.prototype.MED_delete = function(uri, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.MED_put = function(data, external_id, callback) {
+SMART_CONNECT_CLIENT.prototype.MED_put = function(data, external_id, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
@@ -24940,7 +24957,7 @@ SMART_CLIENT.prototype.MED_put = function(data, external_id, callback) {
 
 };
 
-SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.PROBLEMS_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -24952,7 +24969,7 @@ SMART_CLIENT.prototype.PROBLEMS_get = function(callback) {
 	});
 };
 
-SMART_CLIENT.prototype.PROBLEMS_post = function(data, callback) {
+SMART_CONNECT_CLIENT.prototype.PROBLEMS_post = function(data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
@@ -24964,7 +24981,7 @@ SMART_CLIENT.prototype.PROBLEMS_post = function(data, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback) {
+SMART_CONNECT_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback) {
 	var _this = this;
 
 	this.api_call( {
@@ -24976,7 +24993,7 @@ SMART_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
+SMART_CONNECT_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
@@ -24990,7 +25007,7 @@ SMART_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.NOTES_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -25002,7 +25019,7 @@ SMART_CLIENT.prototype.NOTES_get = function(callback) {
 	});
 };
 
-SMART_CLIENT.prototype.NOTES_post = function(data, callback) {
+SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
@@ -25014,7 +25031,7 @@ SMART_CLIENT.prototype.NOTES_post = function(data, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.NOTES_delete = function(note_uri, callback) {
+SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri, callback) {
 	var _this = this;
 
 	this.api_call( {
@@ -25026,7 +25043,7 @@ SMART_CLIENT.prototype.NOTES_delete = function(note_uri, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.NOTE_put = function(data, external_id, callback) {
+SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
@@ -25041,7 +25058,7 @@ SMART_CLIENT.prototype.NOTE_put = function(data, external_id, callback) {
 };
 
 
-SMART_CLIENT.prototype.ALLERGIES_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.ALLERGIES_get = function(callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -25053,7 +25070,7 @@ SMART_CLIENT.prototype.ALLERGIES_get = function(callback) {
 	});
 };
 
-SMART_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
+SMART_CONNECT_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
@@ -25065,7 +25082,7 @@ SMART_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.ALLERGIES_delete = function(allergy_uri, callback) {
+SMART_CONNECT_CLIENT.prototype.ALLERGIES_delete = function(allergy_uri, callback) {
 	var _this = this;
 
 	this.api_call( {
@@ -25077,7 +25094,7 @@ SMART_CLIENT.prototype.ALLERGIES_delete = function(allergy_uri, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.ALLERGY_put = function(data, external_id, callback) {
+SMART_CONNECT_CLIENT.prototype.ALLERGY_put = function(data, external_id, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
@@ -25093,7 +25110,7 @@ SMART_CLIENT.prototype.ALLERGY_put = function(data, external_id, callback) {
 
 
 
-SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
+SMART_CONNECT_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -25107,7 +25124,7 @@ SMART_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
 	});
 }
 
-SMART_CLIENT.prototype.SPL_get = function(query, callback) {
+SMART_CONNECT_CLIENT.prototype.SPL_get = function(query, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -25120,7 +25137,7 @@ SMART_CLIENT.prototype.SPL_get = function(query, callback) {
 };
 
 
-SMART_CLIENT.prototype.webhook_post = function(webhook_name, data, callback) {
+SMART_CONNECT_CLIENT.prototype.webhook_post = function(webhook_name, data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
@@ -25134,7 +25151,7 @@ SMART_CLIENT.prototype.webhook_post = function(webhook_name, data, callback) {
 };
 
 
-SMART_CLIENT.prototype.webhook_get = function(webhook_name, data, callback) {
+SMART_CONNECT_CLIENT.prototype.webhook_get = function(webhook_name, data, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -25146,9 +25163,9 @@ SMART_CLIENT.prototype.webhook_get = function(webhook_name, data, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.webhook = SMART_CLIENT.prototype.webhook_get;
+SMART_CONNECT_CLIENT.prototype.webhook = SMART_CONNECT_CLIENT.prototype.webhook_get;
 
-SMART_CLIENT.prototype.CAPABILITIES_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.CAPABILITIES_get = function(callback) {
 	var _this = this;
 	this
 			.api_call(
@@ -25174,7 +25191,7 @@ SMART_CLIENT.prototype.CAPABILITIES_get = function(callback) {
 					});
 }
 
-SMART_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
+SMART_CONNECT_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
 	var _this = this;
 	var source = function(request, response) {
 		_this.CODING_SYSTEM_get(system, request.term, function(json) {
@@ -25190,7 +25207,7 @@ SMART_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
 	return source;
 }
 
-SMART_CLIENT.prototype.SPARQL = function(query, callback) {
+SMART_CONNECT_CLIENT.prototype.SPARQL = function(query, callback) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -25204,7 +25221,7 @@ SMART_CLIENT.prototype.SPARQL = function(query, callback) {
 	});
 };
 
-SMART_CLIENT.prototype.createXMLDocument = function(string) {
+SMART_CONNECT_CLIENT.prototype.createXMLDocument = function(string) {
     var parser, xmlDoc;
     if (window.DOMParser)
 	{
@@ -25220,7 +25237,7 @@ SMART_CLIENT.prototype.createXMLDocument = function(string) {
     return xmlDoc;
 };
 
-SMART_CLIENT.prototype.node_name = function(node) {
+SMART_CONNECT_CLIENT.prototype.node_name = function(node) {
 	node = node.value;
     if (node._string !== undefined)
     { node = "<"+node._string+">";}
@@ -25228,7 +25245,7 @@ SMART_CLIENT.prototype.node_name = function(node) {
 };
 
 
-SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
+SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
 
 	// Get the triples into jquery.rdf
 	var d = this.createXMLDocument(data);
@@ -25265,5 +25282,5 @@ SMART_CLIENT.prototype.process_rdf = function(contentType, data) {
 }
 
 
-SMART = new SMART_CLIENT(null, window.parent);
+SMART = new SMART_CONNECT_CLIENT(null, window.parent);
 SMART.message_receivers = {};
