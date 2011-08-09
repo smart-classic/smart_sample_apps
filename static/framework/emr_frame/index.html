@@ -3,99 +3,61 @@
   <head>
     <title>EMR Frame App</title>
 
-    <script  src='../smart/scripts/smart-api-client.js'></script>
+    <!-- Instantiate SMART, to access the container's SMART Connect Host -->
+    <script  src='http://303.snarked.com:8001/framework/smart/scripts/smart-api-client.js'>
+    </script>
+
     <script  src='http://303.snarked.com:7001/static/smart_common/resources/smart-api-container.js'>
     </script>
 
-    
-    <script>
-      // This portion of SMART_HOST setup should be pretty much the same for any 
-      // SMART Frame UI App.
-
-      SMART_HOST = new SMART_CONNECT_HOST();
-      
-      SMART_HOST.get_manifest = function (app_instance, callback) {  
-          callback(app_instance.manifest);
-      };
-      
-      SMART_HOST.get_credentials = function (app_instance, callback){
-          callback(app_instance.credentials);
-      };
-
-      SMART_HOST.handle_api = function(app_instance, call_info, callback) {
-        SMART.api_call_delegated( app_instance, 
-                                  call_info, 
-                                  function(r) { callback(r.data); }
-                                );
-      };
-
-      SMART_HOST.on_app_launch_begin = function(app_instance, callback) {
-        SMART.launch_app_delegated(app_instance, 
-            function(updated_app_instance) {
-              jQuery.extend(app_instance, updated_app_instance);
-              callback();
-            });        
-      };
-
-      // Support for recursive nesting of Frame UI apps -- spooky!
-      SMART_HOST.on_app_launch_delegated_begin =  SMART_HOST.on_app_launch_begin;
-
+    <!-- Instantiate SMART_HOST, to provide a SMART Connect Host to framed apps-->
+    <script  src='smart-frame-ui.js'>
     </script>
 
     <script>
-      // This portion is app-specific.
-
-      SMART_HOST.get_iframe = function (app_instance, callback){
-        var frame_id = app_instance.options.elt;
-        callback(jQuery(frame_id)[0]);
-      };
-
      SMART.ready(function() {
 
-       SMART_HOST.launch_app("got-statins@apps.smartplatforms.org", 
-                                SMART.context, {elt: "#gotstatins"});
-
-       SMART_HOST.launch_app("med-adherence@apps.smartplatforms.org", 
-                                SMART.context, {elt: "#adherence"});
-
-       SMART_HOST.launch_app("api-playground@apps.smartplatforms.org", 
-                                SMART.context, {elt: "#playground"});
-      
+       var iframes = [$("#app1"), $("#app2"), $("#app3")];
        SMART.MANIFESTS_get(function(manifests) {
-  
-           var manifests = JSON.parse(manifests); 
+
            var carousel = jQuery("#carousel");
            carousel.html("");
-           var click_count = 0;
-           
+           var click_count = -1;
+
+           // Highlight the next iframe in sequence to be populated by an app
            var pending_click = function() {
                jQuery("iframe").css("border", "1px solid black");
-               var next_frame = jQuery("iframe").eq(click_count % jQuery("iframe").length);
-               next_frame.css("border", "4px dashed white");
+               var next_frame = iframes[++click_count % iframes.length];
+               next_frame.css("border", "7px dashed yellow");
            }
+
            pending_click();
 
+           // Populate a carousel element for each available app.
            jQuery.each(manifests, function(i,m) {
              var app = jQuery("<img src='"+m.icon+"' title='"+m.name+ ": " + m.description + "'>");
              carousel.append(app);
              app.click(function(){
-               var index = click_count++ % jQuery("iframe").length;
-               SMART_HOST.launch_app(m.id, SMART.context, {elt: "#"+jQuery("iframe")[index].id});
+               var next_frame = iframes[click_count % iframes.length];
+               SMART_HOST.launch_app(m, SMART.context, {elt: next_frame});
                pending_click();
              });
            });
-
        });
-
      });
-    </script>
 
+     SMART_HOST.get_iframe = function (app_instance, callback){
+       callback(app_instance.options.elt[0]);
+     };
+
+    </script>
   </head>
   <body>
+    To fill your EMR Frame, choose apps from the carousel below!<br>
     <span id="carousel">carousel here...</span><br>
-    Welcome to your EMR Frame.<br>
-      <iframe SEAMLESS src="about:blank" id="gotstatins" width="290px" height="280px" style="float:left"> </iframe>
-      <iframe SEAMLESS src="about:blank" id="adherence" width="600px" height="280px" style="float:left"> </iframe>
-      <iframe SEAMLESS src="about:blank" id="playground" width="100%" height="500px"> </iframe>
+
+      <iframe SEAMLESS src="about:blank" id="app1" width="290px" height="280px" style="float:left"> </iframe>
+      <iframe SEAMLESS src="about:blank" id="app2" width="600px" height="280px" style="float:left"> </iframe>
+      <iframe SEAMLESS src="about:blank" id="app3" width="100%" height="500px"> </iframe>
   </body>    
 </html>

@@ -13,21 +13,12 @@
 	<script>
 	  
 SMART.ready(function(){
-	SMART.api_call({
-	  method: 'GET',
-	  url: "/records/" + SMART.record.id + "/order_med_amb/",
-	  data: {} },function(ct, data) {
-	  
-	var meds = SMART.process_rdf(ct, data);
-	meds.prefix("cemterms", "http://smartplatforms.org/cemterms#");
+
+        SMART.MEDS_get(function(meds) {
 	
-	
-	var statin = meds.where("?m rdf:type cemterms:OrderMedAmb")
-	.where("?m cemterms:orderable ?o")
-	.where("?o cemterms:orderableItem ?oi")
-	.where("?oi sp:code ?c")
-	.where("?c dcterms:title ?drugname");	  
-	
+	var statin = meds.where("?m rdf:type sp:Medication")
+	.where("?m sp:drugName ?dn")
+	.where("?dn dcterms:title ?drugname");	
 	var answer = false;
 	
 	for (var i = 0; i < statin.length; i++) {

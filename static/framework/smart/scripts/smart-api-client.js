@@ -24811,7 +24811,10 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	this.launch_app_delegated = function(app_instance, success) {
 	    channel.call({
 		method: "launch_app_delegated",
-		params: app_instance, 
+		params:	{
+		    context: app_instance.context,
+		    manifest: app_instance.manifest
+		},
 		success: success
 	    });
 	};
@@ -24821,7 +24824,16 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 		url: "/apps/manifests",
 		method: "GET"
 	    }, function(ct, data) {
-		success(data)
+		success(JSON.parse(data))
+	    });
+	};
+
+	this.MANIFEST_get = function(descriptor, success) {
+	    SMART.api_call({
+		url: "/apps/"+descriptor+"/manifest",
+		method: "GET"
+	    }, function(ct, data) {
+		success(JSON.parse(data))
 	    });
 	};
     }
