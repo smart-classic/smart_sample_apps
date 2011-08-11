@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SMArt Container Example</title>
+<title>SMART Container Example</title>
     <STYLE TYPE="text/css" MEDIA=screen>
     <!--
     body {padding: 0px; margin: 0px;}
@@ -24,8 +24,8 @@
 <body>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="https://raw.github.com/mozilla/jschannel/master/src/jschannel.js"></script>
-<script src="http://303.snarked.com:7001/static/smart_common/resources/smart-api-container.js"></script>
+<script src="../framework/smart/scripts/jschannel.js"></script>
+<script src="http://localhost:7001/static/smart_common/resources/smart-api-container.js"></script>
 
 <script>
 var simple_context = { 
@@ -48,10 +48,10 @@ var got_statins_manifest = {
 
   "mode" : "ui",
   "activities" : {
-    "main" :              "http://303.snarked.com:8001/framework/got_statins/index.html"
+    "main" :              "http://localhost:8001/framework/got_statins/index.html"
   },
 
-  "icon" :  "http://303.snarked.com:8001/framework/got_statins/icon.png"
+  "icon" :  "http://localhost:8001/framework/got_statins/icon.png"
 };
 
 var api_playground_manifest = {
@@ -63,10 +63,10 @@ var api_playground_manifest = {
 
   "mode" : "ui",
   "activities" : {
-    "main" :  "http://303.snarked.com:8001/framework/api_playground/index.html"
+    "main" :  "http://localhost:8001/framework/api_playground/index.html"
   },
 
-  "icon" :  "http://303.snarked.com:8001/framework/api_playground/icon.png",
+  "icon" :  "http://localhost:8001/framework/api_playground/icon.png",
   "enabled_by_default" : "true"
 };
 
@@ -79,12 +79,12 @@ var emr_frame_manifest = {
 
   "mode" : "frame_ui",
   "activities" : {
-    "main" :    "http://303.snarked.com:8001/framework/emr_frame/index.html"
+    "main" :    "http://localhost:8001/framework/emr_frame/index.html"
   },
     
   "web_hooks" : { },
 
-  "icon" :  "http://303.snarked.com:8001/framework/emr_frame/icon.png"
+  "icon" :  "http://localhost:8001/framework/emr_frame/icon.png"
 }
 
 var all_manifests = [got_statins_manifest, api_playground_manifest, emr_frame_manifest];
@@ -104,10 +104,10 @@ SMART.get_credentials = function (app_instance, callback){
    */
 
   var credentials = {
-    api_base: "http://303.snarked.com:7000",
+    api_base: "http://localhost:7000",
     rest_token:"fake_rest_access_token", 
     rest_secret: "fake_rest_access_secret",
-    oauth_header: "OAuth: fake_header_data"
+    oauth_header: "OAuth: fake_header_data_"+app_instance.uuid
   }; 
 
   callback(credentials);
@@ -117,7 +117,7 @@ SMART.get_iframe = function (app_instance, callback){
     $("iframe").remove(); // clear old apps
 
     var frame_id = "app_iframe_"+app_instance.uuid;
-    var iframe_str = "<iframe id='"+frame_id+"'></iframe>";
+    var iframe_str = "<iframe src='about:blank;' id='"+frame_id+"'></iframe>";
     var iframe = $(iframe_str);
     $("body").append(iframe);
     callback(iframe[0]);
