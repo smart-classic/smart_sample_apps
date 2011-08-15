@@ -7,3 +7,6 @@
 [submodule "static/framework/jquery"]
 	path = static/framework/jquery
 	url = https://github.com/jupiterjs/jquerymx
+[submodule "smart_client"]
+	path = smart_client
+	url = ../smart_client_python
