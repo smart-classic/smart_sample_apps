@@ -5,13 +5,10 @@
   "id" : "med-calendar@apps.smartplatforms.org",
   "version" : ".1a",
 
-  "base_url" : "http://localhost:8001",
   "mode" : "ui",
-  "activities" : {
-    "main" :              "{base_url}/framework/med_calendar/bootstrap.html"
-  },
-	
-  "web_hooks" : { },
+  "scope": "record",
 
+  "base_url" : "http://localhost:8001",
+  "index" :              "{base_url}/framework/med_calendar/index.html",
   "icon" :  "{base_url}/framework/med_calendar/icon.png"
 }

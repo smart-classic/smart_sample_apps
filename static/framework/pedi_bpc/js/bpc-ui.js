@@ -19,7 +19,8 @@ if (!BPC) {
     /**
     * Document onLoad event handler (jQuery style)
     */  
-    $(document).ready(function() {
+    
+    SMART.ready(function() {
         
 		if ( typeof SMART === "undefined" ) {
 			$("#info").text("Error: SMART Connect interface not found");

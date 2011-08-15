@@ -7,13 +7,26 @@
   "optimalBrowserEnvironments": ["desktop"],
   "supportedBrowserEnvironments": ["desktop", "tablet"],
   "base_url" : "http://localhost:8001",
-  "mode" : "ui",
-  "activities" : {
-    "main" :              "{base_url}/framework/cardio_risk_viz/bootstrap.html",
-    "view_medications" :  "{base_url}/framework/cardio_risk_viz/bootstrap.html"
-  },
-	
-  "web_hooks" : { },
 
-  "icon" :  "{base_url}/framework/cardio_risk_viz/icon.png"
+  "mode" : "ui",
+  "scope": "record",
+
+  "index" :              "{base_url}/framework/cardio_risk_viz/index.html",
+  "icon" :  "{base_url}/framework/cardio_risk_viz/icon.png",
+
+  "requiredDataElements": {
+
+    "http://smartplatforms.org/terms#Demographics": {
+        "methods": ["GET"]
+    },
+
+    "http://smartplatforms.org/terms#LabResult": {
+        "methods": ["GET"],
+        "requiredCodeMappings": [ "http://loinc.org/codes/30522-7", 
+	  	                  "http://loinc.org/codes/2093-3", 
+          	     	          "http://loinc.org/codes/2085-9"]
+    }
+  }
+
+
 }

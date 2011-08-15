@@ -6,7 +6,9 @@ jQuery.Controller.extend('SmartApp.MainController',
 /* @Prototype */
 {
     "{window} load": function() {
+	SMART.ready(function() {
 		$("#UserDisplay").empty();
 		jQuery("#MedList").med_calendar_med_calendar();		
+	});
     }
 });

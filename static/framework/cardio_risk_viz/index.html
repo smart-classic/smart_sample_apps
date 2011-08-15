@@ -13,11 +13,11 @@
           color: #555;
         }
       </style>
-      <script src='../smart/scripts/smart-api-page.js'></script>
-      <script src='../jquery/jquery.js'></script>
+      <script src='../smart/scripts/smart-api-client.js'></script>
       <script src='./raphael-min.js'></script>
       <script src='./g.raphael.js'></script>
       <script>
+ SMART.ready(function() {
         // checks for data needed to compute risk score. returns a possibly empty array of strings.
         // if the array is empty everything's ok. TODO: seperate missing and out of range criteria
         var report_missing_data = function(p){
@@ -138,7 +138,6 @@
             alert('The risk score is only valid for ages above 44 years old.\n\nShowing results based on age of 45 years;');
             p.age.value = 45;
           }
-
 
           SMART.LAB_RESULTS_get(function(labs){
             labs.where("?l rdf:type sp:LabResult")
@@ -623,6 +622,7 @@
               .hover(function(e){this.attr('cursor', 'pointer')}, function(e){this.attr('cursor', 'normal')})
           });
         });
+});
     </script>
   </head>
   <body style="margin: none;">

@@ -5,14 +5,10 @@
   "id" : "pedi_bpc@apps.smartplatforms.org",
   "version" : ".1a",
 
-  "base_url" : "http://localhost:8001",
   "mode" : "ui",
-  "activities" : {
-    "main" :              "{base_url}/framework/pedi_bpc/bootstrap.html",
-    "view_medications" :  "{base_url}/framework/pedi_bpc/bootstrap.html"
-  },
-	
-  "web_hooks" : { },
+  "scope" : "record",
 
+  "base_url" : "http://localhost:8001",
+  "index" :              "{base_url}/framework/pedi_bpc/index.html",
   "icon" :  "{base_url}/framework/pedi_bpc/icon.png"
 }

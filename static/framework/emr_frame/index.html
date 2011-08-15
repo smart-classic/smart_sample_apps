@@ -16,6 +16,10 @@
 
     <script>
      SMART.ready(function() {
+       if (SMART.context.record) {
+         $("#record_id").val(SMART.record.id);
+         $("#record_name").val(SMART.record.full_name);
+       };
 
        var iframes = [$("#app1"), $("#app2"), $("#app3")];
        SMART.MANIFESTS_get(function(manifests) {
@@ -39,7 +43,13 @@
              carousel.append(app);
              app.click(function(){
                var next_frame = iframes[click_count % iframes.length];
-               SMART_HOST.launch_app(m, SMART.context, {elt: next_frame});
+               var app_context = jQuery.extend({}, SMART.context);
+               app_context.record = { 
+                                      id: $("#record_id").val(),
+                                      full_name: $("#record_name").val() 
+                                    };
+               
+               SMART_HOST.launch_app(m, app_context, {elt: next_frame});
                pending_click();
              });
            });
@@ -54,6 +64,7 @@
   </head>
   <body>
     To fill your EMR Frame, choose apps from the carousel below!<br>
+    <input id="record_id" value='...' />     <input id="record_name" value='' /><br>
     <span id="carousel">carousel here...</span><br>
 
       <iframe SEAMLESS src="about:blank" id="app1" width="290px" height="280px" style="float:left"> </iframe>

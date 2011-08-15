@@ -5,12 +5,9 @@
   "id" : "smart-connector@apps.smartplatforms.org",
   "version" : ".1a",
 
-  "base_url" : "http://localhost:8001/surescripts_connector/smart_manifest.json",
+  "base_url" : "http://localhost:8001/surescripts_connector/",
 
   "mode" : "background",
-
-  "activities" : { },
-  "web_hooks" : { },
-
+  "scope": "container",
   "icon" :  "{base_url}/icon.png"
 }

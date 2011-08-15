@@ -9,9 +9,10 @@
   <span id="TheAnswer" style="font-weight: bold; font-size: 60pt; font-family: Arial, sans-serif; text-decoration: none; color: black;">
   	...
   </span> 
-    <script src="../smart/scripts/smart-api-page.js"></script>
+    <script src="../smart/scripts/smart-api-client.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 	<script>
+	  SMART.ready(function(){
 				SMART.webhook_post("check_allergies", {}, function(rdf) {
 					var ta = $("#TheAnswer");
 					ta.html("");
@@ -25,6 +26,7 @@
 					// Phew!
 					if (ta.html() === "") ta.html("None");
 				});
+	  });
 	</script>
   </body>
 </html>

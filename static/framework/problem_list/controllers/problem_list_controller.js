@@ -11,7 +11,6 @@ jQuery.Controller.extend('ProblemList.Controllers.ProblemListController',
 		var v = this.view('init', {} );
 		this.element.html(v);
 		var _this = this;
-		this.display_problems();
 		
 	},
 	display_problems: function() {
