@@ -67,8 +67,10 @@
 		throw "Only Statements can be retrieved to a SMART Object collection."
 	    
 	    var ret = [];
+	    if (!items_by_type[type_name]) return ret;
+	    
 	    $.each(items_by_type[type_name], function(n, item){
-		ret.push(item);
+	    	ret.push(item);
 	    });
 	    return ret;
 	};
