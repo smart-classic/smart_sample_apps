@@ -47,10 +47,8 @@ var got_statins_manifest = {
   "version" : ".1a",
 
   "mode" : "ui",
-  "activities" : {
-    "main" :              "http://localhost:8001/framework/got_statins/index.html"
-  },
-
+  "scope" : "record",
+  "index" : "http://localhost:8001/framework/got_statins/index.html",
   "icon" :  "http://localhost:8001/framework/got_statins/icon.png"
 };
 
@@ -62,10 +60,8 @@ var api_playground_manifest = {
   "version" : ".1a",
 
   "mode" : "ui",
-  "activities" : {
-    "main" :  "http://localhost:8001/framework/api_playground/index.html"
-  },
-
+  "scope" : "record",
+  "index" :  "http://localhost:8001/framework/api_playground/index.html",
   "icon" :  "http://localhost:8001/framework/api_playground/icon.png",
   "enabled_by_default" : "true"
 };
@@ -78,12 +74,9 @@ var emr_frame_manifest = {
   "version" : ".1a",
 
   "mode" : "frame_ui",
-  "activities" : {
-    "main" :    "http://localhost:8001/framework/emr_frame/index.html"
-  },
-    
-  "web_hooks" : { },
+  "scope" : "user",
 
+  "index" : "http://localhost:8001/framework/emr_frame/index.html",
   "icon" :  "http://localhost:8001/framework/emr_frame/icon.png"
 }
 
