@@ -133,7 +133,7 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	};
 
 	this.MANIFESTS_get = function(success) {
-	    SMART.api_call({
+	    sc.api_call({
 		url: "/apps/manifests",
 		method: "GET"
 	    }, function(ct, data) {
@@ -141,8 +141,18 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    });
 	};
 
+	this.PATIENTS_get = function(success) {
+	    sc.api_call({
+		url: "/records/search",
+		method: "GET"
+	    }, function(ct, data) {
+		var rdf = sc.process_rdf(ct, data);
+		success(rdf);
+	    });
+	};
+
 	this.MANIFEST_get = function(descriptor, success) {
-	    SMART.api_call({
+	    sc.api_call({
 		url: "/apps/"+descriptor+"/manifest",
 		method: "GET"
 	    }, function(ct, data) {

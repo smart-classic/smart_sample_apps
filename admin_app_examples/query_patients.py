@@ -14,41 +14,28 @@ def run_query(args):
 
 
     client = get_smart_client()
+    data = {}
 
-    sparql = """PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>
-PREFIX  sp:  <http://smartplatforms.org/terms#>
-PREFIX dcterms: <http://purl.org/dc/terms/>
-CONSTRUCT {?person rdf:type sp:Demographics} 
-WHERE   {
-?person rdf:type sp:Demographics. 
-$statements_here
-}
-order by ?ln"""
-
-    statements = []
     if args.gn:
-        statements.append("?person foaf:givenName '%s'"%args.gn)
+        data["given_name"] = args.gn
     if args.fn:
-        statements.append("?person foaf:familyName '%s'"%args.fn)
-    if args.zip:
-        statements.append("?person sp:zipcode '%s'"%args.zip)
+        data["family_name"] = args.fn
+    if args.zip
+        data["zipcode"] = args.zip
     if args.gender:
-        statements.append("?person foaf:gender '%s'"%args.gender)
+        data["gender"] = args.gender
     if args.bday:
-        statements.append("?person sp:birthday '%s'"%args.bday)
-
+        data["birthday"] = args.bday
     if args.externalID:
-        statements.append("?person sp:medicalRecordNumber ?mrn")
-        statements.append("?mrn dcterms:identifier '%s'"%args.externalID)
+        data["medical_record_number"] = args.externalID
 
-    if args.externalIDSystem:
-        statements.append("?person sp:medicalRecordNumber ?mrn")
-        statements.append("?mrn sp:system <%s>"%args.externalIDSystem)
 
+        
     q = sparql.replace("$statements_here", ". \n".join(statements))
     print q
-    response = client.get("/records/search", data={'sparql':q})
+
+
+    response = client.get("/records/search", data=data)
     print response
 
 if __name__ == "__main__":

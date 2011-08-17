@@ -7,19 +7,36 @@
     <script  src='http://303.snarked.com:8001/framework/smart/scripts/smart-api-client.js'>
     </script>
 
+
+    <!-- Instantiate SMART_HOST, to provide a SMART Connect Host to framed apps-->
     <script  src='http://303.snarked.com:7001/static/smart_common/resources/smart-api-container.js'>
     </script>
 
-    <!-- Instantiate SMART_HOST, to provide a SMART Connect Host to framed apps-->
     <script  src='smart-frame-ui.js'>
     </script>
 
     <script>
+
+
      SMART.ready(function() {
        if (SMART.context.record) {
          $("#record_id").val(SMART.record.id);
          $("#record_name").val(SMART.record.full_name);
        };
+
+       SMART.PATIENTS_get(function(patient_response) {
+
+          var patients = patient_response.where("?p rdf:type sp:Demographics")
+                                         .where("?p foaf:givenName ?givenName")
+                                         .where("?p foaf:familyName ?familyName");
+
+          var pselect = $("#patients"), p;
+          for (var i = 0; i < patients.length; i++) {
+	      p = patients[i];
+              pselect.append("<option value='"+p.p.value._string+"'>"+p.givenName.value + " " + p.familyName.value+"</option>");
+          }
+
+       });
 
        var iframes = [$("#app1"), $("#app2"), $("#app3")];
        SMART.MANIFESTS_get(function(manifests) {
@@ -45,8 +62,8 @@
                var next_frame = iframes[click_count % iframes.length];
                var app_context = jQuery.extend({}, SMART.context);
                app_context.record = { 
-                                      id: $("#record_id").val(),
-                                      full_name: $("#record_name").val() 
+                                      id: $("#patients").val().match(/.*\/(.*?)\/demographics$/)[1],
+                                      full_name: $("#patients option:selected").text() 
                                     };
                
                SMART_HOST.launch_app(m, app_context, {elt: next_frame});
@@ -63,9 +80,9 @@
     </script>
   </head>
   <body>
-    To fill your EMR Frame, choose apps from the carousel below!<br>
-    <input id="record_id" value='...' />     <input id="record_name" value='' /><br>
-    <span id="carousel">carousel here...</span><br>
+    <b>Choose a patient and some apps from the carousel below!</b><br>
+    <select id="patients"></select>
+    <span id="carousel">carousel here...</span><br><br>
 
       <iframe SEAMLESS src="about:blank" id="app1" width="290px" height="280px" style="float:left"> </iframe>
       <iframe SEAMLESS src="about:blank" id="app2" width="600px" height="280px" style="float:left"> </iframe>
