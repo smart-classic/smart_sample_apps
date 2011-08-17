@@ -279,7 +279,14 @@ if (!BPC) {
                 var colorhue = getDotColorhue (zones, percentile);
 
                 // Draw the circle
-                var dot = r.circle(x, y, s.dotSize).attr({color: "hsb(" + [colorhue, .8, 1] + ")", fill: "hsb(" + [colorhue, .5, .4] + ")", stroke: "hsb(" + [colorhue, .5, 1] + ")", "stroke-width": 2});
+                var dot;
+                if (colorhue === s.colorhueDefault) {
+                    // Hack to set the default (no percentile available) color to grey
+                    dot = r.circle(x, y, s.dotSize).attr({color: "hsb(" + [colorhue, 0, 1] + ")", fill: "hsb(" + [colorhue, 0, .4] + ")", stroke: "hsb(" + [colorhue, 0, 1] + ")", "stroke-width": 2});
+                } else {
+                    dot = r.circle(x, y, s.dotSize).attr({color: "hsb(" + [colorhue, .8, 1] + ")", fill: "hsb(" + [colorhue, .5, .4] + ")", stroke: "hsb(" + [colorhue, .5, 1] + ")", "stroke-width": 2});
+                }
+                
                 var dotLabel = {attr: function () {}};
                 if (s.showDotLabel) {
                     var labelText = "-";
@@ -618,8 +625,11 @@ if (!BPC) {
 	
 		var zoneStart,
 			zoneEnd,
-			i;
-	
+			i,
+            s = BPC.getViewSettings(true,true);
+        
+        if (!percentile) return s.colorhueDefault;
+            
         for (i = 0, zoneStart = 0, zoneEnd = 0; i < zones.length; i++) {
             zoneEnd = zoneEnd + zones[i].percent;
 			
@@ -630,7 +640,7 @@ if (!BPC) {
             zoneStart = zoneEnd;
         }
         
-        return 0.3;  // default hue for dots (never returned unless the zones don't sum up to 100%)
+        return s.colorhueDefault;  // never returned unless the zones don't sum up to 100%
     }
 
     /**
