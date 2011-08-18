@@ -58,6 +58,7 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 
 	channel.bind("ready", function(trans, message) {
 	    sc.received_setup(message);
+	    trans.complete(true);
 	});
 
     };
