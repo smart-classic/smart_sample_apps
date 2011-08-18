@@ -89,6 +89,7 @@ if (!BPC) {
             showDotLabel: shortTerm,    // flag for displaying the percentile within the data circle
             colorS: "hsb(.6, 0.5, 1)",   // systolic pressure line color
             colorD: "hsb(.5, 0.5, 1)",   // diastolic pressure line color
+            colorhueDefault: 0.9,          // default colorhue for datapoints when no percentile data is available
             txt: {font: '12px Helvetica, Arial', fill: "#fff"},  // Styling for the popup label data
             txt1: {font: '10px Helvetica, Arial', fill: "#aaa"},  // Styling for the popup label heading
             txt2: {font: '10px Helvetica, Arial', fill: "#fff"},  // Axis labels styling

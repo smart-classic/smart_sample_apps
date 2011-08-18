@@ -241,7 +241,7 @@
               Timeline.clientLocale = forceLocale;
             }            	
         } catch (e) {
-            alert(e);
+            if (window.alert)alert(e);
         }
     };
     
