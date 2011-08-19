@@ -2,7 +2,7 @@
 
 ## PARAMETERS TO REVIEW
 
-APP_HOME = "/home/jmandel/smart/smart_sample_apps"
+APP_HOME = "/path/to/smart_sample_apps"
 
 AC_OAUTH = {
   'consumer_key': 'allergy-check@apps.smartplatforms.org', 
