@@ -9,14 +9,19 @@
   context.smart_parser.type_definitions = type_definitions;
 
 
-  type_definitions["<http://smartplatforms.org/terms#Address>"] = { 
+  type_definitions["<http://www.w3.org/2006/vcard/ns#Address>"] = { 
     name: "Address",
-    uri: "<http://smartplatforms.org/terms#Address>",
+    uri: "<http://www.w3.org/2006/vcard/ns#Address>",
     is_statement: false,
     data_properties: [ 
       {
         name: "country-name", 
         uri: "<http://www.w3.org/2006/vcard/ns#country-name>",
+        allow_list: false
+      },
+      {
+        name: "extended-address", 
+        uri: "<http://www.w3.org/2006/vcard/ns#extended-address>",
         allow_list: false
       },
       {
@@ -27,6 +32,11 @@
       {
         name: "postal-code", 
         uri: "<http://www.w3.org/2006/vcard/ns#postal-code>",
+        allow_list: false
+      },
+      {
+        name: "region", 
+        uri: "<http://www.w3.org/2006/vcard/ns#region>",
         allow_list: false
       },
       {
@@ -397,6 +407,22 @@
   };
 
 
+  type_definitions["<http://www.w3.org/2006/vcard/ns#Cell>"] = { 
+    name: "Cell",
+    uri: "<http://www.w3.org/2006/vcard/ns#Cell>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "value", 
+        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
   type_definitions["<http://smartplatforms.org/terms#Code>"] = { 
     name: "Code",
     uri: "<http://smartplatforms.org/terms#Code>",
@@ -479,8 +505,13 @@
     is_statement: true,
     data_properties: [ 
       {
-        name: "birthday", 
-        uri: "<http://smartplatforms.org/terms#birthday>",
+        name: "bday", 
+        uri: "<http://www.w3.org/2006/vcard/ns#bday>",
+        allow_list: false
+      },
+      {
+        name: "email", 
+        uri: "<http://www.w3.org/2006/vcard/ns#email>",
         allow_list: false
       },
       {
@@ -489,28 +520,8 @@
         allow_list: false
       },
       {
-        name: "familyName", 
-        uri: "<http://xmlns.com/foaf/0.1/familyName>",
-        allow_list: false
-      },
-      {
         name: "gender", 
         uri: "<http://xmlns.com/foaf/0.1/gender>",
-        allow_list: false
-      },
-      {
-        name: "givenName", 
-        uri: "<http://xmlns.com/foaf/0.1/givenName>",
-        allow_list: false
-      },
-      {
-        name: "mbox", 
-        uri: "<http://xmlns.com/foaf/0.1/mbox>",
-        allow_list: false
-      },
-      {
-        name: "name", 
-        uri: "<http://xmlns.com/foaf/0.1/name>",
         allow_list: false
       },
       {
@@ -522,19 +533,26 @@
         name: "race", 
         uri: "<http://smartplatforms.org/terms#race>",
         allow_list: false
-      },
-      {
-        name: "zipcode", 
-        uri: "<http://smartplatforms.org/terms#zipcode>",
-        allow_list: false
       } 
     ],
     object_properties: [ 
       {
+        name: "adr", 
+        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Address>"
+      },
+      {
         name: "medicalRecordNumber", 
         uri: "<http://smartplatforms.org/terms#medicalRecordNumber>",
-        allow_list: false,
-        target: "<http://smartplatforms.org/terms#CodedValue>"
+        allow_list: true,
+        target: "<http://smartplatforms.org/terms#Code>"
+      },
+      {
+        name: "n", 
+        uri: "<http://www.w3.org/2006/vcard/ns#n>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Name>"
       } 
     ]
   };
@@ -651,6 +669,52 @@
         allow_list: false,
         target: "<http://smartplatforms.org/terms#ValueAndUnit>"
       } 
+    ]
+  };
+
+
+  type_definitions["<http://www.w3.org/2006/vcard/ns#Home>"] = { 
+    name: "Home",
+    uri: "<http://www.w3.org/2006/vcard/ns#Home>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "country-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#country-name>",
+        allow_list: false
+      },
+      {
+        name: "extended-address", 
+        uri: "<http://www.w3.org/2006/vcard/ns#extended-address>",
+        allow_list: false
+      },
+      {
+        name: "locality", 
+        uri: "<http://www.w3.org/2006/vcard/ns#locality>",
+        allow_list: false
+      },
+      {
+        name: "postal-code", 
+        uri: "<http://www.w3.org/2006/vcard/ns#postal-code>",
+        allow_list: false
+      },
+      {
+        name: "region", 
+        uri: "<http://www.w3.org/2006/vcard/ns#region>",
+        allow_list: false
+      },
+      {
+        name: "street-address", 
+        uri: "<http://www.w3.org/2006/vcard/ns#street-address>",
+        allow_list: false
+      },
+      {
+        name: "value", 
+        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
     ]
   };
 
@@ -830,6 +894,32 @@
   };
 
 
+  type_definitions["<http://smartplatforms.org/terms/codes/MedicalRecordNumber>"] = { 
+    name: "MedicalRecordNumber",
+    uri: "<http://smartplatforms.org/terms/codes/MedicalRecordNumber>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
   type_definitions["<http://smartplatforms.org/terms#Medication>"] = { 
     name: "Medication",
     uri: "<http://smartplatforms.org/terms#Medication>",
@@ -906,6 +996,42 @@
   };
 
 
+  type_definitions["<http://www.w3.org/2006/vcard/ns#Name>"] = { 
+    name: "Name",
+    uri: "<http://www.w3.org/2006/vcard/ns#Name>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "additional-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#additional-name>",
+        allow_list: true
+      },
+      {
+        name: "family-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#family-name>",
+        allow_list: false
+      },
+      {
+        name: "given-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#given-name>",
+        allow_list: false
+      },
+      {
+        name: "honorific-prefix", 
+        uri: "<http://www.w3.org/2006/vcard/ns#honorific-prefix>",
+        allow_list: true
+      },
+      {
+        name: "honorific-suffix", 
+        uri: "<http://www.w3.org/2006/vcard/ns#honorific-suffix>",
+        allow_list: true
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
   type_definitions["<http://smartplatforms.org/terms#NarrativeResult>"] = { 
     name: "NarrativeResult",
     uri: "<http://smartplatforms.org/terms#NarrativeResult>",
@@ -971,8 +1097,8 @@
     is_statement: false,
     data_properties: [ 
       {
-        name: "name", 
-        uri: "<http://xmlns.com/foaf/0.1/name>",
+        name: "additional-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#additional-name>",
         allow_list: false
       } 
     ],
@@ -981,7 +1107,7 @@
         name: "address", 
         uri: "<http://smartplatforms.org/terms#address>",
         allow_list: false,
-        target: "<http://smartplatforms.org/terms#Address>"
+        target: "<http://www.w3.org/2006/vcard/ns#Address>"
       } 
     ]
   };
@@ -1032,8 +1158,13 @@
     is_statement: false,
     data_properties: [ 
       {
-        name: "birthday", 
-        uri: "<http://smartplatforms.org/terms#birthday>",
+        name: "bday", 
+        uri: "<http://www.w3.org/2006/vcard/ns#bday>",
+        allow_list: false
+      },
+      {
+        name: "email", 
+        uri: "<http://www.w3.org/2006/vcard/ns#email>",
         allow_list: false
       },
       {
@@ -1042,28 +1173,8 @@
         allow_list: false
       },
       {
-        name: "familyName", 
-        uri: "<http://xmlns.com/foaf/0.1/familyName>",
-        allow_list: false
-      },
-      {
         name: "gender", 
         uri: "<http://xmlns.com/foaf/0.1/gender>",
-        allow_list: false
-      },
-      {
-        name: "givenName", 
-        uri: "<http://xmlns.com/foaf/0.1/givenName>",
-        allow_list: false
-      },
-      {
-        name: "mbox", 
-        uri: "<http://xmlns.com/foaf/0.1/mbox>",
-        allow_list: false
-      },
-      {
-        name: "name", 
-        uri: "<http://xmlns.com/foaf/0.1/name>",
         allow_list: false
       },
       {
@@ -1075,14 +1186,21 @@
         name: "race", 
         uri: "<http://smartplatforms.org/terms#race>",
         allow_list: false
-      },
-      {
-        name: "zipcode", 
-        uri: "<http://smartplatforms.org/terms#zipcode>",
-        allow_list: false
       } 
     ],
-    object_properties: [  
+    object_properties: [ 
+      {
+        name: "adr", 
+        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Address>"
+      },
+      {
+        name: "n", 
+        uri: "<http://www.w3.org/2006/vcard/ns#n>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      } 
     ]
   };
 
@@ -1093,8 +1211,8 @@
     is_statement: false,
     data_properties: [ 
       {
-        name: "name", 
-        uri: "<http://xmlns.com/foaf/0.1/name>",
+        name: "additional-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#additional-name>",
         allow_list: false
       },
       {
@@ -1108,8 +1226,54 @@
         name: "address", 
         uri: "<http://smartplatforms.org/terms#address>",
         allow_list: false,
-        target: "<http://smartplatforms.org/terms#Address>"
+        target: "<http://www.w3.org/2006/vcard/ns#Address>"
       } 
+    ]
+  };
+
+
+  type_definitions["<http://www.w3.org/2006/vcard/ns#Pref>"] = { 
+    name: "Pref",
+    uri: "<http://www.w3.org/2006/vcard/ns#Pref>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "country-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#country-name>",
+        allow_list: false
+      },
+      {
+        name: "extended-address", 
+        uri: "<http://www.w3.org/2006/vcard/ns#extended-address>",
+        allow_list: false
+      },
+      {
+        name: "locality", 
+        uri: "<http://www.w3.org/2006/vcard/ns#locality>",
+        allow_list: false
+      },
+      {
+        name: "postal-code", 
+        uri: "<http://www.w3.org/2006/vcard/ns#postal-code>",
+        allow_list: false
+      },
+      {
+        name: "region", 
+        uri: "<http://www.w3.org/2006/vcard/ns#region>",
+        allow_list: false
+      },
+      {
+        name: "street-address", 
+        uri: "<http://www.w3.org/2006/vcard/ns#street-address>",
+        allow_list: false
+      },
+      {
+        name: "value", 
+        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
     ]
   };
 
@@ -1179,8 +1343,8 @@
     is_statement: false,
     data_properties: [ 
       {
-        name: "birthday", 
-        uri: "<http://smartplatforms.org/terms#birthday>",
+        name: "bday", 
+        uri: "<http://www.w3.org/2006/vcard/ns#bday>",
         allow_list: false
       },
       {
@@ -1189,33 +1353,18 @@
         allow_list: false
       },
       {
+        name: "email", 
+        uri: "<http://www.w3.org/2006/vcard/ns#email>",
+        allow_list: false
+      },
+      {
         name: "ethnicity", 
         uri: "<http://smartplatforms.org/terms#ethnicity>",
         allow_list: false
       },
       {
-        name: "familyName", 
-        uri: "<http://xmlns.com/foaf/0.1/familyName>",
-        allow_list: false
-      },
-      {
         name: "gender", 
         uri: "<http://xmlns.com/foaf/0.1/gender>",
-        allow_list: false
-      },
-      {
-        name: "givenName", 
-        uri: "<http://xmlns.com/foaf/0.1/givenName>",
-        allow_list: false
-      },
-      {
-        name: "mbox", 
-        uri: "<http://xmlns.com/foaf/0.1/mbox>",
-        allow_list: false
-      },
-      {
-        name: "name", 
-        uri: "<http://xmlns.com/foaf/0.1/name>",
         allow_list: false
       },
       {
@@ -1232,14 +1381,21 @@
         name: "race", 
         uri: "<http://smartplatforms.org/terms#race>",
         allow_list: false
-      },
-      {
-        name: "zipcode", 
-        uri: "<http://smartplatforms.org/terms#zipcode>",
-        allow_list: false
       } 
     ],
-    object_properties: [  
+    object_properties: [ 
+      {
+        name: "adr", 
+        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Address>"
+      },
+      {
+        name: "n", 
+        uri: "<http://www.w3.org/2006/vcard/ns#n>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      } 
     ]
   };
 
@@ -1446,8 +1602,8 @@
     is_statement: false,
     data_properties: [ 
       {
-        name: "birthday", 
-        uri: "<http://smartplatforms.org/terms#birthday>",
+        name: "bday", 
+        uri: "<http://www.w3.org/2006/vcard/ns#bday>",
         allow_list: false
       },
       {
@@ -1456,33 +1612,18 @@
         allow_list: false
       },
       {
+        name: "email", 
+        uri: "<http://www.w3.org/2006/vcard/ns#email>",
+        allow_list: false
+      },
+      {
         name: "ethnicity", 
         uri: "<http://smartplatforms.org/terms#ethnicity>",
         allow_list: false
       },
       {
-        name: "familyName", 
-        uri: "<http://xmlns.com/foaf/0.1/familyName>",
-        allow_list: false
-      },
-      {
         name: "gender", 
         uri: "<http://xmlns.com/foaf/0.1/gender>",
-        allow_list: false
-      },
-      {
-        name: "givenName", 
-        uri: "<http://xmlns.com/foaf/0.1/givenName>",
-        allow_list: false
-      },
-      {
-        name: "mbox", 
-        uri: "<http://xmlns.com/foaf/0.1/mbox>",
-        allow_list: false
-      },
-      {
-        name: "name", 
-        uri: "<http://xmlns.com/foaf/0.1/name>",
         allow_list: false
       },
       {
@@ -1499,14 +1640,21 @@
         name: "role", 
         uri: "<http://smartplatforms.org/terms#role>",
         allow_list: false
-      },
-      {
-        name: "zipcode", 
-        uri: "<http://smartplatforms.org/terms#zipcode>",
-        allow_list: false
       } 
     ],
-    object_properties: [  
+    object_properties: [ 
+      {
+        name: "adr", 
+        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Address>"
+      },
+      {
+        name: "n", 
+        uri: "<http://www.w3.org/2006/vcard/ns#n>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      } 
     ]
   };
 
@@ -1695,6 +1843,52 @@
   };
 
 
+  type_definitions["<http://www.w3.org/2006/vcard/ns#Work>"] = { 
+    name: "Work",
+    uri: "<http://www.w3.org/2006/vcard/ns#Work>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "country-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#country-name>",
+        allow_list: false
+      },
+      {
+        name: "extended-address", 
+        uri: "<http://www.w3.org/2006/vcard/ns#extended-address>",
+        allow_list: false
+      },
+      {
+        name: "locality", 
+        uri: "<http://www.w3.org/2006/vcard/ns#locality>",
+        allow_list: false
+      },
+      {
+        name: "postal-code", 
+        uri: "<http://www.w3.org/2006/vcard/ns#postal-code>",
+        allow_list: false
+      },
+      {
+        name: "region", 
+        uri: "<http://www.w3.org/2006/vcard/ns#region>",
+        allow_list: false
+      },
+      {
+        name: "street-address", 
+        uri: "<http://www.w3.org/2006/vcard/ns#street-address>",
+        allow_list: false
+      },
+      {
+        name: "value", 
+        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
   type_definitions["<http://smartplatforms.org/terms/api#call>"] = { 
     name: "call",
     uri: "<http://smartplatforms.org/terms/api#call>",
@@ -1702,6 +1896,55 @@
     data_properties: [  
     ],
     object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#v:Tel>"] = { 
+    name: "v:Tel",
+    uri: "<http://smartplatforms.org/terms#v:Tel>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "value", 
+        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms#v:VCard>"] = { 
+    name: "v:VCard",
+    uri: "<http://smartplatforms.org/terms#v:VCard>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "bday", 
+        uri: "<http://www.w3.org/2006/vcard/ns#bday>",
+        allow_list: false
+      },
+      {
+        name: "email", 
+        uri: "<http://www.w3.org/2006/vcard/ns#email>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [ 
+      {
+        name: "adr", 
+        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Address>"
+      },
+      {
+        name: "n", 
+        uri: "<http://www.w3.org/2006/vcard/ns#n>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      } 
     ]
   };
 
