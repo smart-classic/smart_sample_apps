@@ -3,7 +3,7 @@
   "description" : "Display medications in a table or timeline view",
   "author" : "Josh Mandel, Children's Hospital Boston",
   "id" : "med-list@apps.smartplatforms.org",
-  "version" : ".1a"
+  "version" : ".1a",
   "intents": ["view_medications"],
 
   "mode" : "ui",	

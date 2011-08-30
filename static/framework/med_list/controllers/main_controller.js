@@ -6,7 +6,11 @@ jQuery.Controller.extend('MedList.Controllers.MainController',
 /* @Prototype */
 {
     "{window} load": function() {
-	$("#UserDisplay").html("");
-	$("#MedList").med_list_med_list();
+	SMART.ready(function(){
+	    SMART.CAPABILITIES_get(function(){
+		$("#UserDisplay").html("");
+		$("#MedList").med_list_med_list();
+	    })
+	});
     }
 });
