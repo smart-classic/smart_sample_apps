@@ -90,7 +90,8 @@ $.Model.extend('ApiType',
 	pathRegex: function(path) {
 		var b = path;
 		var fields = b.match(ApiType.url_param_reg);
-		
+  	        if (fields == null) fields = [];
+
 		var b = b.replace("http://smartplatforms.org", "");
 		for (var i = 0; i < fields.length; i++) {
 			var f = fields[i];
