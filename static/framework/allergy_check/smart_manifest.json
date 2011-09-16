@@ -3,7 +3,7 @@
   "description" : "Cross-reference Allergies List against Medications List, down to RxNorm Ingredients",
   "author" : "Josh Mandel, Children's Hospital Boston",
   "id" : "allergy-check@apps.smartplatforms.org",
-  "version" : ".1a",xs
+  "version" : ".1a",
 
   "mode" : "ui",
   "scope" : "record",

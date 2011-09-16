@@ -27,8 +27,9 @@
        SMART.PATIENTS_get(function(patient_response) {
 
           var patients = patient_response.where("?p rdf:type sp:Demographics")
-                                         .where("?p foaf:givenName ?givenName")
-                                         .where("?p foaf:familyName ?familyName");
+                                         .where("?p <http://www.w3.org/2006/vcard/ns#n> ?n")
+                                         .where("?n <http://www.w3.org/2006/vcard/ns#given-name> ?givenName")
+                                         .where("?n <http://www.w3.org/2006/vcard/ns#family-name> ?familyName");
 
           var pselect = $("#patients"), p;
           for (var i = 0; i < patients.length; i++) {
