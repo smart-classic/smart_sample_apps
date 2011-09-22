@@ -14,7 +14,7 @@
 
 		// Parse an rdfquery payload to extract plain-old JS objects
 		this.parse_rdf_payload = function(payload)  {
-
+		    var st = new Date().getTime();
 			var parsed_items = [];
 
 			// For every type we know about
@@ -37,6 +37,7 @@
 
 			// Expose the payload so the caller can find it later
 			this.parsed_payloads.push(payload);
+		    console.log(new Date().getTime() - st);
 		};
 
 		// Add a new item to the collection
@@ -83,16 +84,12 @@
 
 	// Private helper function
 	// (Here begins the mind-bending recurisve fun :-))
-	function parse_one_type(payload, t, starting_from) {
+      function parse_one_type(payload, t, starting_from, depth) {
+            if (depth === undefined) depth = 0;
 
 	    var subject_uri = starting_from && starting_from.uri || "?subject";
-	    
-	    	console.log("parsing type");
-	    
-	    	console.log(t);
 	    var matches = payload.where(subject_uri + " rdf:type "+t.uri);
 	    //	console.log('payload.where("'+subject_uri+'" + " rdf:type "+'+t.uri+');)');
-
 	    var matched_items = {};
 	    if (starting_from) 
 		matched_items[starting_from.uri] = starting_from;
@@ -122,9 +119,6 @@
 
 		if (already_present.length == 0)
 		{
-		    console.log("new extra type");
-		    console.log(t);
-		    console.log(matched_items[match_uri].type);
 		    matched_items[match_uri].type.push(t);
 		}
 	    });	    
@@ -134,7 +128,6 @@
 	    // Assign any data properties discovered in the graph
 	    $.each(t.data_properties, function(i, dp) {
 		matches = matches.where(subject_uri + " " + dp.uri + " ?dp");
-			    console.log('matches.where('+subject_uri+' + " " + '+dp.uri+' + " ?dp");');
 		$.each(matches, function(i, match) {
 		    var match_uri = bind_and_return_match_uri(match);
 		  
@@ -159,11 +152,8 @@
 	    // Assign any object properties discovered in the graph
 	    $.each(t.object_properties, function(i, op) {
 		matches = matches.where(subject_uri + " " + op.uri + " ?op");
-			    console.log('matches.where('+subject_uri+' + " " + '+op.uri+' + " ?op");');
 
 		$.each(matches, function(i, match) {
-		    console.log("OP match");
-		    console.log(match);
 		    var match_uri = bind_and_return_match_uri(match);
 
 		    matched_items[match_uri].object_properties || 
@@ -183,14 +173,15 @@
 		matches = matches.end();		
 	    });
 	    
+  	    var add_depth = 0;
 	    // Recurse to populate sub-items discovered in the graph
 	    $.each(matched_items, function(iURL, item) {
 		if (!item.object_properties) return; 
-		console.log("object projecties exist");
-		console.log(item.object_properties);
 		$.each(item.object_properties, function(opURI, sub_item_set) {
 		    $.each(sub_item_set, function(subItemURI, sub_item) {
-			parse_one_type(payload, sub_item.type[0], sub_item);
+			if (sub_item.type[0].is_statement) add_depth = 1;
+			if (!sub_item.type[0].is_statement || depth == 0)
+			    parse_one_type(payload, sub_item.type[0], sub_item, depth + add_depth);
 		    });
 		});
 	    });
