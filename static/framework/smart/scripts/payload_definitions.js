@@ -63,18 +63,24 @@
     ],
     object_properties: [ 
       {
-        name: "severity", 
-        uri: "<http://smartplatforms.org/terms#severity>",
+        name: "alertLevel", 
+        uri: "<http://smartplatforms.org/terms#alertLevel>",
         allow_list: false,
         target: "<http://smartplatforms.org/terms#CodedValue>"
+      },
+      {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
       } 
     ]
   };
 
 
-  type_definitions["<http://smartplatforms.org/terms/codes/AlertSeverity>"] = { 
-    name: "AlertSeverity",
-    uri: "<http://smartplatforms.org/terms/codes/AlertSeverity>",
+  type_definitions["<http://smartplatforms.org/terms/codes/AlertLevel>"] = { 
+    name: "AlertLevel",
+    uri: "<http://smartplatforms.org/terms/codes/AlertLevel>",
     is_statement: false,
     data_properties: [ 
       {
@@ -110,6 +116,12 @@
         uri: "<http://smartplatforms.org/terms#allergicReaction>",
         allow_list: false,
         target: "<http://smartplatforms.org/terms#CodedValue>"
+      },
+      {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
       },
       {
         name: "category", 
@@ -157,6 +169,12 @@
         uri: "<http://smartplatforms.org/terms#allergyExclusionName>",
         allow_list: false,
         target: "<http://smartplatforms.org/terms#CodedValue>"
+      },
+      {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
       } 
     ]
   };
@@ -240,6 +258,17 @@
   };
 
 
+  type_definitions["<http://smartplatforms.org/terms#AppManifest>"] = { 
+    name: "App Manifest",
+    uri: "<http://smartplatforms.org/terms#AppManifest>",
+    is_statement: false,
+    data_properties: [  
+    ],
+    object_properties: [  
+    ]
+  };
+
+
   type_definitions["<http://smartplatforms.org/terms#Attribution>"] = { 
     name: "Attribution",
     uri: "<http://smartplatforms.org/terms#Attribution>",
@@ -249,11 +278,6 @@
         name: "endDate", 
         uri: "<http://smartplatforms.org/terms#endDate>",
         allow_list: false
-      },
-      {
-        name: "endTime", 
-        uri: "<http://smartplatforms.org/terms#endTime>",
-        allow_list: true
       },
       {
         name: "startDate", 
@@ -411,12 +435,7 @@
     name: "Cell",
     uri: "<http://www.w3.org/2006/vcard/ns#Cell>",
     is_statement: false,
-    data_properties: [ 
-      {
-        name: "value", 
-        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
-        allow_list: false
-      } 
+    data_properties: [  
     ],
     object_properties: [  
     ]
@@ -449,8 +468,35 @@
   };
 
 
+  type_definitions["<http://smartplatforms.org/terms#CodeProvenance>"] = { 
+    name: "CodeProvenance",
+    uri: "<http://smartplatforms.org/terms#CodeProvenance>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "sourceCode", 
+        uri: "<http://smartplatforms.org/terms#sourceCode>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [ 
+      {
+        name: "translationFidelity", 
+        uri: "<http://smartplatforms.org/terms#translationFidelity>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms/codes/TranslationFidelity>"
+      } 
+    ]
+  };
+
+
   type_definitions["<http://smartplatforms.org/terms#CodedValue>"] = { 
-    name: "Coded Text",
+    name: "Coded Value",
     uri: "<http://smartplatforms.org/terms#CodedValue>",
     is_statement: false,
     data_properties: [ 
@@ -471,7 +517,7 @@
         name: "provenance", 
         uri: "<http://smartplatforms.org/terms#provenance>",
         allow_list: true,
-        target: "<http://smartplatforms.org/terms#Provenance>"
+        target: "<http://smartplatforms.org/terms#CodeProvenance>"
       } 
     ]
   };
@@ -543,6 +589,12 @@
         target: "<http://www.w3.org/2006/vcard/ns#Address>"
       },
       {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
+      },
+      {
         name: "medicalRecordNumber", 
         uri: "<http://smartplatforms.org/terms#medicalRecordNumber>",
         allow_list: true,
@@ -553,6 +605,12 @@
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
         allow_list: true,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      },
+      {
+        name: "tel", 
+        uri: "<http://www.w3.org/2006/vcard/ns#tel>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Tel>"
       } 
     ]
   };
@@ -575,6 +633,12 @@
       } 
     ],
     object_properties: [ 
+      {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
+      },
       {
         name: "encounterType", 
         uri: "<http://smartplatforms.org/terms#encounterType>",
@@ -630,7 +694,7 @@
     data_properties: [ 
       {
         name: "date", 
-        uri: "<http://purl.org/dc/elements/1.1/date>",
+        uri: "<http://purl.org/dc/terms/date>",
         allow_list: false
       },
       {
@@ -645,6 +709,12 @@
       } 
     ],
     object_properties: [ 
+      {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
+      },
       {
         name: "medication", 
         uri: "<http://smartplatforms.org/terms#medication>",
@@ -677,42 +747,7 @@
     name: "Home",
     uri: "<http://www.w3.org/2006/vcard/ns#Home>",
     is_statement: false,
-    data_properties: [ 
-      {
-        name: "country-name", 
-        uri: "<http://www.w3.org/2006/vcard/ns#country-name>",
-        allow_list: false
-      },
-      {
-        name: "extended-address", 
-        uri: "<http://www.w3.org/2006/vcard/ns#extended-address>",
-        allow_list: false
-      },
-      {
-        name: "locality", 
-        uri: "<http://www.w3.org/2006/vcard/ns#locality>",
-        allow_list: false
-      },
-      {
-        name: "postal-code", 
-        uri: "<http://www.w3.org/2006/vcard/ns#postal-code>",
-        allow_list: false
-      },
-      {
-        name: "region", 
-        uri: "<http://www.w3.org/2006/vcard/ns#region>",
-        allow_list: false
-      },
-      {
-        name: "street-address", 
-        uri: "<http://www.w3.org/2006/vcard/ns#street-address>",
-        allow_list: false
-      },
-      {
-        name: "value", 
-        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
-        allow_list: false
-      } 
+    data_properties: [  
     ],
     object_properties: [  
     ]
@@ -767,6 +802,12 @@
         uri: "<http://smartplatforms.org/terms#abnormalInterpretation>",
         allow_list: false,
         target: "<http://smartplatforms.org/terms#CodedValue>"
+      },
+      {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
       },
       {
         name: "labName", 
@@ -877,6 +918,17 @@
   };
 
 
+  type_definitions["<http://www.w3.org/2000/01/rdf-schema#Literal>"] = { 
+    name: "Literal",
+    uri: "<http://www.w3.org/2000/01/rdf-schema#Literal>",
+    is_statement: false,
+    data_properties: [  
+    ],
+    object_properties: [  
+    ]
+  };
+
+
   type_definitions["<http://smartplatforms.org/terms#MedicalRecord>"] = { 
     name: "Medical Record",
     uri: "<http://smartplatforms.org/terms#MedicalRecord>",
@@ -943,6 +995,12 @@
     ],
     object_properties: [ 
       {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
+      },
+      {
         name: "drugName", 
         uri: "<http://smartplatforms.org/terms#drugName>",
         allow_list: false,
@@ -961,11 +1019,43 @@
         target: "<http://smartplatforms.org/terms#Fulfillment>"
       },
       {
+        name: "provenance", 
+        uri: "<http://smartplatforms.org/terms#provenance>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#Code>"
+      },
+      {
         name: "quantity", 
         uri: "<http://smartplatforms.org/terms#quantity>",
         allow_list: false,
         target: "<http://smartplatforms.org/terms#ValueAndUnit>"
       } 
+    ]
+  };
+
+
+  type_definitions["<http://smartplatforms.org/terms/codes/MedicationProvenance>"] = { 
+    name: "MedicationProvenance",
+    uri: "<http://smartplatforms.org/terms/codes/MedicationProvenance>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "identifier", 
+        uri: "<http://purl.org/dc/terms/identifier>",
+        allow_list: false
+      },
+      {
+        name: "system", 
+        uri: "<http://smartplatforms.org/terms#system>",
+        allow_list: false
+      },
+      {
+        name: "title", 
+        uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
     ]
   };
 
@@ -1097,8 +1187,8 @@
     is_statement: false,
     data_properties: [ 
       {
-        name: "additional-name", 
-        uri: "<http://www.w3.org/2006/vcard/ns#additional-name>",
+        name: "organization-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#organization-name>",
         allow_list: false
       } 
     ],
@@ -1200,6 +1290,12 @@
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
         allow_list: true,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      },
+      {
+        name: "tel", 
+        uri: "<http://www.w3.org/2006/vcard/ns#tel>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Tel>"
       } 
     ]
   };
@@ -1211,13 +1307,13 @@
     is_statement: false,
     data_properties: [ 
       {
-        name: "additional-name", 
-        uri: "<http://www.w3.org/2006/vcard/ns#additional-name>",
+        name: "ncpdpID", 
+        uri: "<http://smartplatforms.org/terms#ncpdpID>",
         allow_list: false
       },
       {
-        name: "ncpdpID", 
-        uri: "<http://smartplatforms.org/terms#ncpdpID>",
+        name: "organization-name", 
+        uri: "<http://www.w3.org/2006/vcard/ns#organization-name>",
         allow_list: false
       } 
     ],
@@ -1236,42 +1332,7 @@
     name: "Pref",
     uri: "<http://www.w3.org/2006/vcard/ns#Pref>",
     is_statement: false,
-    data_properties: [ 
-      {
-        name: "country-name", 
-        uri: "<http://www.w3.org/2006/vcard/ns#country-name>",
-        allow_list: false
-      },
-      {
-        name: "extended-address", 
-        uri: "<http://www.w3.org/2006/vcard/ns#extended-address>",
-        allow_list: false
-      },
-      {
-        name: "locality", 
-        uri: "<http://www.w3.org/2006/vcard/ns#locality>",
-        allow_list: false
-      },
-      {
-        name: "postal-code", 
-        uri: "<http://www.w3.org/2006/vcard/ns#postal-code>",
-        allow_list: false
-      },
-      {
-        name: "region", 
-        uri: "<http://www.w3.org/2006/vcard/ns#region>",
-        allow_list: false
-      },
-      {
-        name: "street-address", 
-        uri: "<http://www.w3.org/2006/vcard/ns#street-address>",
-        allow_list: false
-      },
-      {
-        name: "value", 
-        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
-        allow_list: false
-      } 
+    data_properties: [  
     ],
     object_properties: [  
     ]
@@ -1301,37 +1362,16 @@
     ],
     object_properties: [ 
       {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
+      },
+      {
         name: "problemName", 
         uri: "<http://smartplatforms.org/terms#problemName>",
         allow_list: false,
         target: "<http://smartplatforms.org/terms#CodedValue>"
-      } 
-    ]
-  };
-
-
-  type_definitions["<http://smartplatforms.org/terms#Provenance>"] = { 
-    name: "Provenance",
-    uri: "<http://smartplatforms.org/terms#Provenance>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "sourceCode", 
-        uri: "<http://smartplatforms.org/terms#sourceCode>",
-        allow_list: false
-      },
-      {
-        name: "title", 
-        uri: "<http://purl.org/dc/terms/title>",
-        allow_list: false
-      } 
-    ],
-    object_properties: [ 
-      {
-        name: "translationFidelity", 
-        uri: "<http://smartplatforms.org/terms#translationFidelity>",
-        allow_list: false,
-        target: "<http://smartplatforms.org/terms/codes/TranslationFidelity>"
       } 
     ]
   };
@@ -1395,6 +1435,12 @@
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
         allow_list: true,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      },
+      {
+        name: "tel", 
+        uri: "<http://www.w3.org/2006/vcard/ns#tel>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Tel>"
       } 
     ]
   };
@@ -1422,7 +1468,7 @@
       {
         name: "valueAndUnit", 
         uri: "<http://smartplatforms.org/terms#valueAndUnit>",
-        allow_list: false,
+        allow_list: true,
         target: "<http://smartplatforms.org/terms#ValueAndUnit>"
       } 
     ]
@@ -1513,7 +1559,13 @@
     is_statement: false,
     data_properties: [  
     ],
-    object_properties: [  
+    object_properties: [ 
+      {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
+      } 
     ]
   };
 
@@ -1536,6 +1588,22 @@
       {
         name: "title", 
         uri: "<http://purl.org/dc/terms/title>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://www.w3.org/2006/vcard/ns#Tel>"] = { 
+    name: "Tel",
+    uri: "<http://www.w3.org/2006/vcard/ns#Tel>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "value", 
+        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
         allow_list: false
       } 
     ],
@@ -1654,6 +1722,51 @@
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
         allow_list: true,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      },
+      {
+        name: "tel", 
+        uri: "<http://www.w3.org/2006/vcard/ns#tel>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Tel>"
+      } 
+    ]
+  };
+
+
+  type_definitions["<http://www.w3.org/2006/vcard/ns#VCard>"] = { 
+    name: "VCard",
+    uri: "<http://www.w3.org/2006/vcard/ns#VCard>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "bday", 
+        uri: "<http://www.w3.org/2006/vcard/ns#bday>",
+        allow_list: false
+      },
+      {
+        name: "email", 
+        uri: "<http://www.w3.org/2006/vcard/ns#email>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [ 
+      {
+        name: "adr", 
+        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Address>"
+      },
+      {
+        name: "n", 
+        uri: "<http://www.w3.org/2006/vcard/ns#n>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Name>"
+      },
+      {
+        name: "tel", 
+        uri: "<http://www.w3.org/2006/vcard/ns#tel>",
+        allow_list: true,
+        target: "<http://www.w3.org/2006/vcard/ns#Tel>"
       } 
     ]
   };
@@ -1690,13 +1803,13 @@
       {
         name: "maximum", 
         uri: "<http://smartplatforms.org/terms#maximum>",
-        allow_list: false,
+        allow_list: true,
         target: "<http://smartplatforms.org/terms#ValueAndUnit>"
       },
       {
         name: "minimum", 
         uri: "<http://smartplatforms.org/terms#minimum>",
-        allow_list: false,
+        allow_list: true,
         target: "<http://smartplatforms.org/terms#ValueAndUnit>"
       } 
     ]
@@ -1713,41 +1826,14 @@
       {
         name: "denominator", 
         uri: "<http://smartplatforms.org/terms#denominator>",
-        allow_list: false,
+        allow_list: true,
         target: "<http://smartplatforms.org/terms#ValueAndUnit>"
       },
       {
         name: "numerator", 
         uri: "<http://smartplatforms.org/terms#numerator>",
-        allow_list: false,
+        allow_list: true,
         target: "<http://smartplatforms.org/terms#ValueAndUnit>"
-      } 
-    ]
-  };
-
-
-  type_definitions["<http://smartplatforms.org/terms#VitalSign>"] = { 
-    name: "VitalSign",
-    uri: "<http://smartplatforms.org/terms#VitalSign>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "unit", 
-        uri: "<http://smartplatforms.org/terms#unit>",
-        allow_list: false
-      },
-      {
-        name: "value", 
-        uri: "<http://smartplatforms.org/terms#value>",
-        allow_list: false
-      } 
-    ],
-    object_properties: [ 
-      {
-        name: "vitalName", 
-        uri: "<http://smartplatforms.org/terms#vitalName>",
-        allow_list: false,
-        target: "<http://smartplatforms.org/terms#CodedValue>"
       } 
     ]
   };
@@ -1779,6 +1865,33 @@
   };
 
 
+  type_definitions["<http://smartplatforms.org/terms#VitalSign>"] = { 
+    name: "VitalSign",
+    uri: "<http://smartplatforms.org/terms#VitalSign>",
+    is_statement: false,
+    data_properties: [ 
+      {
+        name: "unit", 
+        uri: "<http://smartplatforms.org/terms#unit>",
+        allow_list: false
+      },
+      {
+        name: "value", 
+        uri: "<http://smartplatforms.org/terms#value>",
+        allow_list: false
+      } 
+    ],
+    object_properties: [ 
+      {
+        name: "vitalName", 
+        uri: "<http://smartplatforms.org/terms#vitalName>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#CodedValue>"
+      } 
+    ]
+  };
+
+
   type_definitions["<http://smartplatforms.org/terms#VitalSigns>"] = { 
     name: "VitalSigns",
     uri: "<http://smartplatforms.org/terms#VitalSigns>",
@@ -1786,11 +1899,17 @@
     data_properties: [ 
       {
         name: "date", 
-        uri: "<http://purl.org/dc/elements/1.1/date>",
+        uri: "<http://purl.org/dc/terms/date>",
         allow_list: false
       } 
     ],
     object_properties: [ 
+      {
+        name: "belongsTo", 
+        uri: "<http://smartplatforms.org/terms#belongsTo>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#MedicalRecord>"
+      },
       {
         name: "bloodPressure", 
         uri: "<http://smartplatforms.org/terms#bloodPressure>",
@@ -1802,6 +1921,12 @@
         uri: "<http://smartplatforms.org/terms#bodyMassIndex>",
         allow_list: false,
         target: "<http://smartplatforms.org/terms#VitalSign>"
+      },
+      {
+        name: "encounter", 
+        uri: "<http://smartplatforms.org/terms#encounter>",
+        allow_list: false,
+        target: "<http://smartplatforms.org/terms#Encounter>"
       },
       {
         name: "heartRate", 
@@ -1847,42 +1972,18 @@
     name: "Work",
     uri: "<http://www.w3.org/2006/vcard/ns#Work>",
     is_statement: false,
-    data_properties: [ 
-      {
-        name: "country-name", 
-        uri: "<http://www.w3.org/2006/vcard/ns#country-name>",
-        allow_list: false
-      },
-      {
-        name: "extended-address", 
-        uri: "<http://www.w3.org/2006/vcard/ns#extended-address>",
-        allow_list: false
-      },
-      {
-        name: "locality", 
-        uri: "<http://www.w3.org/2006/vcard/ns#locality>",
-        allow_list: false
-      },
-      {
-        name: "postal-code", 
-        uri: "<http://www.w3.org/2006/vcard/ns#postal-code>",
-        allow_list: false
-      },
-      {
-        name: "region", 
-        uri: "<http://www.w3.org/2006/vcard/ns#region>",
-        allow_list: false
-      },
-      {
-        name: "street-address", 
-        uri: "<http://www.w3.org/2006/vcard/ns#street-address>",
-        allow_list: false
-      },
-      {
-        name: "value", 
-        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
-        allow_list: false
-      } 
+    data_properties: [  
+    ],
+    object_properties: [  
+    ]
+  };
+
+
+  type_definitions["<http://www.w3.org/2001/XMLSchema#anyURI>"] = { 
+    name: "anyURI",
+    uri: "<http://www.w3.org/2001/XMLSchema#anyURI>",
+    is_statement: false,
+    data_properties: [  
     ],
     object_properties: [  
     ]
@@ -1900,51 +2001,13 @@
   };
 
 
-  type_definitions["<http://smartplatforms.org/terms#v:Tel>"] = { 
-    name: "v:Tel",
-    uri: "<http://smartplatforms.org/terms#v:Tel>",
+  type_definitions["<http://www.w3.org/2001/XMLSchema#dateTime>"] = { 
+    name: "dateTime",
+    uri: "<http://www.w3.org/2001/XMLSchema#dateTime>",
     is_statement: false,
-    data_properties: [ 
-      {
-        name: "value", 
-        uri: "<http://www.w3.org/1999/02/22-rdf-syntax-ns#value>",
-        allow_list: false
-      } 
+    data_properties: [  
     ],
     object_properties: [  
-    ]
-  };
-
-
-  type_definitions["<http://smartplatforms.org/terms#v:VCard>"] = { 
-    name: "v:VCard",
-    uri: "<http://smartplatforms.org/terms#v:VCard>",
-    is_statement: false,
-    data_properties: [ 
-      {
-        name: "bday", 
-        uri: "<http://www.w3.org/2006/vcard/ns#bday>",
-        allow_list: false
-      },
-      {
-        name: "email", 
-        uri: "<http://www.w3.org/2006/vcard/ns#email>",
-        allow_list: false
-      } 
-    ],
-    object_properties: [ 
-      {
-        name: "adr", 
-        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
-        allow_list: true,
-        target: "<http://www.w3.org/2006/vcard/ns#Address>"
-      },
-      {
-        name: "n", 
-        uri: "<http://www.w3.org/2006/vcard/ns#n>",
-        allow_list: true,
-        target: "<http://www.w3.org/2006/vcard/ns#Name>"
-      } 
     ]
   };
 
