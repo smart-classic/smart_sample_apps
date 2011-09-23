@@ -4,72 +4,6 @@ function sortci(a, b) {
   return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
 }
 
-// custom because I want to be able to introspect native browser objects *and* functions
-function stringify(o, simple, depth) {
-  var json = '', i, type = '', parts = [], names = [];
-    if (depth === undefined)
-	depth = 0;
-
-  try {
-    type = ({}).toString.call(o);
-  } catch (e) { // only happens when typeof is protected (...randomly)
-    type = '[object Object]';
-  }
-    
-  if (type == '[object String]') {
-    json = '"' + o.replace(/"/g, '\\"') + '"';
-  } else if (type == '[object Array]') {
-    json = '[';
-    for (i = 0; i < o.length; i++) {
-	parts.push(stringify(o[i], simple, depth+1));
-    }
-    json += parts.join(', ') + ']';
-    json;
-  } else if (type == '[object Object]') {
-    json = '{';
-    for (i in o) {
-      names.push(i);
-    }
-    names.sort(sortci);
-    for (i = 0; i < names.length; i++) {
-	parts.push(stringify(names[i], simple, depth+1) + ': ' + stringify(o[names[i] ], simple, depth+1));
-    }
-    json += parts.join(', ') + '}';
-  } else if (type == '[object Number]') {
-    json = o+'';
-  } else if (type == '[object Boolean]') {
-    json = o ? 'true' : 'false';
-  } else if (type == '[object Function]') {
-      json = type; //o.toString();
-  } else if (o === null) {
-    json = 'null';
-  } else if (o === undefined) {
-    json = 'undefined';
-  } else if (simple == undefined) {
-    json = type + '{\n';
-    for (i in o) {
-      names.push(i);
-    }
-    names.sort(sortci);
-    for (i = 0; i < names.length; i++) {
-      try {
-          parts.push(names[i] + ': ' + stringify(o[names[i]], true, depth+1)); // safety from max stack        
-      } catch (e) {
-        if (e.name == 'NS_ERROR_NOT_IMPLEMENTED') {
-          // do nothing - not sure it's useful to show this error when the variable is protected
-          // parts.push(names[i] + ': NS_ERROR_NOT_IMPLEMENTED');
-        }
-      }
-    }
-    json += parts.join(',\n') + '\n}';
-  } else {
-    try {
-      json = o+''; // should look like an object      
-    } catch (e) {}
-  }
-  return json;
-}
-
 function cleanse(s) {
   return (s||'').replace(/[<&]/g, function (m) { return {'&':'&amp;','<':'&lt;'}[m];});
 }
@@ -98,7 +32,8 @@ function run(cmd) {
       rawoutput = e.message;
       className = 'error';
     }
-    return [className, cleanse(stringify(rawoutput))];
+
+      return [className, cleanse(JSON.stringify(rawoutput))]
   } 
 }
 
@@ -130,7 +65,7 @@ function post(cmd, blind, response /* passed in when echoing from remote console
 
     if (response[0] != 'info') {
 	span.innerHTML = js_beautify(response[1]);
-	prettyPrint([span]);
+//	prettyPrint([span]);
     }
     el.appendChild(span);
 
