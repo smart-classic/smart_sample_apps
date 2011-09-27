@@ -33,11 +33,9 @@ if (!BPC) {
         
             // Query the RDF for the demographics
             var demographics = demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-                        .prefix('sp', 'http://smartplatforms.org/terms#')
-                        //.where('?a foaf:givenName ?givenName')
-                        //.where('?a foaf:familyName ?familyName')
+                        .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
                         .where('?a foaf:gender ?gender')
-                        .where('?a sp:birthday ?birthday')
+                        .where('?a v:bday ?birthday')
                         .get(0);
                         
             dfd.resolve({gender: demographics.gender.value.toString(),
