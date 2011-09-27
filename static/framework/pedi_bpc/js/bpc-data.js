@@ -60,7 +60,9 @@ if (!BPC) {
         
             // Query the RDF for the height data
             vital_signs
-                .where('?v dc:date ?vital_date')
+                .prefix('dcterms','http://purl.org/dc/terms/')
+                .prefix('sp','http://smartplatforms.org/terms#')
+                .where('?v dcterms:date ?vital_date')
                 .where('?v sp:height ?h')
                 .where('?h sp:value ?height')
                 .where('?h sp:unit \"m\"')
@@ -73,7 +75,9 @@ if (!BPC) {
                 
             // Query the RDF for the blood pressure data
             vital_signs
-                .where('?v dc:date ?vital_date')
+                .prefix('dcterms','http://purl.org/dc/terms/')
+                .prefix('sp','http://smartplatforms.org/terms#')
+                .where('?v dcterms:date ?vital_date')
                 .where('?v sp:bloodPressure ?bloodPressure')
                 .where('?bloodPressure sp:systolic ?s')
                 .where('?s sp:value ?systolic')
