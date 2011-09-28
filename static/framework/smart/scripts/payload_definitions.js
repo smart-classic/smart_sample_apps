@@ -603,7 +603,7 @@
       {
         name: "n", 
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
-        allow_list: true,
+        allow_list: false,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
       },
       {
@@ -1194,8 +1194,8 @@
     ],
     object_properties: [ 
       {
-        name: "address", 
-        uri: "<http://smartplatforms.org/terms#address>",
+        name: "adr", 
+        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
         allow_list: false,
         target: "<http://www.w3.org/2006/vcard/ns#Address>"
       } 
@@ -1288,7 +1288,7 @@
       {
         name: "n", 
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
-        allow_list: true,
+        allow_list: false,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
       },
       {
@@ -1307,8 +1307,8 @@
     is_statement: false,
     data_properties: [ 
       {
-        name: "ncpdpID", 
-        uri: "<http://smartplatforms.org/terms#ncpdpID>",
+        name: "ncpdpId", 
+        uri: "<http://smartplatforms.org/terms#ncpdpId>",
         allow_list: false
       },
       {
@@ -1319,8 +1319,8 @@
     ],
     object_properties: [ 
       {
-        name: "address", 
-        uri: "<http://smartplatforms.org/terms#address>",
+        name: "adr", 
+        uri: "<http://www.w3.org/2006/vcard/ns#adr>",
         allow_list: false,
         target: "<http://www.w3.org/2006/vcard/ns#Address>"
       } 
@@ -1433,7 +1433,7 @@
       {
         name: "n", 
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
-        allow_list: true,
+        allow_list: false,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
       },
       {
@@ -1556,7 +1556,7 @@
   type_definitions["<http://smartplatforms.org/terms#Statement>"] = { 
     name: "SMART Statement",
     uri: "<http://smartplatforms.org/terms#Statement>",
-    is_statement: false,
+    is_statement: true,
     data_properties: [  
     ],
     object_properties: [ 
@@ -1720,7 +1720,7 @@
       {
         name: "n", 
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
-        allow_list: true,
+        allow_list: false,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
       },
       {
@@ -1759,7 +1759,7 @@
       {
         name: "n", 
         uri: "<http://www.w3.org/2006/vcard/ns#n>",
-        allow_list: true,
+        allow_list: false,
         target: "<http://www.w3.org/2006/vcard/ns#Name>"
       },
       {
