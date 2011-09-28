@@ -1,12 +1,7 @@
 steal.plugins('smart')
     .css('stylesheets/api_playground')
     .css('stylesheets/jquery_ui')
-    .resources("../../smart/scripts/payload_definitions") 
-    .resources("../../smart/scripts/parse_payloads") 
-    .resources("jsconsole/prettify.packed")
-    .resources("jsconsole/EventSource")  
-    .resources("jsconsole/console") 
-    .resources("jsconsole/beautify")
+    .resources("jash") 
     .controllers("main") 
     .models("api_type")
     .views();

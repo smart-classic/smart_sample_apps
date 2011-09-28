@@ -5,11 +5,14 @@
   "id" : "api-playground@apps.smartplatforms.org",
   "version" : ".1a",
 
-  "mode" : "ui",
-  "scope" : "record",
-
   "base_url" : "http://localhost:8001",
-  "index" :  "{base_url}/framework/api_playground/index.html",
-  "icon" :  "{base_url}/framework/api_playground/icon.png"
+  "mode" : "ui",
+  "activities" : {
+    "main" :  "{base_url}/framework/api_playground/bootstrap.html"
+  },
+	
+  "web_hooks" : { },
 
+  "icon" :  "{base_url}/framework/api_playground/icon.png",
+  "enabled_by_default" : "true"
 }

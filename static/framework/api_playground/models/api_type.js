@@ -40,6 +40,7 @@ $.Model.extend('ApiType',
 			   .optional("?call api:example ?call_example");
 			
 			for (var i = 0; i < calls.length; i++) {
+			    if (calls[i].call_category.value.match(/^record/))
 				ApiCall.create(calls[i]);
 			}
 

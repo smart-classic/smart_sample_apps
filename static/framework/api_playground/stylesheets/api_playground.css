@@ -47,10 +47,8 @@ table#calls {
     font-weight:bold;
 }
 #wrap  {
+    left: 10px;
     position: absolute;
-    padding-left: 310px;
-    box-sizing: border-box;
-    width: 100%;
 }
 
 #type-nav {
@@ -67,7 +65,6 @@ table#calls {
    width: 300px;
    height: 100%;
    background:  LightBlue;
-   z-index: 10;
 }
 
 
@@ -78,13 +75,15 @@ table#calls {
 
 #response, #payload {
     font-size:0.8em;
+    width: 640px;
     font-family: courier,fixed-width;
 }
 
-#payload {height: 20em; width: 640px;}
+#payload {height: 20em;}
 #response {
 	padding: .5em;
 	margin-left: .8em;
+	border: 1px dotted black;	
 }
 
 #result{
