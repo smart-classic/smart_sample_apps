@@ -9,6 +9,6 @@
   "scope" : "record",
 
   "base_url" : "http://localhost:8001",
-  "index" :              "{base_url}/framework/pedi_bpc/index.html",
+  "index" :  "{base_url}/framework/pedi_bpc/index.html",
   "icon" :  "{base_url}/framework/pedi_bpc/icon.png"
 }

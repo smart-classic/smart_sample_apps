@@ -10,6 +10,6 @@
   "scope": "record",
 
   "base_url" : "http://localhost:8001",
-  "main" : "{base_url}/framework/med_adherence/index.html",
+  "index" : "{base_url}/framework/med_adherence/index.html",
   "icon" :  "{base_url}/framework/med_adherence/icon.png"
 }
