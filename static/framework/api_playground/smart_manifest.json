@@ -1,18 +1,14 @@
 {
   "name" : "API Playground",
-  "description" : "Experiment with the SMArt API in a controlled environment",
+  "description" : "Experiment with the SMART API in a controlled environment",
   "author" : "Josh Mandel, Children's Hospital Boston",
   "id" : "api-playground@apps.smartplatforms.org",
   "version" : ".1a",
 
-  "base_url" : "http://localhost:8001",
-  "mode" : "ui",
-  "activities" : {
-    "main" :  "{base_url}/framework/api_playground/bootstrap.html"
-  },
-	
-  "web_hooks" : { },
+  "mode" : "ui",	
+  "scope": "record",
 
+  "base_url" : "http://localhost:8001",
   "icon" :  "{base_url}/framework/api_playground/icon.png",
-  "enabled_by_default" : "true"
+  "index" :  "{base_url}/framework/api_playground/index.html"
 }

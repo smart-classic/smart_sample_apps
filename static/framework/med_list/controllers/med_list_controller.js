@@ -75,31 +75,6 @@ extend('MedList.Controllers.MedListController',
 				});
 	},
 
-	".spl click": function(el) {
-		var _this = this;
-		el = el.parent();
-		
-		var med = el.closest(".med").model();
-		var _this = this;
-
-		_this.moveSel($(".medtable tr.selected"), 
-			      el.closest("TR"));
-
-		var pre_load_html = el.html();
-		el.html("<img src='/framework/med_list/images/ajax-loader.gif'/>...");
-		
-		med.load_spl_rdf(
-				function(){
-					el.html(pre_load_html);
-					_this.moveSel($(".medtable tr.selected"), 
-							      $(".medtable tr.selected"));
-					
-					var scroll_target = $('#FirstImage').offset().top;
-					window.scrollTo(0,scroll_target);
-					});
-		
-		return false;		
-	},
 
 	moveSel : function($old_sel, $new_sel) {
 		if ($new_sel.length !== 0) {
@@ -110,13 +85,14 @@ extend('MedList.Controllers.MedListController',
 
 			this.selectedRow = $(".medtable tr").index($new_sel);
 			
-			$("#MedDetails").html(
-					this.view('table',
+		    $("#MedDetails").html("");
+/*					this.view('table',
 					{
 						data: Smart.Models.MedDetails.
 							getDetails(this.meds[this.selectedRow-1])
 					}));
 			
+*/
 		}
 	},
 	expand_list : function(status){
