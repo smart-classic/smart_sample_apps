@@ -13,7 +13,7 @@ extend('MedList.Controllers.TimelineController',
     },
 	"timeline.view subscribe": function(called, meds) {
 		this.events = this.timelineData(meds);
-		this.updateTimeline();
+		if (this.events != undefined) this.updateTimeline();
 	},
 	
 	updateTimeline : function() {
