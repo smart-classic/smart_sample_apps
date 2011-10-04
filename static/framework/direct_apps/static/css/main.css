@@ -1,0 +1,50 @@
+/**
+*  CSS styles for the the Blood Pressure Centiles SMART Application
+*
+*  Author: Nikolai Schwertner
+*
+*  Revision history:
+*       2011-06-21 Refactored
+*/
+
+body {
+    font: 62.5% "Trebuchet MS", sans-serif;
+}
+
+/* Styling for the various in-page messages in the BPC app */
+
+#header {
+    font-family: verdana,arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#title {
+    font-family: verdana,arial,sans-serif;
+    font-size: 20px;
+    color: #555;
+}
+
+#dialog-message {
+    display: none;
+}
+
+#main-panel {
+    display: none
+}
+
+.ui-autocomplete {
+    max-height: 100px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    /* add padding to account for vertical scrollbar */
+    padding-right: 20px;
+}
+
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+    height: 100px;
+}

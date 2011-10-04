@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link rel="stylesheet" href="/static/css/main.css" type="text/css" media="screen" />
+   <link rel="stylesheet" href="/static/themes/redmond/jquery.ui.all.css" type="text/css" media="screen" />
+   <script src="/static/smart/smart-api-client.js"></script>
+   <script src="/static/lib/jquery-1.6.2.js"></script>
+   <script src="/static/lib/jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
+   <script src="/static/lib/json2.js"></script>
+   <script src="/static/js/load_data.js"></script>
+</head>
+<body>
+
+<h3>Send SMART Message</h3>
+
+<div id='main-panel'>
+<table>
+   <tr>
+      <td valign="top" align="right">
+          <label for="address">To: </label>
+      </td>
+      <td>
+          <input id="address" size="50" />
+      </td>
+   </tr>
+   <tr>
+      <td valign="top" align="right">
+          <label for="subject">Subject: </label>
+      </td>
+      <td>
+           <input type="text" id="subject" size="50" />
+      </td>
+   </tr>
+   <tr>
+      <td valign="top" align="right">
+            <label for="message">Message: </label><br/>
+      </td>
+      <td>
+            <textarea id='message' cols='80' rows=16'></textarea>
+      </td>
+   </tr>
+</table>
+    
+<p><input id='send_msg' type='button' value='Send' /></p>
+
+</div>
+
+<div id="spinner">
+    <img src='/static/images/ajax-loader.gif' />
+</div>
+
+<div id="dialog-message" title="Info">
+    <p>Message successfully sent</p>
+</div>
+        
+<script>
+  
+$.ajaxSetup ({cache: false});
+
+$('#send_msg').button();
+$('#send_msg').click(function(){
+    if ($('#address').val().length === 0) { 
+        alert ("Please enter the recipient's direct address");
+        return;
+    } else {
+        email = $('#address').val().split("@");
+        if (email.length !== 2) {
+            alert ("Please enter a valid direct address");
+            return;
+        }
+    }
+
+    if ($('#subject').val().length === 0) { 
+        alert ("Please enter a subject");
+        return;
+    }
+
+    if ($('#message').val().length === 0) { 
+        alert ("Please enter a message");
+        return;
+    }
+
+    $('#send_msg').button('disable');
+    $('#spinner').show();
+
+    $.post(  
+        "sendmail-msg",  
+        {'sender_name':DIRECT.sender.name,
+         'sender_email':DIRECT.sender.email,
+         'recipient_email':$('#address').val(),
+         'subject':$('#subject').val(),
+         'message':$('#message').val(),
+         'oauth_header':SMART.credentials.oauth_header},  
+        function(responseText){
+            $('#send_msg').button('enable');
+            $('#spinner').hide();
+            $( "#dialog-message" ).dialog({
+                modal: true,
+                buttons: {
+                    Ok: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        },  
+        "html"  
+    );
+});
+
+DIRECT.getDefaultMessage = function () {
+    var name = DIRECT.patient.firstname + " " + DIRECT.patient.lastname,
+        meds = DIRECT.patient.meds,
+        problems = DIRECT.patient.problems,
+        out = "",
+        i;
+    out += "Dear Sir or Madam,\n\n";
+    out += "I am writing to inform you about " + name + ", who is taking the following medications:\n\n";
+    for (i = 0; i < meds.length; i++)
+        out += "  * " + meds[i] + "\n";
+    out += "\nAnd has the following problems:\n\n";
+    for (i = 0; i < problems.length; i++)
+        out += "  * " + problems[i].date + " " + problems[i].problem + "\n";
+    out += "\nSincerely,\n\n" + DIRECT.sender.name;
+    return out;
+}
+
+SMART.ready(function() {
+    $.when(DIRECT.loadDemographics(), DIRECT.loadUser(), DIRECT.loadMeds(),
+           DIRECT.loadProblems(), DIRECT.loadRecepients()).then(function() {
+        $('#subject').val("New patient message: " + DIRECT.patient.firstname + " " + DIRECT.patient.lastname);
+        $("#message").text(DIRECT.getDefaultMessage ());
+        $('#spinner').hide();
+        $('#main-panel').show();
+    });
+});
+    
+</script>
+</body>
+</html>

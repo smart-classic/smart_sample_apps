@@ -1,0 +1,14 @@
+{
+  "name" : "Direct Apps",
+  "description" : "Sends out SMART apps using Direct.",
+  "author" : "Nikolai Schwertner, Children's Hospital Boston",
+  "id" : "direct-apps@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "mode" : "ui",
+  "scope" : "record",
+
+  "base_url" : "http://directapps.smartplatforms.org",
+  "index" :  "{base_url}/smartapp/index-apps.html",
+  "icon" :  "{base_url}/smartapp/icon-apps.png"
+}

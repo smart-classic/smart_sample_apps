@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export PYTHONPATH=.:..
+export DJANGO_SETTINGS_MODULE=settings
+export BASEPATH=~
+
+echo Importing patient...
+cd $BASEPATH/smart_server
+python load_tools/load_one_patient.py $1 > log.txt 2>&1
+echo Done! 
