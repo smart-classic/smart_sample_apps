@@ -1,0 +1,27 @@
+APP_PATH = '/Users/nshver01/Desktop/direct_apps/'
+
+SMTP_HOST = 'direct.smartplatforms.org'
+SMTP_USER = 'smart'
+SMTP_PASS = 'smart'
+
+SMTP_HOST_ALT = 'direct1.smartplatforms.org'
+SMTP_USER_ALT = 'smart'
+SMTP_PASS_ALT = 'smart'
+
+PROXY_OAUTH = {
+    'consumer_key': 'grails-proxy',
+    'consumer_secret': 'grails-proxy'
+}
+
+PROXY_PARAMS = {
+    'api_base': 'http://direct.smartplatforms.org:7000'
+}
+
+BACKGROUND_OAUTH = {
+    'consumer_key': 'smart-connector@apps.smartplatforms.org',
+    'consumer_secret': 'smartapp-secret'
+}
+
+BACKGROUND_PARAMS = {
+    'api_base': 'http://direct.smartplatforms.org:7000'
+}
