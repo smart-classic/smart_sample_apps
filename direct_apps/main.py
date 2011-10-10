@@ -1,15 +1,14 @@
-import sys, os, time, re, random, json, string, web, urllib, datetime, cgi, shelve, rdflib
-abspath = os.path.dirname(__file__)
-sys.path.append(abspath)
+import json, string, web, urllib, rdflib
 
 from lib.smart_client import oauth
 from lib.smart_client.smart import SmartClient
 from lib.smart_client.common import rdf_ontology
 
+from StringIO import StringIO
 from sendmail import sendEmail
-from pdf_writer import writePDF
+from pdf_writer import generatePDF
 from lib.markdown2 import markdown
-from settings import APP_PATH, SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_HOST_ALT, SMTP_USER_ALT, SMTP_PASS_ALT
+from settings import APP_PATH, SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_HOST_ALT, SMTP_USER_ALT, SMTP_PASS_ALT, PROXY_OAUTH, PROXY_PARAMS
 
 SMART_SERVER_OAUTH = {
 #    'consumer_key': 
@@ -48,8 +47,8 @@ class index_apps:
         
 class getmeds:
     def GET(self):
-        init_smart_client()
-        meds = session.client.records_X_medications_GET()
+        smart_client = get_smart_client()
+        meds = smart_client.records_X_medications_GET()
         q = """
             PREFIX dc:<http://purl.org/dc/elements/1.1/>
             PREFIX dcterms:<http://purl.org/dc/terms/>
@@ -64,24 +63,17 @@ class getmeds:
             """
         pills = meds.query(q)
         
-        out = "["
+        out = []
 
-        first = True
         for pill in pills:
-            if not first:
-                out +=','
-            else:
-                first = False
-            out += '{"drug": "' + pill + '"}'
-            
-        out += "]"
-        
-        return out
+            out.append ({'drug': pill})
+
+        return json.dumps(out)
         
 class getproblems:
     def GET(self):
-        init_smart_client()
-        problems = session.client.records_X_problems_GET()
+        smart_client = get_smart_client()
+        problems = smart_client.records_X_problems_GET()
         q = """
             PREFIX dc:<http://purl.org/dc/elements/1.1/>
             PREFIX dcterms:<http://purl.org/dc/terms/>
@@ -98,19 +90,12 @@ class getproblems:
             
         problems = problems.query(q)
         
-        out = "["
+        out = []
 
-        first = True
         for problem in problems:
-            if not first:
-                out +=','
-            else:
-                first = False
-            out += '{"problem": "' + str(problem[0]) + '", "date":"' + str(problem[1]) + '"}'
-            
-        out += "]"
+            out.append ({'problem': str(problem[0]), 'date': str(problem[1])})
         
-        return out
+        return json.dumps(out)
         
 class getrecepients:
     def GET(self):
@@ -121,15 +106,20 @@ class getrecepients:
         
 class getapps:
     def GET(self):
+        #smart_client = SmartClient(PROXY_OAUTH['consumer_key'], PROXY_PARAMS, PROXY_OAUTH, None)
+        #apps_json = smart_client.get("/apps/manifests/")
+        #apps = json.loads(apps_json)
+        #apps = sorted(apps, key=lambda app: app['name'])
+        #return json.dumps(apps)
         f = open(APP_PATH + 'data/apps.json', 'r')
-        apps = f.read()
+        res = f.read()
         f.close()
-        return apps
+        return res
         
 class getdemographics:
     def GET(self):
-        init_smart_client()
-        demographics = session.client.records_X_demographics_GET()
+        smart_client = get_smart_client()
+        demographics = smart_client.records_X_demographics_GET()
         q = """
             PREFIX foaf:<http://xmlns.com/foaf/0.1/>
             PREFIX v:<http://www.w3.org/2006/vcard/ns#>
@@ -145,13 +135,15 @@ class getdemographics:
             }
             """       
         name = demographics.query(q)
-        for n in name:
-            return '{"firstname": "' + str(n[0]) + '", "lastname": "' + str(n[1]) + '", "gender": "' + str(n[2]) + '", "birthday": "' + str(n[3]) + '"}'
-        
+        assert len(name) == 1, "Bad demographics RDF"
+        n = list(name)[0]
+        out = {'firstname': str(n[0]), 'lastname': str(n[1]), 'gender': str(n[2]), 'birthday': str(n[3])}
+        return json.dumps(out)
+
 class getuser:
     def GET(self):
-        init_smart_client()
-        user = session.client.users_X_GET()
+        smart_client = get_smart_client()
+        user = smart_client.users_X_GET()
         
         q = """
             PREFIX foaf:<http://xmlns.com/foaf/0.1/> 
@@ -165,9 +157,10 @@ class getuser:
             }
             """       
         name = user.query(q)
-        for n in name:
-            # Consider using "assert len(name) == 1" here
-            return '{"name": "' + str(n[0]) + ' ' + str(n[1]) + '", "email": "' +  str(n[2]).replace("mailto:","") + '"}'
+        assert len(name) == 1, "Bad user RDF"
+        n = list(name)[0]
+        out = {'name': str(n[0]) + ' ' + str(n[1]), 'email': str(n[2]).replace("mailto:","")}
+        return json.dumps(out)
  
 class sendmail_msg:
     def POST(self):            
@@ -175,37 +168,29 @@ class sendmail_msg:
         you = web.input().recipient_email
         subject = web.input().subject
         message = web.input().message
-        stamp = str(time.time())  #format it as something more comprehensible
-        filename = "patient-" + stamp + ".pdf" 
-        attachments = [{'file': filename, 'name': "patient.pdf", 'mime': "application/pdf"}]
-        settings = {'host': SMTP_HOST, 'user': SMTP_USER, 'password': SMTP_PASS}
-
+   
         # Create the body of the message (plain-text and HTML version).
         text = message
         html = markdown(text)
         
-        writePDF (APP_PATH + "temp/" + filename, html)
+        pdf_buffer = generatePDF (html)
+        attachments = [{'file_buffer': generatePDF(html), 'name': "patient.pdf", 'mime': "application/pdf"}]
+        settings = {'host': SMTP_HOST, 'user': SMTP_USER, 'password': SMTP_PASS}
         sendEmail (me, you, subject, text, html, attachments, settings)
-        return '{"result": "ok"}'
+        pdf_buffer.close()
+        
+        return json.dumps({'result': 'ok'})
  
 class sendmail_apps:
     def POST(self):
-        init_smart_client()
+        smart_client = get_smart_client()
 
         sender = web.input().sender_email
         recipient = web.input().recipient_email
         subject = web.input().subject
         message = web.input().message
-        settings = {'host': SMTP_HOST_ALT, 'user': SMTP_USER_ALT, 'password': SMTP_PASS_ALT}
         apps = string.split (web.input().apps, ",")
         apis = []
-        
-        random.seed()
-        serial = str(random.randint(100000, 999999))
-        filename1 = "p" + serial + ".xml"
-        filename2 = "manifest-" + serial + ".json"
-        attachments = [{'file': filename1, 'name': filename1, 'mime': "text/xml"},
-                       {'file': filename2, 'name': filename2, 'mime': "text/xml"}]
     
         # Email addresses
         me = SMTP_USER_ALT + "@" + SMTP_HOST_ALT
@@ -215,13 +200,10 @@ class sendmail_apps:
         APPS_JSON = FILE.read()
         FILE.close()
         
-        apps_obj = json.loads(APPS_JSON)
+        myapps = json.loads(APPS_JSON)
         manifest= {"from": sender,
                    "to": recipient,
-                   "datafile": filename1,
                    "apps": []}
-        
-        myapps = apps_obj['apps']
         
         for a in myapps:
             if (a['id'] in apps):
@@ -236,59 +218,50 @@ class sendmail_apps:
         
         manifesttxt = json.dumps(manifest)
         
-        FILE = open(APP_PATH + "temp/" + filename2,"w")
-        FILE.write(manifesttxt)
-        FILE.close()
-        
         #output patient record 
-        demographics = session.client.records_X_demographics_GET()
+        demographics = smart_client.records_X_demographics_GET()
         rdfres = demographics
         
         if ("problems" in apis):
-            problems = session.client.records_X_problems_GET()
-            rdfres += problems
+            rdfres += smart_client.records_X_problems_GET()
             
         if ("medications" in apis):
-            meds = session.client.records_X_medications_GET()
-            rdfres += meds
+            rdfres += smart_client.records_X_medications_GET()
             
         if ("vital_signs" in apis):
-            vitals = session.client.records_X_vital_signs_GET() 
-            rdfres += vitals
+            rdfres += smart_client.records_X_vital_signs_GET() 
         
         for t in rdf_ontology.api_types:
             if t.is_statement or t.uri == rdf_ontology.sp.MedicalRecord:
                 for q in rdfres.triples((None,rdf_ontology.rdf.type,t.uri)):
                     rdf_ontology.remap_node(rdfres, q[0], rdflib.BNode())
         
-        #rdftext = rdfres.serialize(format="pretty-xml")
-        #rdftext = re.sub(r'\srdf:about\=\"([\w\s\-\#\:\.\/]*)\"',"",rdftext)
-        
         rdftext = rdfres.serialize()
         
-        FILE = open(APP_PATH + "temp/" + filename1,"w")
-        FILE.write(rdftext)
-        FILE.close()
+        rdfbuffer = StringIO()
+        rdfbuffer.write(rdftext)
         
+        manifestbuffer = StringIO()
+        manifestbuffer.write(manifesttxt)
+        
+        attachments = [
+            {'file_buffer': rdfbuffer, 'name': "patient.xml", 'mime': "text/xml"},
+            {'file_buffer': manifestbuffer, 'name': "manifest.json", 'mime': "text/xml"}
+        ]
+        settings = {'host': SMTP_HOST_ALT, 'user': SMTP_USER_ALT, 'password': SMTP_PASS_ALT}
         sendEmail (me, you, subject, message, message, attachments, settings)
-        return '{"result": "ok"}'
-
-def init_smart_client():
-    #cookie_name = "tetwfsg"
-    
-    #session.client = None
-    #session.cookie_name = "None"
-    #if session.client is None or cookie_name != session.cookie_name:
-        smart_oauth_header = web.input().oauth_header
-        smart_oauth_header = urllib.unquote(smart_oauth_header)
-        oa_params = oauth.parse_header(smart_oauth_header)
-        SMART_SERVER_PARAMS['api_base'] = oa_params['smart_container_api_base']
-        SMART_SERVER_OAUTH['consumer_key'] = oa_params['smart_app_id']
-        session.client = get_smart_client(smart_oauth_header)
-        #session.cookie_name = cookie_name  
+        manifestbuffer.close()
+        rdfbuffer.close()
+        return json.dumps({'result': 'ok'})
         
-def get_smart_client(authorization_header, resource_tokens=None):
-    oa_params = oauth.parse_header(authorization_header)
+def get_smart_client():
+    smart_oauth_header = web.input().oauth_header
+    smart_oauth_header = urllib.unquote(smart_oauth_header)
+    oa_params = oauth.parse_header(smart_oauth_header)
+    SMART_SERVER_PARAMS['api_base'] = oa_params['smart_container_api_base']
+    SMART_SERVER_OAUTH['consumer_key'] = oa_params['smart_app_id']
+
+    oa_params = oauth.parse_header(smart_oauth_header)
     
     resource_tokens={'oauth_token':       oa_params['smart_oauth_token'],
                      'oauth_token_secret':oa_params['smart_oauth_token_secret']}
@@ -304,13 +277,13 @@ def get_smart_client(authorization_header, resource_tokens=None):
 
 web.config.debug=False
 app = web.application(urls, globals())
-if web.config.get('_session') is None:
-    #session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'client': None})
-    session = web.session.Session(app, web.session.ShelfStore(shelve.open(APP_PATH+'session.shelf')), initializer={'clients': None, 'cookie_name': ''})
-    session.client = None    
-    web.config._session = session
-else:
-    session = web.config._session
+
+#if web.config.get('_session') is None:
+#    session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'client': None})
+#    session = web.session.Session(app, web.session.ShelfStore(shelve.open(APP_PATH+'session.shelf')), initializer={'client': None, 'cookie_name': ''})
+#    web.config._session = session
+#else:
+#    session = web.config._session
     
 if __name__ == "__main__":
     app.run()

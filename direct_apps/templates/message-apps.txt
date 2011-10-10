@@ -1,14 +1,16 @@
+$def with (note, pin, accessURL, apps)
 Note
 ====
 
-$note
+$:note
 
 Access Code
 ===========
 
-Your pin: $pin
+Your pin: ${pin}
 
 The apps
 ========
 
-$apps
+$for a in apps:
+    ${a['name']} (${accessURL}?initial_app=${a['id']})

@@ -3,22 +3,27 @@ import smtplib
 
 # Import the email modules
 from email import encoders
+from email.header import Header
+from email.utils import formataddr
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 
-from settings import APP_PATH
-
-def sendEmail (from_, to, subject, text, html, attachments, settings): 
+def sendEmail (from_, to, subject, text, html, attachments, settings, from_name = 'SMART Direct'): 
 
     # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
 
+    # Generate a friendly "from" header
+    from_header = Header (charset='us-ascii', header_name='from')
+    formated_addr = formataddr ((from_name, from_))
+    from_header.append (formated_addr, charset='us-ascii')
+    
     # Create the enclosing (outer) message
     outer = MIMEMultipart('mixed')
     outer['To'] = to
-    outer['From'] = from_
+    outer['From'] = from_header
     outer['Subject'] = subject
     #outer.add_header('Reply-To', from_)
     outer.preamble = 'This is a multi-part message in MIME format.'
@@ -32,13 +37,10 @@ def sendEmail (from_, to, subject, text, html, attachments, settings):
     outer.attach(outer2)
     
     for a in attachments:
-        file = APP_PATH + "temp/" + a['file']
         ctype = a['mime']
         maintype, subtype = ctype.split('/', 1)
-        fp = open(file, 'rb')
         msg = MIMEBase(maintype, subtype)
-        msg.set_payload(fp.read())
-        fp.close()
+        msg.set_payload(a['file_buffer'].getvalue())
         encoders.encode_base64(msg)
         msg.add_header('Content-Disposition', 'attachment', filename=a['name'])
         outer.attach(msg)

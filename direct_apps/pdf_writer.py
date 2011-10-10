@@ -1,3 +1,5 @@
+from StringIO import StringIO
+
 from settings import APP_PATH
 
 # Import the PDF modules
@@ -6,8 +8,9 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer
 
-def writePDF (filename, text):
-    pdf = SimpleDocTemplate(filename, pagesize = A4)
+def generatePDF (text):
+    buff = StringIO()
+    pdf = SimpleDocTemplate(buff, pagesize = A4)
     story = []
     style = getSampleStyleSheet()
     
@@ -24,3 +27,4 @@ def writePDF (filename, text):
             story.append(Paragraph(para, style["Normal"]))
         
     pdf.build(story)
+    return buff

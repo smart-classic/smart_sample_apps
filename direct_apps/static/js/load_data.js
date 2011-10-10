@@ -1,3 +1,11 @@
+// SMART Direct Library with asynchronous Ajax call wrappers
+//
+// Author: Nikolai Schwertner
+//
+// Revision history:
+//     2011-10-04 Initial release
+
+// Direct App global object
 var DIRECT = {
         patient: {firstname: "", lastname: "", gender: "", birthday: "", meds:[], problems: []},
         sender: {name: "", email: ""},
@@ -5,6 +13,7 @@ var DIRECT = {
         apps: {}
     };
 
+// Load the demographics into the global object
 DIRECT.loadDemographics = function () {
     var dfd = $.Deferred();
     $.get(  
@@ -19,10 +28,14 @@ DIRECT.loadDemographics = function () {
             dfd.resolve();
         },
         "html"
-    );
+    ).error(function() { 
+        console.error("loadDemographics failed");
+        dfd.reject();
+    });
     return dfd.promise();
 };
- 
+
+// Load the user data into the global object
 DIRECT.loadUser = function () {
     var dfd = $.Deferred();
     $.get(  
@@ -35,10 +48,14 @@ DIRECT.loadUser = function () {
             dfd.resolve();
         },  
         "html"
-    );
+    ).error(function() { 
+        console.error("loadUser failed");
+        dfd.reject();
+    });
     return dfd.promise();
 };
 
+// Load the recepients data into the global object
 DIRECT.loadRecepients = function () {
     var dfd = $.Deferred(); 
     $.get(  
@@ -55,10 +72,15 @@ DIRECT.loadRecepients = function () {
             dfd.resolve();
         },  
         "html"  
-    );
+    ).error(function() { 
+        console.error("loadRecepients failed");
+        dfd.reject();
+    });
     return dfd.promise();
 };
 
+// Load the available SMART apps data into the global object
+// (secondary feature: display the apps in a table on the page)
 DIRECT.loadApps = function () {   
     var dfd = $.Deferred();
     $.get(  
@@ -69,11 +91,14 @@ DIRECT.loadApps = function () {
             DIRECT.apps = JSON.parse(responseText);
             
             
-            for (var i = 0; i < DIRECT.apps["apps"].length; i++) {                
+            for (var i = 0; i < DIRECT.apps.length; i++) {      
+                if (i > 0 && i % 6 == 0) {
+                    out += "</tr><tr>";
+                }
                 out += "<td><input type='checkbox' id='app-" + i + "'></td>";
                 out += "<td valign='middle'><img src='" 
-                         + DIRECT.apps["apps"][i]["icon"] +"'> " 
-                         + DIRECT.apps["apps"][i]["name"] + "</td>";
+                         + DIRECT.apps[i]["icon"] +"'><br/>" 
+                         + DIRECT.apps[i]["name"] + "</td>";
             }
             
             out += "</tr></table>";     
@@ -82,10 +107,14 @@ DIRECT.loadApps = function () {
             dfd.resolve();
         },
         "html"  
-    );
+    ).error(function() { 
+        console.error("loadApps failed");
+        dfd.reject();
+    });
     return dfd.promise();
 };
 
+// Load the medications data into the global object
 DIRECT.loadMeds = function () {
     var dfd = $.Deferred();
     $.get(  
@@ -101,10 +130,14 @@ DIRECT.loadMeds = function () {
             dfd.resolve();
         },
         "html"  
-    );
+    ).error(function() { 
+        console.error("loadMeds failed");
+        dfd.reject();
+    });
     return dfd.promise();
 };
 
+// Load the problems data into the global object
 DIRECT.loadProblems = function () {
     var dfd = $.Deferred();  
     $.get(  
@@ -120,6 +153,9 @@ DIRECT.loadProblems = function () {
             dfd.resolve();
         },
         "html"  
-    );
+    ).error(function() { 
+        console.error("loadProblems failed");
+        dfd.reject();
+    });
     return dfd.promise();
 };

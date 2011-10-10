@@ -1,17 +1,17 @@
 /**
-*  CSS styles for the the Blood Pressure Centiles SMART Application
+*  CSS styles for the SMART Direct Applications
 *
 *  Author: Nikolai Schwertner
 *
 *  Revision history:
-*       2011-06-21 Refactored
+*       2011-10-04 Initial release
 */
 
 body {
     font: 62.5% "Trebuchet MS", sans-serif;
 }
 
-/* Styling for the various in-page messages in the BPC app */
+/* Styling for the various in-page messages */
 
 #header {
     font-family: verdana,arial,sans-serif;
@@ -25,6 +25,8 @@ body {
     color: #555;
 }
 
+/* Items that are initially hidden */
+
 #dialog-message {
     display: none;
 }
@@ -32,6 +34,8 @@ body {
 #main-panel {
     display: none
 }
+
+/* Auto-complete box style */
 
 .ui-autocomplete {
     max-height: 100px;
