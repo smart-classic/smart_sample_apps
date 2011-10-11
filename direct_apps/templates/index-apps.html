@@ -34,6 +34,7 @@
 
 <h3>Send SMART Apps</h3>
 
+<!-- begin main panel -->
 <div id='main-panel'>   
 <table>
    <tr>
@@ -58,7 +59,9 @@
       </td>
       <td>
         <textarea id='notes' name='notes' cols='80' rows='5'></textarea>
+        
         <script type="text/javascript">
+            // Initializer for CKEditor - edit to customize the buttons and groups displayed
             DIRECT.loadCK = function () {
                 CKEDITOR.replace( 'notes',
                     {
@@ -96,7 +99,9 @@
 <p><input id='send_apps' type='button' value='Send' /></p>
 
 </div>
+<!-- end main panel -->
 
+<!-- begin additional page elements -->
 <div id="spinner">
     <img src='/static/images/ajax-loader.gif' />
 </div>
@@ -104,19 +109,26 @@
 <div id="dialog-message" title="Info">
     <p>Message successfully sent</p>
 </div>
+<!-- end additional page element -->
     
-<script>    
+<script>
+// Ajax calls should not be cached
 $.ajaxSetup ({cache: false});
 
+// Initialize the send button
 $('#send_apps').button();
 $('#send_apps').click(function(){
+
+    // Local variables
     var app_checked = false,
         myapps = [];
 
+    // Validate the direct address
     if ($('#address').val().length === 0) { 
         alert ("Please enter the recipient's direct address");
         return;
     } else {
+        // Need a better e-mail address validator here...
         email = $('#address').val().split("@");
         if (email.length !== 2) {
             alert ("Please enter a valid address");
@@ -124,11 +136,14 @@ $('#send_apps').click(function(){
         }
     }
     
+    // Validate the subject of the message (should be non-zero length)
     if ($('#subject').val().length === 0) { 
         alert ("Please enter a subject");
         return;
     }
     
+    // Go over the app checkboxes and populate the myapps array with the manifests
+    // of the selected apps
     for (var i = 0; i < DIRECT.apps.length; i++) {
         if ($('#app-' + i).attr('checked')) {
             app_checked = true;
@@ -136,24 +151,28 @@ $('#send_apps').click(function(){
         }
     }
     
+    // Display an alert if no apps are selected and interrup the message sending
     if (!app_checked) { 
         alert ("Please select apps");
         return;
     }
     
+    // Put the UI in the appropriate state to indicate message processing
     $('#send_apps').button('disable');
     $('#spinner').show();
     
+    // Fire up the AJAX call for sending out the direct message
     $.post(  
         "sendmail-apps",  
         {'sender_name': DIRECT.sender.name,
          'sender_email': DIRECT.sender.email,
          'recipient_email': $('#address').val(),
-         'subject': '[SMART_APP]' + $('#subject').val(),
+         'subject': $('#subject').val(),
          'message': CKEDITOR.instances.notes.getData(),
          'apps': myapps.toString(),
          'oauth_header': SMART.credentials.oauth_header},  
         function(responseText){
+            // Upon success reset the UI and display a dialog
             $('#send_apps').button('enable');
             $('#spinner').hide();
             $( "#dialog-message" ).dialog({
@@ -166,7 +185,8 @@ $('#send_apps').click(function(){
             });
         },  
         "html"  
-    ).error(function() { 
+    ).error(function() {
+        // Log the failed AJAX call, reset the UI, and inform the user
         console.error("sendmail-apps failed");
         $('#send_apps').button('enable');
         $('#spinner').hide();
@@ -174,18 +194,33 @@ $('#send_apps').click(function(){
     });
 });
 
+// App data loader
 SMART.ready(function() {
-    $.when(DIRECT.loadDemographics(), DIRECT.loadUser(), 
-           DIRECT.loadRecepients(), DIRECT.loadApps())
-     .then(function() {
+
+    // Launch asynchronosly the data loading calls
+    $.when(DIRECT.loadDemographics(),
+           DIRECT.loadUser(), 
+           DIRECT.loadRecepients(),
+           DIRECT.loadApps())
+           
+     .then(function() { // Upon success
+     
+        // Initialize the subject and notes fields
         $('#subject').val(DIRECT.sender.name + " has shared SMART apps with you");
         $('#notes').val("Explore " + DIRECT.patient.firstname + " " + DIRECT.patient.lastname + "'s record with these SMART apps.");
+        
+        // Load CKEditor
         DIRECT.loadCK();
+        
+        // Display the main panel and hide the spinner
         $('#spinner').hide();
         $('#main-panel').show();
-     }, function() {
+        
+     }, function() { // When the data loaders fail
+     
         $('#spinner').hide();
         alert ("Could not load the needed data");
+        
      });
 });
     

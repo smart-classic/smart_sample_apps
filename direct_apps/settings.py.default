@@ -1,13 +1,22 @@
-APP_PATH = '/Users/nshver01/Desktop/direct_apps/'
+'''Settings for the SMART Direct applications'''
 
+# The absolute path of the SMART Direct apps deployment
+APP_PATH = '/path/to/smart/direct/apps'
+
+# The prefix used for marking all SMART Direct Apps messages
+SMART_DIRECT_PREFIX = '[SMART_APP]'
+
+# Settings for the primary SMART Direct account
 SMTP_HOST = 'direct.smartplatforms.org'
 SMTP_USER = 'smart'
 SMTP_PASS = 'smart'
 
+# Settings for the secondary SMART Direct account
 SMTP_HOST_ALT = 'direct1.smartplatforms.org'
 SMTP_USER_ALT = 'smart'
 SMTP_PASS_ALT = 'smart'
 
+# SMART Client settings
 PROXY_OAUTH = {
     'consumer_key': 'grails-proxy',
     'consumer_secret': 'grails-proxy'

@@ -79,12 +79,16 @@
 // Ajax calls should not be cached
 $.ajaxSetup ({cache: false});
 
+// Initialize the send button
 $('#send_msg').button();
 $('#send_msg').click(function(){
+
+    // Validate the direct address
     if ($('#address').val().length === 0) { 
         alert ("Please enter the recipient's direct address");
         return;
     } else {
+        // Need a better e-mail address validator here...
         email = $('#address').val().split("@");
         if (email.length !== 2) {
             alert ("Please enter a valid direct address");
@@ -92,19 +96,23 @@ $('#send_msg').click(function(){
         }
     }
 
+    // Validate the subject of the message (should be non-zero length)
     if ($('#subject').val().length === 0) { 
         alert ("Please enter a subject");
         return;
     }
 
+    // Validate the message text (should be non-zero length)
     if ($('#message').val().length === 0) { 
         alert ("Please enter a message");
         return;
     }
 
+    // Put the UI in the appropriate state to indicate message processing
     $('#send_msg').button('disable');
     $('#spinner').show();
 
+    // Fire up the AJAX call for sending out the direct message
     $.post(  
         "sendmail-msg",  
         {'sender_name':DIRECT.sender.name,
@@ -114,6 +122,7 @@ $('#send_msg').click(function(){
          'message':$('#message').val(),
          'oauth_header':SMART.credentials.oauth_header},  
         function(responseText){
+            // Upon success reset the UI and display a dialog
             $('#send_msg').button('enable');
             $('#spinner').hide();
             $( "#dialog-message" ).dialog({
@@ -126,7 +135,8 @@ $('#send_msg').click(function(){
             });
         },  
         "html"  
-    ).error(function() { 
+    ).error(function() {
+        // Log the failed AJAX call, reset the UI, and inform the user
         console.error("sendmail-msg failed");
         $('#send_msg').button('enable');
         $('#spinner').hide();
@@ -134,19 +144,7 @@ $('#send_msg').click(function(){
     });
 });
 
-function getInternetExplorerVersion()
-{
-  var rv = -1; // Return value assumes failure.
-  if (navigator.appName == 'Microsoft Internet Explorer')
-  {
-    var ua = navigator.userAgent;
-    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-    if (re.exec(ua) != null)
-      rv = parseFloat( RegExp.$1 );
-  }
-  return rv;
-}
-
+// Returns the version of IE used as decimal (i.e. 9.1)
 DIRECT.getInternetExplorerVersion = function () {
   var rv = -1; // Return value if not IE
   if (navigator.appName == 'Microsoft Internet Explorer')
@@ -179,20 +177,37 @@ DIRECT.getDefaultMessage = function () {
 
 // App data loader
 SMART.ready(function() {
-    $.when(DIRECT.loadDemographics(), DIRECT.loadUser(), DIRECT.loadMeds(),
-           DIRECT.loadProblems(), DIRECT.loadRecepients())
-     .then(function() {
+
+    // Launch asynchronosly the data loading calls
+    $.when(DIRECT.loadDemographics(),
+           DIRECT.loadUser(),
+           DIRECT.loadMeds(),
+           DIRECT.loadProblems(),
+           DIRECT.loadRecepients())
+           
+     .then(function() { // Upon success
+     
+        // Build the main message
         var message = DIRECT.getDefaultMessage();
-        $('#subject').val("New patient message: " + DIRECT.patient.firstname + " " + DIRECT.patient.lastname);
-        if (DIRECT.getInternetExplorerVersion != -1) {
-            message = message.replace("\n","\r");
+        
+        // Hack to convert the line endings to \r when IE is used
+        if (DIRECT.getInternetExplorerVersion() < 0) {
+            message = message.replace(/\n/g,"\r");
         }
+        
+        // Initialize the main app message and subject fields
         $("#message").text(message);
+        $('#subject').val("New patient message: " + DIRECT.patient.firstname + " " + DIRECT.patient.lastname);
+
+        // Display the main panel and hide the spinner
         $('#spinner').hide();
         $('#main-panel').show();
-     }, function() {
+        
+     }, function() { // When the data loaders fail
+     
         $('#spinner').hide();
         alert ("Could not load the needed data");
+        
      });
 });
     

@@ -1,7 +1,13 @@
+'''Module providing e-mail generating functionaly for the SMART Direct Apps'''
+# Developed by: Nikolai Schwertner
+#
+# Revision history:
+#     2011-10-04 Initial release
+
 # Import smtplib for the actual sending function
 import smtplib
 
-# Import the email modules
+# Import various email module components
 from email import encoders
 from email.header import Header
 from email.utils import formataddr
@@ -10,6 +16,8 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 
 def sendEmail (from_, to, subject, text, html, attachments, settings, from_name = 'SMART Direct'): 
+    '''Generates and sends out a proper multipart email message
+       with the supplied parameters over SMPTS (secure SMTP)'''
 
     # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
@@ -36,6 +44,7 @@ def sendEmail (from_, to, subject, text, html, attachments, settings, from_name 
     outer2.attach(part2)
     outer.attach(outer2)
     
+    # Process the attachments and add them to the message
     for a in attachments:
         ctype = a['mime']
         maintype, subtype = ctype.split('/', 1)
@@ -45,6 +54,7 @@ def sendEmail (from_, to, subject, text, html, attachments, settings, from_name 
         msg.add_header('Content-Disposition', 'attachment', filename=a['name'])
         outer.attach(msg)
     
+    # Send the message via SMTPS
     user = settings['user']
     password = settings['password']
     s = smtplib.SMTP_SSL(settings['host'])
