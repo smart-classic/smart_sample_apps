@@ -24,7 +24,7 @@ def generatePDF (html):
     style = getSampleStyleSheet()
     
     # Add the SMART logo to the story
-    story.append(Image(APP_PATH+"static/images/smart-logo.png"))
+    story.append(Image(APP_PATH+"/static/images/smart-logo.png"))
     story.append(Spacer(0, cm * 1))
     
     # Break the text into paragraps and process each paragraph

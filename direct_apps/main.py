@@ -28,7 +28,7 @@ from pdf_writer import generatePDF
 # Import the application settings
 from settings import APP_PATH, SMTP_HOST, SMTP_USER, SMTP_PASS
 from settings import SMTP_HOST_ALT, SMTP_USER_ALT, SMTP_PASS_ALT
-from settings import PROXY_OAUTH, PROXY_PARAMS
+from settings import PROXY_OAUTH, PROXY_PARAMS, SMART_DIRECT_PREFIX
 
 # Default configuration settings for the SMART client
 SMART_SERVER_OAUTH = {
@@ -386,7 +386,10 @@ def get_smart_client():
                        SMART_SERVER_PARAMS, 
                        SMART_SERVER_OAUTH, 
                        resource_tokens)
-
+                       
+    ret.record_id=oa_params['smart_record_id']
+    ret.user_id=oa_params['smart_user_id']
+    
     return ret
 
 # Initialize web.py
