@@ -1,4 +1,7 @@
-import json, string, web, urllib, rdflib
+import json, string, web, urllib, rdflib, os, sys
+
+abspath = os.path.dirname(__file__)
+sys.path.append(abspath)
 
 from lib.smart_client import oauth
 from lib.smart_client.smart import SmartClient

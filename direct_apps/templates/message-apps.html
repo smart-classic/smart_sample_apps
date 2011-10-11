@@ -19,9 +19,7 @@ $def with (note, pin, accessURL, apps)
     
     $for a in apps:
         <p>
-            <a href='${accessURL}?initial_app=${a['id']}' target='_blank'>
-                <img border='0' src='${a['icon']}' />
-            </a>
+            <a href='${accessURL}?initial_app=${a['id']}' target='_blank'><img border='0' src='${a['icon']}' /></a>
             ${a['name']}
         </p>
     

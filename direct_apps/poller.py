@@ -66,7 +66,7 @@ def getUpdatedMessage(note, accessURL, manifestStr, pin):
     html = template_html(note, str(pin), accessURL, apps_out)
     text = template_text(remove_html_tags(note), str(pin), accessURL, apps_out)
     
-    return [text,html]
+    return [str(text),str(html)]
 
 def checkMail ():
 
