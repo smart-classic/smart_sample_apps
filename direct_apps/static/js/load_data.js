@@ -9,7 +9,7 @@
 var DIRECT = {
         patient: {firstname: "", lastname: "", gender: "", birthday: "", meds:[], problems: []},
         sender: {name: "", email: ""},
-        recepients: [],
+        recipients: [],
         apps: {}
     };
 
@@ -55,25 +55,25 @@ DIRECT.loadUser = function () {
     return dfd.promise();
 };
 
-// Load the recepients data into the global object
-DIRECT.loadRecepients = function () {
+// Load the recipients data into the global object
+DIRECT.loadRecipients = function () {
     var dfd = $.Deferred(); 
     $.get(  
-        "getrecepients",  
+        "getrecipients",  
         {'oauth_header':SMART.credentials.oauth_header},  
         function(responseText){
             var data = JSON.parse(responseText);
             for (var i = 0; i < data.length; i++) {
-                DIRECT.recepients.push(data[i].email);
+                DIRECT.recipients.push(data[i].email);
             }
             $( "#address" ).autocomplete({
-                source: DIRECT.recepients
+                source: DIRECT.recipients
             });
             dfd.resolve();
         },  
         "html"  
     ).error(function() { 
-        console.error("loadRecepients failed");
+        console.error("loadRecipients failed");
         dfd.reject();
     });
     return dfd.promise();
