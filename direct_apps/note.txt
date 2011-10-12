@@ -1,0 +1,25 @@
+Sending SMART Direct Apps messages
+----------------------------------
+
+If you would like to use the SMART Direct Proxy service, you can send a SMART Direct message to the following Direct address: 
+
+smart@direct.smartplatforms.org
+
+The message is should be a standard multipart mime message with the following characteristics:
+
+1. The subject of the message should be prefixed with "[SMART_APP]"
+
+2. The text/html part of the main message should contain the note to be forwarded to the end recipient in HTML format.
+
+3. There should be two attachments in the message. The first attachment should be named "patient.xml" and should contain the SMART RDF graph data of the patient. The second file should be called "manifest.json" and should contain metadata about the message and the apps to be used.
+
+Here is an example "manifest.json":
+
+{
+  "to": "smart@direct.healthvault-stage.com",
+  "from": "nikolai.schwertner@childrens.harvard.edu",
+  "apps": [
+     {"version": ".1a", "id": "med-list@apps.smartplatforms.org"}, 
+     {"version": ".1a", "id": "problem-list@apps.smartplatforms.org"}
+  ]
+}
