@@ -15,9 +15,10 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 
-def sendEmail (from_, to, subject, text, html, attachments, settings, from_name = 'SMART Direct'): 
+def send_message (from_, to, subject, text, html, attachments, settings, from_name = 'SMART Direct'): 
     '''Generates and sends out a proper multipart email message
-       with the supplied parameters over SMPTS (secure SMTP)'''
+       with the supplied parameters over SMPTS (secure SMTP)
+    '''
 
     # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')

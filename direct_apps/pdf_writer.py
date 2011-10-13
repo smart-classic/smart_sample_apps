@@ -13,9 +13,10 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer
 
-def generatePDF (html):
+def generate_pdf (html):
     '''Returns a StringIO object containing the PDF code
-    generated from the html text povided'''
+    generated from the html text povided
+    '''
     
     # Initialize the local objects
     buff = StringIO()

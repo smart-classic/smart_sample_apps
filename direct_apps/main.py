@@ -5,7 +5,13 @@
 #     2011-10-04 Initial release
 
 # Import some general modules
-import json, string, web, urllib, rdflib, os, sys
+import json
+import string
+import web
+import urllib
+import rdflib
+import os
+import sys
 
 # Add the current directory to the system path so that python can mod_py could
 # load the local modules
@@ -22,8 +28,8 @@ from lib.markdown2 import markdown
 
 # Import additional components
 from StringIO import StringIO
-from sendmail import sendEmail
-from pdf_writer import generatePDF
+from sendmail import send_message
+from pdf_writer import generate_pdf
 
 # Import the application settings
 from settings import APP_PATH, SMTP_HOST, SMTP_USER, SMTP_PASS
@@ -44,17 +50,18 @@ SMART_SERVER_PARAMS = {
 urls = ('/smartapp/index.html', 'index_apps',
         '/smartapp/index-msg.html', 'index_msg',
         '/smartapp/index-apps.html', 'index_apps',
-        '/smartapp/getapps', 'getapps',
-        '/smartapp/getmeds', 'getmeds',
-        '/smartapp/getproblems', 'getproblems',
-        '/smartapp/getrecipients', 'getrecipients',
-        '/smartapp/getdemographics', 'getdemographics',
-        '/smartapp/getuser', 'getuser',
-        '/smartapp/sendmail-msg', 'sendmail_msg',
-        '/smartapp/sendmail-apps', 'sendmail_apps')
+        '/smartapp/getapps', 'get_apps',
+        '/smartapp/getmeds', 'get_meds',
+        '/smartapp/getproblems', 'get_problems',
+        '/smartapp/getrecipients', 'get_recipients',
+        '/smartapp/getdemographics', 'get_demographics',
+        '/smartapp/getuser', 'get_user',
+        '/smartapp/sendmail-msg', 'send_msg_message',
+        '/smartapp/sendmail-apps', 'send_apps_message')
 
 class index_msg:
     '''Handler for the SMART Direct Messages app page'''
+    
     def GET(self):
         f = open(APP_PATH + '/templates/index-msg.html', 'r')
         html = f.read()
@@ -63,26 +70,31 @@ class index_msg:
         
 class index_apps:
     '''Handler for the SMART Direct Applications app page'''
+    
     def GET(self):
         f = open(APP_PATH + '/templates/index-apps.html', 'r')
         html = f.read()
         f.close()
         return html
         
-class getrecipients:
+class get_recipients:
     '''Recipients REST service handler
     
-    Returns the list of direct recipients in JSON format'''
+    Returns the list of direct recipients in JSON format
+    '''
+    
     def GET(self):
         f = open(APP_PATH + '/data/addresses.json', 'r')
         res = f.read()
         f.close()
         return res
         
-class getapps:
+class get_apps:
     '''Apps REST service handler
     
-    Returns the manifests of the available apps in JSON format'''
+    Returns the manifests of the available apps in JSON format
+    '''
+    
     def GET(self):
         #smart_client = SmartClient(PROXY_OAUTH['consumer_key'], PROXY_PARAMS, PROXY_OAUTH, None)
         #apps_json = smart_client.get("/apps/manifests/")
@@ -94,10 +106,12 @@ class getapps:
         f.close()
         return res
         
-class getmeds:
+class get_meds:
     '''Medications REST service handler
     
-    Provides select medications data from the SMART server in JSON format'''
+    Provides select medications data from the SMART server in JSON format
+    '''
+    
     def GET(self):
     
         #Initialize the SMART client
@@ -129,10 +143,12 @@ class getmeds:
 
         return json.dumps(out)
         
-class getproblems:
+class get_problems:
     '''Problems REST service handler
     
-    Provides select problems data from the SMART server in JSON format'''
+    Provides select problems data from the SMART server in JSON format
+    '''
+    
     def GET(self):
     
         #Initialize the SMART client
@@ -165,10 +181,12 @@ class getproblems:
         
         return json.dumps(out)
         
-class getdemographics:
+class get_demographics:
     '''Demographics REST service handler
     
-    Provides select patient demographics data from the SMART server in JSON format'''
+    Provides select patient demographics data from the SMART server in JSON format
+    '''
+    
     def GET(self):
     
         #Initialize the SMART client
@@ -202,10 +220,12 @@ class getdemographics:
         out = {'firstname': str(n[0]), 'lastname': str(n[1]), 'gender': str(n[2]), 'birthday': str(n[3])}
         return json.dumps(out)
 
-class getuser:
+class get_user:
     '''User Data REST service handler
     
-    Provides select user data from the SMART server in JSON format'''
+    Provides select user data from the SMART server in JSON format
+    '''
+    
     def GET(self):
     
         #Initialize the SMART client
@@ -236,10 +256,12 @@ class getuser:
         out = {'name': str(n[0]) + ' ' + str(n[1]), 'email': str(n[2]).replace("mailto:","")}
         return json.dumps(out)
  
-class sendmail_msg:
+class send_msg_message:
     '''SMART Direct Messages sender REST service handler
     
-    Processes send message requests for the SMART Direct Messages app'''
+    Processes send message requests for the SMART Direct Messages app
+    '''
+    
     def POST(self): 
         # IMPORTANT: We need to add some SMART tokens authentication here to make sure
         # that the request is genuine (non-spoofed). (to do)
@@ -255,14 +277,14 @@ class sendmail_msg:
         html = markdown(text)
         
         # Generate the PDF attachment content
-        pdf_buffer = generatePDF (html)
+        pdf_buffer = generate_pdf (html)
         
         # Initialize the attachment and general settings for the mailer
-        attachments = [{'file_buffer': generatePDF(html), 'name': "patient.pdf", 'mime': "application/pdf"}]
+        attachments = [{'file_buffer': generate_pdf(html), 'name': "patient.pdf", 'mime': "application/pdf"}]
         settings = {'host': SMTP_HOST, 'user': SMTP_USER, 'password': SMTP_PASS}
         
         # Send the SMART Direct message
-        sendEmail (me, you, subject, text, html, attachments, settings)
+        send_message (me, you, subject, text, html, attachments, settings)
         
         # Clean up the string buffer
         pdf_buffer.close()
@@ -270,10 +292,12 @@ class sendmail_msg:
         # Respond with success message
         return json.dumps({'result': 'ok'})
  
-class sendmail_apps:
+class send_apps_message:
     '''SMART Direct Applications sender REST service handler
     
-    Processes send message requests for the SMART Direct Applications app'''
+    Processes send message requests for the SMART Direct Applications app
+    '''
+    
     def POST(self):
         # IMPORTANT: We need to add some SMART tokens authentication here to make sure
         # that the request is genuine (non-spoofed). (to do)
@@ -355,7 +379,7 @@ class sendmail_apps:
         settings = {'host': SMTP_HOST_ALT, 'user': SMTP_USER_ALT, 'password': SMTP_PASS_ALT}
         
         # Send the SMART Direct message
-        sendEmail (me, you, subject, message, message, attachments, settings)
+        send_message (me, you, subject, message, message, attachments, settings)
         
         # Clean up the string buffers
         manifestbuffer.close()
@@ -367,7 +391,8 @@ class sendmail_apps:
 def get_smart_client():
     '''Initializes and returns a new SMART Client
     
-    Expects an OAUTH header as a REST parameter'''
+    Expects an OAUTH header as a REST parameter
+    '''
     smart_oauth_header = web.input().oauth_header
     smart_oauth_header = urllib.unquote(smart_oauth_header)
     oa_params = oauth.parse_header(smart_oauth_header)

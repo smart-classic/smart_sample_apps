@@ -5,12 +5,20 @@
 #     2011-10-04 Initial release
 
 # Import some general modules
-import poplib, time, string, email, os, random, json, re, web
+import poplib
+import time
+import string
+import email
+import os
+import random
+import json
+import re
+import web
 
 # Import additional components
 from email.parser import FeedParser
 from StringIO import StringIO
-from sendmail import sendEmail
+from sendmail import send_message
 
 # Import the local library modules classes and methods
 from lib.html2text import html2text
@@ -22,12 +30,12 @@ from settings import SMTP_HOST_ALT, SMTP_USER_ALT, SMTP_PASS_ALT
 from settings import PROXY_OAUTH, PROXY_PARAMS, BACKGROUND_OAUTH, BACKGROUND_PARAMS
 from settings import SMART_DIRECT_PREFIX
 
-def generatePIN ():
+def generate_pin ():
     '''Returns a random PIN number in the range [1000-9999]'''
     pin = str(random.randint(1000, 9999))
     return pin
 
-def generatePID ():
+def generate_pid ():
     '''Returns a unique patient ID number in the range [100000-999999]'''
     
     # Keep generating random PIDs until a unique one is found
@@ -58,7 +66,7 @@ def generatePID ():
     print "PID is unique"
     return pid
     
-def getAccessURL (patientID, pin):
+def get_access_url (patientID, pin):
     '''Generates a secure SMART Proxy access URL to the patient record'''
     
     # Intialize a machine app SMART client
@@ -67,9 +75,10 @@ def getAccessURL (patientID, pin):
     # Request and return the deep web URL
     return smart_client.get("/records/" + patientID + "/generate_direct_url", {'pin':pin})
     
-def getSenderRecipient(manifestStr):
+def get_sender_recipient(manifestStr):
     '''Parses the provided SMART Direct manifest and
-    returns the sender and recipient direct addresses'''
+    returns the sender and recipient direct addresses
+    '''
     
     manifest = json.loads(manifestStr)
     return [manifest['from'],manifest['to']]
@@ -85,9 +94,10 @@ def remove_html_tags(html):
 
     return out
     
-def getUpdatedMessages(note, accessURL, manifestStr, pin):
+def get_updated_messages(note, accessURL, manifestStr, pin):
     '''Generates and returns the final html and plain-text e-mail body texts
-    to be sent to the SMART Direct recipient'''
+    to be sent to the SMART Direct recipient
+    '''
     
     html = ""
     text = ""
@@ -113,7 +123,7 @@ def getUpdatedMessages(note, accessURL, manifestStr, pin):
     # Return the final messages as strings
     return [str(text),str(html)]
 
-def checkMail ():
+def check_mail ():
     '''Processes all the new messages in the SMART Direct mailbox'''
     
     # Log into the mailbox
@@ -169,7 +179,7 @@ def checkMail ():
                         #   (consider using the python tempfile library here
                         #    once the import script requirement to have the patientID
                         #    in the filename is relaxed)
-                        patientID = generatePID()
+                        patientID = generate_pid()
                         datafile = "p" + patientID + ".xml"
                         patientRDF_str = part.get_payload(decode=True)
                         fp = open("temp/" + datafile, 'wb')
@@ -196,10 +206,10 @@ def checkMail ():
             os.system("./import-patient " + APP_PATH + "/temp/" + datafile)
             
             
-            pin = generatePIN()
-            url = getAccessURL (patientID, pin)
-            sender,recipient = getSenderRecipient(manifest)
-            mytext,myhtml = getUpdatedMessages(myhtml, url, manifest, pin)
+            pin = generate_pin()
+            url = get_access_url (patientID, pin)
+            sender,recipient = get_sender_recipient(manifest)
+            mytext,myhtml = get_updated_messages(myhtml, url, manifest, pin)
             
             # Generate the subject of the final message from the original subject
             # by stripping out the prefix
@@ -217,7 +227,7 @@ def checkMail ():
             settings = {'host': SMTP_HOST, 'user': SMTP_USER, 'password': SMTP_PASS}
             
             # Send out the final direct message
-            sendEmail (sender, recipient, subject, mytext, myhtml, attachments, settings)
+            send_message (sender, recipient, subject, mytext, myhtml, attachments, settings)
             
             # Delete the processed direct message
             M.dele(i+1)
@@ -247,4 +257,4 @@ if __name__ == "__main__":
     # Check for new messages every 2 seconds forever
     while True:
         time.sleep (2)
-        checkMail ()
+        check_mail ()
