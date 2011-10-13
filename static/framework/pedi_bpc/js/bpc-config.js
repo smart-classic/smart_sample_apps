@@ -179,15 +179,15 @@ if (!BPC) {
     */
     BPC.getTermLabel = (function () {
     
-        var prefixSmart = "http://smartplatforms.org/terms/code/",
+        var prefixSmart = "http://smartplatforms.org/terms/codes/",
             prefixSnomed = "http://www.ihtsdo.org/snomed-ct/concepts/",
             codes = [];
             
         codes = [
-            {codeValue: prefixSmart + "encounterType#ambulatory", codeTitle: "Ambulatory"},
-            {codeValue: prefixSmart + "encounterType#inpatient", codeTitle: "Inpatient"},
-            {codeValue: prefixSmart + "bloodPressureMethod#auscultation", codeTitle: "Auscultation"},
-            {codeValue: prefixSmart + "bloodPressureMethod#machine", codeTitle: "Machine"},
+            {codeValue: prefixSmart + "EncounterType#ambulatory", codeTitle: "Ambulatory"},
+            {codeValue: prefixSmart + "EncounterType#inpatient", codeTitle: "Inpatient"},
+            {codeValue: prefixSmart + "BloodPressureMethod#auscultation", codeTitle: "Auscultation"},
+            {codeValue: prefixSmart + "BloodPressureMethod#machine", codeTitle: "Machine"},
             {codeValue: prefixSnomed + "33586001", codeTitle: "Sitting"},
             {codeValue: prefixSnomed + "10904000", codeTitle: "Standing"},
             {codeValue: prefixSnomed + "61396006", codeTitle: "Left Leg"},

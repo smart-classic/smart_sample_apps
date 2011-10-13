@@ -130,7 +130,7 @@ if (!BPC) {
                         methodCode: this.methodCode && this.methodCode.value.toString(),
                         encounterTypeCode: this.code && this.code.value.toString()});
                 });
-                
+            console.log(vitals);
             dfd.resolve(vitals);
         });
         return dfd.promise();
