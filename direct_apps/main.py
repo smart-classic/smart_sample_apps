@@ -15,7 +15,7 @@ sys.path.append(abspath)
 # Import the local smart client modules and components
 from lib.smart_client import oauth
 from lib.smart_client.smart import SmartClient
-from lib.smart_client.common import rdf_ontology
+from lib.smart_client.rdf_utils import anonymize_smart_rdf
 
 # Import the local markdown module function
 from lib.markdown2 import markdown
@@ -338,10 +338,7 @@ class sendmail_apps:
             rdfres += smart_client.records_X_vital_signs_GET() 
         
         # Anonymize the RDF graph for export
-        for t in rdf_ontology.api_types:
-            if t.is_statement or t.uri == rdf_ontology.sp.MedicalRecord:
-                for q in rdfres.triples((None,rdf_ontology.rdf.type,t.uri)):
-                    rdf_ontology.remap_node(rdfres, q[0], rdflib.BNode())
+        rdfres = anonymize_smart_rdf (rdfres)
         
         # Serialize the RDF graph in a string buffer
         rdftext = rdfres.serialize()

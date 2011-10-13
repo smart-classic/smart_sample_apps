@@ -4,26 +4,28 @@ Josh Mandel
 joshua.mandel@childrens.harvard.edu
 """
 
-import urllib
-import RDF
-import libxml2, libxslt
+import urllib, rdflib
+#import RDF
+#import libxml2, libxslt
 import datetime, time
 
+from common import rdf_ontology
+
 NS = {}
-NS['dc'] = RDF.NS('http://purl.org/dc/elements/1.1/')
-NS['dcterms'] = RDF.NS('http://purl.org/dc/terms/')
-NS['med'] = RDF.NS('http://smartplatforms.org/medication#')
-NS['umls'] = RDF.NS('http://www.nlm.nih.gov/research/umls/')
-NS['sp'] = RDF.NS('http://smartplatforms.org/')
-NS['spdemo'] = RDF.NS('http://smartplatforms.org/demographics/')
-NS['foaf']=RDF.NS('http://xmlns.com/foaf/0.1/')
-NS['rdf'] = RDF.NS('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-NS['rxn'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/')
-NS['rxcui'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXCUI/')
-NS['rxaui'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXAUI/')
-NS['rxatn'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXATN#')
-NS['rxrel'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/REL#')
-NS['ccr'] = RDF.NS('urn:astm-org:CCR')
+#NS['dc'] = RDF.NS('http://purl.org/dc/elements/1.1/')
+#NS['dcterms'] = RDF.NS('http://purl.org/dc/terms/')
+#NS['med'] = RDF.NS('http://smartplatforms.org/medication#')
+#NS['umls'] = RDF.NS('http://www.nlm.nih.gov/research/umls/')
+#NS['sp'] = RDF.NS('http://smartplatforms.org/')
+#NS['spdemo'] = RDF.NS('http://smartplatforms.org/demographics/')
+#NS['foaf']=RDF.NS('http://xmlns.com/foaf/0.1/')
+#NS['rdf'] = RDF.NS('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+#NS['rxn'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/')
+#NS['rxcui'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXCUI/')
+#NS['rxaui'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXAUI/')
+#NS['rxatn'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/RXATN#')
+#NS['rxrel'] = RDF.NS('http://link.informatics.stonybrook.edu/rxnorm/REL#')
+#NS['ccr'] = RDF.NS('urn:astm-org:CCR')
 
 def serialize_rdf(model):
     serializer = bound_serializer()    
@@ -161,3 +163,12 @@ def xslt_ccr_to_rdf(source, stylesheet):
 def apply_xslt(sourceDOM, stylesheetDOM):
     style = libxslt.parseStylesheetDoc(stylesheetDOM)
     return style.applyStylesheet(sourceDOM, None).serialize()
+    
+def anonymize_smart_rdf (rdfres):
+    for t in rdf_ontology.api_types:
+        if t.is_statement or t.uri == rdf_ontology.sp.MedicalRecord:
+            for q in rdfres.triples((None,rdf_ontology.rdf.type,t.uri)):
+                rdf_ontology.remap_node(rdfres, q[0], rdflib.BNode())
+                
+    return rdfres
+

@@ -41,8 +41,8 @@ to edit "import-patient" if you SMART reference container is at
 a different location than ours. To run the poller, you can use
 the following command:
 
-python poller.py
+  python poller.py
 
 or alternatively, if you want to run it as a stand-alone service:
 
-nohup python poller.py &
+  nohup python poller.py &
