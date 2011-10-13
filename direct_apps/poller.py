@@ -10,6 +10,7 @@ import time
 import string
 import email
 import os
+import sys
 import random
 import json
 import re
@@ -257,4 +258,7 @@ if __name__ == "__main__":
     # Check for new messages every 2 seconds forever
     while True:
         time.sleep (2)
-        check_mail ()
+        try:
+            check_mail ()
+        except Exception, e:
+            print "Unable to process mail"
