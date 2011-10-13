@@ -399,7 +399,7 @@ app = web.application(urls, globals())
 #    web.config._session = session
 #else:
 #    session = web.config._session
-    
+
 if __name__ == "__main__":
     app.run()
 else:
