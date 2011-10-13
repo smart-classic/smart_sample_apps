@@ -34,27 +34,28 @@ def generatePID ():
     while True:
     
         # Generate a new PID
-        pid = str(random.randint(100000, 999999))
+        pid = str(random.randint(100000000, 999999999))
         isUnique = True
         
         print "Generated PID:", pid
 
         # Initialize a background app SMART client
-        smart_client = SmartClient(BACKGROUND_OAUTH['consumer_key'], BACKGROUND_PARAMS, BACKGROUND_OAUTH, None)
+        smart_client = SmartClient(PROXY_OAUTH['consumer_key'], PROXY_PARAMS, PROXY_OAUTH, None)
 
-        # Check the existing patient identifiers for collisions with the PID
-        for record_id in smart_client.loop_over_records():
-            if pid == record_id:
-                print "Collision detected ... resetting PID"
-                isUnique = false
-                break
-        
-        # Kill the loop when the PID is determined to be unique
+        # Check if the PID already exists
+        try:
+            target = '/apps/' + BACKGROUND_OAUTH['consumer_key'] + '/tokens/records/' + pid
+            smart_client.get(target)
+            isUnique = False
+        except:
+            pass
+
+        # Kill the loop when the PID is determined to be unique        
         if isUnique:
             break
 
     # Return the fresh PID
-    print "PID is unique - proceeding"
+    print "PID is unique"
     return pid
     
 def getAccessURL (patientID, pin):
