@@ -10,7 +10,6 @@ import time
 import string
 import email
 import os
-import sys
 import random
 import json
 import re
