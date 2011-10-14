@@ -196,7 +196,7 @@
             var message = DIRECT.getDefaultMessage();
 
             // Hack to convert the line endings to \r when IE is used
-            if (DIRECT.getInternetExplorerVersion() < 0) {
+            if (DIRECT.getInternetExplorerVersion() > 0) {
                 message = message.replace(/\n/g, "\r");
             }
 
