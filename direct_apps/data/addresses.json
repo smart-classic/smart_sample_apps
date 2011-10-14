@@ -1,5 +1,6 @@
 [
     {"name": "SMART", "email": "smart@direct1.smartplatforms.org"},
     {"name": "Test", "email": "test@direct1.smartplatforms.org"},
-    {"name": "HealthVault", "email": "smart@direct.healthvault-stage.com"}
+    {"name": "HealthVault", "email": "smart@direct.healthvault-stage.com"},
+    {"name": "Indivo", "email": "joe@hospitalusesindivo.directdivo.org"}
 ]
