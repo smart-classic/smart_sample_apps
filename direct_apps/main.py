@@ -84,6 +84,11 @@ class get_recipients:
     '''
     
     def GET(self):
+        # First, try setting up a dummy SMART client to test the credentials
+        # for securty reasons (will raise excepton if the credentails are bad)
+        get_smart_client()
+    
+        # Now process the request
         f = open(APP_PATH + '/data/addresses.json', 'r')
         res = f.read()
         f.close()
@@ -96,11 +101,18 @@ class get_apps:
     '''
     
     def GET(self):
+        # First, try setting up a dummy SMART client to test the credentials
+        # for securty reasons (will raise excepton if the credentails are bad)
+        get_smart_client()
+    
+        # Now process the request
+    
         #smart_client = SmartClient(PROXY_OAUTH['consumer_key'], PROXY_PARAMS, PROXY_OAUTH, None)
         #apps_json = smart_client.get("/apps/manifests/")
         #apps = json.loads(apps_json)
         #apps = sorted(apps, key=lambda app: app['name'])
         #return json.dumps(apps)
+        
         f = open(APP_PATH + '/data/apps.json', 'r')
         res = f.read()
         f.close()
@@ -263,8 +275,9 @@ class send_msg_message:
     '''
     
     def POST(self): 
-        # IMPORTANT: We need to add some SMART tokens authentication here to make sure
-        # that the request is genuine (non-spoofed). (to do)
+        # First, try setting up a dummy SMART client to test the credentials
+        # for securty reasons (will raise excepton if the credentails are bad)
+        get_smart_client()
     
         # Load the message parameters
         me = SMTP_USER + "@" + SMTP_HOST # we always use the primary SMART Direct address
@@ -299,8 +312,9 @@ class send_apps_message:
     '''
     
     def POST(self):
-        # IMPORTANT: We need to add some SMART tokens authentication here to make sure
-        # that the request is genuine (non-spoofed). (to do)
+        # First, try setting up a dummy SMART client to test the credentials
+        # for securty reasons (will raise excepton if the credentails are bad)
+        get_smart_client()
         
         # Initialize the SMART client
         smart_client = get_smart_client()
