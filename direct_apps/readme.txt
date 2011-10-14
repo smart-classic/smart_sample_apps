@@ -19,8 +19,8 @@ Now, obtain and launch main.py:
   cd smart_sample_apps/direct_apps
 
 Before launching the apps, you should copy "settings.py.default"
-into "settings.py" and edit the APP_PATH value. Now you can
-launch the apps server:
+into "settings.py" and edit the APP_PATH value as well as the
+Direct servers' settings. Now you can launch the apps server:
 
   python main.py 8000
 
