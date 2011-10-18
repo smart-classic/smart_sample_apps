@@ -2,21 +2,18 @@
 
 ## PARAMETERS TO REVIEW
 
-APP_HOME = "/path/to/smart_sample_apps"
+APP_HOME = "{{path_to_smart_sample_apps}}"
+
+SMART_API_SERVER_BASE = '{{api_server_base_url}}'
 
 AC_OAUTH = {
   'consumer_key': 'allergy-check@apps.smartplatforms.org', 
   'consumer_secret': 'smartapp-secret'
 }
 
-
 SS_OAUTH = {
   'consumer_key': 'smart-connector@apps.smartplatforms.org', 
   'consumer_secret': 'smartapp-secret'
-}
-
-SMART_SERVER_PARAMS = {
-    'api_base' : 'http://localhost:7000'
 }
 
 ####

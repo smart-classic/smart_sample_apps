@@ -10,7 +10,7 @@ from smart_client.common.util import *
 from django.conf import settings
 
 def get_smart_client(resource_tokens=None):
-    ret = SmartClient(settings.SS_OAUTH['consumer_key'], settings.SMART_SERVER_PARAMS, settings.SS_OAUTH, resource_tokens)
+    ret = SmartClient(settings.SS_OAUTH['consumer_key'], {'api_base': settings.SMART_API_SERVER_BASE}, settings.SS_OAUTH, resource_tokens)
     return ret
 
 def check_records():
