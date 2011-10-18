@@ -4,6 +4,7 @@
 
 APP_HOME = "{{path_to_smart_sample_apps}}"
 
+SMART_APP_SERVER_BASE = '{{app_server_base_url}}'
 SMART_API_SERVER_BASE = '{{api_server_base_url}}'
 
 AC_OAUTH = {
