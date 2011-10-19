@@ -14,7 +14,7 @@ To get started on ubuntu, you can
   sudo apt-get install python-webpy python-pyparsing python-setuptools python-reportlab
   sudo easy_install -U "rdflib>=3.0.0" rdfextras
 
-Now, obtain and launch main.py:
+Now, obtain the app code:
   git clone https://github.com/chb/smart_sample_apps
   cd smart_sample_apps/direct_apps
 
@@ -22,7 +22,7 @@ Before launching the apps, you should copy "settings.py.default"
 into "settings.py" and edit the APP_PATH value as well as the
 Direct servers' settings. Now you can launch the apps server:
 
-  python main.py 8000
+  PYTHONPATH=.:.. && python main.py 8000
 
 Then log in to the reference container at:
  http://sandbox.smartplatforms.org
