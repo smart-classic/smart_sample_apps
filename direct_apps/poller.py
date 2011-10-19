@@ -22,7 +22,9 @@ from sendmail import send_message
 
 # Import the local library modules classes and methods
 from lib.html2text import html2text
-from lib.smart_client.smart import SmartClient
+
+# Import the SMART client
+from smart_client.smart import SmartClient
 
 # Import the application settings
 from settings import APP_PATH, SMTP_HOST, SMTP_USER, SMTP_PASS

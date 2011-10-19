@@ -19,9 +19,9 @@ abspath = os.path.dirname(__file__)
 sys.path.append(abspath)
 
 # Import the local smart client modules and components
-from lib.smart_client import oauth
-from lib.smart_client.smart import SmartClient
-from lib.smart_client.rdf_utils import anonymize_smart_rdf
+from smart_client import oauth
+from smart_client.smart import SmartClient
+from smart_client.rdf_utils import anonymize_smart_rdf
 
 # Import the local markdown module function
 from lib.markdown2 import markdown
