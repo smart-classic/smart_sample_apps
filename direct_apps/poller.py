@@ -205,7 +205,7 @@ def check_mail ():
             # Would be nice to improve the import script so that it could take
             # an arbitrary file and get the patientID as a separate parameter.
             # Then we won't need to encode the patientID in the filename.
-            os.system("./import-patient " + APP_PATH + "/temp/" + datafile)
+            os.system(APP_PATH + "/import-patient " + APP_PATH + "/temp/" + datafile)
             
             
             pin = generate_pin()
