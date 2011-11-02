@@ -1,0 +1,25 @@
+# These are coefficients for the general linear model of the logit type
+# That is, ln(p/(1-p)) = b + c1*x + c2*y = g(x,y)
+# Thus,
+# probability of <non-adherence> = p = exp(g)/( 1 + exp(g) )
+#
+# At-risk for non-adherence occurs when p > 0.5
+#
+# There are three drug categories:
+# Statins = antihyperlipidemics (not just statins)
+# Antih = antihypertensives
+# Hypogly = oral hypoglycemics
+# For each drug category, there are 3 models, each for a different prediction
+# date: 60, 90 and 120 days after the date of the first prescription filled.
+# 
+# Drug category  prediction date  b  c1  c2
+label		date		coef	    coef	coef
+antihyperlipidemics 	60		7.195403   -8.850377   -0.038965   
+antihypertensives 		60		5.9114599  -8.1396532  -0.0306625  
+oral_hypoglycemics 		60		6.406127   -8.435820   -0.031095   
+antihyperlipidemics 	90		11.791364  -14.481215  -0.033888     
+antihypertensives 		90		1.043e+01  -1.342e+01  -2.873e-02  
+oral_hypoglycemics 		90		10.75864   -13.59529   -0.02866      
+antihyperlipidemics 	120		16.462244  -20.350373  -0.031211     
+antihypertensives 		120		14.396930  -18.259962  -0.026685     
+oral_hypoglycemics 		120		14.524065  -18.259678  -0.026009     

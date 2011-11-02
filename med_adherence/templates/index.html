@@ -1,0 +1,143 @@
+<!--  
+    File: index.html
+    
+    Author: William J. Bosl
+    Children's Hospital Boston
+    300 Longwood Avenue
+    Boston, MA 02115
+    Email: william.bosl@childrens.harvard.edu
+    Web: http://chip.org
+
+    Copyright (C) 2011 William Bosl, Children's Hospital Boston Informatics Program (CHIP)
+    http://chip.org. 
+
+    Purpose:
+    
+    This file is part of a Django-based SMArt application that implements
+    a two-step test for medication adherence. It is intended to be used as
+    a SMArt web application within the context of a SMArt container. See
+    http://www.smartplatforms.org/ for detailed information about SMArt applications.
+        
+    License information should go here.
+
+    $Log: index.html,v $
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+	    <link href="layout.css" rel="stylesheet" type="text/css">
+ 		<script  src="scripts/smart-api-client.js"></script>
+	    <HR SIZE="6" COLOR="#993333">
+ 	  	<img src="Rx_image.png" /> 
+        <HR SIZE="6" COLOR="#993333">
+        <ul id="list-nav">
+        <li><a href="index.html?oauth_header={{oauth_header}}">Home</a></li>
+        <li><a href="about.html?oauth_header={{oauth_header}}">About</a></li>
+        <li><a href="choose_med.html?oauth_header={{oauth_header}}">Med details</a></li>
+        <li><a href="risk.html?oauth_header={{oauth_header}}">All meds</a></li>
+        </ul>
+        <br>
+ 	</head>
+ 
+ 	<body>
+	  		  	
+	  	<h4>Clinician: {{user}} <span id="user"></span> </h4>
+	  	<h2 >Patient: {{patient_name}} </h2>	  	
+
+	  	{% if meds_flags %}
+	  	  
+	  	  {% for drug_class in drug_class_array %}
+
+	  		<table id="drugtable"  border="3">
+	  	      <h3 style="text-transform: uppercase" >{{drug_class}}</h3>
+	  			<tr>
+				  <th>Medication</th>
+				  <th>First fill</th>
+				  <th>Last fill</th>
+				  <th>Adherence</th>
+				</tr>
+	  			{% for name, urlname, flag, first, last, class in meds_flags %}
+	  			  {% if drug_class == class %}
+		  
+	  				{% if flag == 0 %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }} </td>
+						  <td>{{first.date}}</td>
+						  <td>{{last.date}}</td>						  
+						  <td><center><img src="{{ MEDIA_URL}}redWarning.png" /></center></td>						  
+						</tr>	  				
+	  				{% else %} {% if flag == 1 %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</td>
+						  <td>{{last.date}}</td>						  
+						  <td><center><img src="{{ MEDIA_URL}}greenCheck.png" /></center></td>						  
+						</tr>
+							 
+	  				{% else %} {% if flag == 2 %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</td>
+						  <td>{{last.date}}</td>						  
+						  <td><center><img src="{{MEDIA_ROOT}}greenCheck.png" /></center></td>						  
+						</tr>	 
+	  				{% else %} {% if flag == 3 %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</td>
+						  <td>{{last.date}}</td>						  
+						  <td><center><img src="{{ MEDIA_ROOT}}redWarning.png" /></center></td>						  
+						</tr>	 
+											  				
+	  				{% else %} {% if flag == 4 %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</th>
+						  <td>{{last.date}}</th>
+						  <td><center><img src="{{ MEDIA_ROOT}}greenCheck.png" /></center></td>
+						</tr>	
+	  				{% else %} {% if flag == 5 %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</th>
+						  <td>{{last.date}}</th>
+						  <td><center><img src="{{ MEDIA_URL}}yellowWarning.png" /></center></td>						  
+						</tr>	
+	  				{% else %} {% if flag == 6 %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</td>
+						  <td>{{last.date}}</td>						  
+						  <td><center><img src="{{ MEDIA_ROOT}}redWarning.png" /></center></td>						  
+						</tr>						
+	  				{% endif %} {% endif %} {% endif %} {% endif %} {% endif %}{% endif %} {% endif %} {% endif %}
+	  			{%endfor %}
+	  		</table>
+	
+	  		{%endfor %}
+	  		
+				<p align="center">
+				<font color="#990000" > <b>Click any medication name above to see details</b> </font>
+				</p>
+								
+				<img src="greenCheck.png" /> Good adherence (Actual or predicted 1 year MPR)
+				<br>
+				<img src="yellowWarning.png" /> Predicted non-adherence problem 
+				<br>
+				<img src="redWarning.png" /> 30-day gap(s) or actual MPR < 80% at 1 year 
+				<br>		
+				<br>		
+	 	{% else %}
+	  		<h3 align="center"> -->  No medications found  <-- </h3>
+	  	{% endif %}
+			
+		<!--  
+		<p>To view a list of all patients and adherence warnings click here: </p>
+		<form name="input" action=patient_list.html method="get">
+		<input type=submit value="View all patients" />
+		</form> 
+		-->
+
+ 	</body>
+</html>

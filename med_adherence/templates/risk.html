@@ -1,0 +1,179 @@
+<!--  
+    File: risk.html
+    
+    Author: William J. Bosl
+    Children's Hospital Boston
+    300 Longwood Avenue
+    Boston, MA 02115
+    Email: william.bosl@childrens.harvard.edu
+    Web: http://chip.org
+
+    Copyright (C) 2011 William Bosl, Children's Hospital Boston Informatics Program (CHIP)
+    http://chip.org. 
+
+    Purpose:
+    
+    This file is part of a Django-based SMArt application that implements
+    a two-step test for medication adherence. It is intended to be used as
+    a SMArt web application within the context of a SMArt container. See
+    http://www.smartplatforms.org/ for detailed information about SMArt applications.
+        
+    License information should go here.
+
+    $Log: risk.html,v $
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+	    <link href="layout.css" rel="stylesheet" type="text/css">
+ 		<script  src="scripts/smart-api-client.js"></script>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="excanvas.min.js"></script><![endif]-->
+	    <script language="javascript" type="text/javascript" src="jquery.js"></script>
+	    <script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
+	    <script language="javascript" type="text/javascript" src="flot/jquery.flot.symbol.js"></script>
+	    <HR SIZE="6" COLOR="#993333">
+ 	  	<img src="Rx_image.png" /> 
+        <HR SIZE="6" COLOR="#993333">
+        <ul id="list-nav">
+        <li><a href="index.html?oauth_header={{oauth_header}}">Home</a></li>
+        <li><a href="about.html?oauth_header={{oauth_header}}">About</a></li>
+        <li><a href="choose_med.html?oauth_header={{oauth_header}}">Med details</a></li>
+        <li><a href="risk.html?oauth_header={{oauth_header}}">All meds</a></li>
+        </ul>
+        <br>
+	</head>
+ 
+	<body>	    		
+	  	{% for drug_class in drug_class_array %}
+	  	  <HR SIZE="4" COLOR="#0000FF">
+	      <h2 style="text-transform: uppercase"> Drug class: {{drug_class}} </h2>
+	  	  <HR SIZE="4" COLOR="#0000FF">
+	      {% for name, urlname, flag, first, last, class, nDays, mpr in meds_flags %}
+	      {% if drug_class == class %}
+	      	      
+	        <HR>	    
+	  		{% if flag == 0 %}
+				<h3> <img src="{{MEDIA_ROOT}}redWarning.png" />  {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3>Current Adherence: <font color="#dd0000">Poor</font> </h3>
+	  		{% else %} {% if flag == 3 %}
+				<h3> <img src="{{MEDIA_ROOT}}redWarning.png" /> {{name}} </h3>						    															  				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3>Current Adherence: <font color="#dd0000">Poor</font></h3>
+	  		{% else %} {% if flag == 2 %}
+				<h3> <img src="{{MEDIA_ROOT}}greenCheck.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#ff9900"></div> 	    	    	    
+	    		<h3> Current Adherence: <font color="#00dd00">Good</font> </h3>
+	  		{% else %} {% if flag == 1 %}
+				<h3> <img src="{{MEDIA_ROOT}}greenCheck.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#00FF00"></div> 	    	    	    
+	    		<h3> Current Adherence: <font color="#00dd00">Good</font> </h3>
+	    		
+	  		{% else %} {% if flag == 4 %}
+				<h3> <img src="{{MEDIA_ROOT}}greenCheck.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3> <font color="#0000ff">Predicted</font> 1-year adherence level: <font color="#00ff00">Good</font> </h3>
+	  		{% else %} {% if flag == 5 %}
+				<h3> <img src="{{MEDIA_ROOT}}yellowWarning.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3> <font color="#0000ff">Predicted</font> 1-year adherence level: <font color="#ff9900">Acceptable</font> </h3>
+	  		{% else %} {% if flag == 6 %}
+				<h3> <img src="{{MEDIA_ROOT}}redWarning.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3> <font  color="#0000ff">Predicted</font> 1-year adherence level: <font color="#ff0000">Poor</font> </h3>
+	  		{% endif %} {% endif %} {% endif %} {% endif %} {% endif %} {% endif %}  {% endif %} 
+	    	<h4> <i><b>Actual MPR on day of last pill (day {{nDays}}) is {{mpr}}</b></i> </h4>
+	    	<h4> First fill date: <i><b>{{first.date}}</b></i>;  last fill date: <i><b>{{last.date}}</b></i>  </h4>
+	    	    	     	 
+		    <script type="text/javascript">
+		                
+		        // The context data should be available. Access it here.
+		        var n = {{forloop.counter}};
+		        //var np = {{forloop.parentcounter.counter }}
+				var all_refill_days = {{refill_day|safe}};
+				var all_gaps = {{gaps|safe}};
+				var all_refills = {{refill|safe}};
+				var ns = "{{name}}";
+				var refill_day = all_refill_days[ns];
+				var gaps = all_gaps[ns];
+				var refill = all_refills[ns];
+				var warningLine = [[0, 0.8],[365, 0.8]]				
+				
+		        (function () {	
+		        
+		        	// Colors
+		        	warningRegionColor = '#ffffbb';
+		        	goodRegionColor = '#eeffee';
+		        			        
+    				// setup background areas
+    				var markings = [
+        				{ color: goodRegionColor, yaxis: { from: 0.8 } },
+        				{ color: warningRegionColor, yaxis: { to: 0.8 } },
+     				];    		
+     				
+	                var plot = $.plot($("#plot"+n), 
+		                	[
+			                	{ data: gaps, color:"#eeeeff", bars:{show: true}, points: { radius: 4, symbol: "circle" }},
+			                	{ label: "Medication gap", data: gaps, color:"#aaaaff", lines:{show: true, lineWidth: 1}},
+			                	{ label: "Actual MPR", data: refill, color:"#0000dd",  lines:{show: true, lineWidth: 4}, points: { radius: 4, symbol: "circle" }},
+			                	{ label: "Fill day", data: refill_day, color:"#000000", points: {show:true, radius: 4, symbol: "circle" }, lines:{show: false} },
+			                	{ label: "Warning level", data: warningLine, color:warningRegionColor, lines:{show: true, lineWidth: 2}},
+			                ],
+		                	{
+		                	    legend: { position: "se", margin: [-130,0] },
+				                series: { lines: { show: true },points: { show: false } },
+						        xaxis: { label: "Days from first fill", ticks: 12, min: 0, max: 365 },
+						        yaxis: { label: "MPR", ticks: 6, min: 0, max: 1.05 },
+						        grid: { markings: markings, hoverable: true }
+		                	} 
+		                );  
+    						                
+				    function showTooltip(x, y, contents) {
+				        $('<div id="tooltip">' + contents + '</div>').css( {
+				            position: 'absolute',
+				            display: 'none',
+				            top: y + 5,
+				            left: x + 5,
+				            border: '1px solid #fdd',
+				            padding: '2px',
+				            'background-color': '#fee',
+				            opacity: 0.80
+				        }).appendTo("body").fadeIn(200);
+				    }					                 			                	                        
+				
+				    var previousPoint = null;
+				    $("#plot"+n).bind("plothover", function (event, pos, item) {
+				        $("#x").text(pos.x.toFixed(2));
+				        $("#y").text(pos.y.toFixed(2));
+				
+						  if ( 1 == 1 ) {
+				            if (item) {
+				                if (previousPoint != item.dataIndex) {
+				                    previousPoint = item.dataIndex;
+				                    
+				                    $("#tooltip").remove();
+				                    var x = item.datapoint[0].toFixed(2),
+				                        y = item.datapoint[1].toFixed(2);
+				                    
+				                    showTooltip(item.pageX, item.pageY,
+				                                item.series.label + " at " + x + " days = " + y);
+				                }
+				            }
+				            else {
+				                $("#tooltip").remove();
+				                previousPoint = null;            
+				            }
+				        }
+				    });
+
+		            } ());
+		    </script>
+
+		   {% endif %} 
+	       {%endfor %}
+	     {%endfor %}
+	     
+	 </body>
+</html>

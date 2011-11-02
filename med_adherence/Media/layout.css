@@ -1,0 +1,95 @@
+<style type="text/css">
+
+
+/* 
+ *  
+ */
+p{
+	font-family: Verdana, Helvetica, sans-serif;
+    color: #0000aa;
+    font-size: 80%;
+}
+       
+h1{
+	font-family: Verdana, sans-serif; 
+	color: #000088; 
+	font-size: 200%;
+}
+h2{
+	font-family: Verdana, sans-serif; 
+	color: #000088; 
+	font-size: 150%; 
+}
+
+h3{
+	font-family: Verdana, sans-serif; 
+	color: #000000; 
+	font-size: 125%; 
+}
+
+indented{
+   padding-left: 50pt;
+   padding-right: 50pt;
+}
+
+background-color:#b0c4de;
+
+#drugtable
+{
+border="3"
+font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+width:100%;
+border-collapse:collapse;
+}
+#drugtable th 
+{
+font-size:1.1em;
+text-align:left;
+padding-top:5px;
+padding-bottom:4px;
+background-color:#A74239;
+color:#ffffff;
+}
+#drugtable td, #drugtable th 
+{
+font-size:1em;
+border:1px solid #A74239;
+padding:3px 7px 2px 7px;
+}
+#drugtable tr.alt td 
+{
+color:#000000;
+background-color:#eecccc;
+}
+
+
+ul#list-nav {
+list-style:none;
+margin:0px;
+padding:0;
+width:650px
+}
+
+ul#list-nav li {
+display:inline
+}
+
+ul#list-nav li a {
+text-decoration:none;
+padding:4px 0;
+width:152px;
+background:#993333;
+color:#eee;
+float:left;
+text-align:center;
+border-left:1px solid #fff;
+}
+
+ul#list-nav li a:hover {
+background:#cccccc;
+color:#000
+}
+
+
+
+</style>

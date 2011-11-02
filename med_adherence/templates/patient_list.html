@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+ 		<script  src="scripts/smart-api-client.js"></script>
+	  	<img src="Rx_image.png" /> 
+	  	<br>
+        <ul id="list-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="choose_med.html">Med details</a></li>
+        <li><a href="risk.html">All meds</a></li>
+        </ul>
+        <br>
+	  	<h1> {{ head_title }} </h1>
+	  	<p>Clinician authorization: William J. Bosl <span id="user"></span></p>
+ 	</head>
+ 	
+ 
+ 	<body>
+	  	
+	  	<p> <img src="{{ MEDIA_URL}}warning_tiny.png" /> indicates possible non-adherence problem. </p>
+		
+		{% for patient, flag in patient_flag.items %}
+			{% if flag %}
+				<a href=risk.html> Patient: {{patient}} </a> <img src="{{ MEDIA_URL}}warning_tiny.png" />
+				<br>
+			{% else %}
+				<a href=risk.html> Patient: {{patient}} </a>
+				<br>
+			{% endif %}
+		{% endfor %}
+		
+			  			
+ 	</body>
+</html>
+		
