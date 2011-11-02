@@ -184,7 +184,7 @@ def check_mail ():
                         patientID = generate_pid()
                         datafile = "p" + patientID + ".xml"
                         patientRDF_str = part.get_payload(decode=True)
-                        fp = open("temp/" + datafile, 'wb')
+                        fp = open(APP_PATH + "/temp/" + datafile, 'wb')
                         fp.write(patientRDF_str)
                         fp.close()
                     
