@@ -33,7 +33,7 @@ from django.shortcuts import render_to_response
 # The SMArt API uses these libraries, all from smart_client_python
 import datetime
 import urllib
-import MedAdherePredict.settings as settings
+import meds_adherence.settings as settings
 import smart_client_python.smart as smart
 import smart_client_python.oauth as oauth
 import adherence_check
