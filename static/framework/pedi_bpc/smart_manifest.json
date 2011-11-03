@@ -1,5 +1,5 @@
 {
-  "name" : "PediBPC",
+  "name" : "BP Centiles",
   "description" : "Display pediatric blood pressures with calculated percentiles",
   "author" : "Nikolai Schwertner",
   "id" : "pedi_bpc@apps.smartplatforms.org",
