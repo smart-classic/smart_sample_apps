@@ -34,8 +34,8 @@ from django.shortcuts import render_to_response
 import datetime
 import urllib
 import meds_adherence.settings as settings
-import smart_client_python.smart as smart
-import smart_client_python.oauth as oauth
+import smart_client.smart as smart
+import smart_client.oauth as oauth
 import adherence_check
 
 
