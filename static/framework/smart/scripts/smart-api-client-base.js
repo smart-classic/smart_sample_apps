@@ -12,21 +12,6 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 
     this.message_receivers = {};
 
-    var procureChannel = function(event){
-	var app_instance_uuid = event.data.match(/^"app_instance_uuid=(.*)"$/);
-	if (!app_instance_uuid) return;
-
-	if (window.removeEventListener) window.removeEventListener('message', procureChannel, false);
-	else if(window.detachEvent) window.detachEvent('onmessage', procureChannel);
-
-	app_instance_uuid = app_instance_uuid[1];
-	sc.bind_channel(app_instance_uuid);
-    };
-
-    if (window.addEventListener) window.addEventListener('message', procureChannel, false);
-    else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
-    window.parent.postMessage('"procure_channel"', "*");
-
     this.is_ready = false;
     this.ready = function(callback) {
 	this.ready_callback = callback;
@@ -62,6 +47,23 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	});
 
     };
+
+    var procureChannel = function(event){
+	var app_instance_uuid = event.data.match(/^"app_instance_uuid=(.*)"$/);
+	if (!app_instance_uuid) return;
+
+	if (window.removeEventListener) window.removeEventListener('message', procureChannel, false);
+	else if(window.detachEvent) window.detachEvent('onmessage', procureChannel);
+
+	app_instance_uuid = app_instance_uuid[1];
+	sc.bind_channel(app_instance_uuid);
+    };
+
+    if (window.addEventListener) window.addEventListener('message', procureChannel, false);
+    else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
+    window.parent.postMessage('"procure_channel"', "*");
+
+
 
     this.received_setup = function(message) {
 	
