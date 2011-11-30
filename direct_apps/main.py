@@ -84,15 +84,11 @@ class get_recipients:
     '''
     
     def GET(self):
-        # First, try setting up a dummy SMART client to test the credentials
-        # for securty reasons (will raise excepton if the credentails are bad)
-        get_smart_client()
+        #Initialize the SMART client (will raise excepton if the credentails are bad)
+        smart_client = get_smart_client()
     
         # Now process the request
-        f = open(APP_PATH + '/data/addresses.json', 'r')
-        res = f.read()
-        f.close()
-        return res
+        return get_recipients_json(smart_client)
         
 class get_apps:
     '''Apps REST service handler
@@ -275,9 +271,8 @@ class send_msg_message:
     '''
     
     def POST(self): 
-        # First, try setting up a dummy SMART client to test the credentials
-        # for securty reasons (will raise excepton if the credentails are bad)
-        get_smart_client()
+        # Initialize the SMART client (will raise excepton if the credentails are bad)
+        smart_client = get_smart_client()
     
         # Load the message parameters
         me = SMTP_USER + "@" + SMTP_HOST # we always use the primary SMART Direct address
@@ -302,6 +297,9 @@ class send_msg_message:
         # Clean up the string buffer
         pdf_buffer.close()
         
+        # If needed, add the recipient to the app's preferences
+        if web.input().recipient_add == "true": add_recipient (smart_client, you)
+        
         # Respond with success message
         return json.dumps({'result': 'ok'})
  
@@ -311,12 +309,8 @@ class send_apps_message:
     Processes send message requests for the SMART Direct Applications app
     '''
     
-    def POST(self):
-        # First, try setting up a dummy SMART client to test the credentials
-        # for securty reasons (will raise excepton if the credentails are bad)
-        get_smart_client()
-        
-        # Initialize the SMART client
+    def POST(self):        
+        # Initialize the SMART client (will raise excepton if the credentails are bad)
         smart_client = get_smart_client()
 
         # Load the message parameters
@@ -399,8 +393,48 @@ class send_apps_message:
         manifestbuffer.close()
         rdfbuffer.close()
         
+        # If needed, add the recipient to the app's preferences
+        if web.input().recipient_add == "true": add_recipient (smart_client, recipient)
+        
         # Respond with success message
         return json.dumps({'result': 'ok'})
+
+def get_recipients_json(smart_client):
+    '''Retrieves the address book stored in the SMART account preferences.
+    If there is no data in SMART, returns the sample address book.
+    
+    Expects a valid SMART client object
+    '''
+    # Load the address book from SMART
+    app_email = smart_client.smart_app_id
+    url = "/accounts/%s/apps/%s/preferences"%(smart_client.user_id,app_email)
+    res = smart_client.get(url)
+
+    # If there is no data, load the sample address book
+    if len(res) == 0:
+        f = open(APP_PATH + '/data/addresses.json', 'r')
+        res = f.read()
+        f.close()
+
+    return res
+        
+def add_recipient(smart_client, recipient):
+    '''Adds a new recipient to the address book stored in the
+    SMART account preferences
+    
+    Expects a valid SMART client object and the email of the recipient
+    '''
+    
+    # Load the current adress book
+    data = json.loads(get_recipients_json(smart_client))
+    
+    # Add the recipient to the address book
+    data.append ({"name": "User", "email": recipient})
+    
+    # Write the address book to SMART
+    app_email = smart_client.smart_app_id
+    url = "/accounts/%s/apps/%s/preferences"%(smart_client.user_id,app_email)
+    smart_client.post(url, json.dumps(data))
         
 def get_smart_client():
     '''Initializes and returns a new SMART Client
@@ -425,6 +459,7 @@ def get_smart_client():
                        
     ret.record_id=oa_params['smart_record_id']
     ret.user_id=oa_params['smart_user_id']
+    ret.smart_app_id=oa_params['smart_app_id']
     
     return ret
 

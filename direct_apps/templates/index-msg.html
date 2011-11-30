@@ -73,13 +73,19 @@
 <div id="dialog-message" title="Info">
     <p>Message successfully sent</p>
 </div>
+
+<div id="dialog-confirm" title="Save in address book?">
+    <p>Would you like to save this recipient in your address book?</p>
+</div>
 <!-- end additional page element -->
 
 <script>
 (function () {
     "use strict";
 
-    var email;
+    var email,
+        recipient_email,
+        add_email;
 
     // Ajax calls should not be cached
     $.ajaxSetup({cache: false});
@@ -113,40 +119,98 @@
             return;
         }
 
-        // Put the UI in the appropriate state to indicate message processing
+        // Disable the send button
         $('#send_msg').button('disable');
-        $('#spinner').show();
+        
+        // Object converter code adapted from http://snook.ca/archives/javascript/testing_for_a_v
+        function oc(a) {
+          var o = {};
+          for (var i=0; i < a.length; i++) {
+            o[a[i]]='';
+          }
+          return o;
+        }
+        
+        // Inline function for processing the actual send request
+        function run_send() {
+            // Put the UI in the appropriate state to indicate message processing
+            $('#spinner').show();
 
-        // Fire up the AJAX call for sending out the direct message
-        $.post(
-            "sendmail-msg",
-            {'sender_name': DIRECT.sender.name,
-             'sender_email': DIRECT.sender.email,
-             'recipient_email': $('#address').val(),
-             'subject': $('#subject').val(),
-             'message': $('#message').val(),
-             'oauth_header': SMART.credentials.oauth_header},
-            function (responseText) {
-                // Upon success reset the UI and display a dialog
+            // Fire up the AJAX call for sending out the direct message
+            $.post(
+                "sendmail-msg",
+                {'sender_name': DIRECT.sender.name,
+                 'sender_email': DIRECT.sender.email,
+                 'recipient_email': recipient_email,
+                 'recipient_add': add_email,
+                 'subject': $('#subject').val(),
+                 'message': $('#message').val(),
+                 'oauth_header': SMART.credentials.oauth_header},
+                function (responseText) {
+                    // Upon success reset the UI and display a dialog
+                    $('#send_msg').button('enable');
+                    $('#spinner').hide();
+                    $("#dialog-message").dialog({
+                        closeOnEscape: false,
+                        draggable: false,
+                        resizable: false,
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                },
+                "html"
+            ).error(function () {
+                // Log the failed AJAX call, reset the UI, and inform the user
+                console.error("sendmail-msg failed");
                 $('#send_msg').button('enable');
                 $('#spinner').hide();
-                $("#dialog-message").dialog({
-                    modal: true,
-                    buttons: {
-                        Ok: function () {
-                            $(this).dialog("close");
-                        }
+                alert("Failed to send the direct message");
+            });
+        }
+        
+        // Get the recipient's address
+        recipient_email = $('#address').val();
+        
+        // Check if the recipient is in the address book
+        if (recipient_email in oc(DIRECT.recipients)) {
+            add_email = "false";
+            run_send();
+        } else {
+            // When the recipient is not in the address book, ask the user whether to
+            // add him to the address book
+            $("#dialog-confirm").html("Would you like to save <strong>" + recipient_email + "</strong> in your address book?");
+            $("#dialog-confirm").dialog({
+                closeOnEscape: false,
+                draggable: false,
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "Yes": function() {
+                        $( this ).dialog( "close" );
+                        
+                        // Execute the send request
+                        add_email = "true";
+                        run_send();
+                        
+                        // Update the local copy of the address book
+                        DIRECT.recipients.push(recipient_email);
+                        DIRECT.recipients.sort();
+                        $("#address").autocomplete({
+                            source: DIRECT.recipients
+                        });
+                    },
+                    "No": function() {
+                        $( this ).dialog( "close" );
+                        add_email = "false";
+                        run_send();
                     }
-                });
-            },
-            "html"
-        ).error(function () {
-            // Log the failed AJAX call, reset the UI, and inform the user
-            console.error("sendmail-msg failed");
-            $('#send_msg').button('enable');
-            $('#spinner').hide();
-            alert("Failed to send the direct message");
-        });
+                }
+            });
+        }
     });
 
     // Returns the version of IE used as decimal (i.e. 9.1)

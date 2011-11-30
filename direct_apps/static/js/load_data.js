@@ -79,6 +79,7 @@ if (!DIRECT) {
                 for (i = 0; i < data.length; i++) {
                     DIRECT.recipients.push(data[i].email);
                 }
+                DIRECT.recipients.sort();
                 $("#address").autocomplete({
                     source: DIRECT.recipients
                 });

@@ -31,6 +31,14 @@ body {
     display: none;
 }
 
+#dialog-confirm {
+    display: none;
+}
+
+.ui-dialog-titlebar-close {
+    display: none;
+}
+
 #main-panel {
     display: none
 }
