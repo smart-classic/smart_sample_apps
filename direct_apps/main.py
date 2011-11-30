@@ -406,9 +406,7 @@ def get_recipients_json(smart_client):
     Expects a valid SMART client object
     '''
     # Load the address book from SMART
-    app_email = smart_client.smart_app_id
-    url = "/accounts/%s/apps/%s/preferences"%(smart_client.user_id,app_email)
-    res = smart_client.get(url)
+    res = smart_client.accounts_X_apps_X_preferences_GET()
 
     # If there is no data, load the sample address book
     if len(res) == 0:
@@ -432,9 +430,7 @@ def add_recipient(smart_client, recipient):
     data.append ({"name": "User", "email": recipient})
     
     # Write the address book to SMART
-    app_email = smart_client.smart_app_id
-    url = "/accounts/%s/apps/%s/preferences"%(smart_client.user_id,app_email)
-    smart_client.post(url, json.dumps(data))
+    smart_client.accounts_X_apps_X_preferences_POST(data=json.dumps(data))
         
 def get_smart_client():
     '''Initializes and returns a new SMART Client
