@@ -24701,21 +24701,6 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 
     this.message_receivers = {};
 
-    var procureChannel = function(event){
-	var app_instance_uuid = event.data.match(/^"app_instance_uuid=(.*)"$/);
-	if (!app_instance_uuid) return;
-
-	if (window.removeEventListener) window.removeEventListener('message', procureChannel, false);
-	else if(window.detachEvent) window.detachEvent('onmessage', procureChannel);
-
-	app_instance_uuid = app_instance_uuid[1];
-	sc.bind_channel(app_instance_uuid);
-    };
-
-    if (window.addEventListener) window.addEventListener('message', procureChannel, false);
-    else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
-    window.parent.postMessage('"procure_channel"', "*");
-
     this.is_ready = false;
     this.ready = function(callback) {
 	this.ready_callback = callback;
@@ -24751,6 +24736,23 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	});
 
     };
+
+    var procureChannel = function(event){
+	var app_instance_uuid = event.data.match(/^"app_instance_uuid=(.*)"$/);
+	if (!app_instance_uuid) return;
+
+	if (window.removeEventListener) window.removeEventListener('message', procureChannel, false);
+	else if(window.detachEvent) window.detachEvent('onmessage', procureChannel);
+
+	app_instance_uuid = app_instance_uuid[1];
+	sc.bind_channel(app_instance_uuid);
+    };
+
+    if (window.addEventListener) window.addEventListener('message', procureChannel, false);
+    else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
+    window.parent.postMessage('"procure_channel"', "*");
+
+
 
     this.received_setup = function(message) {
 	
@@ -25243,6 +25245,41 @@ SMART_CONNECT_CLIENT.prototype.SPARQL = function(query, callback) {
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
 		callback(rdf);
+	});
+};
+
+SMART_CONNECT_CLIENT.prototype.PREFERENCES_put = function(data, content_type, callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'PUT',
+		contentType : 'text/plain',
+		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
+		data : data
+    }, function(contentType, data) {
+		callback(data);
+	});
+};
+
+SMART_CONNECT_CLIENT.prototype.PREFERENCES_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
+		data : {}
+	}, function(contentType, data) {
+		callback(data);
+	});
+};
+
+SMART_CONNECT_CLIENT.prototype.PREFERENCES_delete = function(callback) {
+	var _this = this;
+
+	this.api_call( {
+		method : 'DELETE',
+		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
+		data : {}
+	}, function(contentType, data) {
+		callback(data);
 	});
 };
 
