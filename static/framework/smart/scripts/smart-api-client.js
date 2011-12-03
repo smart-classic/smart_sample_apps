@@ -25248,6 +25248,41 @@ SMART_CONNECT_CLIENT.prototype.SPARQL = function(query, callback) {
 	});
 };
 
+SMART_CONNECT_CLIENT.prototype.PREFERENCES_put = function(data, content_type, callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'PUT',
+		contentType : 'text/plain',
+		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
+		data : data
+    }, function(contentType, data) {
+		callback(data);
+	});
+};
+
+SMART_CONNECT_CLIENT.prototype.PREFERENCES_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
+		data : {}
+	}, function(contentType, data) {
+		callback(data);
+	});
+};
+
+SMART_CONNECT_CLIENT.prototype.PREFERENCES_delete = function(callback) {
+	var _this = this;
+
+	this.api_call( {
+		method : 'DELETE',
+		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
+		data : {}
+	}, function(contentType, data) {
+		callback(data);
+	});
+};
+
 SMART_CONNECT_CLIENT.prototype.createXMLDocument = function(string) {
     var parser, xmlDoc;
     if (window.DOMParser)
