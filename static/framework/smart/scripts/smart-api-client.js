@@ -25252,7 +25252,7 @@ SMART_CONNECT_CLIENT.prototype.PREFERENCES_put = function(data, content_type, ca
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
-		contentType : 'text/plain',
+		contentType : content_type,
 		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
 		data : data
     }, function(contentType, data) {
@@ -25267,7 +25267,7 @@ SMART_CONNECT_CLIENT.prototype.PREFERENCES_get = function(callback) {
 		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
 		data : {}
 	}, function(contentType, data) {
-		callback(data);
+		callback(contentType, data);
 	});
 };
 
