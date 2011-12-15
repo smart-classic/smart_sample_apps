@@ -430,7 +430,7 @@ def add_recipient(smart_client, recipient):
     data.append ({"name": "User", "email": recipient})
     
     # Write the address book to SMART
-    smart_client.accounts_X_apps_X_preferences_PUT(data=json.dumps(data))
+    smart_client.accounts_X_apps_X_preferences_PUT(data=json.dumps(data), content_type="application/json")
         
 def get_smart_client():
     '''Initializes and returns a new SMART Client
