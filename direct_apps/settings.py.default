@@ -9,17 +9,17 @@ SMART_DIRECT_PREFIX = '[SMART_APP]'
 # Settings for the primary SMART Direct account
 SMTP_HOST = 'direct.smartplatforms.org'
 SMTP_USER = 'smart'
-SMTP_PASS = 'smart'
+SMTP_PASS = 'changeme'
 
 # Settings for the secondary SMART Direct account
 SMTP_HOST_ALT = 'direct1.smartplatforms.org'
 SMTP_USER_ALT = 'smart'
-SMTP_PASS_ALT = 'smart'
+SMTP_PASS_ALT = 'changeme'
 
 # SMART Client settings
 PROXY_OAUTH = {
-    'consumer_key': 'grails-proxy',
-    'consumer_secret': 'grails-proxy'
+    'consumer_key': 'smart-proxy',
+    'consumer_secret': 'changeme'
 }
 
 PROXY_PARAMS = {
@@ -28,7 +28,7 @@ PROXY_PARAMS = {
 
 BACKGROUND_OAUTH = {
     'consumer_key': 'smart-connector@apps.smartplatforms.org',
-    'consumer_secret': 'smartapp-secret'
+    'consumer_secret': 'changeme'
 }
 
 BACKGROUND_PARAMS = {
