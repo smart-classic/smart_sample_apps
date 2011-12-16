@@ -33,7 +33,7 @@ from django.shortcuts import render_to_response
 # The SMArt API uses these libraries, all from smart_client_python
 import datetime
 import urllib
-import mpr_predict.settings as settings
+import mpr_monitor.settings as settings
 import smart_client.smart as smart
 import smart_client.oauth as oauth
 import adherence_check
