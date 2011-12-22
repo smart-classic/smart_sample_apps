@@ -75,7 +75,8 @@ def get_access_url (patientID, pin):
     smart_client = SmartClient(PROXY_OAUTH['consumer_key'], PROXY_PARAMS, PROXY_OAUTH, None)
     
     # Request and return the deep web URL
-    return smart_client.get("/records/" + patientID + "/generate_direct_url", {'pin':pin})
+    ct, res = smart_client.get("/records/" + patientID + "/generate_direct_url", {'pin':pin})
+    return res
     
 def get_sender_recipient(manifestStr):
     '''Parses the provided SMART Direct manifest and
