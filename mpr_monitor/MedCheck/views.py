@@ -80,7 +80,7 @@ def index(request):
     # Represent the list as an RDF graph
     # Note the general pattern: GET /records/{record_id}/medications/
     # Get the medication list for this context
-    medications = client.records_X_medications_GET()
+    ct, medications = client.records_X_medications_GET()
     query = """
         PREFIX dcterms:<http://purl.org/dc/terms/>
         PREFIX sp:<http://smartplatforms.org/terms#>
@@ -164,7 +164,7 @@ def get_smart_client(authorization_header, resource_tokens=None):
 def get_birthday_name(client):
     
     #init_smart_client()
-    demographics = client.records_X_demographics_GET()
+    ct, demographics = client.records_X_demographics_GET()
         
     query_demo = """
         PREFIX foaf:<http://xmlns.com/foaf/0.1/>
@@ -214,7 +214,7 @@ def risk(request):
 #    patientID = oa_params["smart_record_id"]
        
     # Get the medication list for this context
-    medications = client.records_X_medications_GET()
+    ct, medications = client.records_X_medications_GET()
     query = """
         PREFIX dcterms:<http://purl.org/dc/terms/>
         PREFIX sp:<http://smartplatforms.org/terms#>
