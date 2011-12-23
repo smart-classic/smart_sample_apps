@@ -104,8 +104,8 @@ class get_apps:
         # Now process the request
     
         #smart_client = SmartClient(PROXY_OAUTH['consumer_key'], PROXY_PARAMS, PROXY_OAUTH, None)
-        #ct, apps_json = smart_client.get("/apps/manifests/")
-        #apps = json.loads(apps_json)
+        #res = smart_client.get("/apps/manifests/")
+        #apps = json.loads(res.body)
         #apps = sorted(apps, key=lambda app: app['name'])
         #return json.dumps(apps)
         
@@ -126,7 +126,7 @@ class get_meds:
         smart_client = get_smart_client()
         
         # Query the SMART server for medications data
-        ct, meds = smart_client.records_X_medications_GET()
+        meds = smart_client.records_X_medications_GET().graph
         
         q = """
             PREFIX dc:<http://purl.org/dc/elements/1.1/>
@@ -163,7 +163,7 @@ class get_problems:
         smart_client = get_smart_client()
         
         # Query the SMART server for medications data
-        ct, problems = smart_client.records_X_problems_GET()
+        problems = smart_client.records_X_problems_GET().graph
         
         q = """
             PREFIX dc:<http://purl.org/dc/elements/1.1/>
@@ -201,7 +201,7 @@ class get_demographics:
         smart_client = get_smart_client()
         
         # Query the SMART server for demographics data
-        ct, demographics = smart_client.records_X_demographics_GET()
+        demographics = smart_client.records_X_demographics_GET().graph
         
         q = """
             PREFIX foaf:<http://xmlns.com/foaf/0.1/>
@@ -240,7 +240,7 @@ class get_user:
         smart_client = get_smart_client()
         
         # Query the SMART server for user data
-        ct, user = smart_client.users_X_GET()
+        user = smart_client.users_X_GET().graph
         
         q = """
             PREFIX foaf:<http://xmlns.com/foaf/0.1/> 
@@ -358,19 +358,17 @@ class send_apps_message:
         manifestbuffer.write(manifesttxt)
         
         # Build the patient RDF graph
-        ct, rdfres = smart_client.records_X_demographics_GET()
+        rdfres = smart_client.records_X_demographics_GET().graph
         
         if ("problems" in apis):
-            ct, data = smart_client.records_X_problems_GET()
-            rdfres += data
+            ct, data = 
+            rdfres += smart_client.records_X_problems_GET().graph
             
         if ("medications" in apis):
-            ct, data = smart_client.records_X_medications_GET()
-            rdfres += data
+            rdfres += smart_client.records_X_medications_GET().graph
             
         if ("vital_signs" in apis):
-            ct, data = smart_client.records_X_vital_signs_GET()
-            rdfres += data
+            rdfres += smart_client.records_X_vital_signs_GET().graph
         
         # Anonymize the RDF graph for export
         rdfres = anonymize_smart_rdf (rdfres)
@@ -409,7 +407,7 @@ def get_recipients_json(smart_client):
     Expects a valid SMART client object
     '''
     # Load the address book from SMART
-    ct, res = smart_client.accounts_X_apps_X_preferences_GET()
+    res = smart_client.accounts_X_apps_X_preferences_GET().body
 
     # If there is no data, load the sample address book
     if len(res) == 0:
