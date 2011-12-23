@@ -361,7 +361,6 @@ class send_apps_message:
         rdfres = smart_client.records_X_demographics_GET().graph
         
         if ("problems" in apis):
-            ct, data = 
             rdfres += smart_client.records_X_problems_GET().graph
             
         if ("medications" in apis):
