@@ -2,7 +2,8 @@ var get_demographics = function() {
     var dfd = $.Deferred();
         
     SMART.DEMOGRAPHICS_get(function(demos) {
-      $.extend(p, demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+      $.extend(p, demos.graph
+                       .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
                        .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
                        .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
                        .where('?r v:n ?n')
@@ -54,7 +55,8 @@ var get_labs = function() {
     var dfd = $.Deferred();
     
     SMART.LAB_RESULTS_get(function(labs){
-        labs.where("?l rdf:type sp:LabResult")
+        labs.graph
+            .where("?l rdf:type sp:LabResult")
             .where("?l sp:labName ?ln")
             .where("?ln sp:code <http://loinc.org/codes/30522-7>")
             .where("?l sp:quantitativeResult ?qr") // predicate
@@ -63,7 +65,8 @@ var get_labs = function() {
             .where("?vu sp:value ?v")
             .each(function(){ p.hsCRP.value = Number(this.v.value); })
 
-        labs.where("?l rdf:type sp:LabResult")
+        labs.graph
+            .where("?l rdf:type sp:LabResult")
             .where("?l sp:labName ?ln")
             .where("?ln sp:code <http://loinc.org/codes/2093-3>")
             .where("?l sp:quantitativeResult ?qr")
@@ -72,7 +75,8 @@ var get_labs = function() {
             .where("?vu sp:value ?v")
             .each(function(){ p.cholesterol.value = Number(this.v.value); })
 
-        labs.where("?l rdf:type sp:LabResult")
+        labs.graph
+            .where("?l rdf:type sp:LabResult")
             .where("?l sp:labName ?ln")
             .where("?ln sp:code <http://loinc.org/codes/2085-9>")
             .where("?l sp:quantitativeResult ?qr")

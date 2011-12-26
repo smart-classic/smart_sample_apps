@@ -16,9 +16,10 @@ SMART.ready(function(){
 
         SMART.MEDS_get(function(meds) {
 	
-	var statin = meds.where("?m rdf:type sp:Medication")
-	.where("?m sp:drugName ?dn")
-	.where("?dn dcterms:title ?drugname");	
+	var statin = meds.graph
+                    .where("?m rdf:type sp:Medication")
+                    .where("?m sp:drugName ?dn")
+                    .where("?dn dcterms:title ?drugname");	
 	var answer = false;
 	
 	for (var i = 0; i < statin.length; i++) {

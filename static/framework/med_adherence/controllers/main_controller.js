@@ -11,8 +11,8 @@ jQuery.Controller.extend('MedAdherence.Controllers.MainController',
 	    SMART.ready(function() {
 		_this.pending_timers = [];
 		
-		Smart.Models.Med.get(function(data) {
-		    _this.meds = data;
+		Smart.Models.Med.get(function(r) {
+		    _this.meds = r.graph;
 		    Smart.Models.Med.findDispenseEvents();
 		    _this.initialize_ui();
 		});
