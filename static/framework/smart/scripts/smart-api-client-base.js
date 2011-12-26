@@ -139,8 +139,8 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    sc.api_call({
 		url: "/apps/manifests",
 		method: "GET"
-	    }, function(ct, data) {
-		success(JSON.parse(data))
+	    }, function(contentType, data) {
+		success({body: data, contentType: contentType, graph: JSON.parse(data)})
 	    });
 	};
 
@@ -148,9 +148,9 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    sc.api_call({
 		url: "/records/search",
 		method: "GET"
-	    }, function(ct, data) {
-		var rdf = sc.process_rdf(ct, data);
-		success(rdf);
+	    }, function(contentType, data) {
+		var rdf = sc.process_rdf(contentType, data);
+		success({body: data, contentType: contentType, graph: rdf});
 	    });
 	};
 
@@ -158,8 +158,8 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    sc.api_call({
 		url: "/apps/"+descriptor+"/manifest",
 		method: "GET"
-	    }, function(ct, data) {
-		success(JSON.parse(data))
+	    }, function(contentType, data) {
+		success({body: data, contentType: contentType, graph: JSON.parse(data)})
 	    });
 	};
     }
@@ -174,7 +174,7 @@ SMART_CONNECT_CLIENT.prototype.ONTOLOGY_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -186,7 +186,7 @@ SMART_CONNECT_CLIENT.prototype.FULFILLMENTS_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 
 };
@@ -199,7 +199,7 @@ SMART_CONNECT_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 
 };
@@ -212,7 +212,7 @@ SMART_CONNECT_CLIENT.prototype.VITAL_SIGNS_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -224,7 +224,7 @@ SMART_CONNECT_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 
 };
@@ -239,7 +239,7 @@ SMART_CONNECT_CLIENT.prototype.MEDS_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 
 };
@@ -254,7 +254,7 @@ SMART_CONNECT_CLIENT.prototype.MEDS_post = function(data, callback) {
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -265,7 +265,7 @@ SMART_CONNECT_CLIENT.prototype.MEDS_delete = function(callback) {
 		url : "/records/" + _this.record.id + "/medications/",
 		data : {}
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -276,7 +276,7 @@ SMART_CONNECT_CLIENT.prototype.MED_delete = function(uri, callback) {
 		url : uri,
 		data : {}
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -290,7 +290,7 @@ SMART_CONNECT_CLIENT.prototype.MED_put = function(data, external_id, callback) {
 		data : data
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 
 };
@@ -303,7 +303,7 @@ SMART_CONNECT_CLIENT.prototype.PROBLEMS_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -315,7 +315,7 @@ SMART_CONNECT_CLIENT.prototype.PROBLEMS_post = function(data, callback) {
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -327,7 +327,7 @@ SMART_CONNECT_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback)
 		url : problem_uri,
 		data : {}
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -341,7 +341,7 @@ SMART_CONNECT_CLIENT.prototype.PROBLEM_put = function(data, external_id, callbac
 		data : data
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -353,7 +353,7 @@ SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -365,7 +365,7 @@ SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data, callback) {
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -377,7 +377,7 @@ SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri, callback) {
 		url : note_uri,
 		data : {}
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -391,7 +391,7 @@ SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback) 
 		data : data
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -404,7 +404,7 @@ SMART_CONNECT_CLIENT.prototype.ALLERGIES_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -416,7 +416,7 @@ SMART_CONNECT_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -428,7 +428,7 @@ SMART_CONNECT_CLIENT.prototype.ALLERGIES_delete = function(allergy_uri, callback
 		url : allergy_uri,
 		data : {}
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -442,7 +442,7 @@ SMART_CONNECT_CLIENT.prototype.ALLERGY_put = function(data, external_id, callbac
 		data : data
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -458,7 +458,7 @@ SMART_CONNECT_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callb
 		}
 	}, function(contentType, data) {
 		var js = JSON.parse(data);
-		callback(js);
+		callback({body: data, contentType: contentType, graph: js});
 	});
 }
 
@@ -470,7 +470,7 @@ SMART_CONNECT_CLIENT.prototype.SPL_get = function(query, callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -484,7 +484,7 @@ SMART_CONNECT_CLIENT.prototype.webhook_post = function(webhook_name, data, callb
 		data : data
 		}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -497,7 +497,7 @@ SMART_CONNECT_CLIENT.prototype.webhook_get = function(webhook_name, data, callba
 		data : data
 		}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -525,7 +525,7 @@ SMART_CONNECT_CLIENT.prototype.CAPABILITIES_get = function(callback) {
 							_this.capabilities[cs[i].cap.value._string] = true;
 						}
 
-						callback(rdf);
+						callback({body: data, contentType: contentType, graph: rdf});
 					});
 }
 
@@ -555,7 +555,7 @@ SMART_CONNECT_CLIENT.prototype.SPARQL = function(query, callback) {
 		}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback(rdf);
+		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
 
@@ -567,7 +567,7 @@ SMART_CONNECT_CLIENT.prototype.PREFERENCES_put = function(data, content_type, ca
 		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
 		data : data
     }, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -578,7 +578,7 @@ SMART_CONNECT_CLIENT.prototype.PREFERENCES_get = function(callback) {
 		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
 		data : {}
 	}, function(contentType, data) {
-		callback(contentType, data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
@@ -590,7 +590,7 @@ SMART_CONNECT_CLIENT.prototype.PREFERENCES_delete = function(callback) {
 		url : "/accounts/" + _this.user.id + "/apps/" + _this.manifest.id + "/preferences",
 		data : {}
 	}, function(contentType, data) {
-		callback(data);
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
