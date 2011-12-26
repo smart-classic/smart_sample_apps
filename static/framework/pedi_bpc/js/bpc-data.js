@@ -95,28 +95,28 @@ if (!BPC) {
                     var res;
                 
                     if (this.encounter)  {
-                        res = vital_signs.where(this.encounter.toString() +  ' sp:encounterType ?encounterType').where('?encounterType sp:code ?code');
+                        res = vital_signs.graph.where(this.encounter.toString() +  ' sp:encounterType ?encounterType').where('?encounterType sp:code ?code');
                         if (res.length === 1) {
                             this.code = res[0].code;
                         }
                     }
                     
                     if (this.bodyPosition)  {
-                        res = vital_signs.where(this.bodyPosition.toString() +  ' sp:code ?bodyPositionCode');
+                        res = vital_signs.graph.where(this.bodyPosition.toString() +  ' sp:code ?bodyPositionCode');
                         if (res.length === 1) {
                             this.bodyPositionCode = res[0].bodyPositionCode;
                         }
                     }
                     
                     if (this.bodySite)  {
-                        res = vital_signs.where(this.bodySite.toString() +  ' sp:code ?bodySiteCode');
+                        res = vital_signs.graph.where(this.bodySite.toString() +  ' sp:code ?bodySiteCode');
                         if (res.length === 1) {
                             this.bodySiteCode = res[0].bodySiteCode;
                         }
                     }
                     
                     if (this.method)  {
-                        res = vital_signs.where(this.method.toString() +  ' sp:code ?methodCode');
+                        res = vital_signs.graph.where(this.method.toString() +  ' sp:code ?methodCode');
                         if (res.length === 1) {
                             this.methodCode = res[0].methodCode;
                         }
