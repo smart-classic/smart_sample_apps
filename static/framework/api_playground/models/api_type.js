@@ -17,7 +17,8 @@ $.Model.extend('ApiType',
 	},
 
 	find_all_types_and_calls: function() {
-		SMART.ONTOLOGY_get(function(ont) {
+		SMART.ONTOLOGY_get(function(r) {
+            var ont = r.graph;
 			this.ontology = ont;
 			
 			// Get all types
