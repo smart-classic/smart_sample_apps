@@ -32,7 +32,8 @@ if (!BPC) {
         SMART.DEMOGRAPHICS_get(function(demos) {
         
             // Query the RDF for the demographics
-            var demographics = demos.prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+            var demographics = demos.graph
+                        .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
                         .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
                         .where('?a foaf:gender ?gender')
                         .where('?a v:bday ?birthday')
@@ -59,7 +60,7 @@ if (!BPC) {
         SMART.VITAL_SIGNS_get(function(vital_signs){
         
             // Query the RDF for the height data
-            vital_signs
+            vital_signs.graph
                 .prefix('dcterms','http://purl.org/dc/terms/')
                 .prefix('sp','http://smartplatforms.org/terms#')
                 .where('?v dcterms:date ?vital_date')
@@ -74,7 +75,7 @@ if (!BPC) {
 				});			
                 
             // Query the RDF for the blood pressure data
-            vital_signs
+            vital_signs.graph
                 .prefix('dcterms','http://purl.org/dc/terms/')
                 .prefix('sp','http://smartplatforms.org/terms#')
                 .where('?v dcterms:date ?vital_date')
