@@ -5,8 +5,8 @@
 $.Model.extend('Smart.Models.RdfObject',
 /* @Static */
 	{
-	saveRDF: function(rdf) {
-		this.rdf = rdf;
+	saveRDF: function(r) {
+		this.rdf = r.graph;
 		
 		// abstract method to instantiate a list of objects from the rdf store.
 		return [this.instantiateByType()];
