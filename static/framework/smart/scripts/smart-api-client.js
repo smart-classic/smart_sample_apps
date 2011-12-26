@@ -24943,7 +24943,7 @@ SMART_CONNECT_CLIENT.prototype.MEDS_post = function(data, callback) {
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
-		callback({body: data, contentType: contentType, graph: rdf});
+		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
 
