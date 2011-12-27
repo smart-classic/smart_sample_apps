@@ -25338,8 +25338,6 @@ SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
 	rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 	rdf.prefix("dcterms", "http://purl.org/dc/terms/");
 
-	// abstract method to instantiate a list of objects from the rdf store.
-	rdf.source_xml = data;
 	return rdf;
 }
 
