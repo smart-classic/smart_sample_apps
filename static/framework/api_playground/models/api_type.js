@@ -143,21 +143,24 @@ $.Model.extend('ApiType',
 		});
 		
 		var args = c.buildCallArgs("", function(contentType, data) {
-   			var rdf = SMART.process_rdf(contentType, data);
-			var typed_entities = rdf.where("?s rdf:type ?p");
-			//console.log("Typed entities available: " + typed_entities.length);
-			
-			$.each(typed_entities, function() {
-				var entity_url = ""+this.s.value;
-				$.each(base_regexes, function() {
-					var matched = this(entity_url);
-					$.each(matched, function(fieldname, value) {
-						ApiType.addInterpolationValue(fieldname, value);
-					});
-				
-				});
+        
+            if (contentType === "application/rdf+xml") {
+                var rdf = SMART.process_rdf(contentType, data);
+                var typed_entities = rdf.where("?s rdf:type ?p");
+                //console.log("Typed entities available: " + typed_entities.length);
+                
+                $.each(typed_entities, function() {
+                    var entity_url = ""+this.s.value;
+                    $.each(base_regexes, function() {
+                        var matched = this(entity_url);
+                        $.each(matched, function(fieldname, value) {
+                            ApiType.addInterpolationValue(fieldname, value);
+                        });
+                    
+                    });
 
-			});
+                });
+            }
             ApiType.addInterpolationValue("user_id",SMART.user.id);
             ApiType.addInterpolationValue("smart_app_id",SMART.manifest.id);
 
