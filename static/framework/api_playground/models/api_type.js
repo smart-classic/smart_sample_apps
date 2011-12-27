@@ -222,7 +222,15 @@ $.Model.extend('ApiCall',
 	
 	contentType: function() {
 		if ($.inArray(this.method, this.Class.payload_methods) !== -1) {
-			return "application/rdf+xml";
+            var path = this.path
+            var suffix = "/preferences";
+            if (path.indexOf(suffix, path.length - suffix.length) !== -1) {
+                // Preferences API call
+                return "text/plain";
+            } else {
+                // All other calls
+                return "application/rdf+xml";
+            }
 		}
 		return "application/x-www-form-urlencoded";
 	},
@@ -233,6 +241,7 @@ $.Model.extend('ApiCall',
 	},
 	
 	buildCallArgs: function(data, callback) {
+        
 		var call_args = [{
 			method: this.method, 
 			url: ApiType.interpolatedPath(this.path), 
