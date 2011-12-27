@@ -158,6 +158,9 @@ $.Model.extend('ApiType',
 				});
 
 			});
+            ApiType.addInterpolationValue("user_id",SMART.user.id);
+            ApiType.addInterpolationValue("smart_app_id",SMART.manifest.id);
+
    		});
    		
    		SMART.api_call(args[0], args[1]);
