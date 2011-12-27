@@ -151,6 +151,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
             window.jash.output.value += "\n\n------------\n";
             window.jash.output.value += window.jash.defaultText;
             window.jash.output.value += "\n";
+            this.response_box.show();
         }
 
     	this.selected_top_group.group_type.fetchParameters();		
