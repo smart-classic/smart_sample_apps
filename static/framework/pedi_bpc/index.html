@@ -6,6 +6,7 @@
 *  Developed by: Nikolai Schwertner
 *
 *  Revision history:
+*       2011-12-29 Moved the patient information tab outside the tabs context
 *       2011-06-21 Refactored
 *       2011-06-02 Modified the table template to output the method and the month/year format
 *       2011-05-26 Added JCM's calculator code
@@ -54,7 +55,8 @@
             <div id="headings">
                 <table width="786">
                     <tr>
-                        <td align="left" valign="center"><div id="title">Blood Pressure Centiles SMART Application</div></td>
+                        <td align="left" valign="bottom"><div id="title">Blood Pressure Centiles</div></td>
+                        <td align="center" valign="bottom"><div id="patient-info"></div></td>
                         <td align="right">
                             <div id="logo"><a href="http://www.smartplatforms.org/" target="_blank"><img src="images/smart-logo.png" border="0" width="65" height="40" alt="SMART Logo" /></a></div>
                         </td>
@@ -324,13 +326,12 @@ CDC Clinical Growth Charts obtained 04/06/2011 (
                 
             </div> <!-- tabs -->
 
-            <div id="copy">v0.7</div>
+            <div id="copy">v0.8</div>
         </div>
         
         <!-- jTemplates template for the table view -->
         <div style="display:none"><textarea id="template" rows="0" cols="0"><!--
             {#template MAIN}
-                <p class="tablelabel">{$T}</p>
                 <table class="nicetable">
 					<thead>
 						{#include HEAD}

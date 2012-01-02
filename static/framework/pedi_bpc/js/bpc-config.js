@@ -100,7 +100,7 @@ if (!BPC) {
             
             // Y axis definitions
             max: (shortTerm ? 160 : 100),  // maximum value of the data (plotted on the Y axis); this is either mmHg or percentile
-            vLabels: (shortTerm ? 16 : 10), // number of labels to display for the Y axis
+            vLabels: (shortTerm ? 16 : 100), // number of labels to display for the Y axis
             vAxisLabel: (shortTerm ? "mmHg" : (systolic ? "Percentile" : null)), // text to be displayed as the units label
             
             // Legend settings

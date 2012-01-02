@@ -3,6 +3,7 @@
 // Author: Nikolai Schwertner
 //
 // Revision history:
+//       2012-01-02  Implemented custom scaling capability for the long term view
 //       2011-06-06  Code refactored
 //       2011-06-02  Long term view slpit in two; legent
 //       2011-05-19  Code improvements and additional inline documentation
@@ -240,7 +241,7 @@ if (!BPC) {
         }
             
         // Draw the grid
-        r.drawGrid(s.leftgutter + .5, s.topgutter + .5, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, s.gridCols, s.gridRows, s.gridColor);
+        r.drawGrid(s.leftgutter + .5, s.topgutter + .5, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, s.gridCols, s.gridRows, s.gridColor, shortTerm);
           
         // Draw the percentiles axis (needs to be reworked as a function and tested for correct scaling)
         r.drawVAxisLabels (s.leftgutter - 15, s.topgutter + .5,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel, s.txt2, shortTerm);
@@ -365,7 +366,8 @@ if (!BPC) {
                 // Build the two path increments for the systolic and diastolic graphs
                 var pathAdvance = function (first, x, percentile, flag) { 
                     var path = [];
-                    var y = Math.round(s.height - s.bottomgutter - s.Y * percentile);
+                    var y = ltv_scale(Math.round(s.height - s.bottomgutter - s.Y * percentile + 1));
+                    //console.log ("point y: " + Math.round(s.height - s.bottomgutter - s.Y * percentile + 1) + " -> " + y); 
                     if (first) path = ["M", x, y];
                     path = path.concat(["L", x, y]);
                     if (flag) drawDot (x, y, percentile, patient.data[i], patient.sex);  // draw the data point circle
@@ -507,7 +509,7 @@ if (!BPC) {
     /**
     * Draws the background grid
     */
-    Raphael.fn.drawGrid = function (x, y, w, h, wv, hv, color) {
+    Raphael.fn.drawGrid = function (x, y, w, h, wv, hv, color, shortTerm) {
         
 		var path = ["M", Math.round(x) + .5, Math.round(y) + .5, "L", Math.round(x + w) + .5, Math.round(y) + .5, Math.round(x + w) + .5, Math.round(y + h) + .5, Math.round(x) + .5, Math.round(y + h) + .5, Math.round(x) + .5, Math.round(y) + .5],
             rowHeight = h / hv,
@@ -517,7 +519,11 @@ if (!BPC) {
 		color = color || "#000";   // default color to black
 			
         for (i = 1; i < hv; i++) {
-            path = path.concat(["M", Math.round(x) + .5, Math.round(y + i * rowHeight) + .5, "H", Math.round(x + w) + .5]);
+            if (!shortTerm) {
+                path = path.concat(["M", Math.round(x) + .5, ltv_scale(Math.round(y + i * rowHeight) + .5), "H", Math.round(x + w) + .5]);
+            } else {
+                path = path.concat(["M", Math.round(x) + .5, Math.round(y + i * rowHeight) + .5, "H", Math.round(x + w) + .5]);
+            }
         }
         for (i = 1; i < wv; i++) {
             path = path.concat(["M", Math.round(x + i * columnWidth) + .5, Math.round(y) + .5, "V", Math.round(y + h) + .5]);
@@ -533,6 +539,7 @@ if (!BPC) {
 	
         var stepDelta = h / hv,
 			label,
+            val,
 			i;
 		
         if (shortTerm) {
@@ -542,8 +549,11 @@ if (!BPC) {
             }
         } else {
             for (i = 1; i < hv; i++) {
-                label = maxValue - i*(maxValue / hv) + " %";
-                this.text(x - 5, Math.round(y + i * stepDelta), label).attr(styling).toBack();
+                val = maxValue - i*(maxValue / hv);
+                if (val === 95 || (val <= 90 && (val % 10 === 0 && (val / 10) % 2 !== 0))) {
+                    label = val + " %";
+                    this.text(x - 5, ltv_scale(Math.round(y + i * stepDelta)), label).attr(styling).toBack();
+                }
             }
         }
 		
@@ -582,7 +592,8 @@ if (!BPC) {
         
         for (i = zones.length - 1, currentY = y; i >= 0; i--) {
             zoneH = zones[i].percent * dh;
-            this.rect(x + .5, currentY + .5, w,zoneH).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
+            this.rect(x + .5, ltv_scale(currentY + .5), w, ltv_scale_height(currentY + .5, zoneH)).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
+            //console.log ("zone y:" + ltv_scale(currentY + .5) + " h:" + ltv_scale_height(currentY + .5, zoneH))
             currentY = currentY + zoneH;
         }
     };
@@ -653,5 +664,35 @@ if (!BPC) {
         // Table output (using jTemplates)
         $("#"+divID).setTemplateElement("template");
         $("#"+divID).processTemplate(patient);
+    };
+    
+    /**
+    * Implements the scaling function for the long-term view graphics
+    *
+    * @param {Number} x The coordinate to be rescaled
+    *
+    * @returns {Number} The resultant scaled coordinate
+    */
+    var ltv_scale = function (x) {
+       //31-47-191-207-351 -> 31-100-191-260-351
+       if (x <= 31 || x > 351) return Math.round(x);
+       if (x > 31 && x <=47)   return Math.round(BPC.scale(x,31,47,31,100));
+       if (x > 47 && x <=191)  return Math.round(BPC.scale(x,47,191,100,191));
+       if (x > 191 && x <=207) return Math.round(BPC.scale(x,191,207,191,260));
+       if (x > 207 && x <=351) return Math.round(BPC.scale(x,207,351,260,351));
+    };
+    
+    /**
+    * Implements s height segment scaling utility for the long-term view graphics
+    *
+    * @param {Number} y The coordinate at the beginning of the segment
+    * @param {Number} h The height of the segment
+    *
+    * @returns {Number} The resultant scaled height
+    */
+    var ltv_scale_height = function (y, h) {
+        var start = ltv_scale(y),
+            end = ltv_scale(y+h);
+        return end-start;
     };
 }());

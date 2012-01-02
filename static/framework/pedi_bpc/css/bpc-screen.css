@@ -25,7 +25,7 @@ body {
 #slider-timerange { width: 150px; margin-top: 4px;}
 #holder_short { padding-top: 5px; float:left; width: 320px; height: 400px; }
 #holder_long   { padding-top: 5px; clear:both; width: 760px; height: 420px; }
-#holder_table { padding-top: 5px; clear:both; }
+#holder_table { padding-top: 10px; clear:both; }
 #help_short {float:left;}
 
 /* Styling for the calculator */
@@ -96,6 +96,11 @@ input[type='number'] {border: 1px solid #555;}
 	vertical-align: middle;
 }
 
+#patient-info {
+    font-family: verdana,arial,sans-serif;
+    font-size:12px;
+}
+
 #dialog-message {
     display: none;
 }
@@ -112,12 +117,6 @@ input[type='number'] {border: 1px solid #555;}
 }
 
 /* Styling for the table view */
-
-.tablelabel {
-    font-family: verdana,arial,sans-serif;
-    font-size:12px;
-    font-weight:bold;
-}
 
 table.nicetable {
     font-family: verdana,arial,sans-serif;

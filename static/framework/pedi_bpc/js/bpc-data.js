@@ -1,7 +1,9 @@
 // Patient data processing library
 //
 // Author: Nikolai Schwertner
+//
 // Revision history:
+//     2011-12-29 Moved the patient information tab outside the tabs context
 //     2011-06-21 Refactored
 //     2011-06-06 Misc improvements; Refactored
 //     2011-05-19 Misc code improvements; Inline documentation
@@ -161,9 +163,13 @@ if (!BPC) {
 			getClosestHeight,
             i;
 
+        // Initialize the patient information area
+        patient = new BPC.Patient(SMART.record.full_name, parse_date(demographics.birthday).toString(s.dateFormat), demographics.gender);
+        $("#patient-info").text(String(patient));
+
         // Caculate the current age of the patient
         age = years_apart(new Date().toISOString(), demographics.birthday);
-        
+
         // Display warning dialog if the patient has reached age 19
         if (age >= 19) {
             $("#alert-message").text(SMART.record.full_name + " is " + BPC.getYears(age) + " years old!");
@@ -202,9 +208,6 @@ if (!BPC) {
                 
 				return ( (x<y) ? -1: ((x>y)?1:0));
             });
-
-            // Initialize a new patient object with the proper demographics
-            patient = new BPC.Patient(SMART.record.full_name, parse_date(demographics.birthday).toString(s.dateFormat), demographics.gender);
 
 			// Inner function for looking up the closest height for a given date
 			getClosestHeight = function (recordDate) { 

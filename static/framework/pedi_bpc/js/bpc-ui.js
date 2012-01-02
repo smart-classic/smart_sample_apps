@@ -158,7 +158,7 @@ if (!BPC) {
 
         // Initialize the filter toggle buttons
         $( ".toggle-set" ).buttonset();
-        
+
         // Initialize the time filter sliders
         $( "#slider-timerange" ).slider({
             range: true,
@@ -169,7 +169,7 @@ if (!BPC) {
                 BPC.updateDateRange(ui.values[0],ui.values[1]);
             }
         });
-		
+
 		// Initialize the slider range
         BPC.setDateRange($("#slider-timerange").slider("values", 0),$("#slider-timerange").slider("values", 1));
     };
@@ -180,9 +180,9 @@ if (!BPC) {
     * @param {String} state 'enable' or 'disable'
     */
     var setControlsState = function (state) {
-        $( ".toggle-set" ).buttonset(state);
+        $(".toggle-set").buttonset(state);
         $("#slider-timerange").slider(state);
-        $('#tabs').tabs(state);
+        $("#tabs").tabs(state);
     };
 	
     /**
