@@ -105,6 +105,10 @@ input[type='number'] {border: 1px solid #555;}
     display: none;
 }
 
+.ui-dialog-titlebar-close {
+    display: none;
+}
+
 #copy {
     font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
     right: 1em;

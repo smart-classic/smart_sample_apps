@@ -174,6 +174,9 @@ if (!BPC) {
         if (age >= 19) {
             $("#alert-message").text(SMART.record.full_name + " is " + BPC.getYears(age) + " years old!");
             $( "#dialog-message" ).dialog({
+                closeOnEscape: false,
+                draggable: false,
+                resizable: false,
                 modal: true,
                 buttons: {
                     Ok: function() {
