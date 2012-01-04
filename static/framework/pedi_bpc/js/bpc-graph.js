@@ -424,7 +424,7 @@ if (!BPC) {
             var mytext;
             if (systolic) mytext = "Systolic";
             else mytext = "Diastolic";
-            r.text(s.width - s.rightgutter + 20, Math.round(s.topgutter + ((s.height-s.topgutter-s.bottomgutter)/2)), mytext).attr({font: '20px Helvetica, Arial', fill: "#555"}).rotate(90);
+            r.text(s.width - s.rightgutter + 20, Math.round(s.topgutter + ((s.height-s.topgutter-s.bottomgutter)/2)), mytext).attr({font: '20px Helvetica, Arial', fill: "#555"}).rotate(90).toBack();
         }
         
 		// Add the "help" hotspot to the short term view
