@@ -186,6 +186,10 @@ if (!BPC) {
         codes = [
             {codeValue: prefixSmart + "EncounterType#ambulatory", codeTitle: "Ambulatory"},
             {codeValue: prefixSmart + "EncounterType#inpatient", codeTitle: "Inpatient"},
+            {codeValue: prefixSmart + "EncounterType#home", codeTitle: "Home"},
+            {codeValue: prefixSmart + "EncounterType#emergency", codeTitle: "Emergency"},
+            {codeValue: prefixSmart + "EncounterType#field", codeTitle: "Field"},
+            {codeValue: prefixSmart + "EncounterType#virtual", codeTitle: "Virtual"},
             {codeValue: prefixSmart + "BloodPressureMethod#auscultation", codeTitle: "Auscultation"},
             {codeValue: prefixSmart + "BloodPressureMethod#machine", codeTitle: "Machine"},
             {codeValue: prefixSnomed + "33586001", codeTitle: "Sitting"},
