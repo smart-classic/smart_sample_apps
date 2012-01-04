@@ -23,11 +23,11 @@ if (!BPC) {
 
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
     BPC.zones = [
-        {definition: "Hypotension (< 1%)",      percent: 1,  colorhue: 0.7,  opacity: 0.4},
-        //{definition:"Pre-hypotension (< 5%)",  percent: 4,  colorhue: 0.9, opacity: 0.3},
-        {definition: "Normal",           percent: 89, colorhue: 0.3, opacity: 0.2},
-        {definition: "Pre-hypertension (> 90%)", percent: 5,  colorhue: 0.1, opacity: 0.3},
-        {definition: "Hypertension (> 95%)",     percent: 5,  colorhue: 0,  opacity: 0.4}
+        {definition: "Hypotension (< 1%)",      percent: 1,  colorhue: 0.7,  opacity: 0.4, dashthrough: false},
+        //{definition:"Pre-hypotension (< 5%)",  percent: 4,  colorhue: 0.9, opacity: 0.3, dashthrough: false},
+        {definition: "Normal",           percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
+        {definition: "Pre-hypertension (> 90%)", percent: 5,  colorhue: 0.1, opacity: 0.3, dashthrough: true},
+        {definition: "Hypertension (> 95%)",     percent: 5,  colorhue: 0,  opacity: 0.4, dashthrough: true}
     ];
     
     // Filter settings defaults

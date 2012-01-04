@@ -247,7 +247,7 @@ if (!BPC) {
         r.drawVAxisLabels (s.leftgutter - 15, s.topgutter + .5,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel, s.txt2, shortTerm);
             
         // Draw the zones
-        if (!shortTerm) r.drawZones(s.leftgutter + .5, s.topgutter + .5, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zones);
+        if (!shortTerm) r.drawZones(s.leftgutter + .5, s.topgutter + .5, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zones, s);
         
         // Set up drawing elements
         pathS = r.path().attr({stroke: s.colorS, "stroke-width": 3, "stroke-linejoin": "round"});
@@ -367,7 +367,6 @@ if (!BPC) {
                 var pathAdvance = function (first, x, percentile, flag) { 
                     var path = [];
                     var y = ltv_scale(Math.round(s.height - s.bottomgutter - s.Y * percentile + 1));
-                    //console.log ("point y: " + Math.round(s.height - s.bottomgutter - s.Y * percentile + 1) + " -> " + y); 
                     if (first) path = ["M", x, y];
                     path = path.concat(["L", x, y]);
                     if (flag) drawDot (x, y, percentile, patient.data[i], patient.sex);  // draw the data point circle
@@ -584,16 +583,23 @@ if (!BPC) {
     /**
     * Draws the zone bands
     */
-    Raphael.fn.drawZones = function (x, y, w, h, zones) {
+    Raphael.fn.drawZones = function (x, y, w, h, zones, settings) {
         var dh = h / 100,   // height per percent
 			zoneH,
 			currentY,
-			i;
+			i,
+            s = settings,
+            path,
+            dashed = {fill: "none", "stroke-dasharray": "- "};
         
         for (i = zones.length - 1, currentY = y; i >= 0; i--) {
             zoneH = zones[i].percent * dh;
-            this.rect(x + .5, ltv_scale(currentY + .5), w, ltv_scale_height(currentY + .5, zoneH)).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
-            //console.log ("zone y:" + ltv_scale(currentY + .5) + " h:" + ltv_scale_height(currentY + .5, zoneH))
+            if (zones[i].dashthrough) {
+                // Draw the dashed grid line for the dashed zones
+                path = ["M", Math.round(x) + .5, ltv_scale(currentY + .5 + zoneH/2)+.5, "H", Math.round(x + w) + .5];
+                this.path(path.join(",")).attr({stroke: s.gridColor}).attr(dashed);
+            }
+            this.rect(x + .5, ltv_scale(currentY + .5) + .5, w + .5, ltv_scale_height(currentY + .5, zoneH)).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
             currentY = currentY + zoneH;
         }
     };
