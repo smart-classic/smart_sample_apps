@@ -586,6 +586,7 @@ if (!BPC) {
     Raphael.fn.drawZones = function (x, y, w, h, zones, settings) {
         var dh = h / 100,   // height per percent
 			zoneH,
+            zoneH_scaled,
 			currentY,
 			i,
             s = settings,
@@ -593,14 +594,26 @@ if (!BPC) {
             dashed = {fill: "none", "stroke-dasharray": "- "};
         
         for (i = zones.length - 1, currentY = y; i >= 0; i--) {
+        
             zoneH = zones[i].percent * dh;
+            zoneH_scaled = ltv_scale_height(currentY + .5, zoneH);
+            
             if (zones[i].dashthrough) {
                 // Draw the dashed grid line for the dashed zones
                 path = ["M", Math.round(x) + .5, ltv_scale(currentY + .5 + zoneH/2)+.5, "H", Math.round(x + w) + .5];
                 this.path(path.join(",")).attr({stroke: s.gridColor}).attr(dashed);
             }
-            this.rect(x + .5, ltv_scale(currentY + .5) + .5, w + .5, ltv_scale_height(currentY + .5, zoneH)).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
+            
+            // Hack for correcting a rounding problem (the math needs to be rechecked to figure out the source of the error - until then, this will do the trick)
+            // console.log (currentY + ":" + zoneH + "->" + ltv_scale(currentY + .5) + .5 + ":" + zoneH_scaled);
+            if (zoneH_scaled === 2) zoneH_scaled = 1;
+            if (zoneH_scaled === 89) zoneH_scaled = 90;
+            if (zoneH_scaled === 34) zoneH_scaled = 35;
+            
+            this.rect(x + .5, ltv_scale(currentY + .5) + .5, w + .5, zoneH_scaled).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
+            
             currentY = currentY + zoneH;
+            
         }
     };
 
@@ -684,8 +697,9 @@ if (!BPC) {
        if (x <= 31 || x > 351) return Math.round(x);
        if (x > 31 && x <=47)   return Math.round(BPC.scale(x,31,47,31,100));
        if (x > 47 && x <=191)  return Math.round(BPC.scale(x,47,191,100,191));
-       if (x > 191 && x <=207) return Math.round(BPC.scale(x,191,207,191,260));
-       if (x > 207 && x <=351) return Math.round(BPC.scale(x,207,351,260,351));
+       if (x > 191 && x <= 196) return Math.round(x);
+       if (x > 196 && x <=212) return Math.round(BPC.scale(x,196,212,196,265));
+       if (x > 212 && x <=356) return Math.round(BPC.scale(x,212,356,265,356));
     };
     
     /**

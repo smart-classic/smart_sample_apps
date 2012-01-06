@@ -70,8 +70,8 @@ if (!BPC) {
             // margins to be left around the main grid (for labels etc)
             leftgutter: (shortTerm ? 60 : 40), 
             rightgutter: (shortTerm ? 60 : 40),
-            bottomgutter: (shortTerm ? 70 : (systolic ? LT_HEIGHT - LT_TOP_GUTTER - splitHeight : LT_BOTTOM_GUTTER)),
-            topgutter: (shortTerm ? 30 : (systolic ? LT_TOP_GUTTER : splitHeight + LT_TOP_GUTTER)),
+            bottomgutter: (shortTerm ? 70 : (systolic ? LT_HEIGHT - LT_TOP_GUTTER - splitHeight : LT_BOTTOM_GUTTER - 5)),
+            topgutter: (shortTerm ? 30 : (systolic ? LT_TOP_GUTTER : splitHeight + LT_TOP_GUTTER + 5)),
             
             // internal padding within the drawing grid (used in the short term view)
             leftpadding: 40, 
