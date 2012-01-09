@@ -10,5 +10,11 @@
 
   "base_url" : "http://directapps.smartplatforms.org",
   "index" :  "{base_url}/smartapp/index-apps.html",
-  "icon" :  "{base_url}/smartapp/icon-apps.png"
+  "icon" :  "{base_url}/smartapp/icon-apps.png",
+  
+  "requires" : {
+       "http://smartplatforms.org/terms#Demographics": {
+         "methods": ["GET"]
+       }
+  }
 }

@@ -10,6 +10,12 @@
   "scope": "record",
 
   "base_url" : "http://localhost:8001",
-  "index" :              "{base_url}/framework/problem_list/index.html",	
-  "icon" :  "{base_url}/framework/problem_list/icon.png"
+  "index" : "{base_url}/framework/problem_list/index.html",	
+  "icon" : "{base_url}/framework/problem_list/icon.png",
+  
+  "requires" : {
+       "http://smartplatforms.org/terms#Problem": {
+         "methods": ["GET"]
+       }
+  }
 }

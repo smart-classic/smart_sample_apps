@@ -11,5 +11,11 @@
 
   "base_url" : "http://localhost:8001",
   "icon" :  "{base_url}/framework/med_list/icon.png",
-  "index": "{base_url}/framework/med_list/index.html"
+  "index": "{base_url}/framework/med_list/index.html",
+  
+  "requires" : {
+       "http://smartplatforms.org/terms#Medication": {
+         "methods": ["GET"]
+       }
+  }
 }

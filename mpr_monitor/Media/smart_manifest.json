@@ -10,5 +10,14 @@
 
   "base_url" : "http://mpr-monitor.smartplatforms.org",
   "index" :  "{base_url}/smartapp/index.html",
-  "icon" :  "{base_url}/smartapp/icon.png"
+  "icon" :  "{base_url}/smartapp/icon.png",
+  
+  "requires" : {
+       "http://smartplatforms.org/terms#Demographics": {
+         "methods": ["GET"]
+       },
+       "http://smartplatforms.org/terms#Medication": {
+         "methods": ["GET"]
+       }
+  }
 }
