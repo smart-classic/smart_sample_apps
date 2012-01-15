@@ -241,13 +241,13 @@ if (!BPC) {
         }
             
         // Draw the grid
-        r.drawGrid(s.leftgutter + .5, s.topgutter + .5, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, s.gridCols, s.gridRows, s.gridColor, shortTerm);
+        r.drawGrid(s.leftgutter, s.topgutter, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, s.gridCols, s.gridRows, s.gridColor, shortTerm);
           
         // Draw the percentiles axis (needs to be reworked as a function and tested for correct scaling)
-        r.drawVAxisLabels (s.leftgutter - 15, s.topgutter + .5,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel, s.txt2, shortTerm);
+        r.drawVAxisLabels (s.leftgutter - 15, s.topgutter,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel, s.txt2, shortTerm);
             
         // Draw the zones
-        if (!shortTerm) r.drawZones(s.leftgutter + .5, s.topgutter + .5, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zones, s);
+        if (!shortTerm) r.drawZones(s.leftgutter, s.topgutter, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zones, s);
         
         // Set up drawing elements
         pathS = r.path().attr({stroke: s.colorS, "stroke-width": 3, "stroke-linejoin": "round"});
@@ -366,14 +366,14 @@ if (!BPC) {
                 // Build the two path increments for the systolic and diastolic graphs
                 var pathAdvance = function (first, x, percentile, flag) { 
                     var path = [];
-                    var y = ltv_scale(Math.round(s.height - s.bottomgutter - s.Y * percentile + 1));
+                    var y = ltv_scale(s.height - s.bottomgutter - s.Y * percentile);
                     if (first) path = ["M", x, y];
                     path = path.concat(["L", x, y]);
                     if (flag) drawDot (x, y, percentile, patient.data[i], patient.sex);  // draw the data point circle
                     return path;
                 };
-                pS = pS.concat (pathAdvance (!i, x+2, patient.data[i].sPercentile, systolic));
-                pD = pD.concat (pathAdvance (!i, x+2, patient.data[i].dPercentile, !systolic));
+                pS = pS.concat (pathAdvance (!i, x, patient.data[i].sPercentile, systolic));
+                pD = pD.concat (pathAdvance (!i, x, patient.data[i].dPercentile, !systolic));
 
                 if (!systolic && (!lastX || (x - lastX) >= s.minDX)) {
                     // Draw the corresponding date text label beneath the X axis
@@ -510,7 +510,7 @@ if (!BPC) {
     */
     Raphael.fn.drawGrid = function (x, y, w, h, wv, hv, color, shortTerm) {
         
-		var path = ["M", Math.round(x) + .5, Math.round(y) + .5, "L", Math.round(x + w) + .5, Math.round(y) + .5, Math.round(x + w) + .5, Math.round(y + h) + .5, Math.round(x) + .5, Math.round(y + h) + .5, Math.round(x) + .5, Math.round(y) + .5],
+		var path = ["M", Math.round(x), Math.round(y), "L", Math.round(x + w), Math.round(y), Math.round(x + w), Math.round(y + h), Math.round(x), Math.round(y + h), Math.round(x), Math.round(y)],
             rowHeight = h / hv,
             columnWidth = w / wv,
 			i;
@@ -519,13 +519,13 @@ if (!BPC) {
 			
         for (i = 1; i < hv; i++) {
             if (!shortTerm) {
-                path = path.concat(["M", Math.round(x) + .5, ltv_scale(Math.round(y + i * rowHeight) + .5), "H", Math.round(x + w) + .5]);
+                path = path.concat(["M", Math.round(x), Math.round(ltv_scale(y + i * rowHeight)), "H", Math.round(x + w)]);
             } else {
-                path = path.concat(["M", Math.round(x) + .5, Math.round(y + i * rowHeight) + .5, "H", Math.round(x + w) + .5]);
+                path = path.concat(["M", Math.round(x), Math.round(y + i * rowHeight), "H", Math.round(x + w)]);
             }
         }
         for (i = 1; i < wv; i++) {
-            path = path.concat(["M", Math.round(x + i * columnWidth) + .5, Math.round(y) + .5, "V", Math.round(y + h) + .5]);
+            path = path.concat(["M", Math.round(x + i * columnWidth), Math.round(y), "V", Math.round(y + h)]);
         }
 		
         return this.path(path.join(",")).attr({stroke: color});
@@ -551,7 +551,7 @@ if (!BPC) {
                 val = maxValue - i*(maxValue / hv);
                 if (val === 95 || (val <= 90 && (val % 10 === 0 && (val / 10) % 2 !== 0))) {
                     label = val + " %";
-                    this.text(x - 5, ltv_scale(Math.round(y + i * stepDelta)), label).attr(styling).toBack();
+                    this.text(x - 5, Math.round(ltv_scale(y + i * stepDelta)), label).attr(styling).toBack();
                 }
             }
         }
@@ -596,21 +596,17 @@ if (!BPC) {
         for (i = zones.length - 1, currentY = y; i >= 0; i--) {
         
             zoneH = zones[i].percent * dh;
-            zoneH_scaled = ltv_scale_height(currentY + .5, zoneH);
+            zoneH_scaled = ltv_scale_height(currentY, zoneH);
             
             if (zones[i].dashthrough) {
                 // Draw the dashed grid line for the dashed zones
-                path = ["M", Math.round(x) + .5, ltv_scale(currentY + .5 + zoneH/2)+.5, "H", Math.round(x + w) + .5];
+                path = ["M", Math.round(x), ltv_scale(currentY + zoneH/2), "H", Math.round(x + w)];
                 this.path(path.join(",")).attr({stroke: s.gridColor}).attr(dashed);
             }
             
-            // Hack for correcting a rounding problem (the math needs to be rechecked to figure out the source of the error - until then, this will do the trick)
-            // console.log (currentY + ":" + zoneH + "->" + ltv_scale(currentY + .5) + .5 + ":" + zoneH_scaled);
-            if (zoneH_scaled === 2) zoneH_scaled = 1;
-            if (zoneH_scaled === 89) zoneH_scaled = 90;
-            if (zoneH_scaled === 34) zoneH_scaled = 35;
+            //console.log (currentY + ":" + zoneH + "->" + ltv_scale(currentY) + ":" + zoneH_scaled);
             
-            this.rect(x + .5, ltv_scale(currentY + .5) + .5, w + .5, zoneH_scaled).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
+            this.rect(x, ltv_scale(currentY), w, zoneH_scaled).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
             
             currentY = currentY + zoneH;
             
@@ -693,13 +689,13 @@ if (!BPC) {
     * @returns {Number} The resultant scaled coordinate
     */
     var ltv_scale = function (x) {
-       //31-47-191-207-351 -> 31-100-191-260-351
-       if (x <= 31 || x > 351) return Math.round(x);
-       if (x > 31 && x <=47)   return Math.round(BPC.scale(x,31,47,31,100));
-       if (x > 47 && x <=191)  return Math.round(BPC.scale(x,47,191,100,191));
-       if (x > 191 && x <= 196) return Math.round(x);
-       if (x > 196 && x <=212) return Math.round(BPC.scale(x,196,212,196,265));
-       if (x > 212 && x <=356) return Math.round(BPC.scale(x,212,356,265,356));
+       //30-46-191-207-351 -> 30-100-191-260-351
+       if (x <= 30 || x > 355)  return x;
+       if (x > 30 && x <=46)    return BPC.scale(x,30,46,30,100);
+       if (x > 46 && x <=190)   return BPC.scale(x,46,190,100,190);
+       if (x > 190 && x <= 195) return x;
+       if (x > 195 && x <=211)  return BPC.scale(x,195,211,195,265);
+       if (x > 211 && x <=355)  return BPC.scale(x,211,355,265,355);
     };
     
     /**
