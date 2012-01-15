@@ -206,6 +206,8 @@ if (!BPC) {
         a = (y2-y1)/(x2-x1);
         b = y1 - a*x1;
 		
+        //console.log ("scale: " + X + " " + x1 + " " + x2 + " " + y1 + " " + y2 + " -> " + (a*X + b));
+        
         return a*X + b;
     };
 
