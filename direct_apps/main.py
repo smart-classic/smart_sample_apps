@@ -355,8 +355,6 @@ class send_apps_message:
         manifestbuffer = StringIO()
         manifestbuffer.write(manifesttxt)
 
-        print apis
-
         # Build the patient RDF graph
         rdfres = smart_client.records_X_demographics_GET().graph
 
@@ -369,6 +367,9 @@ class send_apps_message:
             
         if ("http://smartplatforms.org/terms#VitalSigns" in apis):
             rdfres += smart_client.records_X_vital_signs_GET().graph
+            
+        if ("http://smartplatforms.org/terms#LabResult" in apis):
+            rdfres += smart_client.records_X_lab_results_GET().graph
         
         # Anonymize the RDF graph for export
         rdfres = anonymize_smart_rdf (rdfres)
