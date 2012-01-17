@@ -513,19 +513,8 @@ SMART_CONNECT_CLIENT.prototype.CAPABILITIES_get = function(callback) {
 						data : {}
 					},
 					function(contentType, data) {
-						var rdf = _this.process_rdf(contentType, data);
-						cs = rdf
-								.where(
-										"?platform  rdf:type  sp:Container")
-								.where(
-										"?platform   sp:capability ?cap");
-
-						_this.capabilities = {}
-						for ( var i = 0; i < cs.length; i++) {
-							_this.capabilities[cs[i].cap.value._string] = true;
-						}
-
-						callback({body: data, contentType: contentType, graph: rdf});
+						_this.capabilities = JSON.parse(data)
+						callback({body: data, contentType: contentType, graph: undefined});
 					});
 }
 
