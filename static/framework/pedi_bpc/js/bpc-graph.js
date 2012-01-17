@@ -689,7 +689,8 @@ if (!BPC) {
     * @returns {Number} The resultant scaled coordinate
     */
     var ltv_scale = function (x) {
-       //30-46-191-207-351 -> 30-100-191-260-351
+       // 30-46-190 -> 30-100-190
+       // 195-211-355 -> 195-265-355
        if (x <= 30 || x > 355)  return x;
        if (x > 30 && x <=46)    return BPC.scale(x,30,46,30,100);
        if (x > 46 && x <=190)   return BPC.scale(x,46,190,100,190);
