@@ -108,7 +108,7 @@ class get_apps:
         #apps = json.loads(res.body)
         #return json.dumps(apps, sort_keys=True, indent=4)
         
-        s = urllib2.urlopen("http://smart-vm:7000/apps/manifests/")
+        s = urllib2.urlopen("http://direct.smartplatforms.org:7000/apps/manifests/")
         res = s.read()
         s.close()
         return res
