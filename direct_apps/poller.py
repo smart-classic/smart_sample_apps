@@ -19,7 +19,7 @@ import web
 from email.parser import FeedParser
 from StringIO import StringIO
 from sendmail import send_message
-from main import get_apps
+from utilities import get_app_manifests
 
 # Import the local library modules classes and methods
 from lib.html2text import html2text
@@ -39,7 +39,7 @@ def generate_pin ():
     return pin
 
 def generate_pid ():
-    '''Returns a unique patient ID number in the range [100000-999999]'''
+    '''Returns a unique patient ID number in the range [100000000-999999999]'''
     
     # Keep generating random PIDs until a unique one is found
     while True:
@@ -106,12 +106,9 @@ def get_updated_messages(note, accessURL, manifestStr, pin):
     html = ""
     text = ""
 
-    # Load the SMART apps' manifests
-    APPS_JSON = get_apps().GET()
-    
     # Parse the apps list and build a new list containing only
     # the manifest details of the apps needed for this message
-    apps = json.loads(APPS_JSON)
+    apps = json.loads(get_app_manifests())
     manifest = json.loads(manifestStr)
     myapps = [x['id'] for x in manifest['apps']]
     apps_out = [a for a in apps if a['id'] in myapps]

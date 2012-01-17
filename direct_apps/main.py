@@ -12,7 +12,6 @@ import urllib
 import rdflib
 import os
 import sys
-import urllib2
 
 # Add the current directory to the system path so that python can mod_py could
 # load the local modules
@@ -31,11 +30,12 @@ from lib.markdown2 import markdown
 from StringIO import StringIO
 from sendmail import send_message
 from pdf_writer import generate_pdf
+from utilities import get_app_manifests
 
 # Import the application settings
 from settings import APP_PATH, SMTP_HOST, SMTP_USER, SMTP_PASS
 from settings import SMTP_HOST_ALT, SMTP_USER_ALT, SMTP_PASS_ALT
-from settings import PROXY_OAUTH, PROXY_PARAMS, SMART_DIRECT_PREFIX
+from settings import SMART_DIRECT_PREFIX
 
 # Default configuration settings for the SMART client
 SMART_SERVER_OAUTH = {
@@ -101,22 +101,8 @@ class get_apps:
         # First, try setting up a dummy SMART client to test the credentials
         # for securty reasons (will raise excepton if the credentails are bad)
         get_smart_client()
-    
-        # Now process the request
-        #smart_client = SmartClient(PROXY_OAUTH['consumer_key'], PROXY_PARAMS, PROXY_OAUTH, None)
-        #res = smart_client.get("/apps/manifests/")
-        #apps = json.loads(res.body)
-        #return json.dumps(apps, sort_keys=True, indent=4)
-        
-        s = urllib2.urlopen("http://direct.smartplatforms.org:7000/apps/manifests/")
-        res = s.read()
-        s.close()
-        return res
-        
-        #f = open(APP_PATH + '/data/apps.json', 'r')
-        #res = f.read()
-        #f.close()
-        #return res
+
+        return get_app_manifests()
         
 class get_meds:
     '''Medications REST service handler
