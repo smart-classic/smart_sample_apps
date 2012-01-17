@@ -35,13 +35,19 @@ if (!BPC) {
         
             // Query the RDF for the demographics
             var demographics = demos.graph
+                        .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
                         .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
                         .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
+                        .where('?a v:n ?n')
+                        .where('?n rdf:type v:Name')
+                        .where('?n v:given-name ?firstname')
+                        .where('?n v:family-name ?lastname')
                         .where('?a foaf:gender ?gender')
                         .where('?a v:bday ?birthday')
                         .get(0);
                         
-            dfd.resolve({gender: demographics.gender.value.toString(),
+            dfd.resolve({name: demographics.firstname.value.toString() + " " + demographics.lastname.value.toString(),
+                         gender: demographics.gender.value.toString(),
                          birthday: demographics.birthday.value.toString()});
         });
         return dfd.promise();
@@ -164,7 +170,7 @@ if (!BPC) {
             i;
 
         // Initialize the patient information area
-        patient = new BPC.Patient(SMART.record.full_name, parse_date(demographics.birthday).toString(s.dateFormat), demographics.gender);
+        patient = new BPC.Patient(demographics.name, parse_date(demographics.birthday).toString(s.dateFormat), demographics.gender);
         $("#patient-info").text(String(patient));
 
         // Caculate the current age of the patient
@@ -172,7 +178,7 @@ if (!BPC) {
 
         // Display warning dialog if the patient has reached age 19
         if (age >= 19) {
-            $("#alert-message").text(SMART.record.full_name + " is " + BPC.getYears(age) + " years old!");
+            $("#alert-message").text(demographics.name + " is " + BPC.getYears(age) + " years old!");
             $( "#dialog-message" ).dialog({
                 closeOnEscape: false,
                 draggable: false,
