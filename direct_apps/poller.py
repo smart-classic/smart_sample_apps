@@ -19,6 +19,7 @@ import web
 from email.parser import FeedParser
 from StringIO import StringIO
 from sendmail import send_message
+from main import get_apps
 
 # Import the local library modules classes and methods
 from lib.html2text import html2text
@@ -106,11 +107,9 @@ def get_updated_messages(note, accessURL, manifestStr, pin):
     text = ""
 
     # Load the SMART apps' manifests
-    FILE = open(APP_PATH + '/data/apps.json', 'r')
-    APPS_JSON = FILE.read()
-    FILE.close()
+    APPS_JSON = get_apps().GET()
     
-    # Parse the apps list and build anew list containing only
+    # Parse the apps list and build a new list containing only
     # the manifest details of the apps needed for this message
     apps = json.loads(APPS_JSON)
     manifest = json.loads(manifestStr)
