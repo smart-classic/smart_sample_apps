@@ -341,22 +341,16 @@ class send_apps_message:
         manifestbuffer = StringIO()
         manifestbuffer.write(manifesttxt)
 
-        # Build the patient RDF graph
+        # Build the patient RDF graph with the demographics
         rdfres = smart_client.records_X_demographics_GET().graph
-
-        # NEED TO DETERMINE THE MAPPING FROM THE ONTOLOGY!
-        if ("http://smartplatforms.org/terms#Problem" in apis):
-            rdfres += smart_client.records_X_problems_GET().graph
-            
-        if ("http://smartplatforms.org/terms#Medication" in apis):
-            rdfres += smart_client.records_X_medications_GET().graph
-            
-        if ("http://smartplatforms.org/terms#VitalSigns" in apis):
-            rdfres += smart_client.records_X_vital_signs_GET().graph
-            
-        if ("http://smartplatforms.org/terms#LabResult" in apis):
-            rdfres += smart_client.records_X_lab_results_GET().graph
         
+        # Augment the RDF graph with the needed data models (except demographics)
+        for a in apis:
+            call = get_call(a)
+            if call != "records_X_demographics_GET":
+                method_to_call = getattr(smart_client, get_call(a))
+                rdfres += method_to_call().graph
+
         # Anonymize the RDF graph for export
         rdfres = anonymize_smart_rdf (rdfres)
         
@@ -419,6 +413,19 @@ def add_recipient(smart_client, recipient):
     
     # Write the address book to SMART
     smart_client.accounts_X_apps_X_preferences_PUT(data=json.dumps(data, sort_keys=True, indent=4), content_type="application/json")
+
+def get_call(target):    
+    from smart_client.common.rdf_ontology import get_api_calls
+    from smart_client.generate_api import call_name
+
+    class API_Call():
+        def __init__ (self, path, method):
+            self.path = path
+            self.method = method
+
+    r = get_api_calls()
+    call = API_Call(r[target], "GET")
+    return call_name(call)
         
 def get_smart_client():
     '''Initializes and returns a new SMART Client
