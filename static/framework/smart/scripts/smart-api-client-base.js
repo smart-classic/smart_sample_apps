@@ -17,14 +17,32 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	if (this.is_ready) this.ready_callback();
     };
 
+    var notification_handlers = {};
     this.bind_channel = function(scope) {
 	channel = Channel.build({window: frame, origin: "*", scope: scope, debugOutput: debug});
-	_this.on = channel.bind;
-	_this.off = channel.unbind;
+
+	_this.on = function(n, cb) {
+	  notification_handlers[n] = function(t, p) {
+	    cb(p);
+	  };
+
+	  channel.bind(n, notification_handlers[n]);
+	};
+
+	_this.off = function(n, cb) {
+	  channel.unbind(n, notification_handlers[n]);
+	}
+
+	_this.notify_host = function(n, p) {
+	  channel.notify({
+	      method: n,
+	      params: p 
+	    });
+	};
 
 	channel.bind("ready", function(trans, message) {
-	    sc.received_setup(message);
 	    trans.complete(true);
+	    sc.received_setup(message);
 	});
 
     };
@@ -97,10 +115,12 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	};
 
 	this.return = function(returndata) {
+
 	    channel.notify({
 	      method: "return",
 	      params: returndata
 	    });
+
 	};
     }
 
