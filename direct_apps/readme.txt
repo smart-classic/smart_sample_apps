@@ -18,10 +18,6 @@ Now, obtain the app code:
   git clone https://github.com/chb/smart_sample_apps
   cd smart_sample_apps/direct_apps
 
-Create a simlink to the directories containing  the SMART python and connect clients (or copy them over) like this:
-  ln -s ../smart_client smart_client
-  ln -s ../static/framework/smart/scripts static/smart
-
 Before launching the apps, you should copy "settings.py.default"
 into "settings.py" and edit the APP_PATH value as well as the
 Direct servers' settings. Now you can launch the apps server:
