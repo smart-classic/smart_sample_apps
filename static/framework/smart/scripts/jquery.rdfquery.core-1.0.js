@@ -3982,7 +3982,7 @@
             p.prefix !== 'xml') {
           if (p.namespaceURI !== rdfNs) {
             property = $.rdf.resource('<' + p.namespaceURI + getLocalName(p) + '>');
-            object = $.rdf.literal(literalOpts.lang ? p.nodeValue : '"' + p.nodeValue + '"', literalOpts);
+	    object = $.rdf.literal(literalOpts.lang ? p.nodeValue : '"' + p.nodeValue.replace(/"/g, '\\"') + '"', literalOpts);
             triples.push($.rdf.triple(subject, property, object));
           } else if (getLocalName(p) === 'type') {
             property = $.rdf.type;

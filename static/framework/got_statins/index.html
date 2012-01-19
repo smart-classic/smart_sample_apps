@@ -14,6 +14,14 @@
 	  
 SMART.ready(function(){
 
+  SMART.MANIFEST_get("pedi_bpc@apps.smartplatforms.org", function(p) {
+    var m = p.json;
+    SMART.call_app(m, {a: 1, b: 2, c: 3}, function(result) {
+      console.log("Returned from call:" );
+      console.log(result);
+    });
+  });
+
         SMART.MEDS_get(function(meds) {
 	
 	var statin = meds.graph

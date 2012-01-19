@@ -10,12 +10,10 @@ extend('MedList.Controllers.MedListController',
 {
 	init: function() {
 	
-		SMART.message_receivers = {
-			foreground: function() {
+		SMART.on("foregrounded", function() {
 			$("#TheList").click();		
 			$("#TheList").click();		
-			}
-		};
+		});
 
 	
 		var v = this.view('init', {} );

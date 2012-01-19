@@ -10,36 +10,17 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
     var sc = this;
     var channel = null;
 
-    this.message_receivers = {};
-
     this.is_ready = false;
+
     this.ready = function(callback) {
 	this.ready_callback = callback;
 	if (this.is_ready) this.ready_callback();
     };
 
-    this.callback = function(f) {
-	var _this = this;
-	return function() {return f.apply(_this, arguments);};
-    },
-
     this.bind_channel = function(scope) {
 	channel = Channel.build({window: frame, origin: "*", scope: scope, debugOutput: debug});
-	
-	channel.bind("foreground", this.callback(function() {
-	    if (this.message_receivers.foreground !== undefined)
-		this.message_receivers.foreground();
-	}));
-	
-	channel.bind("background", this.callback(function() {
-	    if (this.message_receivers.background !== undefined)
-		this.message_receivers.background();
-	}));
-	
-	channel.bind("destroy", this.callback(function() {
-	    if (this.message_receivers.destroy !== undefined)
-		this.message_receivers.destroy();
-	}));
+	_this.on = channel.bind;
+	_this.off = channel.unbind;
 
 	channel.bind("ready", function(trans, message) {
 	    sc.received_setup(message);
@@ -62,7 +43,6 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
     if (window.addEventListener) window.addEventListener('message', procureChannel, false);
     else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
     window.parent.postMessage('"procure_channel"', "*");
-
 
 
     this.received_setup = function(message) {
@@ -103,6 +83,25 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 			  success: function(r) { callback(r.contentType, r.data); }
 			 });
 	};
+
+	this.call_app = function(manifest, ready_data, callback) {
+	    channel.call({method: "call_app",
+			  params: 
+			  {
+			    manifest: manifest,
+			    ready_data: ready_data
+			  },
+			  success: callback
+			 });
+	  
+	};
+
+	this.return = function(returndata) {
+	    channel.notify({
+	      method: "return",
+	      params: returndata
+	    });
+	};
     }
 
     this.assign_frame_ui_handlers = function() {
@@ -135,15 +134,6 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    });
 	};
 
-	this.MANIFESTS_get = function(success) {
-	    sc.api_call({
-		url: "/apps/manifests",
-		method: "GET"
-	    }, function(contentType, data) {
-		success({body: data, contentType: contentType, graph: JSON.parse(data)})
-	    });
-	};
-
 	this.PATIENTS_get = function(success) {
 	    sc.api_call({
 		url: "/records/search",
@@ -154,16 +144,27 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    });
 	};
 
-	this.MANIFEST_get = function(descriptor, success) {
-	    sc.api_call({
-		url: "/apps/"+descriptor+"/manifest",
-		method: "GET"
-	    }, function(contentType, data) {
-		success({body: data, contentType: contentType, graph: JSON.parse(data)})
-	    });
-	};
     }
    
+};
+
+SMART_CONNECT_CLIENT.prototype.MANIFESTS_get = function(success) {
+  this.api_call({
+    url: "/apps/manifests",
+    method: "GET"
+  }, function(contentType, data) {
+    success({body: data, contentType: contentType, json: JSON.parse(data)})
+  });
+};
+
+
+SMART_CONNECT_CLIENT.prototype.MANIFEST_get = function(descriptor, success) {
+  this.api_call({
+    url: "/apps/"+descriptor+"/manifest",
+    method: "GET"
+  }, function(contentType, data) {
+    success({body: data, contentType: contentType, json: JSON.parse(data)})
+  });
 };
 
 SMART_CONNECT_CLIENT.prototype.ONTOLOGY_get = function(callback) {
@@ -643,4 +644,3 @@ SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
 
 
 SMART = new SMART_CONNECT_CLIENT(null, window.parent);
-SMART.message_receivers = {};

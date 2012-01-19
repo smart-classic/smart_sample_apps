@@ -3,11 +3,6 @@
 <th></th>
 <th>Medication</th>
 <th>Instructions</th>
-  <% if (SMART.capabilities["http://smartplatforms.org/capability/SPL/lookup"] == true &&
-  		  SMART.capabilities["http://smartplatforms.org/capability/Pillbox/lookup"] == true) { %>  
-  <th></th>
-  <% } %>
-
 </tr>
 
 <%  for (var i = 0; i < meds.length; i++)  {
@@ -17,11 +12,6 @@
   <td><%= (i === 0) ? ">" : ""%></td>
   <td><%= m.properName() %></td>
   <td> <%= m.instructions %></td>
-  <% if (SMART.capabilities["http://smartplatforms.org/capability/SPL/lookup"] == true &&
-  		  SMART.capabilities["http://smartplatforms.org/capability/Pillbox/lookup"] == true) { %>
-  
-  <td>[<a href="#spl" class='spl'>images</a>]</td>
-  <% } %>
 </tr>
 <%}%>
 </table>
