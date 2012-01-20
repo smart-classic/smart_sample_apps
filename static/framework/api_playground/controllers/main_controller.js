@@ -124,7 +124,16 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     receivedResult: function(contentType, data) {
         if (contentType === "application/rdf+xml") {
             r = SMART.process_rdf(contentType, data);
-                //console.log("got data" + contentType + data);
+            
+            if ($('#serialization').val() === "ntriples") {
+                data = "";
+                r.where('?s ?p ?o')
+                    .each(function(){
+                        data += this.s.toString() + " " + this.p.toString() + " " + this.o.toString() + " .\n";
+                    });
+            }
+            
+            //console.log("got data" + contentType + data);
             window.response = r;
             window.jash.clear();
             window.jash.output.value = data;
