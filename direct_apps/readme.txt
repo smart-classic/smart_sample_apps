@@ -18,6 +18,11 @@ Now, obtain the app code:
   git clone https://github.com/chb/smart_sample_apps
   cd smart_sample_apps/direct_apps
 
+Note (for Windows users): You will need to set up manually the
+following symlinks from an admin-privileged command prompt:
+  mklink /d smart_client ..\smart_client
+  mklink /d static\smart ..\..\static\framework\smart\scripts 
+  
 Before launching the apps, you should copy "settings.py.default"
 into "settings.py" and edit the APP_PATH value as well as the
 Direct servers' settings. Now you can launch the apps server:
