@@ -1,0 +1,30 @@
+body {
+    background: white;
+    font-family: 'Galdeano';
+    background: #646D7E;
+}
+
+.med-list  {
+  width: 60%;
+-moz-border-radius: 15px;
+border-radius: 15px;
+color: #dddddd;
+background: #8B838b;
+padding-left: 10px;
+padding-top: 0px;
+margin-bottom: 1em;
+}
+
+.med-list .med {
+  font-family: 'Handlee';
+}
+h2 {
+  margin-bottom: 0px;
+}
+.med-list .med:first-of-type {
+  margin-top: 1em;
+}
+
+#reconciled {
+  background: #3E3535;
+}
