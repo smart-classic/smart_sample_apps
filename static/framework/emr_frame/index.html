@@ -4,12 +4,11 @@
     <title>EMR Frame App</title>
 
     <!-- Instantiate SMART, to access the container's SMART Connect Host -->
-    <script  src='http://sample-apps.smartplatforms.org/framework/smart/scripts/smart-api-client.js'>
+    <script  src='../smart/scripts/smart-api-client.js'>
     </script>
 
-
     <!-- Instantiate SMART_HOST, to provide a SMART Connect Host to framed apps-->
-    <script  src='http://sandbox.smartplatforms.org/static/smart_common/resources/smart-api-container.js'>
+    <script  src='http://sandbox-dev.smartplatforms.org/static/smart_common/resources/smart-api-container.js'>
     </script>
 
     <script  src='smart-frame-ui.js'>
@@ -24,9 +23,9 @@
          $("#record_name").val(SMART.record.full_name);
        };
 
-       SMART.PATIENTS_get(function(patient_response) {
-
-          var patients = patient_response.where("?p rdf:type sp:Demographics")
+       SMART.PATIENTS_get(function(response) {
+	  
+          var patients = response.graph.where("?p rdf:type sp:Demographics")
                                          .where("?p <http://www.w3.org/2006/vcard/ns#n> ?n")
                                          .where("?n <http://www.w3.org/2006/vcard/ns#given-name> ?givenName")
                                          .where("?n <http://www.w3.org/2006/vcard/ns#family-name> ?familyName");
@@ -40,9 +39,11 @@
        });
 
        var iframes = [$("#app1"), $("#app2"), $("#app3")];
-       SMART.MANIFESTS_get(function(manifests) {
+       SMART.MANIFESTS_get(function(response) {
 
-           var carousel = jQuery("#carousel");
+	 var carousel = jQuery("#carousel"),
+	     manifests = response.json;
+	     
            carousel.html("");
            var click_count = -1;
 

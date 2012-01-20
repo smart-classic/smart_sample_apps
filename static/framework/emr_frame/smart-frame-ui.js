@@ -10,7 +10,7 @@
       SMART_HOST.handle_api = function(app_instance, call_info, callback) {
         SMART.api_call_delegated( app_instance, 
                                   call_info, 
-                                  function(r) { callback(r.data); }
+                                  function(r) { callback(r); }
                                 );
       };
 
