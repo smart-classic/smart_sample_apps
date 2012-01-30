@@ -19,31 +19,31 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 
     var notification_handlers = {};
     this.bind_channel = function(scope) {
-	channel = Channel.build({window: frame, origin: "*", scope: scope, debugOutput: debug});
+        channel = Channel.build({window: frame, origin: "*", scope: scope, debugOutput: debug});
 
-	_this.on = function(n, cb) {
-	  notification_handlers[n] = function(t, p) {
-	    cb(p);
-	  };
+        _this.on = function(n, cb) {
+          notification_handlers[n] = function(t, p) {
+            cb(p);
+          };
 
-	  channel.bind(n, notification_handlers[n]);
-	};
+          channel.bind(n, notification_handlers[n]);
+        };
 
-	_this.off = function(n, cb) {
-	  channel.unbind(n, notification_handlers[n]);
-	}
+        _this.off = function(n, cb) {
+          channel.unbind(n, notification_handlers[n]);
+        }
 
-	_this.notify_host = function(n, p) {
-	  channel.notify({
-	      method: n,
-	      params: p 
-	    });
-	};
+        _this.notify_host = function(n, p) {
+          channel.notify({
+              method: n,
+              params: p 
+            });
+        };
 
-	channel.bind("ready", function(trans, message) {
-	    trans.complete(true);
-	    sc.received_setup(message);
-	});
+        channel.bind("ready", function(trans, message) {
+            trans.complete(true);
+            sc.received_setup(message);
+        });
 
     };
 
@@ -168,6 +168,12 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
    
 };
 
+SMART_CONNECT_CLIENT.prototype.methods = [];
+
+SMART_CONNECT_CLIENT.prototype.register_method = function (name, method, target, category) {
+    this.methods.push({name: name, method: method, target: target, category: category});
+}
+
 SMART_CONNECT_CLIENT.prototype.MANIFESTS_get = function(success) {
   this.api_call({
     url: "/apps/manifests",
@@ -209,8 +215,11 @@ SMART_CONNECT_CLIENT.prototype.FULFILLMENTS_get = function(callback) {
 		var rdf = _this.process_rdf(contentType, data);
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
-
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("FULFILLMENTS_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#Fulfillment",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
 	var _this = this;
@@ -222,8 +231,11 @@ SMART_CONNECT_CLIENT.prototype.LAB_RESULTS_get = function(callback) {
 		var rdf = _this.process_rdf(contentType, data);
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
-
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("LAB_RESULTS_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#LabResult",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.VITAL_SIGNS_get = function(callback) {
 	var _this = this;
@@ -236,6 +248,26 @@ SMART_CONNECT_CLIENT.prototype.VITAL_SIGNS_get = function(callback) {
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("VITAL_SIGNS_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#VitalSigns",
+                      "record_items");
+                      
+SMART_CONNECT_CLIENT.prototype.ENCOUNTERS_get = function(callback) {
+	var _this = this;
+	this.api_call( {
+		method : 'GET',
+		url : "/records/" + _this.record.id + "/encounters/",
+		data : {}
+	}, function(contentType, data) {
+		var rdf = _this.process_rdf(contentType, data);
+		callback({body: data, contentType: contentType, graph: rdf});
+	});
+};
+SMART_CONNECT_CLIENT.prototype.register_method ("ENCOUNTERS_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#Encounter",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
 	var _this = this;
@@ -247,10 +279,11 @@ SMART_CONNECT_CLIENT.prototype.DEMOGRAPHICS_get = function(callback) {
 		var rdf = _this.process_rdf(contentType, data);
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
-
 };
-
-	
+SMART_CONNECT_CLIENT.prototype.register_method ("DEMOGRAPHICS_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#Demographics",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.MEDS_get = function(callback) {
 	var _this = this;
@@ -262,8 +295,11 @@ SMART_CONNECT_CLIENT.prototype.MEDS_get = function(callback) {
 		var rdf = _this.process_rdf(contentType, data);
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
-
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("MEDS_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#Medication",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.MEDS_get_all = SMART_CONNECT_CLIENT.prototype.MEDS_get;
 
@@ -278,6 +314,10 @@ SMART_CONNECT_CLIENT.prototype.MEDS_post = function(data, callback) {
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("MEDS_post",
+                      "POST", 
+                      "http://smartplatforms.org/terms#Medication",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.MEDS_delete = function(callback) {
 	var _this = this;
@@ -289,6 +329,10 @@ SMART_CONNECT_CLIENT.prototype.MEDS_delete = function(callback) {
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("MEDS_delete",
+                      "DELETE", 
+                      "http://smartplatforms.org/terms#Medication",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.MED_delete = function(uri, callback) {
 	var _this = this;
@@ -300,6 +344,10 @@ SMART_CONNECT_CLIENT.prototype.MED_delete = function(uri, callback) {
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("MED_delete",
+                      "DELETE", 
+                      "http://smartplatforms.org/terms#Medication",
+                      "record_item");
 
 SMART_CONNECT_CLIENT.prototype.MED_put = function(data, external_id, callback) {
 	var _this = this;
@@ -313,8 +361,11 @@ SMART_CONNECT_CLIENT.prototype.MED_put = function(data, external_id, callback) {
 		var rdf = _this.process_rdf(contentType, data);
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
-
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("MED_put",
+                      "PUT", 
+                      "http://smartplatforms.org/terms#Medication",
+                      "record_item");
 
 SMART_CONNECT_CLIENT.prototype.PROBLEMS_get = function(callback) {
 	var _this = this;
@@ -327,6 +378,10 @@ SMART_CONNECT_CLIENT.prototype.PROBLEMS_get = function(callback) {
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("PROBLEMS_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#Problem",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.PROBLEMS_post = function(data, callback) {
 	var _this = this;
@@ -339,6 +394,10 @@ SMART_CONNECT_CLIENT.prototype.PROBLEMS_post = function(data, callback) {
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("PROBLEMS_post",
+                      "POST", 
+                      "http://smartplatforms.org/terms#Problem",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback) {
 	var _this = this;
@@ -351,6 +410,10 @@ SMART_CONNECT_CLIENT.prototype.PROBLEMS_delete = function(problem_uri, callback)
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("PROBLEMS_delete",
+                      "DELETE", 
+                      "http://smartplatforms.org/terms#Problem",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.PROBLEM_put = function(data, external_id, callback) {
 	var _this = this;
@@ -365,6 +428,10 @@ SMART_CONNECT_CLIENT.prototype.PROBLEM_put = function(data, external_id, callbac
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("PROBLEM_put",
+                      "PUT", 
+                      "http://smartplatforms.org/terms#Problem",
+                      "record_item");
 
 SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback) {
 	var _this = this;
@@ -428,6 +495,10 @@ SMART_CONNECT_CLIENT.prototype.ALLERGIES_get = function(callback) {
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("ALLERGIES_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#Allergy",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
 	var _this = this;
@@ -440,6 +511,10 @@ SMART_CONNECT_CLIENT.prototype.ALLERGIES_post = function(data, callback) {
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("ALLERGIES_post",
+                      "POST", 
+                      "http://smartplatforms.org/terms#Allergy",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.ALLERGIES_delete = function(allergy_uri, callback) {
 	var _this = this;
@@ -452,6 +527,10 @@ SMART_CONNECT_CLIENT.prototype.ALLERGIES_delete = function(allergy_uri, callback
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("ALLERGIES_delete",
+                      "DELETE", 
+                      "http://smartplatforms.org/terms#Allergy",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.ALLERGY_put = function(data, external_id, callback) {
 	var _this = this;
@@ -466,7 +545,10 @@ SMART_CONNECT_CLIENT.prototype.ALLERGY_put = function(data, external_id, callbac
 		callback({body: data, contentType: contentType, graph: rdf});
 	});
 };
-
+SMART_CONNECT_CLIENT.prototype.register_method ("ALLERGY_put",
+                      "PUT", 
+                      "http://smartplatforms.org/terms#Allergy",
+                      "record_item");
 
 
 SMART_CONNECT_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
@@ -580,6 +662,10 @@ SMART_CONNECT_CLIENT.prototype.PREFERENCES_put = function(data, content_type, ca
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("PREFERENCES_put",
+                      "PUT", 
+                      "http://smartplatforms.org/terms#UserPreferences",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.PREFERENCES_get = function(callback) {
 	var _this = this;
@@ -591,6 +677,10 @@ SMART_CONNECT_CLIENT.prototype.PREFERENCES_get = function(callback) {
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("PREFERENCES_get",
+                      "GET", 
+                      "http://smartplatforms.org/terms#UserPreferences",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.PREFERENCES_delete = function(callback) {
 	var _this = this;
@@ -603,6 +693,10 @@ SMART_CONNECT_CLIENT.prototype.PREFERENCES_delete = function(callback) {
 		callback({body: data, contentType: contentType, graph: undefined});
 	});
 };
+SMART_CONNECT_CLIENT.prototype.register_method ("PREFERENCES_delete",
+                      "DELETE", 
+                      "http://smartplatforms.org/terms#UserPreferences",
+                      "record_items");
 
 SMART_CONNECT_CLIENT.prototype.createXMLDocument = function(string) {
     var parser, xmlDoc;
@@ -630,6 +724,7 @@ SMART_CONNECT_CLIENT.prototype.node_name = function(node) {
 
 SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
 
+try {
 	// Get the triples into jquery.rdf
 	var d = this.createXMLDocument(data);
 
@@ -660,6 +755,9 @@ SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
 	rdf.prefix("dcterms", "http://purl.org/dc/terms/");
 
 	return rdf;
+ } catch(err) {
+    return;
+ }
 }
 
 
