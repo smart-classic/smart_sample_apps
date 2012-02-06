@@ -171,5 +171,6 @@ if __name__ == "__main__":
 
     # Alias for backwards compatibility
     print "SMART_CONNECT_CLIENT.prototype.MEDS_get = SMART_CONNECT_CLIENT.prototype.MEDICATIONS_get;\n"
+    print "SMART_CONNECT_CLIENT.prototype.MEDS_get_all = SMART_CONNECT_CLIENT.prototype.MEDS_get;\n"
         
     print "SMART = new SMART_CONNECT_CLIENT(null, window.parent);"
