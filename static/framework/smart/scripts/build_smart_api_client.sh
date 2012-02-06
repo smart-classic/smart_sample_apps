@@ -7,3 +7,5 @@ export PYTHONPATH=.:../../../..
 python build.py > smart-temp.js
 
 cat ../../jquery/jquery.js jquery-ui.js  jquery.rdfquery.core-1.0.js jschannel.js smart-temp.js  >> smart-api-client.js
+
+rm smart-temp.js
