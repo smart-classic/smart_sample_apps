@@ -1,0 +1,34 @@
+body {
+    font: 62.5% "Trebuchet MS", sans-serif;
+}
+
+/* Styling for the table view */
+
+table.nicetable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #a9c6c9;
+    border-collapse: collapse;
+}
+
+table.nicetable th {
+    text-align: left;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #a9c6c9;
+    background-color:#c3dde0;
+}
+
+table.nicetable td {
+    border-width: 1px;
+    padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+    border-style: solid;
+    border-color: #a9c6c9;
+    background-color:#d4e3e5;
+}
