@@ -127,10 +127,15 @@ if (!VERIFY) {
         return dfd.promise();
     };
     
+    var out2 = "";
+    
     VERIFY.callback_final = function (call_name, messages) {
                                 var out = "";
+                                
                                 for (var i = 0; i < messages.length; i++) {
-                                    out += messages[i] + "<br/>";
+                                    out += messages[i].split("\n")[0] + "<br/>";
+                                    out2 += "In " + call_name + ": ";
+                                    out2 += messages[i];
                                 }
                                 if (messages.length > 0) {
                                      $('#'+call_name).html("<img id='anchor-dlg" + call_name + "' class='js_mouseyDialog two' src='/static/images/warn.gif'/><div id='dlg" + call_name + "' style='display:none'>" + out + "</div>");
@@ -142,6 +147,8 @@ if (!VERIFY) {
                                 } else {
                                     $('#'+call_name).html("<img src='/static/images/ok.gif'/>");
                                 }
+                                
+                                $('#console').text(out2);
                             };
     
     VERIFY.callback_ok = function(call_name, call_model, response) {

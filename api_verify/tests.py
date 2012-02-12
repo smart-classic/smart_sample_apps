@@ -59,8 +59,8 @@ class TestDemographics(TestRDF):
                 """
             
             answer = self.rdf.query(q)
-            if (answer.askAnswer[0] == False):
-                self.fail ("No names found")
+            #if (answer.askAnswer[0] == False):
+            self.fail ("RDF structure check failed\nAttempted the query:\n" + q)
 
 class TestEncounters(TestRDF):
     pass
@@ -126,7 +126,10 @@ def getMessages (result):
     return res
 
 def getShortMessage (message):
-    s = message.split("\n")
-    s = s[len(s)-2]
-    s = s.split(": ")[1]
-    return s
+    s = message.split("AssertionError: ")
+    #for i in s:
+    #    if i.beginswith("AssertionError:"):
+    #        r = i
+    #s = s[len(s)-2]
+    #r = r.split(": ")[1]
+    return s[1]
