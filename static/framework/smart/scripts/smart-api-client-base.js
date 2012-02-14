@@ -127,7 +127,9 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	  
 	};
 
-	this.return = function(returndata) {
+	// renamed from this.return because IE8 refuses to allow reserved words 
+	// (this.return is no good; this['return'] would work)
+	this.complete = function(returndata) {
 
 	    channel.notify({
 	      method: "return",
