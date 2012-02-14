@@ -3,7 +3,7 @@
 // Author: Nikolai Schwertner
 //
 // Revision history:
-//	   2011-06-27 Refactored code
+//       2011-06-27 Refactored code
 //     2011-05-19 Fixed tabs UI resizing issue
 //     2011-05-18 Initial split from main code
 
@@ -21,21 +21,21 @@ if (!BPC) {
     */
     SMART.ready(function() {
         
-		if ( typeof SMART === "undefined" ) {
-			$("#info").text("Error: SMART Connect interface not found");
-		} else {
-			// Fire up the SMART API calls and initialize the application asynchronously
-			$.when(BPC.get_demographics(), BPC.get_vitals())
+        if ( typeof SMART === "undefined" ) {
+            $("#info").text("Error: SMART Connect interface not found");
+        } else {
+            // Fire up the SMART API calls and initialize the application asynchronously
+            $.when(BPC.get_demographics(), BPC.get_vitals())
              .then( function (patient, vitals) {
-						BPC.initApp ( BPC.processData(patient, vitals) ); 
-			        },
+                        BPC.initApp ( BPC.processData(patient, vitals) ); 
+                    },
                     function (message) {
                         BPC.displayError (message);
                     });
-		}
-		
-		// Add other things to do upon document loading here...
-		
+        }
+        
+        // Add other things to do upon document loading here...
+        
     }); // end document.ready handler
     
     /**
@@ -49,13 +49,13 @@ if (!BPC) {
     * Initializes the calculator tab
     */
     BPC.initCalculator = function(bpparams) {
-	
-		// Initialize the validation engine when available
-        if (BPC.initCalculatorValidation) {
-			BPC.initCalculatorValidation();
-		}
     
-		// Set the initial input field values
+        // Initialize the validation engine when available
+        if (BPC.initCalculatorValidation) {
+            BPC.initCalculatorValidation();
+        }
+    
+        // Set the initial input field values
         $('#add_height').val(Math.round(bpparams.height));
         $('#add_diastolic').val(Math.round(bpparams.diastolic));
         $('#add_systolic').val(Math.round(bpparams.systolic));
@@ -65,9 +65,9 @@ if (!BPC) {
             $('#add_female').attr("checked", true);
         } else {
             $('#add_male').attr("checked", true);
-		}
+        }
 
-		// Register the event handlers
+        // Register the event handlers
         $("form input").live('keyup', function(){
             $("form").submit();
         });
@@ -77,28 +77,28 @@ if (!BPC) {
         });
 
         $("form").live('submit', function(event){
-		
-			var height,
-				bpparams,
-				percentiles,
-				target_percentiles = [99, 95, 90],
-				thresholds = "",
-				to_display,
-				res,
-				i;
-				
+        
+            var height,
+                bpparams,
+                percentiles,
+                target_percentiles = [99, 95, 90],
+                thresholds = "",
+                to_display,
+                res,
+                i;
+                
             event.stopPropagation();
             
             height = $('#add_height').val();
 
             bpparams = {
-				age: parseInt($('#add_age').val()) + 1.0/12 * parseInt($('#add_months').val()) , 
+                age: parseInt($('#add_age').val()) + 1.0/12 * parseInt($('#add_months').val()) , 
                 sex: $('input[name="add_gender"]:checked').val(), 
                 height: height/100.0, 
                 systolic: $('#add_systolic').val(), 
-				diastolic: $('#add_diastolic').val(),
-				round_results: true
-			};
+                diastolic: $('#add_diastolic').val(),
+                round_results: true
+            };
             
             if (bpparams.age && bpparams.height && bpparams.sex) {
                 $("#result-label").text(BPC.getYears(bpparams.age) + "y " + BPC.getMonths(bpparams.age) + "m, "
@@ -117,8 +117,8 @@ if (!BPC) {
                 if (res.systolic || res.diastolic) {
                     thresholds += "<strong>" + target_percentiles[i] + "%</strong> - " + res.systolic + " / " + res.diastolic + " mmHg";
                     if (i < target_percentiles.length - 1) {
-						thresholds += "<br/>";
-					}
+                        thresholds += "<br/>";
+                    }
                 }
             }
 
@@ -131,7 +131,7 @@ if (!BPC) {
             $("#result-percentiles .spct").text(to_display.systolic_percentile);
             $("#result-percentiles .dpct").text(to_display.diastolic_percentile);
             $("#calculator-thresholds-out").html(to_display.thresholds);
-			
+            
             return false;
         });
             
@@ -159,11 +159,11 @@ if (!BPC) {
         
         // Patch to enable filter band persistance by JCM
         $('#tabs').bind('tabsshow', function(ev,ui){
-			var target = $(".tab_wrapper", ui.panel);
-		
+            var target = $(".tab_wrapper", ui.panel);
+        
             if (ui.panel.id === 'tab_long' || ui.panel.id ==='tab_table') {
-				$("#filters").prependTo(target);
-			}
+                $("#filters").prependTo(target);
+            }
         });
 
         // Initialize the filter toggle buttons
@@ -180,11 +180,11 @@ if (!BPC) {
             }
         });
 
-		// Initialize the slider range
+        // Initialize the slider range
         BPC.setDateRange($("#slider-timerange").slider("values", 0),$("#slider-timerange").slider("values", 1));
     };
 
-	/**
+    /**
     * Sets the state for all filter UI components
     *
     * @param {String} state 'enable' or 'disable'
@@ -194,7 +194,7 @@ if (!BPC) {
         $("#slider-timerange").slider(state);
         $("#tabs").tabs(state);
     };
-	
+    
     /**
     * Enables all filter UI components
     */

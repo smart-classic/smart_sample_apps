@@ -64,8 +64,8 @@ if (!BPC) {
     BPC.get_vitals = function() {
         
         var dfd = $.Deferred(),
-			// Template for the vitals object thrown by the callback
-			vitals = {heightData: [],
+            // Template for the vitals object thrown by the callback
+            vitals = {heightData: [],
                       bpData: []};
         
         SMART.VITAL_SIGNS_get()
@@ -84,7 +84,7 @@ if (!BPC) {
                             vital_date: this.vital_date.value,
                             height: this.height.value
                         });
-                    });			
+                    });            
                     
                 // Query the RDF for the blood pressure data
                 vital_signs.graph
@@ -172,8 +172,8 @@ if (!BPC) {
             patient,
             age,
             height,
-			myHeight,
-			getClosestHeight,
+            myHeight,
+            getClosestHeight,
             i;
 
         // Initialize the patient information area
@@ -220,29 +220,29 @@ if (!BPC) {
             // Sort the height data array
             height_data.sort(function (a,b) {
                 var x = a.date,
-					y = b.date;
+                    y = b.date;
                 
-				return ( (x<y) ? -1: ((x>y)?1:0));
+                return ( (x<y) ? -1: ((x>y)?1:0));
             });
 
-			// Inner function for looking up the closest height for a given date
-			getClosestHeight = function (recordDate) { 
+            // Inner function for looking up the closest height for a given date
+            getClosestHeight = function (recordDate) { 
                 
-				var closestHeight = height_data[0].height,
-					closestHeightDate = height_data[0].date,
-					j;
-					
-				for (j = 0; j < height_data.length; j++) {
-					if ( Math.abs(years_apart(height_data[j].date, recordDate)) < Math.abs(years_apart(closestHeightDate, recordDate)) ) {
-						closestHeight = height_data[j].height;
-						closestHeightDate = height_data[j].date;
-					}
-				}
-				
-				return {date: closestHeightDate, value: closestHeight};
+                var closestHeight = height_data[0].height,
+                    closestHeightDate = height_data[0].date,
+                    j;
+                    
+                for (j = 0; j < height_data.length; j++) {
+                    if ( Math.abs(years_apart(height_data[j].date, recordDate)) < Math.abs(years_apart(closestHeightDate, recordDate)) ) {
+                        closestHeight = height_data[j].height;
+                        closestHeightDate = height_data[j].date;
+                    }
+                }
+                
+                return {date: closestHeightDate, value: closestHeight};
                     
             };
-			
+            
             // Add the blood pressure data records to the patient object
             for (i = 0; i < vitals_bp.length; i++) {  
 
@@ -253,14 +253,14 @@ if (!BPC) {
 
                 age = years_apart( vitals_bp[i].vital_date, patient.birthdate );
 
-				// Set the height to undefined when there is no height data within the staleness horizon
+                // Set the height to undefined when there is no height data within the staleness horizon
                 if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= BPC.getHeightStaleness (demographics.gender,age)) {
                     height = myHeight.value;
                 } else {
                     height = undefined;
                 }
                 
-				// Add the data point to the patient object
+                // Add the data point to the patient object
                 patient.data.push ({timestamp: vitals_bp[i].vital_date, 
                     height: height,
                     systolic: Math.round(vitals_bp[i].systolic),
@@ -289,15 +289,15 @@ if (!BPC) {
 
         // Load the sample patient when no data is provided
         if (!patient) {
-			patient = BPC.getSamplePatient ();
-		}
+            patient = BPC.getSamplePatient ();
+        }
              
         // Sort the patient data records by timestamp
         patient.data.sort(function (a,b) {
-		
+        
             var x = a.timestamp,
-				y = b.timestamp;
-				
+                y = b.timestamp;
+                
             return ( (x<y) ? -1: ((x>y)?1:0));
         });
              
@@ -379,7 +379,7 @@ if (!BPC) {
             
         p.data = [];
         
-		// only include the last three encounters (the last data point of a day)
+        // only include the last three encounters (the last data point of a day)
         for (i = this.data.length - 1, dateCounter = 0, lastDate; i >= 0 && dateCounter < n; i--) {
         
             newDate = parse_date(this.data[i].date).toString("yyyy-MM-dd");
@@ -410,11 +410,11 @@ if (!BPC) {
             
         p.data = [];
         
-		// Run the filter
+        // Run the filter
         for (i = 0; i < this.data.length; i++) {
             if (filter(this.data[i])) {
-				p.data.push (this.data[i]);
-			}
+                p.data.push (this.data[i]);
+            }
         }
         
         // Set the unix timestamps of the first and last encounters

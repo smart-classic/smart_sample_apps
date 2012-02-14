@@ -73,7 +73,7 @@
                     <li><a href="#tab_long">Long Term View</a></li>
                     <li><a href="#tab_table">Table View</a></li>
                     <li><a href="#tab_calculator">Calculator</a></li>
-					<li><a href="#tab_references">References</a></li>
+                    <li><a href="#tab_references">References</a></li>
                 </ul>
                 
                 <div id="tab_short">
@@ -166,8 +166,8 @@
                 </div>
                 
                 <div id="tab_calculator">
-					<div id="result-label">
-					</div>
+                    <div id="result-label">
+                    </div>
                     <div id="calculator-inputs" class="calc-panel">
                         <script type="text/javascript">
                             (function () {
@@ -249,7 +249,7 @@
                                 };
                             }());
                         </script>
-						<form id="input" method="GET" action="#" data-ajax="false">
+                        <form id="input" method="GET" action="#" data-ajax="false">
                             <table>
                                 <tr><th colspan=3>Patient</th></tr>
                                 <tr>
@@ -276,10 +276,10 @@
                                     </td>
                                 </tr>
                             </table>
-						</form>
+                        </form>
                     </div>
                     <div id="calculator-results-panel">
-					    <div id='result-percentiles' class="calc-panel">
+                        <div id='result-percentiles' class="calc-panel">
                           <table>
                             <tr><th>Systolic</th><th></th><th>Diastolic</th></tr>
                             <tr>
@@ -300,19 +300,19 @@
                     </div>
                     <div class="clearall">&nbsp;</div>
                 </div> <!-- calculator tab -->
-				
-				<div id="tab_references">
-					<ul>
-						<li>
-							<p>
+                
+                <div id="tab_references">
+                    <ul>
+                        <li>
+                            <p>
                                 The Fourth Report on the Diagnosis, Evaluation, and Treatment of High 
                                 Blood Pressure in Children and Adolescents
                                 National Heart, Lung, and Blood Institute, NIH obtained 04/06/2011
                                 (<a href="http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf" target="_blank">http://www.nhlbi.nih.gov/health/prof/heart/hbp/hbp_ped.pdf</a>)
                             </p>
-						</li>
-						<li>
-							<p>
+                        </li>
+                        <li>
+                            <p>
 CDC Clinical Growth Charts obtained 04/06/2011 (
 <a href="http://www.cdc.gov/growthcharts/clinical_charts.htm" target="_blank">Charts</a>,
 <a href="http://www.cdc.gov/growthcharts/percentile_data_files.htm" target="_blank">Data</a>,
@@ -320,9 +320,9 @@ CDC Clinical Growth Charts obtained 04/06/2011 (
 <a href="http://www.cdc.gov/growthcharts/data/zscore/statage.xls" target="_blank">Stature</a>
 )
                             </p>
-						</li>
-					</ul>
-				</div>
+                        </li>
+                    </ul>
+                </div>
                 
             </div> <!-- tabs -->
 
@@ -333,14 +333,14 @@ CDC Clinical Growth Charts obtained 04/06/2011 (
         <div style="display:none"><textarea id="template" rows="0" cols="0"><!--
             {#template MAIN}
                 <table class="nicetable">
-					<thead>
-						{#include HEAD}
-					</thead>
-					<tbody>
-						{#foreach $T.data as record}
-							{#include ROW root=$T.record}
-						{#/for}
-					</tbody>
+                    <thead>
+                        {#include HEAD}
+                    </thead>
+                    <tbody>
+                        {#foreach $T.data as record}
+                            {#include ROW root=$T.record}
+                        {#/for}
+                    </tbody>
                 </table>
             {#/template MAIN}
             

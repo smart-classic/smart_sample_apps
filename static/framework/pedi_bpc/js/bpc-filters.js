@@ -3,7 +3,7 @@
 // Author: Nikolai Schwertner
 //
 // Revision history:
-//	   2011-06-27 Refactored code
+//       2011-06-27 Refactored code
 //     2011-05-19 Restructured filter loaders to reduce code duplication
 //     2011-05-18 Initial split from main code
 
@@ -31,38 +31,38 @@ if (!BPC) {
     * Filter settings loader
     */
     BPC.loadFilterSettings = function () {
-	
+    
         var f = BPC.filterSettings;
-		
+        
         f.encounter = [];
         f.site = [];
         f.position = [];
         f.method = [];
-		
+        
         if ($("#chkFilterInpatient").attr("checked")) {
-			f.encounter.push("Inpatient");
-		}
+            f.encounter.push("Inpatient");
+        }
         if ($("#chkFilterAmbulatory").attr("checked")) {
-			f.encounter.push("Ambulatory");
-		}
+            f.encounter.push("Ambulatory");
+        }
         if ($("#chkFilterArm").attr("checked")) {
-			f.site.push("Arm");
-		}
+            f.site.push("Arm");
+        }
         if ($("#chkFilterLeg").attr("checked")) {
-			f.site.push("Leg");
-		}
+            f.site.push("Leg");
+        }
         if ($("#chkFilterSitting").attr("checked")) {
-			f.position.push("Sitting");
-		}
+            f.position.push("Sitting");
+        }
         if ($("#chkFilterStanding").attr("checked")) {
-			f.position.push("Standing");
-		}
+            f.position.push("Standing");
+        }
         if ($("#chkFilterAuscultation").attr("checked")) {
-			f.method.push("Auscultation");
-		}
+            f.method.push("Auscultation");
+        }
         if ($("#chkFilterMachine").attr("checked")) {
-			f.method.push("Machine");
-		}
+            f.method.push("Machine");
+        }
     };
 
     /**
@@ -87,10 +87,10 @@ if (!BPC) {
     BPC.setDateRange = function (valueFrom, valueTo) {
 
         var s = BPC.getViewSettings (),
-			startTime = BPC.patient.startUnixTime,
+            startTime = BPC.patient.startUnixTime,
             endTime = BPC.patient.endUnixTime,
-			fromTime,
-			toTime;
+            fromTime,
+            toTime;
             
         // Convert the slider values to unix dates
         fromTime = BPC.scale (valueFrom, 0, 100, startTime, endTime);
@@ -107,8 +107,8 @@ if (!BPC) {
         // Update the slider label
         $( "#label-timerange" ).text( fromTime + " - " + toTime );
     };
-	
-	/**
+    
+    /**
     * Utility for checking of the presence of a value within a list of values
     *
     * @param {String} value The target value to be searched for
@@ -117,14 +117,14 @@ if (!BPC) {
     * @returns {Boolean} True if the value was found in the list of values
     */
     var inList = function (value, values) {
-		var i;
-		
+        var i;
+        
         for (i = 0; i < values.length; i++) {
-			if (value === values[i]) {
-				return true;
-			}
-		}
-		
+            if (value === values[i]) {
+                return true;
+            }
+        }
+        
         return false;
     };
 
@@ -140,21 +140,21 @@ if (!BPC) {
     };
         
     BPC.filterSite = function (record) {
-		var site;
-		
-        if (!record.site) {
-			return true;
-		}
+        var site;
         
-		site = record.site.toLowerCase();
-		
+        if (!record.site) {
+            return true;
+        }
+        
+        site = record.site.toLowerCase();
+        
         if (site.indexOf("arm") !== -1) {
             return inList ("Arm", BPC.filterSettings.site);
         } else if (site.indexOf("leg") !== -1) {
             return inList ("Leg", BPC.filterSettings.site);
         } else {
-			return false;
-		}
+            return false;
+        }
     };
         
     BPC.filterPosition = function (record) {
@@ -198,14 +198,14 @@ if (!BPC) {
     */
     BPC.scale = function (X, x1, x2, y1, y2) {
         var a, b;
-		
-		if (x1 === x2) {
-			return y1 + (y2-y1)/2;
-		}
-		
+        
+        if (x1 === x2) {
+            return y1 + (y2-y1)/2;
+        }
+        
         a = (y2-y1)/(x2-x1);
         b = y1 - a*x1;
-		
+        
         //console.log ("scale: " + X + " " + x1 + " " + x2 + " " + y1 + " " + y2 + " -> " + (a*X + b));
         
         return a*X + b;
@@ -215,14 +215,14 @@ if (!BPC) {
     * Method for applying all filters to a patient object
     *
     * @returns {Object} A new patient object resulting from the filters application. The original
-						object remains unaltered.
+                        object remains unaltered.
     */
     BPC.Patient.prototype.applyFilters = function (patient) {
         return this.applyFilter(BPC.filterEncounter)
-				   .applyFilter(BPC.filterSite)
-				   .applyFilter(BPC.filterPosition)
-				   .applyFilter(BPC.filterDate)
-				   .applyFilter(BPC.filterMethod)
-				   .applyFilter(BPC.filterPediatric);
+                   .applyFilter(BPC.filterSite)
+                   .applyFilter(BPC.filterPosition)
+                   .applyFilter(BPC.filterDate)
+                   .applyFilter(BPC.filterMethod)
+                   .applyFilter(BPC.filterPediatric);
     };
 }());

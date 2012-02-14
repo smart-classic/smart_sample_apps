@@ -88,12 +88,12 @@ input[type='number'] {border: 1px solid #555;}
 }
 
 #info {
-	font: 300 1.2em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
-	width: 780px;
-	height: 400px;
-	display: table-cell;
-	text-align: center;
-	vertical-align: middle;
+    font: 300 1.2em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+    width: 780px;
+    height: 400px;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
 }
 
 #patient-info {
@@ -113,8 +113,8 @@ input[type='number'] {border: 1px solid #555;}
     font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
     right: 1em;
     text-align: right;
-	width: 786px;
-	margin-top: 5px;
+    width: 786px;
+    margin-top: 5px;
 }
 #copy a {
     color: #fff;
@@ -143,9 +143,9 @@ table.nicetable th {
 table.nicetable td {
     border-width: 1px;
     padding-top: 4px;
-	padding-bottom: 4px;
-	padding-left: 8px;
-	padding-right: 8px;
+    padding-bottom: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
     border-style: solid;
     border-color: #a9c6c9;
     background-color:#d4e3e5;
