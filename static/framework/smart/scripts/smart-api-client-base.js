@@ -99,6 +99,8 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
            prm.success(callback_success);
            if (callback_error) prm.error(callback_error);
         }
+        if (options.success) prm.success(options.success);
+        if (options.error) prm.error(options.error);
 	    channel.call({method: "api_call",
 			  params: 
 			  {
