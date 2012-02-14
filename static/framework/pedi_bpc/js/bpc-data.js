@@ -31,25 +31,28 @@ if (!BPC) {
     */  
     BPC.get_demographics = function() {
         var dfd = $.Deferred();
-        SMART.DEMOGRAPHICS_get(function(demos) {
-        
-            // Query the RDF for the demographics
-            var demographics = demos.graph
-                        .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-                        .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-                        .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
-                        .where('?a v:n ?n')
-                        .where('?n rdf:type v:Name')
-                        .where('?n v:given-name ?firstname')
-                        .where('?n v:family-name ?lastname')
-                        .where('?a foaf:gender ?gender')
-                        .where('?a v:bday ?birthday')
-                        .get(0);
-                        
-            dfd.resolve({name: demographics.firstname.value.toString() + " " + demographics.lastname.value.toString(),
-                         gender: demographics.gender.value.toString(),
-                         birthday: demographics.birthday.value.toString()});
-        });
+        SMART.DEMOGRAPHICS_get()
+             .success(function(demos) {
+                // Query the RDF for the demographics
+                var demographics = demos.graph
+                            .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                            .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+                            .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
+                            .where('?a v:n ?n')
+                            .where('?n rdf:type v:Name')
+                            .where('?n v:given-name ?firstname')
+                            .where('?n v:family-name ?lastname')
+                            .where('?a foaf:gender ?gender')
+                            .where('?a v:bday ?birthday')
+                            .get(0);
+                            
+                dfd.resolve({name: demographics.firstname.value.toString() + " " + demographics.lastname.value.toString(),
+                             gender: demographics.gender.value.toString(),
+                             birthday: demographics.birthday.value.toString()});
+            })
+            .error(function(e) {
+                dfd.reject(e.message);
+            });
         return dfd.promise();
     };
 
@@ -65,82 +68,86 @@ if (!BPC) {
 			vitals = {heightData: [],
                       bpData: []};
         
-        SMART.VITAL_SIGNS_get(function(vital_signs){
+        SMART.VITAL_SIGNS_get()
+             .success(function(vital_signs){
         
-            // Query the RDF for the height data
-            vital_signs.graph
-                .prefix('dcterms','http://purl.org/dc/terms/')
-                .prefix('sp','http://smartplatforms.org/terms#')
-                .where('?v dcterms:date ?vital_date')
-                .where('?v sp:height ?h')
-                .where('?h sp:value ?height')
-                .where('?h sp:unit \"m\"')
-                .each(function(){
-					vitals.heightData.push({
-						vital_date: this.vital_date.value,
-						height: this.height.value
-					});
-				});			
-                
-            // Query the RDF for the blood pressure data
-            vital_signs.graph
-                .prefix('dcterms','http://purl.org/dc/terms/')
-                .prefix('sp','http://smartplatforms.org/terms#')
-                .where('?v dcterms:date ?vital_date')
-                .where('?v sp:bloodPressure ?bloodPressure')
-                .where('?bloodPressure sp:systolic ?s')
-                .where('?s sp:value ?systolic')
-                .where('?s sp:unit \"mm[Hg]\"')
-                .where('?bloodPressure sp:diastolic ?d')
-                .where('?d sp:value ?diastolic')
-                .where('?d sp:unit \"mm[Hg]\"')
-                .optional('?v sp:encounter ?encounter')
-                .optional('?bloodPressure sp:bodyPosition ?bodyPosition')
-                .optional('?bloodPressure sp:bodySite ?bodySite')
-                .optional('?bloodPressure sp:method ?method')
-                .each(function(){
-                
-                    var res;
-                
-                    if (this.encounter)  {
-                        res = vital_signs.graph.where(this.encounter.toString() +  ' sp:encounterType ?encounterType').where('?encounterType sp:code ?code');
-                        if (res.length === 1) {
-                            this.code = res[0].code;
-                        }
-                    }
+                // Query the RDF for the height data
+                vital_signs.graph
+                    .prefix('dcterms','http://purl.org/dc/terms/')
+                    .prefix('sp','http://smartplatforms.org/terms#')
+                    .where('?v dcterms:date ?vital_date')
+                    .where('?v sp:height ?h')
+                    .where('?h sp:value ?height')
+                    .where('?h sp:unit \"m\"')
+                    .each(function(){
+                        vitals.heightData.push({
+                            vital_date: this.vital_date.value,
+                            height: this.height.value
+                        });
+                    });			
                     
-                    if (this.bodyPosition)  {
-                        res = vital_signs.graph.where(this.bodyPosition.toString() +  ' sp:code ?bodyPositionCode');
-                        if (res.length === 1) {
-                            this.bodyPositionCode = res[0].bodyPositionCode;
-                        }
-                    }
+                // Query the RDF for the blood pressure data
+                vital_signs.graph
+                    .prefix('dcterms','http://purl.org/dc/terms/')
+                    .prefix('sp','http://smartplatforms.org/terms#')
+                    .where('?v dcterms:date ?vital_date')
+                    .where('?v sp:bloodPressure ?bloodPressure')
+                    .where('?bloodPressure sp:systolic ?s')
+                    .where('?s sp:value ?systolic')
+                    .where('?s sp:unit \"mm[Hg]\"')
+                    .where('?bloodPressure sp:diastolic ?d')
+                    .where('?d sp:value ?diastolic')
+                    .where('?d sp:unit \"mm[Hg]\"')
+                    .optional('?v sp:encounter ?encounter')
+                    .optional('?bloodPressure sp:bodyPosition ?bodyPosition')
+                    .optional('?bloodPressure sp:bodySite ?bodySite')
+                    .optional('?bloodPressure sp:method ?method')
+                    .each(function(){
                     
-                    if (this.bodySite)  {
-                        res = vital_signs.graph.where(this.bodySite.toString() +  ' sp:code ?bodySiteCode');
-                        if (res.length === 1) {
-                            this.bodySiteCode = res[0].bodySiteCode;
-                        }
-                    }
+                        var res;
                     
-                    if (this.method)  {
-                        res = vital_signs.graph.where(this.method.toString() +  ' sp:code ?methodCode');
-                        if (res.length === 1) {
-                            this.methodCode = res[0].methodCode;
+                        if (this.encounter)  {
+                            res = vital_signs.graph.where(this.encounter.toString() +  ' sp:encounterType ?encounterType').where('?encounterType sp:code ?code');
+                            if (res.length === 1) {
+                                this.code = res[0].code;
+                            }
                         }
-                    }
-                
-                    vitals.bpData.push({
-                        vital_date: this.vital_date.value.toString(),
-                        systolic: this.systolic.value.toString(),
-                        diastolic: this.diastolic.value.toString(),
-                        bodyPositionCode: this.bodyPositionCode && this.bodyPositionCode.value.toString(),
-                        bodySiteCode: this.bodySiteCode && this.bodySiteCode.value.toString(),
-                        methodCode: this.methodCode && this.methodCode.value.toString(),
-                        encounterTypeCode: this.code && this.code.value.toString()});
-                });
-            dfd.resolve(vitals);
-        });
+                        
+                        if (this.bodyPosition)  {
+                            res = vital_signs.graph.where(this.bodyPosition.toString() +  ' sp:code ?bodyPositionCode');
+                            if (res.length === 1) {
+                                this.bodyPositionCode = res[0].bodyPositionCode;
+                            }
+                        }
+                        
+                        if (this.bodySite)  {
+                            res = vital_signs.graph.where(this.bodySite.toString() +  ' sp:code ?bodySiteCode');
+                            if (res.length === 1) {
+                                this.bodySiteCode = res[0].bodySiteCode;
+                            }
+                        }
+                        
+                        if (this.method)  {
+                            res = vital_signs.graph.where(this.method.toString() +  ' sp:code ?methodCode');
+                            if (res.length === 1) {
+                                this.methodCode = res[0].methodCode;
+                            }
+                        }
+                    
+                        vitals.bpData.push({
+                            vital_date: this.vital_date.value.toString(),
+                            systolic: this.systolic.value.toString(),
+                            diastolic: this.diastolic.value.toString(),
+                            bodyPositionCode: this.bodyPositionCode && this.bodyPositionCode.value.toString(),
+                            bodySiteCode: this.bodySiteCode && this.bodySiteCode.value.toString(),
+                            methodCode: this.methodCode && this.methodCode.value.toString(),
+                            encounterTypeCode: this.code && this.code.value.toString()});
+                    });
+                dfd.resolve(vitals);
+            })
+            .error(function(e) {
+                dfd.reject(e.message);
+            });
         return dfd.promise();
     };
 
@@ -194,7 +201,7 @@ if (!BPC) {
         
         // Display appropriate error message
         if (vitals_height.length === 0 || vitals_bp.length === 0) {
-            $("#info").text("Error: No vitals in the patient record");
+            BPC.displayError("No vitals in the patient record");
         } else {
             
             // No errors detected -> proceed with full data processing

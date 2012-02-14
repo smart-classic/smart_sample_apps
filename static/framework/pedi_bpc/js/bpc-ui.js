@@ -18,22 +18,32 @@ if (!BPC) {
 
     /**
     * Document onLoad event handler (jQuery style)
-    */  
-    
+    */
     SMART.ready(function() {
         
 		if ( typeof SMART === "undefined" ) {
 			$("#info").text("Error: SMART Connect interface not found");
 		} else {
 			// Fire up the SMART API calls and initialize the application asynchronously
-			$.when(BPC.get_demographics(), BPC.get_vitals()).then( function (patient, vitals) {
+			$.when(BPC.get_demographics(), BPC.get_vitals())
+             .then( function (patient, vitals) {
 						BPC.initApp ( BPC.processData(patient, vitals) ); 
-			});
+			        },
+                    function (message) {
+                        BPC.displayError (message);
+                    });
 		}
 		
 		// Add other things to do upon document loading here...
 		
     }); // end document.ready handler
+    
+    /**
+    * Displays an error message on the screen
+    */
+    BPC.displayError = function(message) {
+        $("#info").text("Error: " + message);
+    };
 
     /**
     * Initializes the calculator tab
