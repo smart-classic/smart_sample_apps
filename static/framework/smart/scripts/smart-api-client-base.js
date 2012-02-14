@@ -156,11 +156,15 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    });
 	};
 
-	this.PATIENTS_get = function() {
+	this.PATIENTS_get = function(callback_success, callback_error) {
         var dfd = $.Deferred(),
             prm = dfd.promise();
         prm.success = prm.done;
         prm.error = prm.fail;
+        if (callback_success) {
+           prm.success(callback_success);
+           if (callback_error) prm.error(callback_error);
+        }
 	    sc.api_call({
             url: "/records/search",
             method: "GET"
@@ -183,12 +187,16 @@ SMART_CONNECT_CLIENT.prototype.register_method = function (name, method, target,
     this.methods.push({name: name, method: method, target: target, category: category});
 }
 
-SMART_CONNECT_CLIENT.prototype.NOTES_get = function() {
+SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback_success, callback_error) {
     var _this = this,
         dfd = $.Deferred(),
         prm = dfd.promise();
     prm.success = prm.done;
     prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call( {
 		method : 'GET',
 		url : "/records/" + _this.record.id + "/notes/",
@@ -202,12 +210,16 @@ SMART_CONNECT_CLIENT.prototype.NOTES_get = function() {
     return prm;
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data) {
+SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data, callback_success, callback_error) {
     var _this = this,
         dfd = $.Deferred(),
         prm = dfd.promise();
     prm.success = prm.done;
     prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call( {
 		method : 'POST',
 		url : "/records/" + _this.record.id + "/notes/",
@@ -221,12 +233,16 @@ SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data) {
     return prm;
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri) {
+SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri, callback_success, callback_error) {
     var _this = this,
         dfd = $.Deferred(),
         prm = dfd.promise();
     prm.success = prm.done;
     prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call( {
 		method : 'DELETE',
 		url : note_uri,
@@ -239,12 +255,16 @@ SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri) {
     return prm;
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id) {
+SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback_success, callback_error) {
     var _this = this,
         dfd = $.Deferred(),
         prm = dfd.promise();
     prm.success = prm.done;
     prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call( {
 		method : 'PUT',
 		url : "/records/" + _this.record.id + "/notes/external_id/"

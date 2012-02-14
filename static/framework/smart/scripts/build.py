@@ -111,13 +111,17 @@ def buildJS (call, path, vars, format, method, target, category):
         extra_lines += "        data: data\n"
 
     out = "SMART_CONNECT_CLIENT.prototype.%s = function(" % call
-    out += ", ".join(vars)
+    out += ", ".join(vars + ["callback_success", "callback_error"])
     out += ") {\n"
     out += "    var _this = this,\n"
     out += "        dfd = $.Deferred(),\n"
     out += "        prm = dfd.promise();\n"
     out += "    prm.success = prm.done;\n"
     out += "    prm.error = prm.fail;\n"
+    out += "    if (callback_success) {\n"
+    out += "       prm.success(callback_success);\n"
+    out += "       if (callback_error) prm.error(callback_error);\n"
+    out += "    }\n"
     out += "    this.api_call({\n"
     out += "        method: '%s',\n" % method.upper()
     out += "        url: %s\n" % (path + ("," if method.upper() in ("PUT", "POST") else ""))
