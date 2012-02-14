@@ -126,25 +126,25 @@ def buildJS (call, path, vars, format, method, target, category):
     out += "        method: '%s',\n" % method.upper()
     out += "        url: %s\n" % (path + ("," if method.upper() in ("PUT", "POST") else ""))
     out += extra_lines
-    out += "    }, function(contentType, data) {\n"
+    out += "    }, function(r) {\n"
 
     if method == "GET" and format == "JSON":    
         out += """        var json;
         try {
-            json = JSON.parse(data);
+            json = JSON.parse(r.body);
         } catch(err) {}
-        dfd.resolve({body: data, contentType: contentType, json: json});\n"""
+        dfd.resolve({body: r.body, contentType: r.contentType, json: json});\n"""
     elif method == "GET" and format == "RDF":
         out += """        var rdf;
         try {
-            rdf = _this.process_rdf(contentType, data);
+            rdf = _this.process_rdf(r.contentType, r.body);
         } catch(err) {}
-        dfd.resolve({body: data, contentType: contentType, graph: rdf});\n"""
+        dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});\n"""
     else:
-        out += "        dfd.resolve({body: data, contentType: contentType});\n"
+        out += "        dfd.resolve({body: r.body, contentType: r.contentType});\n"
     
-    out += """    }, function(error, message) {
-        dfd.reject({status: error, message: message});
+    out += """    }, function(r) {
+        dfd.reject({status: r.status, message: r.message});
     });\n"""
     out += "    return prm;\n"
     out += "};\n"

@@ -91,6 +91,14 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 
     this.assign_ui_handlers = function() {
 	this.api_call = function(options, callback_success, callback_error) {
+        var dfd = $.Deferred(),
+            prm = dfd.promise();
+        prm.success = prm.done;
+        prm.error = prm.fail;
+        if (callback_success) {
+           prm.success(callback_success);
+           if (callback_error) prm.error(callback_error);
+        }
 	    channel.call({method: "api_call",
 			  params: 
 			  {
@@ -99,9 +107,10 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 			      'params' : options.data,
 			      'contentType' : options.contentType || "application/x-www-form-urlencoded"
 			  },
-			  success: function(r) { callback_success(r.contentType, r.data); },
-              error: function(e,m) { if (callback_error) callback_error (e, m); }
+			  success: function(r) { dfd.resolve({body: r.data, contentType: r.contentType}); },
+              error: function(e,m) { dfd.reject({status: e, message: m}); }
 			 });
+        return prm;
 	};
 
 	this.call_app = function(manifest, ready_data, callback) {
@@ -168,11 +177,11 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    sc.api_call({
             url: "/records/search",
             method: "GET"
-	    }, function(contentType, data) {
-            var rdf = sc.process_rdf(contentType, data);
-            dfd.resolve({body: data, contentType: contentType, graph: rdf});
-	    }, function(error, message) {
-            dfd.reject({error: error, message: message});
+	    }, function(r) {
+            var rdf = sc.process_rdf(r.contentType, r.body);
+            dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+	    }, function(r) {
+            dfd.reject({status: r.status, message: r.message});
 	    });
         return prm;
 	};
@@ -201,11 +210,11 @@ SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback_success, callback_e
 		method : 'GET',
 		url : "/records/" + _this.record.id + "/notes/",
 		data : {}
-	}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		dfd.resolve({body: data, contentType: contentType, graph: rdf});
-	}, function(error, message) {
-        dfd.reject({status: error, message: message});
+	}, function(r) {
+		var rdf = _this.process_rdf(r.contentType, r.body);
+		dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
     });
     return prm;
 };
@@ -225,10 +234,10 @@ SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data, callback_success, cal
 		url : "/records/" + _this.record.id + "/notes/",
 		contentType : 'application/rdf+xml',
 		data : data
-	}, function(contentType, data) {
-		dfd.resolve({body: data, contentType: contentType, graph: undefined});
-	}, function(error, message) {
-        dfd.reject({status: error, message: message});
+	}, function(r) {
+		dfd.resolve({body: r.body, contentType: r.contentType, graph: undefined});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
     });
     return prm;
 };
@@ -247,10 +256,10 @@ SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri, callback_succes
 		method : 'DELETE',
 		url : note_uri,
 		data : {}
-	}, function(contentType, data) {
-		dfd.resolve({body: data, contentType: contentType, graph: undefined});
-	}, function(error, message) {
-        dfd.reject({status: error, message: message});
+	}, function(r) {
+		dfd.resolve({body: r.body, contentType: r.contentType, graph: undefined});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
     });
     return prm;
 };
@@ -271,66 +280,110 @@ SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback_s
 				+ external_id,
 		contentType : 'application/rdf+xml',
 		data : data
-	}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		dfd.resolve({body: data, contentType: contentType, graph: rdf});
-	}, function(error, message) {
-        dfd.reject({status: error, message: message});
+	}, function(r) {
+		var rdf = _this.process_rdf(r.contentType, r.body);
+		dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
     });
     return prm;
 };
 
-SMART_CONNECT_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
-	var _this = this;
+SMART_CONNECT_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback_success, callback_error) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call( {
 		method : 'GET',
 		url : "/codes/systems/" + system + "/query",
 		data : {
 			q : query
 		}
-	}, function(contentType, data) {
-		var js = JSON.parse(data);
-		callback({body: data, contentType: contentType, graph: js});
-	});
+	}, function(r) {
+		var js = JSON.parse(r.body);
+		dfd.resolve({body: r.body, contentType: r.contentType, graph: js});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
+    });
+    return prm;
 }
 
-SMART_CONNECT_CLIENT.prototype.SPL_get = function(query, callback) {
-	var _this = this;
+SMART_CONNECT_CLIENT.prototype.SPL_get = function(query, callback_success, callback_error) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call( {
 		method : 'GET',
 		url : "/spl/for_rxnorm/" + query,
 		data : {}
-	}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		callback({body: data, contentType: contentType, graph: rdf});
-	});
+	}, function(r) {
+		var rdf = _this.process_rdf(r.contentType, r.body);
+		dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
+    });
+    return prm;
 };
 
 
-SMART_CONNECT_CLIENT.prototype.webhook_post = function(webhook_name, data, callback) {
-	var _this = this;
+SMART_CONNECT_CLIENT.prototype.webhook_post = function(webhook_name, data, callback_success, callback_error) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call( {
 		method : 'POST',
 		contentType : 'application/rdf+xml',
 		url : "/webhook/"+webhook_name,
 		data : data
-		}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		callback({body: data, contentType: contentType, graph: rdf});
-	});
+    }, function(r) {
+		var rdf = _this.process_rdf(r.contentType, r.body);
+		dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
+    });
+    return prm;
 };
 
 
-SMART_CONNECT_CLIENT.prototype.webhook_get = function(webhook_name, data, callback) {
-	var _this = this;
+SMART_CONNECT_CLIENT.prototype.webhook_get = function(webhook_name, data, callback_success, callback_error) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call({
             method : 'GET',
             url : "/webhook/"+webhook_name,
             data : data
-		}, function(contentType, data) {
-            var rdf = _this.process_rdf(contentType, data);
-            callback({body: data, contentType: contentType, graph: rdf});
-        });
+    }, function(r) {
+        var rdf = _this.process_rdf(r.contentType, r.body);
+        dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
+    });
+    return prm;
 };
 
 SMART_CONNECT_CLIENT.prototype.webhook = SMART_CONNECT_CLIENT.prototype.webhook_get;
@@ -351,18 +404,29 @@ SMART_CONNECT_CLIENT.prototype.AUTOCOMPLETE_RESOLVER = function(system) {
 	return source;
 }
 
-SMART_CONNECT_CLIENT.prototype.SPARQL = function(query, callback) {
-	var _this = this;
+SMART_CONNECT_CLIENT.prototype.SPARQL = function(query, callback_success, callback_error) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
 	this.api_call( {
 		method : 'GET',
 		url : "/records/" + _this.record.id + "/sparql",
 		data : {
 			q : query
 		}
-	}, function(contentType, data) {
-		var rdf = _this.process_rdf(contentType, data);
-		callback({body: data, contentType: contentType, graph: rdf});
-	});
+	}, function(r) {
+		var rdf = _this.process_rdf(r.contentType, r.body);
+		dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+	}, function(r) {
+        dfd.reject({status: r.status, message: r.message});
+    });
+    return prm;
 };
 
 SMART_CONNECT_CLIENT.prototype.createXMLDocument = function(string) {
