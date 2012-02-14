@@ -58,10 +58,10 @@ def rreplace(s, old, new, occurrence):
 def call_name (path, method, category):
     terms = path.strip("/").split("/")
     terms = [t for t in terms if t.find("{") == -1]
-    item = terms[len(terms) - 1]
+    item = terms[-1]
     
     c = category.split("_")
-    c = c[len(c) - 1]
+    c = c[-1]
     
     if c.endswith("s"):
         name = plural(item)
