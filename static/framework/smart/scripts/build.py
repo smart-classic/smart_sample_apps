@@ -115,7 +115,7 @@ def buildJS (call, path, vars, format, method, target, category):
     for v in vars:
         out += v + ", "
     
-    out += "callback) {\n"
+    out += "callback_success, callback_error) {\n"
     out += "    var _this = this;\n"
     out += "    this.api_call({\n"
     out += "        method: '%s',\n" % method.upper()
@@ -128,17 +128,19 @@ def buildJS (call, path, vars, format, method, target, category):
         try {
             json = JSON.parse(data);
         } catch(err) {}
-        callback({body: data, contentType: contentType, json: json});\n"""
+        callback_success({body: data, contentType: contentType, json: json});\n"""
     elif method == "GET" and format == "RDF":
         out += """        var rdf;
         try {
             rdf = _this.process_rdf(contentType, data);
         } catch(err) {}
-        callback({body: data, contentType: contentType, graph: rdf});\n"""
+        callback_success({body: data, contentType: contentType, graph: rdf});\n"""
     else:
-        out += "        callback({body: data, contentType: contentType});\n"
+        out += "        callback_success({body: data, contentType: contentType});\n"
     
-    out += "    });\n"
+    out += """    }, function(error, message) {
+        if (callback_error) callback_error(error, message);
+    });\n"""
     out += "};\n"
     out += """
 SMART_CONNECT_CLIENT.prototype.register_method ("%s",

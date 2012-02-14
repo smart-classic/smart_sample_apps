@@ -90,7 +90,7 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
     };
 
     this.assign_ui_handlers = function() {
-	this.api_call = function(options, callback) {
+	this.api_call = function(options, callback_success, callback_error) {
 	    channel.call({method: "api_call",
 			  params: 
 			  {
@@ -99,7 +99,8 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 			      'params' : options.data,
 			      'contentType' : options.contentType || "application/x-www-form-urlencoded"
 			  },
-			  success: function(r) { callback(r.contentType, r.data); }
+			  success: function(r) { callback_success(r.contentType, r.data); },
+              error: function(e,m) { if (callback_error) callback_error (e, m); }
 			 });
 	};
 
@@ -155,13 +156,15 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    });
 	};
 
-	this.PATIENTS_get = function(success) {
+	this.PATIENTS_get = function(callback_success, callback_error) {
 	    sc.api_call({
-		url: "/records/search",
-		method: "GET"
+            url: "/records/search",
+            method: "GET"
 	    }, function(contentType, data) {
-		var rdf = sc.process_rdf(contentType, data);
-		success({body: data, contentType: contentType, graph: rdf});
+            var rdf = sc.process_rdf(contentType, data);
+            callback_success({body: data, contentType: contentType, graph: rdf});
+	    }, function(error, message) {
+            if (callback_error) callback_error(error, message);
 	    });
 	};
 
@@ -175,7 +178,7 @@ SMART_CONNECT_CLIENT.prototype.register_method = function (name, method, target,
     this.methods.push({name: name, method: method, target: target, category: category});
 }
 
-SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback) {
+SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback_success, callback_error) {
 	var _this = this;
 	this.api_call( {
 		method : 'GET',
@@ -183,11 +186,13 @@ SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback) {
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback({body: data, contentType: contentType, graph: rdf});
-	});
+		callback_success({body: data, contentType: contentType, graph: rdf});
+	}, function(error, message) {
+        if (callback_error) callback_error(error, message);
+    });
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data, callback) {
+SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data, callback_success, callback_error) {
 	var _this = this;
 	this.api_call( {
 		method : 'POST',
@@ -195,11 +200,13 @@ SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data, callback) {
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
-		callback({body: data, contentType: contentType, graph: undefined});
-	});
+		callback_success({body: data, contentType: contentType, graph: undefined});
+	}, function(error, message) {
+        if (callback_error) callback_error(error, message);
+    });
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri, callback) {
+SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri, callback_success, callback_error) {
 	var _this = this;
 
 	this.api_call( {
@@ -207,11 +214,13 @@ SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri, callback) {
 		url : note_uri,
 		data : {}
 	}, function(contentType, data) {
-		callback({body: data, contentType: contentType, graph: undefined});
-	});
+		callback_success({body: data, contentType: contentType, graph: undefined});
+	}, function(error, message) {
+        if (callback_error) callback_error(error, message);
+    });
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback) {
+SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback_success, callback_error) {
 	var _this = this;
 	this.api_call( {
 		method : 'PUT',
@@ -221,8 +230,10 @@ SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback) 
 		data : data
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback({body: data, contentType: contentType, graph: rdf});
-	});
+		callback_success({body: data, contentType: contentType, graph: rdf});
+	}, function(error, message) {
+        if (callback_error) callback_error(error, message);
+    });
 };
 
 SMART_CONNECT_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
