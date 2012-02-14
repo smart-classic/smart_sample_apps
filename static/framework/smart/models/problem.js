@@ -8,21 +8,21 @@ extend('Smart.Models.Problem',
 /* @Static */
 {
 	get: function(success, error){
-	SMART.PROBLEMS_get(	
+	SMART.PROBLEMS_get().success(	
 				this.callback([this.saveRDF, success])
 			);  
 	},
 
 	put: function(data, external_id, success, error){
-		SMART.PROBLEMS_put(data, external_id, success);  
+		SMART.PROBLEMS_put(data, external_id).success(success);  
 	},
 
 	post: function(problem, success, error){
-		SMART.PROBLEMS_post(problem.toRDFXML(), success);  
+		SMART.PROBLEMS_post(problem.toRDFXML()).success(success);  
 	},
 	
 	del: function(uri,success, error){
-		SMART.PROBLEMS_delete(uri,success);  
+		SMART.PROBLEMS_delete(uri).success(success);  
 	},
 	
 	object_type: "sp:Problem",

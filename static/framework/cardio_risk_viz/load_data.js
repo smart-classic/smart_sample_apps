@@ -1,7 +1,7 @@
 var get_demographics = function() {
     var dfd = $.Deferred();
         
-    SMART.DEMOGRAPHICS_get(function(demos) {
+    SMART.DEMOGRAPHICS_get().success(function(demos) {
       $.extend(p, demos.graph
                        .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
                        .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
@@ -54,7 +54,7 @@ var get_demographics = function() {
 var get_labs = function() {
     var dfd = $.Deferred();
     
-    SMART.LAB_RESULTS_get(function(labs){
+    SMART.LAB_RESULTS_get().success(function(labs){
         labs.graph
             .where("?l rdf:type sp:LabResult")
             .where("?l sp:labName ?ln")

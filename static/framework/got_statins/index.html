@@ -14,7 +14,7 @@
 	  
 SMART.ready(function(){
 
-        SMART.MEDS_get(function(meds) {
+        SMART.MEDS_get().success(function(meds) {
 	
 	var medlist = meds.graph
                     .where("?m rdf:type sp:Medication")

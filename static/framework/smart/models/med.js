@@ -28,24 +28,24 @@ extend('Smart.Models.Med',
 
 	
 	get: function(success, error){
-		SMART.MEDS_get_all(	
+		SMART.MEDS_get_all().success(	
 					this.callback([this.saveRDF, success])
 				);  
 	},
 	
 	post: function(data, success, error){
-		SMART.MEDS_post(data, success);  
+		SMART.MEDS_post(data).success(success);  
 	},
 
 	put: function(data, external_id, success, error){
-		SMART.MED_put(data, external_id, success);  
+		SMART.MED_put(data, external_id).success(success);  
 	},
 
 	delete_all: function(success, error){
-		SMART.MEDS_delete(success);  
+		SMART.MEDS_delete().success(success);  
 	},
 	delete_one: function(uri, success, error){
-		SMART.MED_delete(uri, success);  
+		SMART.MED_delete(uri).success(success);  
 	},
 
 
