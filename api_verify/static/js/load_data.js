@@ -71,7 +71,7 @@ if (!VERIFY) {
     VERIFY.callJS = function (call, model, callback_ok, callback_failure) {
         var dfd = $.Deferred();
         
-        SMART[call](function(response) {
+        SMART[call]().success(function(response) {
                 if (response.contentType === "text/html") {
                     callback_failure (call);
                 } else {
@@ -84,7 +84,7 @@ if (!VERIFY) {
     };
     
     VERIFY.getCalls = function () {
-        SMART.ONTOLOGY_get(function(r) {
+        SMART.ONTOLOGY_get().success(function(r) {
             var ont = r.graph;
 			var calls = [];
 			// Get all calls

@@ -111,12 +111,13 @@ def buildJS (call, path, vars, format, method, target, category):
         extra_lines += "        data: data\n"
 
     out = "SMART_CONNECT_CLIENT.prototype.%s = function(" % call
-    
-    for v in vars:
-        out += v + ", "
-    
-    out += "callback_success, callback_error) {\n"
-    out += "    var _this = this;\n"
+    out += ", ".join(vars)
+    out += ") {\n"
+    out += "    var _this = this,\n"
+    out += "        dfd = $.Deferred(),\n"
+    out += "        prm = dfd.promise();\n"
+    out += "    prm.success = prm.done;\n"
+    out += "    prm.error = prm.fail;\n"
     out += "    this.api_call({\n"
     out += "        method: '%s',\n" % method.upper()
     out += "        url: %s\n" % (path + ("," if method.upper() in ("PUT", "POST") else ""))
@@ -128,19 +129,20 @@ def buildJS (call, path, vars, format, method, target, category):
         try {
             json = JSON.parse(data);
         } catch(err) {}
-        callback_success({body: data, contentType: contentType, json: json});\n"""
+        dfd.resolve({body: data, contentType: contentType, json: json});\n"""
     elif method == "GET" and format == "RDF":
         out += """        var rdf;
         try {
             rdf = _this.process_rdf(contentType, data);
         } catch(err) {}
-        callback_success({body: data, contentType: contentType, graph: rdf});\n"""
+        dfd.resolve({body: data, contentType: contentType, graph: rdf});\n"""
     else:
-        out += "        callback_success({body: data, contentType: contentType});\n"
+        out += "        dfd.resolve({body: data, contentType: contentType});\n"
     
     out += """    }, function(error, message) {
-        if (callback_error) callback_error(error, message);
+        dfd.reject({status: error, message: message});
     });\n"""
+    out += "    return prm;\n"
     out += "};\n"
     out += """
 SMART_CONNECT_CLIENT.prototype.register_method ("%s",

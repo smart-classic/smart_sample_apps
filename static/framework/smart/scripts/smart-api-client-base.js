@@ -156,16 +156,21 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 	    });
 	};
 
-	this.PATIENTS_get = function(callback_success, callback_error) {
+	this.PATIENTS_get = function() {
+        var dfd = $.Deferred(),
+            prm = dfd.promise();
+        prm.success = prm.done;
+        prm.error = prm.fail;
 	    sc.api_call({
             url: "/records/search",
             method: "GET"
 	    }, function(contentType, data) {
             var rdf = sc.process_rdf(contentType, data);
-            callback_success({body: data, contentType: contentType, graph: rdf});
+            dfd.resolve({body: data, contentType: contentType, graph: rdf});
 	    }, function(error, message) {
-            if (callback_error) callback_error(error, message);
+            dfd.reject({error: error, message: message});
 	    });
+        return prm;
 	};
 
     }
@@ -178,50 +183,68 @@ SMART_CONNECT_CLIENT.prototype.register_method = function (name, method, target,
     this.methods.push({name: name, method: method, target: target, category: category});
 }
 
-SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback_success, callback_error) {
-	var _this = this;
+SMART_CONNECT_CLIENT.prototype.NOTES_get = function() {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
 	this.api_call( {
 		method : 'GET',
 		url : "/records/" + _this.record.id + "/notes/",
 		data : {}
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback_success({body: data, contentType: contentType, graph: rdf});
+		dfd.resolve({body: data, contentType: contentType, graph: rdf});
 	}, function(error, message) {
-        if (callback_error) callback_error(error, message);
+        dfd.reject({status: error, message: message});
     });
+    return prm;
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data, callback_success, callback_error) {
-	var _this = this;
+SMART_CONNECT_CLIENT.prototype.NOTES_post = function(data) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
 	this.api_call( {
 		method : 'POST',
 		url : "/records/" + _this.record.id + "/notes/",
 		contentType : 'application/rdf+xml',
 		data : data
 	}, function(contentType, data) {
-		callback_success({body: data, contentType: contentType, graph: undefined});
+		dfd.resolve({body: data, contentType: contentType, graph: undefined});
 	}, function(error, message) {
-        if (callback_error) callback_error(error, message);
+        dfd.reject({status: error, message: message});
     });
+    return prm;
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri, callback_success, callback_error) {
-	var _this = this;
-
+SMART_CONNECT_CLIENT.prototype.NOTES_delete = function(note_uri) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
 	this.api_call( {
 		method : 'DELETE',
 		url : note_uri,
 		data : {}
 	}, function(contentType, data) {
-		callback_success({body: data, contentType: contentType, graph: undefined});
+		dfd.resolve({body: data, contentType: contentType, graph: undefined});
 	}, function(error, message) {
-        if (callback_error) callback_error(error, message);
+        dfd.reject({status: error, message: message});
     });
+    return prm;
 };
 
-SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback_success, callback_error) {
-	var _this = this;
+SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
 	this.api_call( {
 		method : 'PUT',
 		url : "/records/" + _this.record.id + "/notes/external_id/"
@@ -230,10 +253,11 @@ SMART_CONNECT_CLIENT.prototype.NOTE_put = function(data, external_id, callback_s
 		data : data
 	}, function(contentType, data) {
 		var rdf = _this.process_rdf(contentType, data);
-		callback_success({body: data, contentType: contentType, graph: rdf});
+		dfd.resolve({body: data, contentType: contentType, graph: rdf});
 	}, function(error, message) {
-        if (callback_error) callback_error(error, message);
+        dfd.reject({status: error, message: message});
     });
+    return prm;
 };
 
 SMART_CONNECT_CLIENT.prototype.CODING_SYSTEM_get = function(system, query, callback) {
