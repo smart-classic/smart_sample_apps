@@ -30,7 +30,7 @@ if (!BPC) {
                         BPC.initApp ( BPC.processData(patient, vitals) ); 
                     },
                     function (message) {
-                        BPC.displayError (message);
+                        BPC.displayError (message.data);
                     });
         }
         
