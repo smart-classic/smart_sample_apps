@@ -138,6 +138,66 @@ class TestVitalSigns(TestRDF, TestRDFStructure):
                     
                 if units not in ('m', 'cm'):
                     self.fail("Encountered bad units: " + units)
+                    
+    def testBloodPressure(self):
+        if self.rdf:
+            q = """
+                PREFIX dcterms:<http://purl.org/dc/terms/>
+                PREFIX sp:<http://smartplatforms.org/terms#>
+                SELECT  ?vital_date ?bloodPressure
+                WHERE {
+                   ?v dcterms:date ?vital_date .
+                   ?v sp:bloodPressure ?bloodPressure .
+                }
+                """
+            
+            data = self.rdf.query(q)
+            for d in data:
+                vital_date = str(d[0])
+                bloodPressure = str(d[1])
+                
+                try:
+                    dateutil.parser.parse(vital_date)
+                except ValueError:
+                    self.fail("Encountered non-ISO8601 date: " + vital_date)
+                    
+                q = """
+                    PREFIX dcterms:<http://purl.org/dc/terms/>
+                    PREFIX sp:<http://smartplatforms.org/terms#>
+                    SELECT  ?systolic ?diastolic ?units1 ?units2
+                    WHERE {
+                       _:%s sp:systolic ?s .
+                       ?s sp:value ?systolic .
+                       ?s sp:unit ?units1 .
+                       _:%s sp:diastolic ?d .
+                       ?d sp:value ?diastolic .
+                       ?d sp:unit ?units2 .
+                    }
+                    """ % (bloodPressure, bloodPressure)
+            
+                data2 = self.rdf.query(q)
+                
+                for t in data2:
+                    systolic = str(t[0])
+                    diastolic = str(t[1])
+                    units1 = str(t[2])
+                    units2 = str(t[3])
+                    
+                    try:
+                        float(systolic)
+                    except ValueError:
+                        self.fail("Could not parse systolic pressure value: " + systolic)
+                        
+                    try:
+                        float(diastolic)
+                    except ValueError:
+                        self.fail("Could not parse diastolic pressure value: " + diastolic)
+                    
+                    if units1 not in ('mm[Hg]'):
+                        self.fail("Encountered bad units: " + units1)
+                        
+                    if units2 not in ('mm[Hg]'):
+                        self.fail("Encountered bad units: " + units2)
                 
 class TestOntology(TestRDF):
     pass
