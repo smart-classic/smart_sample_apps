@@ -18,11 +18,13 @@ class TestRDF(unittest.TestCase):
     def setUp(self):
         try:
             self.rdf = parse_rdf(data)
+            self.failed = False
         except:
             self.rdf = None
+            self.failed = True
 
     def testValidRDF(self):
-        if not self.rdf:
+        if self.failed:
             self.fail("RDF-XML parsing failed")
             
     def testContentType(self):
@@ -193,10 +195,10 @@ class TestVitalSigns(TestRDF, TestRDFStructure):
                     except ValueError:
                         self.fail("Could not parse diastolic pressure value: " + diastolic)
                     
-                    if units1 not in ('mm[Hg]'):
+                    if units1 != 'mm[Hg]':
                         self.fail("Encountered bad units: " + units1)
                         
-                    if units2 not in ('mm[Hg]'):
+                    if units2 != 'mm[Hg]':
                         self.fail("Encountered bad units: " + units2)
                 
 class TestOntology(TestRDF):
