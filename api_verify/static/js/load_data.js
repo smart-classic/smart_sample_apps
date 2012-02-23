@@ -148,7 +148,7 @@ if (!VERIFY) {
                                     $('#'+call_name).html("<img src='/static/images/ok.gif'/>");
                                 }
                                 
-                                $('#console').text(out2);
+                                $('#JashInput').text(out2);
                             };
     
     VERIFY.callback_ok = function(call_name, call_model, response) {

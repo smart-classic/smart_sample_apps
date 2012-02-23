@@ -4,11 +4,15 @@ import string
 import json
 import threading
 
+import query_builder
+import dateutil.parser
+
 from smart_client.common.util import parse_rdf
 
 lock = threading.Lock()
 data = None
 ct = None
+currentModel = None
 
 class TestRDF(unittest.TestCase):
     def setUp(self):
@@ -23,6 +27,22 @@ class TestRDF(unittest.TestCase):
             
     def testContentType(self):
         self.assertEquals(ct,"application/rdf+xml", "HTTP content-type '" + ct + "' should be 'application/rdf+xml'")
+                
+class TestRDFStructure(unittest.TestCase):
+    def setUp(self):
+        try:
+            self.rdf = parse_rdf(data)
+        except:
+            self.rdf = None
+
+    def testStructure(self):
+        if self.rdf:
+            q = query_builder.get_query(currentModel)
+            print "testing with", q
+            
+            answer = self.rdf.query(q)
+            if (answer.askAnswer[0] == False):
+                self.fail ("RDF structure check failed\nAttempted the query:\n" + q)
 
 class TestJSON(unittest.TestCase):
     def setUp(self):
@@ -39,9 +59,16 @@ class TestJSON(unittest.TestCase):
         self.assertEquals(ct,"application/json", "HTTP content-type '" + ct + "' should be 'application/json'")
          
 class TestAllergies(TestRDF):
-    pass
+    def testStructure(self):
+        if self.rdf:
+            q1 = query_builder.get_query("Allergy")   
+            q2 = query_builder.get_query("AllergyExclusion")
+            answer1 = self.rdf.query(q1)
+            answer2 = self.rdf.query(q2)
+            if (answer1.askAnswer[0] == False and answer2.askAnswer[0] == False):
+                self.fail ("RDF structure check failed\nAttempted the querries:\n" + q1 + "\n" + q2)
 
-class TestDemographics(TestRDF):
+class TestDemographics(TestRDF, TestRDFStructure):
     def testBasicNodes(self):
         if self.rdf:
             q = """
@@ -55,32 +82,72 @@ class TestDemographics(TestRDF):
                    ?n v:family-name ?lastname .
                    ?r foaf:gender ?gender .
                    ?r v:bday ?birthday .
+                   ?r v:email ?email .
                 }
                 """
             
             answer = self.rdf.query(q)
-            #if (answer.askAnswer[0] == False):
-            self.fail ("RDF structure check failed\nAttempted the query:\n" + q)
+            if (answer.askAnswer[0] == False):
+                self.fail ("RDF structure check failed\nAttempted the query:\n" + q)
 
-class TestEncounters(TestRDF):
+class TestEncounters(TestRDF, TestRDFStructure):
     pass
-class TestFulfillments(TestRDF):
+    
+class TestFulfillments(TestRDF, TestRDFStructure):
     pass
-class TestLabResults(TestRDF):
+    
+class TestLabResults(TestRDF, TestRDFStructure):
     pass
-class TestMedications(TestRDF):
+    
+class TestMedications(TestRDF, TestRDFStructure):
     pass
-class TestProblems(TestRDF):
+    
+class TestProblems(TestRDF, TestRDFStructure):
     pass
-class TestVitalSigns(TestRDF):
-    pass
+    
+class TestVitalSigns(TestRDF, TestRDFStructure):
+    def testHeight(self):
+        if self.rdf:
+            q = """
+                PREFIX dcterms:<http://purl.org/dc/terms/>
+                PREFIX sp:<http://smartplatforms.org/terms#>
+                SELECT  ?vital_date ?height ?units
+                WHERE {
+                   ?v dcterms:date ?vital_date .
+                   ?v sp:height ?h .
+                   ?h sp:value ?height .
+                   ?h sp:unit ?units .
+                }
+                """
+            
+            data = self.rdf.query(q)
+            for d in data:
+                vital_date = str(d[0])
+                height = str(d[1])
+                units = str(d[2])
+                
+                try:
+                    dateutil.parser.parse(vital_date)
+                except ValueError:
+                    self.fail("Encountered non-ISO8601 date: " + vital_date)
+
+                try:
+                    float(height)
+                except ValueError:
+                    self.fail("Could not parse height value: " + height)
+                    
+                if units not in ('m', 'cm'):
+                    self.fail("Encountered bad units: " + units)
+                
 class TestOntology(TestRDF):
     pass
+    
 class TestCapabilities(TestJSON):
     pass
+    
 class TestManifests(TestJSON):
-    def testStructure(self):
-        self.fail("Bad structure")
+    pass
+    
 class TestPreferences(unittest.TestCase):
     def testConsistency(self):
         if ct == 'application/json':
@@ -111,8 +178,10 @@ def runTest(model, testData, contentType=None):
     with lock:
         global data
         global ct
+        global currentModel
         data = testData
         ct = contentType
+        currentModel = model
         alltests = unittest.TestLoader().loadTestsFromTestCase(tests[model])
         result = unittest.TextTestRunner(stream = open(os.devnull, 'w')).run(alltests)
         return result
