@@ -9,7 +9,7 @@
    <!--<link rel="stylesheet" href="/static/themes/redmond/jquery.ui.all.css" type="text/css" media="screen" />-->
 
    <!-- SMART Connect client -->
-   <script src="/static/smart/smart-api-client.js"></script>
+   <script src="/static/smart-0.3/smart-api-client.js"></script>
    
    <script src="/static/lib/jquery.event.hover.js"></script>
    <script src="/static/lib/jquery.mouseyDialog.js"></script>
@@ -24,7 +24,7 @@
 </head>
 <body>
 
-<h2>API Verifier (SMART v0.4)</h2>
+<h2>API Verifier (SMART v0.3)</h2>
 
 <div id="results"></div>
 
@@ -37,7 +37,7 @@
     $.ajaxSetup({cache: false});
 
     SMART.ready(function () {
-        $.when(VERIFY.loadCalls())
+        $.when(VERIFY.loadCalls("v0.3"))
          .then(function () {
             var res = "<table class='nicetable'>";
             res += "<thead><tr><th>DataModel</th><th>JS</th><th>REST</th></tr></thead><tbody>";
@@ -60,7 +60,7 @@
                     function(call_name) {$('#'+call_name).html("<img src='/static/images/err.gif'/>");}
                 );
             }
-            VERIFY.getCalls();
+            //VERIFY.getCalls();
          }, function () {
             alert("Could not load the needed data");
          });

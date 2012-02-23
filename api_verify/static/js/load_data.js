@@ -16,13 +16,31 @@ if (!VERIFY) {
 (function () {
     "use strict";
 
-    VERIFY.loadCalls = function () {
+    VERIFY.loadCalls = function (version) {
         var dfd = $.Deferred();
         $.get(
             "getcalls",
             {'oauth_header': SMART.credentials.oauth_header},
             function (responseText) {
-                var data = JSON.parse(responseText);
+                var data = JSON.parse(responseText),
+                    data2 = {},
+                    target;
+                
+                for (target in data) {
+                    if (version === "v0.3") {
+                        if (target === "http://smartplatforms.org/terms#Allergy" ||
+                            target === "http://smartplatforms.org/terms#Demographics" ||
+                            target === "http://smartplatforms.org/terms#Fulfillment" ||
+                            target === "http://smartplatforms.org/terms#LabResult" ||
+                            target === "http://smartplatforms.org/terms#Medication" ||
+                            target === "http://smartplatforms.org/terms#Problem" ||
+                            target === "http://smartplatforms.org/terms#VitalSigns") {
+                                data2[target] = data[target];
+                        }
+                    } else {
+                        data2[target] = data[target];
+                    }
+                }
                 
                 var m = SMART.methods;
                 for (var i = 0; i < m.length; i++) {
@@ -31,11 +49,11 @@ if (!VERIFY) {
                          m[i].name === "MANIFESTS_get" ||
                          m[i].name === "ONTOLOGY_get" ||
                          m[i].name === "CAPABILITIES_get")) {
-                        data[m[i].target].call_js = m[i].name;
+                        if (data2[m[i].target]) data2[m[i].target].call_js = m[i].name;
                     }
                 }
                 
-                VERIFY.calls = data;
+                VERIFY.calls = data2;
                 dfd.resolve();
             },
             "html"
@@ -71,14 +89,14 @@ if (!VERIFY) {
     VERIFY.callJS = function (call, model, callback_ok, callback_failure) {
         var dfd = $.Deferred();
         
-        SMART[call]().success(function(response) {
+        SMART[call](function(response) {
                 if (response.contentType === "text/html") {
                     callback_failure (call);
                 } else {
                     callback_ok(call, model, response);
                 }
                 dfd.resolve();
-            });
+            }, function () {callback_failure (call);});
             
         return dfd.promise();
     };

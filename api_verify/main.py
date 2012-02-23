@@ -33,6 +33,7 @@ SMART_SERVER_PARAMS = {
 
 # URL mappings for web.py
 urls = ('/smartapp/index.html', 'index',
+        '/smartapp/index-0.3.html', 'index03',
         '/smartapp/getcalls', 'get_calls',
         '/smartapp/apicall', 'api_call',
         '/smartapp/runtests', 'run_tests')
@@ -40,6 +41,13 @@ urls = ('/smartapp/index.html', 'index',
 class index:
     def GET(self):
         f = open(APP_PATH + '/templates/index.html', 'r')
+        html = f.read()
+        f.close()
+        return html
+        
+class index03:
+    def GET(self):
+        f = open(APP_PATH + '/templates/index-0.3.html', 'r')
         html = f.read()
         f.close()
         return html
