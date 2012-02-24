@@ -121,7 +121,10 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     								this.callback(this.receivedResult))
     },
     
-    receivedResult: function(contentType, data) {
+    receivedResult: function(res) {
+        var data = res.body,
+            contentType = res.contentType;
+    
         if (contentType === "application/rdf+xml") {
             r = SMART.process_rdf(contentType, data);
             
