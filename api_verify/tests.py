@@ -40,7 +40,7 @@ class TestRDFStructure(unittest.TestCase):
     def testStructure(self):
         if self.rdf:
             q = query_builder.get_query(currentModel)
-            print "testing with", q
+            print "testing "+ currentModel + " with", q
             
             answer = self.rdf.query(q)
             if (answer.askAnswer[0] == False):

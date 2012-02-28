@@ -36,8 +36,26 @@ urls = ('/smartapp/index.html', 'index',
         '/smartapp/index-0.3.html', 'index03',
         '/smartapp/getcalls', 'get_calls',
         '/smartapp/apicall', 'api_call',
+        '/smartapp/smart_manifest.json', 'manifest',
+        '/smartapp/icon-apps.png', 'icon',
         '/smartapp/runtests', 'run_tests')
         
+class icon:
+    def GET(self):
+        f = open(APP_PATH + '/smartapp/icon-apps.png', 'r')
+        data = f.read()
+        f.close()
+        web.header('Content-Type', 'image/png')
+        return data
+
+class manifest:
+    def GET(self):
+        f = open(APP_PATH + '/smartapp/smart_manifest.json', 'r')
+        json = f.read()
+        f.close()
+        web.header('Content-Type', 'application/json')
+        return json
+
 class index:
     def GET(self):
         f = open(APP_PATH + '/templates/index.html', 'r')
