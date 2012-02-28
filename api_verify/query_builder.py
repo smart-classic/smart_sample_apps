@@ -1,5 +1,6 @@
 from settings import APP_PATH
 from smart_client.common import rdf_ontology
+from smart_client.common.util import NS, anyuri
 
 def type_name_string(t):
     return str(t.uri)
@@ -66,13 +67,12 @@ def generate_sparql (res, target, id = 0):
     out = ""
     myid = "?s" + str(id)
 
-    if str(target) not in ("http://www.w3.org/2000/01/rdf-schema#Literal", "http://www.w3.org/2001/XMLSchema#dateTime",
-"http://www.w3.org/2001/XMLSchema#anyURI"):
+    if str(target) not in (str(NS['rdfs']['Literal']), str(NS['xsd']['dateTime']), str(anyuri)):
         out += " " * 8
-        out += " ".join((myid, "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<" + target + ">", ".\n"))
+        out += " ".join((myid, "<" + str(NS['rdf']['type']) + ">", "<" + target + ">", ".\n"))
         if "properties" in res[target].keys():
             for p in res[target]["properties"]:
-                if p["name"] != "http://smartplatforms.org/terms#belongsTo":
+                if p["name"] != str(NS['sp']['belongsTo']):
                     id += 1
                     out += " " * 8
                     out += " ".join((myid, "<" + p["name"] + ">", "?s" + str(id), ".\n"))
@@ -89,8 +89,6 @@ res = {}
 def get_query (model):
     global loaded
     if not loaded:
-        #rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
-
         for t in rdf_ontology.api_types:
             if t.is_statement or len(t.calls) > 0:
                 main_types.append(t)
@@ -102,5 +100,5 @@ def get_query (model):
             
         loaded = True
 
-    id, q = generate_sparql (res, "http://smartplatforms.org/terms#" + model)
+    id, q = generate_sparql (res, str(NS['sp'][model]))
     return "    ASK {\n" + q + "    }"

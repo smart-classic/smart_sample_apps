@@ -1,11 +1,11 @@
-// SMART Direct Library with asynchronous Ajax call wrappers
+// SMART API Verifier library with asynchronous Ajax call wrappers
 //
 // Author: Nikolai Schwertner
 //
 // Revision history:
-//     2011-10-04 Initial release
+//     2012-02-24 Initial release
 
-// Intialize the Direct App global object as needed
+// Intialize the VERIFY global object as needed
 var VERIFY;
 if (!VERIFY) {
     VERIFY = {
@@ -15,45 +15,65 @@ if (!VERIFY) {
 
 (function () {
     "use strict";
-
+    
+    /**
+    * Loads the SMART API calls matrix into the global object
+    */
     VERIFY.loadCalls = function (version) {
         var dfd = $.Deferred();
+        
         $.get(
             "getcalls",
             {'oauth_header': SMART.credentials.oauth_header},
             function (responseText) {
+                
+                // Local variables
                 var data = JSON.parse(responseText),
                     data2 = {},
-                    target;
+                    SP = "http://smartplatforms.org/terms#",
+                    target,
+                    m,
+                    i;
                 
+                // Copy the API calls as appropriate into data2
                 for (target in data) {
                     if (version === "v0.3") {
-                        if (target === "http://smartplatforms.org/terms#Allergy" ||
-                            target === "http://smartplatforms.org/terms#Demographics" ||
-                            target === "http://smartplatforms.org/terms#Fulfillment" ||
-                            target === "http://smartplatforms.org/terms#LabResult" ||
-                            target === "http://smartplatforms.org/terms#Medication" ||
-                            target === "http://smartplatforms.org/terms#Problem" ||
-                            target === "http://smartplatforms.org/terms#VitalSigns") {
+                        // For version 0.3 of SMART copy only the specific calls below
+                        if (target === SP + "Allergy" ||
+                            target === SP + "Demographics" ||
+                            target === SP + "Fulfillment" ||
+                            target === SP + "LabResult" ||
+                            target === SP + "Medication" ||
+                            target === SP + "Problem" ||
+                            target === SP + "VitalSigns") {
                                 data2[target] = data[target];
                         }
                     } else {
+                        // Copy everything
                         data2[target] = data[target];
                     }
                 }
                 
-                var m = SMART.methods;
-                for (var i = 0; i < m.length; i++) {
+                // Update data to point at data2
+                data = data2;
+                
+                // Get the SMART connect client methods registry
+                m = SMART.methods;
+                
+                // Match the methods from the SMART connect client against the
+                // python library methods and update the data object as appropriate
+                for (i = 0; i < m.length; i++) {
                     if (m[i].method === "GET" && 
                         (m[i].category === "record_items" ||
                          m[i].name === "MANIFESTS_get" ||
                          m[i].name === "ONTOLOGY_get" ||
                          m[i].name === "CAPABILITIES_get")) {
-                        if (data2[m[i].target]) data2[m[i].target].call_js = m[i].name;
+                        if (data[m[i].target]) data[m[i].target].call_js = m[i].name;
                     }
                 }
                 
-                VERIFY.calls = data2;
+                // Update the global VERIFY object and resolve the differed object
+                VERIFY.calls = data;
                 dfd.resolve();
             },
             "html"
@@ -61,51 +81,70 @@ if (!VERIFY) {
             console.error("getCalls failed");
             dfd.reject();
         });
+        
         return dfd.promise();
     };
     
-    VERIFY.callREST = function (call, callback_failure) {
-        var dfd = $.Deferred();
+    /**
+    * Tests a SMART REST API call
+    */
+    VERIFY.callREST = function (call_name) {
         $.get(
             "apicall",
-            {'call_name': call, 'oauth_header': SMART.credentials.oauth_header},
+            {'call_name': call_name, 'oauth_header': SMART.credentials.oauth_header},
             function (responseText) {
+            
+                // Parse the response from the server REST call handler
                 var response = JSON.parse (responseText);
+                
                 if (response.contentType !== "text/html") {
-                    VERIFY.callback_final(call, response.messages);
+                    // We can go straight to processing the test results, since the SMART REST
+                    // call handler on the server side also runs the applicable tests (i.e.
+                    // the test results are included in the response)
+                    VERIFY.processResults(call_name, response.messages);
                 } else {
-                    callback_failure (call);
+                    // Assume that "text/html" response content type means API failure (needs to be revisited)
+                    VERIFY.callbackError (call_name);
                 }
-                dfd.resolve();
             },
             "html"
         ).error(function () {
-            callback_failure(call);
-            dfd.reject();
+            VERIFY.callbackError(call_name);
         });
-        return dfd.promise();
     };
     
-    VERIFY.callJS = function (call, model, callback_ok, callback_failure) {
-        var dfd = $.Deferred();
-        
-        SMART[call](function(response) {
+    /**
+    * Tests a SMART Connect API call
+    */
+    VERIFY.callJS = function (call_name, model) {
+        SMART[call_name](
+            function(response) {
                 if (response.contentType === "text/html") {
-                    callback_failure (call);
+                    // Assume that "text/html" response content type means API failure (needs to be revisited)
+                    VERIFY.callbackError (call_name);
                 } else {
-                    callback_ok(call, model, response);
+                    // Run the tests on the server side over the call response data
+                    VERIFY.testModel (call_name,
+                                      model,
+                                      response.body,
+                                      response.contentType,
+                                      VERIFY.processResults);
                 }
-                dfd.resolve();
-            }, function () {callback_failure (call);});
-            
-        return dfd.promise();
+            }, function () {
+                VERIFY.callbackError (call_name);
+            });
     };
     
+    /**
+    * Parses the SMART ontology returned by the SMART container in the browser
+    * and returns the list of API calls discovered
+    */
     VERIFY.getCalls = function () {
         SMART.ONTOLOGY_get().success(function(r) {
-            var ont = r.graph;
-			var calls = [];
-			// Get all calls
+        
+            var ont = r.graph,
+                calls = [];
+
 			ont.where("?call rdf:type api:call")				
 			   .where("?call api:path ?call_path")
 			   .where("?call api:target ?call_target")
@@ -129,51 +168,64 @@ if (!VERIFY) {
 
     };
     
+    /**
+    * Tests a SMART API call's response on the server side and executes
+    * a callback to process the test results
+    */
     VERIFY.testModel = function (call, model, data, contentType, callback) {
-        var dfd = $.Deferred();
-        //alert (call + ":" + model + ":" + contentType + ":" + data);
         $.get(
             "runtests",
             {'model': model, 'data': data, 'content_type': contentType},
             function (responseText) {
                 var response = JSON.parse (responseText);
                 callback (call, response);
-                dfd.resolve();
             },
             "html"
         );
-        return dfd.promise();
     };
     
-    var out2 = "";
+    // Initialize the console text storage
+    VERIFY.console_text = "";
     
-    VERIFY.callback_final = function (call_name, messages) {
-                                var out = "";
-                                
-                                for (var i = 0; i < messages.length; i++) {
-                                    out += messages[i].split("\n")[0] + "<br/>";
-                                    out2 += "In " + call_name + ": ";
-                                    out2 += messages[i];
-                                }
-                                if (messages.length > 0) {
-                                     $('#'+call_name).html("<img id='anchor-dlg" + call_name + "' class='js_mouseyDialog two' src='/static/images/warn.gif'/><div id='dlg" + call_name + "' style='display:none'>" + out + "</div>");
-                                     $('.two').mouseyDialog({
-                                      eventType:'hover',
-                                      animation:'fade',
-                                      animationSpeed:200
-                                    });
-                                } else {
-                                    $('#'+call_name).html("<img src='/static/images/ok.gif'/>");
-                                }
-                                
-                                $('#JashInput').text(out2);
-                            };
+    /**
+    * Processes the tests results for a specific API call
+    */
+    VERIFY.processResults = function (call_name, messages) {
     
-    VERIFY.callback_ok = function(call_name, call_model, response) {
-        VERIFY.testModel (call_name,
-                            call_model,
-                            response.body,
-                            response.contentType,
-                            VERIFY.callback_final);
+        // Label text to be displayed in the mouse over dialog for the API icon
+        var label = "";
+        
+        // For each error message
+        for (var i = 0; i < messages.length; i++) {
+            // Add the first line of the error message to the label
+            label += messages[i].split("\n")[0] + "<br/>";
+            
+            // Add the message to the console text
+            VERIFY.console_text += "In " + call_name + ": ";
+            VERIFY.console_text += messages[i];
+        }
+        
+        if (messages.length > 0) {
+            // When there are error messages, set the API icon to warning and display a mouse over dialog
+            $('#'+call_name).html("<img id='anchor-dlg" + call_name + "' class='js_mouseyDialog two' src='/static/images/warn.gif'/><div id='dlg" + call_name + "' style='display:none'>" + label + "</div>");
+            $('.two').mouseyDialog({
+              eventType:'hover',
+              animation:'fade',
+              animationSpeed:200
+            });
+        } else {
+            // No error messages, so display the OK icon
+            $('#'+call_name).html("<img src='/static/images/ok.gif'/>");
+        }
+        
+        // Update the console
+        $('#JashInput').text(VERIFY.console_text);
+    };
+
+    /**
+    * Sets the icon representing an API call to error state
+    */
+    VERIFY.callbackError = function(call_name) {
+        $('#'+call_name).html("<img src='/static/images/err.gif'/>");
     };
 }());

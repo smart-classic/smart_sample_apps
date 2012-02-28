@@ -1,3 +1,9 @@
+'''SMART API Verifier main controller'''
+# Developed by: Nikolai Schwertner
+#
+# Revision history:
+#     2012-02-24 Initial release
+
 # Import some general modules
 import json
 import urllib
@@ -5,7 +11,7 @@ import web
 import os
 import sys
 
-# Add the current directory to the system path so that python can mod_py could
+# Add the current directory to the system path so that mod_py could
 # load the local modules
 abspath = os.path.dirname(__file__)
 sys.path.append(abspath)
@@ -19,6 +25,7 @@ from smart_client.generate_api import call_name
 # Import the application settings
 from settings import APP_PATH
 
+# Import the testing framework utilities
 from tests import runTest, getMessages
 
 # Default configuration settings for the SMART client
@@ -32,17 +39,18 @@ SMART_SERVER_PARAMS = {
 }
 
 # URL mappings for web.py
-urls = ('/smartapp/index.html', 'index',
+urls = ('/smartapp/index.html', 'index04',
+        '/smartapp/index-0.4.html', 'index04',
         '/smartapp/index-0.3.html', 'index03',
         '/smartapp/getcalls', 'get_calls',
         '/smartapp/apicall', 'api_call',
         '/smartapp/smart_manifest.json', 'manifest',
-        '/smartapp/icon-apps.png', 'icon',
+        '/smartapp/icon.png', 'icon',
         '/smartapp/runtests', 'run_tests')
         
 class icon:
     def GET(self):
-        f = open(APP_PATH + '/smartapp/icon-apps.png', 'r')
+        f = open(APP_PATH + '/smartapp/icon.png', 'r')
         data = f.read()
         f.close()
         web.header('Content-Type', 'image/png')
@@ -56,14 +64,16 @@ class manifest:
         web.header('Content-Type', 'application/json')
         return json
 
-class index:
+class index04:
+    '''Disseminator for the SMART v0.4 tester index page'''
     def GET(self):
-        f = open(APP_PATH + '/templates/index.html', 'r')
+        f = open(APP_PATH + '/templates/index-0.4.html', 'r')
         html = f.read()
         f.close()
         return html
         
 class index03:
+    '''Disseminator for the SMART v0.3 tester index page'''
     def GET(self):
         f = open(APP_PATH + '/templates/index-0.3.html', 'r')
         html = f.read()
@@ -72,41 +82,72 @@ class index03:
 
 class get_calls:
     def GET(self):
+        '''Returns the available python client calls based on the ontology'''
+        
+        # Load the local copy of the ontology via the SMART client
         sc = get_smart_client(APP_PATH + '/data/smart.owl')
 
+        # Initialize the output dictionary
         out = {}
 
+        # Iterate over the ontology calls
         for t in rdf_ontology.api_calls:
+        
+            # Fetch the metadata of the api call
             path = str(t.path)
             method = str(t.method)
             target = str(t.target)
             category = str(t.category)
+            
+            # Process only GET calls of "record_items" category plus a few specific
+            # exceptions by adding them to the dictionary
             if method == "GET" and (category == "record_items" or
                                     path == "/ontology" or
                                     path == "/apps/manifests/" or
                                     path == "/capabilities/"):
+
+                # Build the generic python client call name and use it in the dictionary
                 out[target] = {"call_py": get_call(target)}
 
+        # Return the dictionary serialized as "pretty" JSON
         return json.dumps(out, sort_keys=True, indent=4)
         
 class api_call:
     def GET(self):
+        '''Executes a python client API call identified by its generic name'''
+        
+        # Get the call name from the HTTP header
         call_name = web.input().call_name
+        
+        # Figure out the SMART model corresponding to the API call
         model = get_model(call_name)
+        
+        # Load the local ontology into the SMART client
         smart_client = get_smart_client(APP_PATH + '/data/smart.owl')
+        
+        # Get a reference to the conveninence method in the SMART client and execute the call
         method_to_call = getattr(smart_client, call_name)
         r = method_to_call()
+        
+        # Run the API tests on the result of the call
         messages = getMessages(runTest(model,r.body,r.contentType))
-        return json.dumps({'body':r.body, 'contentType':r.contentType, 'messages':messages})
+        
+        # Encode and return the call and tests result as JSON
+        return json.dumps({'body':r.body, 'contentType':r.contentType, 'messages':messages}, sort_keys=True, indent=4)
 
 class run_tests:
     def GET(self):
+        '''Executes the appropriate series of tests for a given SMART data model'''
+        
+        # Get the input data from the HTTP header
         model = web.input().model
         data = web.input().data
         contentType = web.input().content_type
         
+        # Run the tests and obtain the failure messages
         messages = getMessages(runTest(model,data,contentType))
 
+        # Return the failure messages encoded as JSON
         return json.dumps(messages, sort_keys=True, indent=4)
         
 def get_call(target):
@@ -115,22 +156,39 @@ def get_call(target):
     
     Expects a valid SMART data model target
     '''
+    
+    # Local class needed by the call_name method
     class API_Call():
         def __init__ (self, path, method):
             self.path = path
             self.method = method
 
+    # Get all the API calls from the ontology
     r = rdf_ontology.get_api_calls()
+    
+    # Construct an API_Call object
     call = API_Call(r[target], "GET")
+    
+    # Obtain and return the call name
     return call_name(call)
     
 def get_model(call):
+    '''Returns the name of the target SMART data model
+    corresponding to the SMART python client convenience method
+    
+    Expects a valid SMART python client convenience method name
+    '''
+    
+    # Local class needed by the call_name method
     class API_Call():
         def __init__ (self, path, method):
             self.path = path
             self.method = method
 
+    # Get all the API calls from the ontology
     r = rdf_ontology.get_api_calls()
+    
+    # Look through the api calls array until a call with matching convenience method name is found
     for target in r.keys():
         if call == call_name(API_Call(r[target], "GET")):
             return target.replace("http://smartplatforms.org/terms#","")

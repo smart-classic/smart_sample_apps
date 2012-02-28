@@ -1,1 +1,4 @@
-APP_PATH = '/Users/nshver01/Desktop/SMART/Servers/smart_sample_apps/api_verify'
+'''Settings for the SMART API Verifier'''
+
+# The absolute path of the SMART API Verifier deployment
+APP_PATH = '/path/to/smart/api_verify'

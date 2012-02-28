@@ -8,7 +8,7 @@
    <link rel="stylesheet" href="/static/css/jash.css" type="text/css" media="screen" />
 
    <!-- SMART Connect client (includes jQuery)-->
-   <script src="/static/smart-0.3/smart-api-client.js"></script>
+   <script src="/static/smart/smart-api-client.js"></script>
    
    <!-- jQuery plugins -->
    <script src="/static/lib/jquery.event.hover.js"></script>
@@ -20,7 +20,7 @@
 </head>
 <body>
 
-<h2>API Verifier (SMART v0.3)</h2>
+<h2>API Verifier (SMART v0.4)</h2>
 
 <div id="results"></div>
 
@@ -37,7 +37,7 @@
     SMART.ready(function () {
     
         // First, load the API calls list
-        $.when(VERIFY.loadCalls("v0.3"))
+        $.when(VERIFY.loadCalls())
          .then(function () {
             // Then construct and output a placeholder table for all the calls and icons
             // with the icon defaulting to busy state. Finally, execute the api call tests.
