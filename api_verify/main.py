@@ -85,7 +85,13 @@ class get_calls:
         '''Returns the available python client calls based on the ontology'''
         
         # Load the local copy of the ontology via the SMART client
-        sc = get_smart_client(APP_PATH + '/data/smart.owl')
+        try:
+            sc = get_smart_client(APP_PATH + '/data/smart.owl')
+        except:
+            # When the oauth credentials are bad or another execption occurs,
+            # perform a manual ontology parsing routine which blocks any
+            # consequent SMART client instantiations
+            rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
 
         # Initialize the output dictionary
         out = {}

@@ -4,6 +4,7 @@
   "author" : "Nikolai Schwertner, Children's Hospital Boston",
   "id" : "api-verifier@apps.smartplatforms.org",
   "version" : ".1a",
+  "smart_version": "0.4",
 
   "mode" : "ui",
   "scope" : "record",
