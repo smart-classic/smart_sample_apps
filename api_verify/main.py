@@ -129,7 +129,7 @@ class get_calls:
         return json.dumps(out, sort_keys=True, indent=4)
         
 class api_call:
-    def GET(self):
+    def POST(self):
         '''Executes a python client API call identified by its generic name'''
         
         # Get the call name from the HTTP header
@@ -152,7 +152,7 @@ class api_call:
         return json.dumps({'body':r.body, 'contentType':r.contentType, 'messages':messages}, sort_keys=True, indent=4)
 
 class run_tests:
-    def GET(self):
+    def POST(self):
         '''Executes the appropriate series of tests for a given SMART data model'''
         
         # Get the input data from the HTTP header

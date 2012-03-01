@@ -89,7 +89,7 @@ if (!VERIFY) {
     * Tests a SMART REST API call
     */
     VERIFY.callREST = function (call_name) {
-        $.get(
+        $.post(
             "apicall",
             {'call_name': call_name, 'oauth_header': SMART.credentials.oauth_header},
             function (responseText) {
@@ -173,7 +173,7 @@ if (!VERIFY) {
     * a callback to process the test results
     */
     VERIFY.testModel = function (call, model, data, contentType, callback) {
-        $.get(
+        $.post(
             "runtests",
             {'model': model, 'data': data, 'content_type': contentType},
             function (responseText) {
