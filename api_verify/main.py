@@ -44,7 +44,9 @@ urls = ('/smartapp/index.html', 'index04',
         '/smartapp/index-0.3.html', 'index03',
         '/smartapp/getcalls', 'get_calls',
         '/smartapp/apicall', 'api_call',
-        '/smartapp/smart_manifest.json', 'manifest',
+        '/smartapp/smart_manifest.json', 'manifest04',
+        '/smartapp/smart_manifest-0.4.json', 'manifest04',
+        '/smartapp/smart_manifest-0.3.json', 'manifest03',
         '/smartapp/icon.png', 'icon',
         '/smartapp/runtests', 'run_tests')
         
@@ -56,9 +58,17 @@ class icon:
         web.header('Content-Type', 'image/png')
         return data
 
-class manifest:
+class manifest04:
     def GET(self):
-        f = open(APP_PATH + '/smartapp/smart_manifest.json', 'r')
+        f = open(APP_PATH + '/smartapp/smart_manifest-0.4.json', 'r')
+        json = f.read()
+        f.close()
+        web.header('Content-Type', 'application/json')
+        return json
+        
+class manifest03:
+    def GET(self):
+        f = open(APP_PATH + '/smartapp/smart_manifest-0.3.json', 'r')
         json = f.read()
         f.close()
         web.header('Content-Type', 'application/json')
