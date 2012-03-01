@@ -89,6 +89,9 @@ res = {}
 def get_query (model):
     global loaded
     if not loaded:
+        if not rdf_ontology.api_types:
+            rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+    
         for t in rdf_ontology.api_types:
             if t.is_statement or len(t.calls) > 0:
                 main_types.append(t)
