@@ -11,5 +11,5 @@
 
   "base_url" : "http://apiverifier.smartplatforms.org",
   "index" :  "{base_url}/smartapp/index.html",
-  "icon" :  "{base_url}/smartapp/icon-apps.png"
+  "icon" :  "{base_url}/smartapp/icon.png"
 }
