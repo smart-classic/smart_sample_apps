@@ -135,11 +135,13 @@ class api_call:
         # Get the call name from the HTTP header
         call_name = web.input().call_name
         
-        # Figure out the SMART model corresponding to the API call
-        model = get_model(call_name)
+        print >> sys.stderr, "calling " + call_name
         
         # Load the local ontology into the SMART client
         smart_client = get_smart_client(APP_PATH + '/data/smart.owl')
+        
+        # Figure out the SMART model corresponding to the API call
+        model = get_model(call_name)
         
         # Get a reference to the conveninence method in the SMART client and execute the call
         method_to_call = getattr(smart_client, call_name)
@@ -201,6 +203,9 @@ def get_model(call):
             self.path = path
             self.method = method
 
+    if not rdf_ontology.api_types:
+        rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+            
     # Get all the API calls from the ontology
     r = rdf_ontology.get_api_calls()
     
