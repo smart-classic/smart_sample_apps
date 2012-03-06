@@ -611,8 +611,9 @@ SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
 	}
 
 	rdf.prefix("sp", "http://smartplatforms.org/terms#");
-	rdf.prefix("dc","http://purl.org/dc/elements/1.1/");
 	rdf.prefix("dcterms", "http://purl.org/dc/terms/");
+    rdf.prefix("foaf","http://xmlns.com/foaf/0.1/");
+    rdf.prefix("v","http://www.w3.org/2006/vcard/ns#");
 
 	// abstract method to instantiate a list of objects from the rdf store.
 	rdf.source_xml = data;
