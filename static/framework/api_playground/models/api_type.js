@@ -51,6 +51,7 @@ $.Model.extend('ApiType',
 	},
 	
 	addInterpolationValue: function(field, value) {
+        //console.log ("adding interpolation " + field + " " + value);
 		if (this.interpolations.lists[field] === undefined)
 			this.interpolations.lists[field] = [];
 		
@@ -142,10 +143,10 @@ $.Model.extend('ApiType',
 				base_regexes.push(ApiType.pathRegex(call.path));	
 		});
 		
-		var args = c.buildCallArgs("", function(contentType, data) {
+		var args = c.buildCallArgs("", function(r) {
         
-            if (contentType === "application/rdf+xml") {
-                var rdf = SMART.process_rdf(contentType, data);
+            if (r.contentType === "application/rdf+xml") {
+                var rdf = SMART.process_rdf(r.contentType, r.body);
                 var typed_entities = rdf.where("?s rdf:type ?p");
                 //console.log("Typed entities available: " + typed_entities.length);
                 
