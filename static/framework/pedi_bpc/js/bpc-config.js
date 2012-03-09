@@ -23,11 +23,11 @@ if (!BPC) {
 
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
     BPC.zones = [
-        {definition: "Hypotension (< 1%)",       abbreviation: "HP", percent: 1,  colorhue: 0.7,  opacity: 0.4, dashthrough: false},
-        //{definition:"Pre-hypotension (< 5%)",  abbreviation: "-", percent: 4,  colorhue: 0.9, opacity: 0.3, dashthrough: false},
-        {definition: "Normal",                   abbreviation: "OK", percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
-        {definition: "Pre-hypertension (> 90%)", abbreviation: "PH", percent: 5,  colorhue: 0.1, opacity: 0.3, dashthrough: true},
-        {definition: "Hypertension (> 95%)",     abbreviation: "HT", percent: 5,  colorhue: 0,  opacity: 0.4, dashthrough: true}
+        {definition: "Hypotension (< 1%)",       abbreviation: "\\/", percent: 1,  colorhue: 0.7,  opacity: 0.4, dashthrough: false},
+        //{definition:"Prehypotension (< 5%)",  abbreviation: "-", percent: 4,  colorhue: 0.9, opacity: 0.3, dashthrough: false},
+        {definition: "Normal",                   abbreviation: "\u2713", percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
+        {definition: "Prehypertension (> 90%)", abbreviation: "^", percent: 5,  colorhue: 0.1, opacity: 0.3, dashthrough: true},
+        {definition: "Hypertension (> 95%)",     abbreviation: "/\\", percent: 5,  colorhue: 0,  opacity: 0.4, dashthrough: true}
     ];
     
     // Filter settings defaults
@@ -71,8 +71,8 @@ if (!BPC) {
             height: (shortTerm ? 400 : LT_HEIGHT),
             
             // margins to be left around the main grid (for labels etc)
-            leftgutter: (shortTerm ? 60 : 40), 
-            rightgutter: (shortTerm ? 60 : 40),
+            leftgutter: (shortTerm ? 65 : 40), 
+            rightgutter: (shortTerm ? 65 : 40),
             bottomgutter: (shortTerm ? 70 : (systolic ? LT_HEIGHT - LT_TOP_GUTTER - splitHeight : LT_BOTTOM_GUTTER - 5)),
             topgutter: (shortTerm ? 30 : (systolic ? LT_TOP_GUTTER : splitHeight + LT_TOP_GUTTER + 5)),
             
