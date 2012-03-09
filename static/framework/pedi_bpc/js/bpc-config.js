@@ -186,12 +186,12 @@ if (!BPC) {
     */
     BPC.getAdultPercentile = function (blood_pressure, systolic) {
         if (systolic) {
-            if (blood_pressure >= 140) return 97;
-            else if (blood_pressure >= 120) return 92;
+            if (blood_pressure >= 140) return 97.5;
+            else if (blood_pressure >= 120) return 92.5;
             else return 50;
         } else {
-            if (blood_pressure >= 90) return 97;
-            else if (blood_pressure >= 80) return 92;
+            if (blood_pressure >= 90) return 97.5;
+            else if (blood_pressure >= 80) return 92.5;
             else return 50;           
         }
     };

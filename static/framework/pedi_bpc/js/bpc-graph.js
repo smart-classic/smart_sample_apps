@@ -263,7 +263,7 @@ if (!BPC) {
         r.drawVAxisLabels (s.leftgutter - 15, s.topgutter,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel, s.txt2, shortTerm);
             
         // Draw the zones
-        if (!shortTerm) r.drawZones(s.leftgutter, s.topgutter, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zones, s);
+        if (!shortTerm) r.drawZones(s.leftgutter, s.topgutter, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zones, s, patientType, transitionX);
         
         // If needed draw the transition separator
         if (!shortTerm && patientType === BPC.MIXED) r.drawTransition(transitionX, s.topgutter, s.height - s.topgutter - s.bottomgutter, s, !systolic);
@@ -341,7 +341,7 @@ if (!BPC) {
                     if (!otherInfo) otherInfo = "none";
                     
                     // Display the label box
-                    label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"") + " - ADULT"});
+                    label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"") + ((data.age >= BPC.ADULT_AGE) ? " - ADULT" : "")});
                     if (data.height) label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, " + data.height + " cm, " + gender});
                     else label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, ? cm, " + gender});
                     if (abbreviation) {
@@ -653,7 +653,7 @@ if (!BPC) {
     /**
     * Draws the zone bands
     */
-    Raphael.fn.drawZones = function (x, y, w, h, zones, settings) {
+    Raphael.fn.drawZones = function (x, y, w, h, zones, settings, patientType, transitionX) {
         var dh = h / 100,   // height per percent
             zoneH,
             zoneH_scaled,
@@ -668,10 +668,15 @@ if (!BPC) {
             zoneH = zones[i].percent * dh;
             zoneH_scaled = ltv_scale_height(currentY, zoneH);
             
+            // Draw the dashed grid line for the dashed zones
             if (zones[i].dashthrough) {
-                // Draw the dashed grid line for the dashed zones
-                path = ["M", Math.round(x), ltv_scale(currentY + zoneH/2), "H", Math.round(x + w)];
-                this.path(path.join(",")).attr({stroke: s.gridColor}).attr(dashed);
+                if (patientType === BPC.PEDIATRIC) {
+                    path = ["M", Math.round(x), ltv_scale(currentY + zoneH/2), "H", Math.round(x + w)];
+                } else if (patientType === BPC.MIXED) {
+                    path = ["M", Math.round(x), ltv_scale(currentY + zoneH/2), "H", Math.round(transitionX)];
+                }
+                
+                if (path) this.path(path.join(",")).attr({stroke: s.gridColor}).attr(dashed);
             }
             
             //console.log (currentY + ":" + zoneH + "->" + ltv_scale(currentY) + ":" + zoneH_scaled);
