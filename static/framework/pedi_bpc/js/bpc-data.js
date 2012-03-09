@@ -228,9 +228,21 @@ if (!BPC) {
             });
             
             // Array of height data taken when an adult
+            height_data_adult = [];
+            
+            // Don't use Array.filter or IE8 will have a problem
+            for (i = 0; i < height_data.length; i++) {
+                if (height_data[i].age >= BPC.ADULT_AGE) {
+                    height_data_adult.push (height_data[i]);
+                }
+            }
+            
+            // This fails in IE8 (apparently Array.filter is not implemented there)
+            /*
             height_data_adult = height_data.filter(function (e) {
                 return e.age >= BPC.ADULT_AGE;
             });
+            */
 
             // Inner function for looking up the closest height for a given date
             getClosestHeight = function (recordDate, height_data) { 
@@ -555,16 +567,5 @@ if (!BPC) {
         }
         
         return defaultResult;  // never returned unless the zones don't sum up to 100%
-    }
-    
-    // If there is no Array.filter method available, create it
-    if (!('filter' in Array.prototype)) {
-        Array.prototype.filter= function(filter, that /*opt*/) {
-            var other= [], v;
-            for (var i=0, n= this.length; i<n; i++)
-                if (i in this && filter.call(that, v= this[i], i, this))
-                    other.push(v);
-            return other;
-        };
-    }
+    };
 }());
