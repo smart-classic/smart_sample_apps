@@ -300,7 +300,8 @@ if (!BPC) {
 
         var s = BPC.getViewSettings (),
             percentiles,
-            i, ii, d;
+            i, ii, d,
+            res;
 
         // Load the sample patient when no data is provided
         if (!patient) {
@@ -339,10 +340,13 @@ if (!BPC) {
                 patient.data[i].dPercentile = BPC.getAdultPercentile(patient.data[i].diastolic,false);
             }
             
-            // Set the abbreviations for the adult percentiles
+            // Set the abbreviation for the adult percentiles
             if (patient.data[i].age >= BPC.ADULT_AGE) {
-                patient.data[i].sAbbreviation = getAbbreviation (BPC.zones, patient.data[i].sPercentile);
-                patient.data[i].dAbbreviation = getAbbreviation (BPC.zones, patient.data[i].dPercentile);
+                res = getAbbreviationLabel (BPC.zones, patient.data[i].sPercentile, patient.data[i].dPercentile);
+                patient.data[i] = $.extend(patient.data[i], res);
+                //patient.data[i].sAbbreviation = res.sAbbreviation;
+                //patient.data[i].dAbbreviation = res.dAbbreviation;
+                //patient.data[i].label = res.label;
             }
             
             // Convert the date into the output format and standard unix timestamp
@@ -502,32 +506,54 @@ if (!BPC) {
     };
     
     /**
-    * Returns the abbreviation corresponding to a patient's blood pressure percentile
+    * Returns the abbreviations and label corresponding to a patient's blood pressure percentiles
     *
     * @param {Object} zones The zones object
-    * @param {Number} percentile The blood pressure percentile
+    * @param {Number} sPercentile The systolic blood pressure percentile
+    * @param {Number} dPercentile The diastolic blood pressure percentile
     *
-    * @returns {String} The abbreviation
+    * @returns {Object} The abbreviations and label for the percentile
     */
-    var getAbbreviation = function (zones, percentile) {
+    var getAbbreviationLabel = function (zones, sPercentile, dPercentile) {
     
         var zoneStart,
             zoneEnd,
             i,
-            s = BPC.getViewSettings(true,true);
-        
-        if (!percentile) return s.abbreviationDefault;
+            s = BPC.getViewSettings(true,true),
+            percentile,
+            label,
+            sAbbreviation,
+            dAbbreviation,
+            defaultResult = {sAbbreviation: s.abbreviationDefault, dAbbreviation: s.abbreviationDefault, label: s.labelDefault};
             
-        for (i = 0, zoneStart = 0, zoneEnd = 0; i < zones.length; i++) {
-            zoneEnd = zoneEnd + zones[i].percent;
-            
-            if (zoneStart <= percentile && percentile <= zoneEnd) {
-                return zones[i].abbreviation;
-            }
-            
-            zoneStart = zoneEnd;
+        if (sPercentile && dPercentile) {
+            percentile = Math.max(sPercentile, dPercentile);
         }
         
-        return s.abbreviationDefault;  // never returned unless the zones don't sum up to 100%
+        if (!percentile) return defaultResult;
+            
+        var findAbbreviationLabel = function (percentile) {
+            for (i = 0, zoneStart = 0, zoneEnd = 0; i < zones.length; i++) {
+                zoneEnd = zoneEnd + zones[i].percent;
+                
+                if (zoneStart <= percentile && percentile <= zoneEnd) {
+                    return {abbreviation: zones[i].abbreviation, label: zones[i].label};
+                }
+                
+                zoneStart = zoneEnd;
+            }
+            
+            return {};
+        }
+        
+        label = findAbbreviationLabel(percentile).label;
+        sAbbreviation = findAbbreviationLabel(sPercentile).abbreviation;
+        dAbbreviation = findAbbreviationLabel(dPercentile).abbreviation;
+        
+        if (label && sAbbreviation && dAbbreviation) {
+            return {sAbbreviation: sAbbreviation, dAbbreviation: dAbbreviation, label: label};
+        }
+        
+        return defaultResult;  // never returned unless the zones don't sum up to 100%
     }
 }());

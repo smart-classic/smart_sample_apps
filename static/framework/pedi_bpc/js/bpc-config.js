@@ -23,11 +23,11 @@ if (!BPC) {
 
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
     BPC.zones = [
-        {definition: "Hypotension (< 1%)",       abbreviation: "\\/", percent: 1,  colorhue: 0.7,  opacity: 0.4, dashthrough: false},
-        //{definition:"Prehypotension (< 5%)",  abbreviation: "-", percent: 4,  colorhue: 0.9, opacity: 0.3, dashthrough: false},
-        {definition: "Normal",                   abbreviation: "\u2713", percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
-        {definition: "Prehypertension (> 90%)", abbreviation: "^", percent: 5,  colorhue: 0.1, opacity: 0.3, dashthrough: true},
-        {definition: "Hypertension (> 95%)",     abbreviation: "/\\", percent: 5,  colorhue: 0,  opacity: 0.4, dashthrough: true}
+        {definition: "Hypotension (< 1%)",       abbreviation: "\\/", label: "Hypotensive", percent: 1, colorhue: 0.7,  opacity: 0.4, dashthrough: false},
+        //{definition:"Prehypotension (< 5%)",  abbreviation: "-", label: "Prehypotensive", percent: 4, colorhue: 0.9, opacity: 0.3, dashthrough: false},
+        {definition: "Normal",                   abbreviation: "\u2713", label: "Normal", percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
+        {definition: "Prehypertension (> 90%)", abbreviation: "^", label: "Prehypertensive", percent: 5, colorhue: 0.1, opacity: 0.3, dashthrough: true},
+        {definition: "Hypertension (> 95%)",     abbreviation: "/\\", label: "Hypertensive", percent: 5, colorhue: 0,  opacity: 0.4, dashthrough: true}
     ];
     
     // Filter settings defaults
@@ -117,8 +117,9 @@ if (!BPC) {
             // Date format
             dateFormat: "dd MMM yyyy",
             
-            // Default zone abbreviation
-            abbreviationDefault: "-"
+            // Default zone abbreviation and label
+            abbreviationDefault: "-",
+            labelDefault: "N/A"
         };
     };
     

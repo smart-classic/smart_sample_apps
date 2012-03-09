@@ -344,10 +344,8 @@ if (!BPC) {
                     label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"") + ((data.age >= BPC.ADULT_AGE) ? " - ADULT" : "")});
                     if (data.height) label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, " + data.height + " cm, " + gender});
                     else label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, ? cm, " + gender});
-                    if (abbreviation) {
-                        //label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.sAbbreviation + "/" + data.dAbbreviation + ")"});
-                        label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (Prehypertensive)"});
-                    
+                    if (data.label) {
+                        label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.label + ")"});
                     } else {
                         if (data.sPercentile && data.dPercentile) label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.sPercentile + "%/" + data.dPercentile + "%)"});
                         else label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg"});
