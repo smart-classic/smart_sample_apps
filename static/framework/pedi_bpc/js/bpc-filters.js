@@ -166,11 +166,11 @@ if (!BPC) {
     };
 
     BPC.filterValid = function (record) {
-        return record.height && record.sPercentile && record.dPercentile;
+        return record.sPercentile && record.dPercentile;
     };
 
     BPC.filterPediatric = function (record) {
-        return record.age < 19;
+        return record.age < BPC.ADULT_AGE;
     };
 
     /**
@@ -222,7 +222,7 @@ if (!BPC) {
                    .applyFilter(BPC.filterSite)
                    .applyFilter(BPC.filterPosition)
                    .applyFilter(BPC.filterDate)
-                   .applyFilter(BPC.filterMethod)
-                   .applyFilter(BPC.filterPediatric);
+                   .applyFilter(BPC.filterMethod);
+                   //.applyFilter(BPC.filterPediatric);
     };
 }());

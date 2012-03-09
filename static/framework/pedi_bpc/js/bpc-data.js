@@ -169,6 +169,7 @@ if (!BPC) {
             vitals_height = vitals.heightData,
             vitals_bp = vitals.bpData,
             height_data = [],
+            height_data_adult = [],
             patient,
             age,
             height,
@@ -183,8 +184,8 @@ if (!BPC) {
         // Caculate the current age of the patient
         age = years_apart(new Date().toISOString(), demographics.birthday);
 
-        // Display warning dialog if the patient has reached age 19
-        if (age >= 19) {
+        // Display warning dialog if the patient has reached adult age
+        if (age >= BPC.ADULT_AGE) {
             $("#alert-message").text(demographics.name + " is " + BPC.getYears(age) + " years old!");
             $( "#dialog-message" ).dialog({
                 closeOnEscape: false,
@@ -213,7 +214,8 @@ if (!BPC) {
 
             // Copy the height data into the height data array converting the heights to centimeters
             for (i = 0; i < vitals_height.length; i++) {
-                height_data.push({date: vitals_height[i].vital_date,
+                height_data.push({age: years_apart( vitals_height[i].vital_date, patient.birthdate ),
+                                  date: vitals_height[i].vital_date,
                                   height: Math.round(vitals_height[i].height * 100)});
             }
 
@@ -224,9 +226,14 @@ if (!BPC) {
                 
                 return ( (x<y) ? -1: ((x>y)?1:0));
             });
+            
+            // Array of height data taken when an adult
+            height_data_adult = height_data.filter(function (e) {
+                return e.age >= BPC.ADULT_AGE;
+            });
 
             // Inner function for looking up the closest height for a given date
-            getClosestHeight = function (recordDate) { 
+            getClosestHeight = function (recordDate, height_data) { 
                 
                 var closestHeight = height_data[0].height,
                     closestHeightDate = height_data[0].date,
@@ -246,18 +253,26 @@ if (!BPC) {
             // Add the blood pressure data records to the patient object
             for (i = 0; i < vitals_bp.length; i++) {  
 
-                // Add code to update the patient data records with extrapolated height
-                // ...
-                // ... For now, here is a *very* inefficient function which picks the closest height data point.
-                myHeight = getClosestHeight (vitals_bp[i].vital_date);
-
+                // Calculate the age of the patient at the ime of the vital encounter
                 age = years_apart( vitals_bp[i].vital_date, patient.birthdate );
+                
+                if (age < BPC.ADULT_AGE) {
+                    // Add code to update the patient data records with extrapolated height
+                    // ...
+                    // ... For now, here is a *very* inefficient function which picks the closest height data point.
+                    myHeight = getClosestHeight (vitals_bp[i].vital_date, height_data);
 
-                // Set the height to undefined when there is no height data within the staleness horizon
-                if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= BPC.getHeightStaleness (demographics.gender,age)) {
+                    // Set the height to undefined when there is no height data within the staleness horizon
+                    if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= BPC.getHeightStaleness (demographics.gender,age)) {
+                        height = myHeight.value;
+                    } else {
+                        height = undefined;
+                    }
+                } else {                
+                    // When the reading is for an adult, get the closest height from the adult readings
+                    myHeight = getClosestHeight (vitals_bp[i].vital_date, height_data_adult);
                     height = myHeight.value;
-                } else {
-                    height = undefined;
+                    //height = undefined;
                 }
                 
                 // Add the data point to the patient object
@@ -304,9 +319,12 @@ if (!BPC) {
         // Calculate the age and percentiles for the patient encounters
         for (i = 0, ii = patient.data.length; i < ii; i++) {
         
-            // Calculate age and percentiles (child must have height and be at least 1 year old)
+            // Calculate the patient's age at the time of the reading
             patient.data[i].age = years_apart( patient.data[i].timestamp , patient.birthdate );
-            if (patient.data[i].height && patient.data[i].age >= 1 ) {
+            
+            // Calculate the blood pressure percentiles according to the age rules
+            if ( (patient.data[i].age >= 1 && patient.data[i].age < BPC.ADULT_AGE) && patient.data[i].height ) {
+                // For pediatric patients (1-18 year old) with height data
                 percentiles = bp_percentiles ({height: patient.data[i].height / 100,   // convert height to meters from centimeters
                                                age: patient.data[i].age, 
                                                sex: patient.sex, 
@@ -315,6 +333,16 @@ if (!BPC) {
                                                round_results: true});
                 patient.data[i].sPercentile = percentiles.systolic;
                 patient.data[i].dPercentile = percentiles.diastolic;
+            } else if (patient.data[i].age >= BPC.ADULT_AGE) {
+                // For adult patients
+                patient.data[i].sPercentile = BPC.getAdultPercentile(patient.data[i].systolic,true);
+                patient.data[i].dPercentile = BPC.getAdultPercentile(patient.data[i].diastolic,false);
+            }
+            
+            // Set the abbreviations for the adult percentiles
+            if (patient.data[i].age >= BPC.ADULT_AGE) {
+                patient.data[i].sAbbreviation = getAbbreviation (BPC.zones, patient.data[i].sPercentile);
+                patient.data[i].dAbbreviation = getAbbreviation (BPC.zones, patient.data[i].dPercentile);
             }
             
             // Convert the date into the output format and standard unix timestamp
@@ -425,6 +453,31 @@ if (!BPC) {
         
         return p;
     };
+    
+    BPC.PEDIATRIC = 0;
+    BPC.ADULT = 1;
+    BPC.MIXED = 2;
+    
+    /**
+    * Retruns the type of the patient based on the readings (PEDIATRIC, ADULT, or MIXED)
+    *
+    * @param {Function} filter The filter method to apply
+    *
+    * @returns {Object} the resultant patient
+    */
+    BPC.Patient.prototype.getDataType = function () {
+        var data = this.data;
+        
+        // Default to pediatric when no data is available
+        if (data.length === 0) return BPC.PEDIATRIC;
+        
+        if (data[0].age < BPC.ADULT_AGE) {
+            if (data[data.length - 1].age < BPC.ADULT_AGE) return BPC.PEDIATRIC;
+            else return BPC.MIXED;
+        } else {
+            return BPC.ADULT;
+        }
+    };
 
     /**
     * Extracts the years from the age
@@ -447,4 +500,34 @@ if (!BPC) {
     BPC.getMonths = function (age) {
         return Math.floor((age*12)%12);
     };
+    
+    /**
+    * Returns the abbreviation corresponding to a patient's blood pressure percentile
+    *
+    * @param {Object} zones The zones object
+    * @param {Number} percentile The blood pressure percentile
+    *
+    * @returns {String} The abbreviation
+    */
+    var getAbbreviation = function (zones, percentile) {
+    
+        var zoneStart,
+            zoneEnd,
+            i,
+            s = BPC.getViewSettings(true,true);
+        
+        if (!percentile) return s.abbreviationDefault;
+            
+        for (i = 0, zoneStart = 0, zoneEnd = 0; i < zones.length; i++) {
+            zoneEnd = zoneEnd + zones[i].percent;
+            
+            if (zoneStart <= percentile && percentile <= zoneEnd) {
+                return zones[i].abbreviation;
+            }
+            
+            zoneStart = zoneEnd;
+        }
+        
+        return s.abbreviationDefault;  // never returned unless the zones don't sum up to 100%
+    }
 }());

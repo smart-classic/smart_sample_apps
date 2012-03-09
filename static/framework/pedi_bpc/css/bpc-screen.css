@@ -34,6 +34,7 @@ body {
 .dpct {text-align: left;  position: relative; font-weight: bold; padding-left: .2em; padding-right: .2em; }
 .slash {font-weight: narrow;}
 #result-label {font-size: 1.5em; color: #555; padding-bottom:10px}
+#calculator-title {font-size: 1.2em; font-weight: bold; padding-bottom:10px}
 .calc-panel table {background: black; color: #aaa; margin-top:5px; margin-bottom:5px; border-color: #aaa; border-style:solid; border-width:1px; border-collapse: collapse; }
 .calc-panel th {background: #ddd; color: black; font-size: 30%; font-style: italic;}
 #result-percentiles table, #result-thresholds table  {font-size: 3em;}

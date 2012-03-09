@@ -23,11 +23,11 @@ if (!BPC) {
 
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
     BPC.zones = [
-        {definition: "Hypotension (< 1%)",      percent: 1,  colorhue: 0.7,  opacity: 0.4, dashthrough: false},
-        //{definition:"Pre-hypotension (< 5%)",  percent: 4,  colorhue: 0.9, opacity: 0.3, dashthrough: false},
-        {definition: "Normal",           percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
-        {definition: "Pre-hypertension (> 90%)", percent: 5,  colorhue: 0.1, opacity: 0.3, dashthrough: true},
-        {definition: "Hypertension (> 95%)",     percent: 5,  colorhue: 0,  opacity: 0.4, dashthrough: true}
+        {definition: "Hypotension (< 1%)",       abbreviation: "HP", percent: 1,  colorhue: 0.7,  opacity: 0.4, dashthrough: false},
+        //{definition:"Pre-hypotension (< 5%)",  abbreviation: "-", percent: 4,  colorhue: 0.9, opacity: 0.3, dashthrough: false},
+        {definition: "Normal",                   abbreviation: "OK", percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
+        {definition: "Pre-hypertension (> 90%)", abbreviation: "PH", percent: 5,  colorhue: 0.1, opacity: 0.3, dashthrough: true},
+        {definition: "Hypertension (> 95%)",     abbreviation: "HT", percent: 5,  colorhue: 0,  opacity: 0.4, dashthrough: true}
     ];
     
     // Filter settings defaults
@@ -39,6 +39,9 @@ if (!BPC) {
         dateFrom: "1980-01-01",
         dateTo: "2019-01-01"
     };
+    
+    // The age at which we switch to adult calculations
+    BPC.ADULT_AGE = 19;
     
     /**
     * Generates a settings object on request (Private)
@@ -112,7 +115,10 @@ if (!BPC) {
             legendItemHeight: 24,
             
             // Date format
-            dateFormat: "dd MMM yyyy"
+            dateFormat: "dd MMM yyyy",
+            
+            // Default zone abbreviation
+            abbreviationDefault: "-"
         };
     };
     
@@ -169,6 +175,27 @@ if (!BPC) {
         ];
         return patient;
     };
+    
+    /**
+    * Returns the percentile corresponding to an adult patient's blood pressure reading
+    *
+    * @param {Number} blood_pressure The blood pressure reading to be computed
+    * @param {Boolean} systolic true if this is a systlic reading and false if diastolic
+    *
+    * @returns {Number} Percentile
+    */
+    BPC.getAdultPercentile = function (blood_pressure, systolic) {
+        if (systolic) {
+            if (blood_pressure >= 140) return 97;
+            else if (blood_pressure >= 120) return 92;
+            else return 50;
+        } else {
+            if (blood_pressure >= 90) return 97;
+            else if (blood_pressure >= 80) return 92;
+            else return 50;           
+        }
+    };
+
 
     /**
     * Resolves term codes to simple labels for use within the BPC app
