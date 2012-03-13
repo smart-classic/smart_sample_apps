@@ -51,6 +51,7 @@ urls = ('/smartapp/index.html', 'index04',
         '/smartapp/runtests', 'run_tests')
         
 class icon:
+    '''Disseminator for the app icon'''
     def GET(self):
         f = open(APP_PATH + '/smartapp/icon.png', 'r')
         data = f.read()
@@ -59,6 +60,7 @@ class icon:
         return data
 
 class manifest04:
+    '''Disseminator for the SMART v0.4 manifest'''
     def GET(self):
         f = open(APP_PATH + '/smartapp/smart_manifest-0.4.json', 'r')
         json = f.read()
@@ -67,6 +69,7 @@ class manifest04:
         return json
         
 class manifest03:
+    '''Disseminator for the SMART v0.3 manifest'''
     def GET(self):
         f = open(APP_PATH + '/smartapp/smart_manifest-0.3.json', 'r')
         json = f.read()
