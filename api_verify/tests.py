@@ -44,12 +44,78 @@ class TestRDF(unittest.TestCase):
         '''Reports the outcome of the RDF parsing'''
         if self.failed:
             self.fail("RDF-XML parsing failed")
+        elif not self.rdf:
+            self.fail("EMPTY RESULT SET")
     
     def testContentType(self):
         '''Verifies that the content type provided is application/rdf+xml'''
         RDF_MIME = "application/rdf+xml"
         self.assertEquals(ct, RDF_MIME, "HTTP content-type '%s' should be '%s'" % (ct, RDF_MIME))
+
+def testRDF (graph, model):
+    # Vars for tracking of the test state
+    message = ""
+
+    # Generate the queries
+    queries = query_builder.get_queries(model)
+    
+    #print "Testing model", model, "with", len(queries), "queries"
+    
+    #if model == "Allergy": 
+    #    for query in queries:
+    #        print query["query"]
+    
+    for query in queries:
+        type = query["type"]
+        q = query["query"]
+        
+        if type == "negative":
+            #print q
+        
+            # Run the query and report any failures
+            results = graph.query(q)
+            
+            #answer = graph.query(q)
+            #if (answer.askAnswer[0] == False):
+            
+            # Stingify the results
+            myres = []
+
+            for r in results:
+                myres.append(str(r))
+            
+            # If we get a result (the queries are assumed to be negative),
+            # then we fail the test
+            if len(myres) > 0 :
+                if len(message) == 0:
+                    message = "RDF structure check failed\n"
+                message += "Got unexpected results from the query:\n" + q
+        elif type == "select":
+            #print q
+        
+            #print "Running select query", q
+        
+            # Run the query and report any failures
+            results = graph.query(q)
+            
+            #print len(results), "results returned"
+
+            for r in results:
+                matched = False
                 
+                for c in query["constraints"]:
+                    if (str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4])) == (c['uri'], c['code'], c['identifier'], c['title'], c['system']):
+                        #print "We have a match"
+                        matched = True
+                        
+                        
+                if not matched:
+                    if len(message) == 0:
+                        message = "RDF structure check failed\n"
+                    message += "Got invalid results from the query:\n" + q
+                    
+    return message
+  
 class TestDataModelStructure(unittest.TestCase):
     '''Tests for RDF document structure and content types'''
     
@@ -61,15 +127,14 @@ class TestDataModelStructure(unittest.TestCase):
             self.rdf = None
 
     def testStructure(self):
-        '''Tests the data model structure with an automatically generated SPARQL query based on the ontology'''
+        '''Tests the data model structure with an automatically generated SPARQL queries based on the ontology'''
+
         if self.rdf:
-            # Generate the query
-            q = query_builder.get_query(currentModel)
-            
-            # Run the query and report any failures
-            answer = self.rdf.query(q)
-            if (answer.askAnswer[0] == False):
-                self.fail ("RDF structure check failed\nAttempted the query:\n" + q)
+            # Run the queries against the RDF and get the error message (if any)
+            message = testRDF (self.rdf, currentModel)
+
+            # Trigger the fail process if we have failed any of the queries
+            if len(message) > 0: self.fail (message)
 
 class TestJSON(unittest.TestCase):
     '''Tests for JSON data parsing and content types'''
@@ -93,22 +158,17 @@ class TestJSON(unittest.TestCase):
          
 class TestAllergies(TestRDF):
     '''Tests for Allergies data model'''
-    def testStructure(self):
+    def testStructure2(self):
         '''Tests the data model structure with automatically generated SPARQL queries based on the ontology
         
         This model is a corner case, because it is allowed to confirm to either one of two patterns (Allergy and AllergyExclusion)'''
         if self.rdf:
-            # Generate the queries
-            q1 = query_builder.get_query("Allergy")   
-            q2 = query_builder.get_query("AllergyExclusion")
-            
-            # Run the queries
-            answer1 = self.rdf.query(q1)
-            answer2 = self.rdf.query(q2)
-            
-            # Fail when neither query does not return any matches
-            if (answer1.askAnswer[0] == False and answer2.askAnswer[0] == False):
-                self.fail ("RDF structure check failed\nAttempted the querries:\n" + q1 + "\n" + q2)
+            # Run the queries against the RDF and get the error messages (if any)
+            message1 = testRDF (self.rdf, "Allergy")
+            message2 = testRDF (self.rdf, "AllergyExclusion")
+
+            # Trigger the fail process if we have failed any of the queries
+            if len(message1) > 0 or len(message2) > 0: self.fail (message1 + message2)
 
 class TestDemographics(TestRDF, TestDataModelStructure):
     '''Tests for the Demographics data model'''

@@ -138,7 +138,7 @@ class api_call:
         # Get the call name from the HTTP header
         call_name = web.input().call_name
         
-        print >> sys.stderr, "calling " + call_name
+        #print >> sys.stderr, "calling " + call_name
         
         # Load the local ontology into the SMART client
         smart_client = get_smart_client(APP_PATH + '/data/smart.owl')
