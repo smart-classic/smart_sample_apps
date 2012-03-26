@@ -180,31 +180,6 @@ class TestAllergies(TestRDF):
 
 class TestDemographics(TestRDF, TestDataModelStructure):
     '''Tests for the Demographics data model'''
-    
-    def testBasicNodes(self):
-        '''A good general test for the Demographics model'''
-        if self.rdf:
-        
-            # A SPARQL ASK query testing for the presence of a set of pre-defined nodes
-            q = """
-                PREFIX foaf:<http://xmlns.com/foaf/0.1/>
-                PREFIX v:<http://www.w3.org/2006/vcard/ns#>
-                PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                ASK {
-                   ?r v:n ?n .
-                   ?n rdf:type v:Name .
-                   ?n v:given-name ?firstname .
-                   ?n v:family-name ?lastname .
-                   ?r foaf:gender ?gender .
-                   ?r v:bday ?birthday .
-                   ?r v:email ?email .
-                }
-                """
-            
-            # Run the query and report the result
-            answer = self.rdf.query(q)
-            if (answer.askAnswer[0] == False):
-                self.fail ("RDF structure check failed\nAttempted the query:\n" + q)
 
 class TestEncounters(TestRDF, TestDataModelStructure):
     '''Tests for the Encounters data model'''
