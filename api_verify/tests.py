@@ -93,11 +93,15 @@ def testRDF (graph, model):
                 matched = False
                 
                 for c in query["constraints"]:
-                    if (str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4])) == (c['uri'], c['code'], c['identifier'], c['title'], c['system']):
+                    if (str(r[0]).lower(),str(r[1]).lower(),str(r[2]).lower(),str(r[3]).lower(),str(r[4]).lower()) == (c['uri'].lower(), c['code'].lower(), c['identifier'].lower(), c['title'].lower(), c['system'].lower()):
                         matched = True
                         
                 if not matched and len (unmatched_results) < 3:
                     unmatched_results.append(" ".join((str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4]))))
+                    #print " ".join((str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4])))
+                    #print "DID NOT MATCH!"
+                    #import json
+                    #print json.dumps(query["constraints"], sort_keys=True, indent=4)
             
             if len (unmatched_results) > 0:
                 if len(message) == 0:
@@ -192,6 +196,7 @@ class TestAllergies(TestRDF):
 
 class TestDemographics(TestRDF, TestDataModelStructure):
     '''Tests for the Demographics data model'''
+    pass
 
 class TestEncounters(TestRDF, TestDataModelStructure):
     '''Tests for the Encounters data model'''
