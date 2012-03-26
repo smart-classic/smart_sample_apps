@@ -7,12 +7,52 @@ def type_name_string(t):
 
 def split_uri(t):
     try: 
-        return str(t).rsplit("#",1)[1]
+        res = str(t).rsplit("#",1)
+        res[0] += "#"
+        return res[0], res[1]
     except:
         try: 
-            return str(t).rsplit("/",1)[1]
+            res = str(t).rsplit("/",1)
+            res[0] += "/"
+            return res[0], res[1]
         except: 
             return ""
+            
+def normalize (t):
+    namespace, term = split_uri(t)
+    
+    if namespace == "http://www.w3.org/1999/02/22-rdf-syntax-ns#":
+        namespace = "rdf"
+    elif namespace == "http://xmlns.com/foaf/0.1/":
+        namespace = "foaf"
+    elif namespace == "http://www.w3.org/2006/vcard/ns#":
+        namespace = "v"
+    elif namespace == "http://purl.org/dc/terms/":
+        namespace = "dcterms"
+    elif namespace == "http://smartplatforms.org/terms#":
+        namespace = "sp"
+    elif namespace == "http://smartplatforms.org/terms/codes/":
+        namespace = "spcode"
+    else:
+        namespace = "UNKNOWN"
+        
+    return namespace, ":".join((namespace, term))
+
+def getPrefixDefs (prefixes):
+    prefs = ""
+    if "rdf" in prefixes:
+        prefs += "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+    if "foaf" in prefixes:
+        prefs += "PREFIX foaf:<http://xmlns.com/foaf/0.1/>\n"
+    if "v" in prefixes:
+        prefs += "PREFIX v:<http://www.w3.org/2006/vcard/ns#>\n"
+    if "dcterms" in prefixes:
+        prefs += "PREFIX dcterms:<http://purl.org/dc/terms/>\n"
+    if "sp" in prefixes:
+        prefs += "PREFIX sp:<http://smartplatforms.org/terms#>\n"
+    if "spcode" in prefixes:
+        prefs += "PREFIX spcode:<http://smartplatforms.org/terms/codes/>\n"
+    return prefs
     
 def generate_data_for_type(t, res):
     name = type_name_string(t)
@@ -22,7 +62,7 @@ def generate_data_for_type(t, res):
         ec = filter(lambda x: x.one_of, t.equivalent_classes)
         res[name]["oneOf"] = []
         for member in [x for c in ec for x in c.one_of]:
-            identifier = split_uri(member.uri)
+            namespace, identifier = split_uri(member.uri)
             system = str(member.uri).split(identifier)[0]
             spcode = str(t.uri)
             data = {"code": spcode, "uri": str(member.uri), "title": member.title,
@@ -65,15 +105,17 @@ def generate_constrained_sparql (res, target, type, constraints, queries = None,
     constraint = constraints["http://smartplatforms.org/terms#code"]
 
     if "oneOf" in res[constraint].keys():
-    
-        out = """PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dcterms:<http://purl.org/dc/terms/>
-PREFIX sp:<http://smartplatforms.org/terms#>
-PREFIX spcode:<http://smartplatforms.org/terms/codes/>
-SELECT  ?uri ?code ?identifier ?title ?system
+        prefs = ["rdf", "dcterms", "sp", "spcode"]
+        nscode, rdfstr1 = normalize(target)
+        if nscode not in prefs:
+            prefs.append (nscode)
+        nscode, rdfstr2 = normalize(type)
+        if nscode not in prefs:
+            prefs.append (nscode)
+        out = """%sSELECT  ?uri ?code ?identifier ?title ?system
 WHERE {
-   ?a <%s> ?c .
-   ?c rdf:type <%s> .
+   ?a %s ?c .
+   ?c rdf:type %s .
    ?c sp:code ?uri .
    ?uri rdf:type sp:Code .
    ?uri rdf:type ?code.
@@ -81,7 +123,7 @@ WHERE {
    ?uri dcterms:title ?title .
    ?uri sp:system ?system .
    FILTER (str(?code) != sp:Code) .
-}""" % (target, type)
+}""" % (getPrefixDefs(prefs), rdfstr1, rdfstr2)
 
         queries.append({"type":"select", "query": out, "constraints": res[constraint]["oneOf"]})
         targets.append(target)
@@ -97,12 +139,22 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
     myid = "?s" + str(id)
 
     if str(target) not in (str(NS['rdfs']['Literal']), str(NS['xsd']['dateTime']), str(anyuri)):
+        nscode, rdfstr = normalize(target)
+        #if nscode not in prefs:
+        #    prefs.append (nscode)
         out += " " * (4 * depth)
-        out += " ".join((myid, "<" + str(NS['rdf']['type']) + ">", "<" + target + ">", ".\n"))
+        out += " ".join((myid, "rdf:type", rdfstr, ".\n"))
         if "properties" in res[target].keys() and target not in targets:
+            prefs1 = ["rdf"]
+            prefs2 = ["rdf"]
             targets.append(target)
+            nscode, rdfstr = normalize(target)
+            if nscode not in prefs1:
+                prefs1.append (nscode)
+            if nscode not in prefs2:
+                prefs2.append (nscode)
             out1 = " " * 4
-            out1 += " ".join((myid, "<" + str(NS['rdf']['type']) + ">", "<" + target + ">", ".\n"))
+            out1 += " ".join((myid, "rdf:type", rdfstr, ".\n"))
             out2 = out1 + " " * 4 + "OPTIONAL {\n"
             out4 = " " * 4 + "FILTER ( "
             out5 = ""
@@ -111,8 +163,11 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
                 if p["name"] != str(NS['sp']['belongsTo']):
                     if p["cardinality"] in ["1","1 - Many"]:
                         id += 1
+                        nscode, rdfstr = normalize(p["name"])
+                        if nscode not in prefs1:
+                            prefs1.append (nscode)
                         out2 += " " * (4 * 2)
-                        out2 += " ".join((myid, "<" + p["name"] + ">", "?s" + str(id), ".\n"))
+                        out2 += " ".join((myid, rdfstr, "?s" + str(id), ".\n"))
                         if first:
                             first = False
                         else:
@@ -128,15 +183,19 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
                         if "constraints" in p.keys():
                             queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
                     if p["cardinality"] in ["1", "0 - 1"]:
+                        nscode, rdfstr = normalize(p["name"])
+                        if nscode not in prefs2:
+                            prefs2.append (nscode)
                         out5 += " " * 4
-                        out5 += "OPTIONAL {" + " ".join((myid, "<" + p["name"] + ">", "?s" + str(id), "."))+ "}\n"
+                        out5 += "OPTIONAL {" + " ".join((myid, rdfstr, "?s" + str(id), "."))+ "}\n"
             out4 += " )"
             out2 += " " * 4 + "}\n" + out4
             if not first:
-                queries.append({"type":"negative", "query": "SELECT %s\nWHERE {\n%s\n}" % (myid, out2)})
+                #NS['rdf']['type']
+                queries.append({"type":"negative", "query": "%sSELECT %s\nWHERE {\n%s\n}" % (getPrefixDefs(prefs1), myid, out2)})
                 if len(out5) > 0:
                     out5 = out1 + out5
-                    queries.append({"type":"singular", "query": "SELECT %s\nWHERE {\n%s\n}" % (myid, out5)})
+                    queries.append({"type":"singular", "query": "%sSELECT %s\nWHERE {\n%s}" % (getPrefixDefs(prefs2), myid, out5)})
                 
     return id, out, queries, targets
     
