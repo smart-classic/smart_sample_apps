@@ -17,9 +17,6 @@ def split_uri(t):
 def generate_data_for_type(t, res):
     name = type_name_string(t)
     res[name] = {}
-    
-    #if (rdf_ontology.sp.Code in [x.uri for x in t.parents]):
-    #    res[name]["type"]="code"
 
     if t.equivalent_classes:
         ec = filter(lambda x: x.one_of, t.equivalent_classes)
@@ -66,26 +63,8 @@ def generate_constrained_sparql (res, target, type, constraints, queries = None,
     if targets is None: targets = []
 
     constraint = constraints["http://smartplatforms.org/terms#code"]
-    
-#    print "constraint", constraint
 
     if "oneOf" in res[constraint].keys():
-    
-#        constraints_str = ""
-#        first = True
-     
-#        for c in res[constraint]["oneOf"]:
-#            if first:
-#                first = False
-#            else:
-#                constraints_str += " ||\n"
-#                
-#            constraints_str += '''
-#    (?uri = "%s" &&
-#     ?code = "%s" &&
-#     ?identifier = "%s" &&
-#     ?title = "%s" &&
-#     ?system = "%s")''' % (c['uri'], c['code'], c['identifier'], c['title'], c['system'])
     
         out = """PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dcterms:<http://purl.org/dc/terms/>
@@ -114,8 +93,6 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
     if queries is None: queries = []
     if targets is None: targets = []
 
-    #print target, len(queries), len(targets)
-
     out = ""
     myid = "?s" + str(id)
 
@@ -124,10 +101,11 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
         out += " ".join((myid, "<" + str(NS['rdf']['type']) + ">", "<" + target + ">", ".\n"))
         if "properties" in res[target].keys() and target not in targets:
             targets.append(target)
-            out2 = " " * 4
-            out2 += " ".join((myid, "<" + str(NS['rdf']['type']) + ">", "<" + target + ">", ".\n"))
-            out2 += " " * 4 + "OPTIONAL {\n"
+            out1 = " " * 4
+            out1 += " ".join((myid, "<" + str(NS['rdf']['type']) + ">", "<" + target + ">", ".\n"))
+            out2 = out1 + " " * 4 + "OPTIONAL {\n"
             out4 = " " * 4 + "FILTER ( "
+            out5 = ""
             first = True
             for p in res[target]["properties"]:
                 if p["name"] != str(NS['sp']['belongsTo']):
@@ -149,10 +127,16 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
                         id, out3, queries, targets = generate_sparql (res, str(p["type"]), id, 2, queries, targets)
                         if "constraints" in p.keys():
                             queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
+                    if p["cardinality"] in ["1", "0 - 1"]:
+                        out5 += " " * 4
+                        out5 += "OPTIONAL {" + " ".join((myid, "<" + p["name"] + ">", "?s" + str(id), "."))+ "}\n"
             out4 += " )"
             out2 += " " * 4 + "}\n" + out4
             if not first:
                 queries.append({"type":"negative", "query": "SELECT %s\nWHERE {\n%s\n}" % (myid, out2)})
+                if len(out5) > 0:
+                    out5 = out1 + out5
+                    queries.append({"type":"singular", "query": "SELECT %s\nWHERE {\n%s\n}" % (myid, out5)})
                 
     return id, out, queries, targets
     
@@ -163,7 +147,6 @@ res = {}
 def get_queries (model):
     global loaded
     if not loaded:
-        #print "NOT LOADED... PARSING"
         if not rdf_ontology.api_types:
             rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
     
@@ -181,19 +164,12 @@ def get_queries (model):
     #import json
     #print json.dumps(res[str(NS['sp'][model])], sort_keys=True, indent=4)
 
-    #print "GENERATING QUERIES FOR", model
     a, b, queries, c = generate_sparql (res, str(NS['sp'][model]))#, 0, 1, [], [])
-    
-    #queries = []
-    #queries.append({"type":"ASK", "query": "    ASK {\n" + q + "    }"})
     
     return queries
 
 def get_query (model):
     r = get_queries (model)
-    
-    #for q in r:
-    #    print q["query"]
     
     if len(r) == 0:
         return ""

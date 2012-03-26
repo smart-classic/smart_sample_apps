@@ -70,8 +70,6 @@ def testRDF (graph, model):
         q = query["query"]
         
         if type == "negative":
-            #print q
-        
             # Run the query and report any failures
             results = graph.query(q)
             
@@ -89,12 +87,8 @@ def testRDF (graph, model):
             if len(myres) > 0 :
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
-                message += "Got unexpected results from the query:\n" + q
-        elif type == "select":
-            #print q
-        
-            #print "Running select query", q
-        
+                message += "Got unexpected results from the query:\n" + q + "\n"
+        elif type == "select":       
             # Run the query and report any failures
             results = graph.query(q)
             
@@ -105,14 +99,28 @@ def testRDF (graph, model):
                 
                 for c in query["constraints"]:
                     if (str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4])) == (c['uri'], c['code'], c['identifier'], c['title'], c['system']):
-                        #print "We have a match"
                         matched = True
-                        
                         
                 if not matched:
                     if len(message) == 0:
                         message = "RDF structure check failed\n"
-                    message += "Got invalid results from the query:\n" + q
+                    message += "Got invalid results from the query:\n" + q + "\n"
+        elif type == "singular":
+            
+            # Run the query and report any failures
+            results = graph.query(q)
+            
+            # Stingify the results
+            myres = []
+
+            for r in results:
+                myres.append(str(r))
+                
+            if len(myres) != len(set(myres)):
+                #We have duplicates in the result
+                if len(message) == 0:
+                    message = "RDF structure check failed\n"
+                message += "Got unexpected duplicates in the results from the query:\n" + q + "\n"
                     
     return message
   
