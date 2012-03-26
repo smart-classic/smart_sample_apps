@@ -28,6 +28,10 @@ data = None
 ct = None
 currentModel = None
 
+class TestDefault(unittest.TestCase):
+    '''Default tests run on unidentified models'''
+    pass
+
 class TestRDF(unittest.TestCase):
     '''Tests for RDF data parsing and content types'''
 
@@ -98,10 +102,6 @@ def testRDF (graph, model):
                         
                 if not matched and len (unmatched_results) < 3:
                     unmatched_results.append(" ".join((str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4]))))
-                    #print " ".join((str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4])))
-                    #print "DID NOT MATCH!"
-                    #import json
-                    #print json.dumps(query["constraints"], sort_keys=True, indent=4)
             
             if len (unmatched_results) > 0:
                 if len(message) == 0:
@@ -204,6 +204,10 @@ class TestEncounters(TestRDF, TestDataModelStructure):
     
 class TestFulfillments(TestRDF, TestDataModelStructure):
     '''Tests for the Fulfillments data model'''
+    pass
+    
+class TestImmunizations(TestRDF, TestDataModelStructure):
+    '''Tests for the Immunizations data model'''
     pass
     
 class TestLabResults(TestRDF, TestDataModelStructure):
@@ -378,6 +382,7 @@ tests = {'Allergy': TestAllergies,
          'Container': TestCapabilities,
          'Encounter': TestEncounters,
          'Fulfillment': TestFulfillments,
+         'Immunization': TestImmunizations,
          'LabResult': TestLabResults,
          'Medication': TestMedications,
          'Ontology': TestOntology,
@@ -403,7 +408,10 @@ def runTest(model, testData, contentType=None):
         currentModel = model
         
         # Load the test from the applicable test suite
-        alltests = unittest.TestLoader().loadTestsFromTestCase(tests[model])
+        if model in tests.keys():
+            alltests = unittest.TestLoader().loadTestsFromTestCase(tests[model])
+        else:
+            alltests = unittest.TestLoader().loadTestsFromTestCase(TestDefault)
         
         # Run the tests
         results = unittest.TextTestRunner(stream = open(os.devnull, 'w')).run(alltests)
