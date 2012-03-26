@@ -30,7 +30,9 @@ currentModel = None
 
 class TestDefault(unittest.TestCase):
     '''Default tests run on unidentified models'''
-    pass
+    
+    def testUnknown(self):
+        self.fail("Data model does not have an associated test suite")
 
 class TestRDF(unittest.TestCase):
     '''Tests for RDF data parsing and content types'''
