@@ -140,8 +140,6 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
 
     if str(target) not in (str(NS['rdfs']['Literal']), str(NS['xsd']['dateTime']), str(anyuri)):
         nscode, rdfstr = normalize(target)
-        #if nscode not in prefs:
-        #    prefs.append (nscode)
         out += " " * (4 * depth)
         out += " ".join((myid, "rdf:type", rdfstr, ".\n"))
         if "properties" in res[target].keys() and target not in targets:

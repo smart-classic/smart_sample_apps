@@ -59,40 +59,35 @@ def testRDF (graph, model):
     # Generate the queries
     queries = query_builder.get_queries(model)
     
-    #print "Testing model", model, "with", len(queries), "queries"
-    
-    #if model == "Allergy": 
-    #    for query in queries:
-    #        print query["query"]
-    
     for query in queries:
         type = query["type"]
         q = query["query"]
         
+        # Negative queries should not return any results
         if type == "negative":
             # Run the query and report any failures
             results = graph.query(q)
             
-            #answer = graph.query(q)
-            #if (answer.askAnswer[0] == False):
-            
             # Stingify the results
             myres = []
-
             for r in results:
-                myres.append(str(r))
+                if len (myres) < 3:
+                    myres.append(str(r))
             
             # If we get a result (the queries are assumed to be negative),
             # then we fail the test
             if len(myres) > 0 :
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
-                message += "Got unexpected results from the query:\n" + q + "\n"
+                message += "Got unexpected results (first 3 shown) " + str(myres)
+                message += " from the query:\n" + q + "\n"
+        
+        # The results of select queries should match one of the constraints       
         elif type == "select":       
             # Run the query and report any failures
             results = graph.query(q)
             
-            #print len(results), "results returned"
+            unmatched_results = []
 
             for r in results:
                 matched = False
@@ -101,10 +96,17 @@ def testRDF (graph, model):
                     if (str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4])) == (c['uri'], c['code'], c['identifier'], c['title'], c['system']):
                         matched = True
                         
-                if not matched:
-                    if len(message) == 0:
-                        message = "RDF structure check failed\n"
-                    message += "Got invalid results from the query:\n" + q + "\n"
+                if not matched and len (unmatched_results) < 3:
+                    unmatched_results.append(" ".join((str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4]))))
+            
+            if len (unmatched_results) > 0:
+                if len(message) == 0:
+                    message = "RDF structure check failed\n"
+                message += "Got invalid results (first 3 shown) " + str(unmatched_results)
+                message += " from the query:\n" + q + "\n"
+                    
+        # Singular queries test for violations of "no more than 1" restrictions.
+        # There should be no duplicates in the result set
         elif type == "singular":
             
             # Run the query and report any failures
@@ -112,15 +114,25 @@ def testRDF (graph, model):
             
             # Stingify the results
             myres = []
-
             for r in results:
                 myres.append(str(r))
+            
+            # Find all the duplicates in the result set
+            checked = []
+            duplicates = []
+            for s in myres:
+                if s not in checked:
+                    checked.append (s)
+                elif len(duplicates) < 3:
+                    duplicates.append (s)
+                  
+            # Fail the test when we have duplicates
+            if len(duplicates) > 0:
                 
-            if len(myres) != len(set(myres)):
-                #We have duplicates in the result
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
-                message += "Got unexpected duplicates in the results from the query:\n" + q + "\n"
+                message += "Got unexpected duplicates (first 3 shown) " + str(duplicates)
+                message += " in the results from the query:\n" + q + "\n"
                     
     return message
   

@@ -209,7 +209,7 @@ if (!VERIFY) {
                 
                 // Add the message to the console text
                 VERIFY.console_text += "In " + call_name + ": ";
-                VERIFY.console_text += messages[i];
+                VERIFY.console_text += messages[i] + "\n";
             }
         }
         
