@@ -227,9 +227,17 @@ if (!VERIFY) {
             // No error messages, so display the OK icon
             $('#'+call_name).html("<img src='/static/images/ok.gif'/>");
         }
-        
+
+        // Hack to convert the line endings to \r when IE is used
+        if (VERIFY.getInternetExplorerVersion() > 0) {
+            VERIFY.console_text = VERIFY.console_text.replace(/\n/g, "\r");
+        }
+
         // Update the console
-        $('#JashInput').text(VERIFY.console_text);
+        if (VERIFY.console_text.length > 0) {
+            $('#JashInput').text(VERIFY.console_text);
+            $('#JashInput').show();
+        }
     };
 
     /**
@@ -237,5 +245,16 @@ if (!VERIFY) {
     */
     VERIFY.callbackError = function(call_name) {
         $('#'+call_name).html("<img src='/static/images/err.gif'/>");
+    };
+    
+    // Returns the version of IE used as decimal (i.e. 9.1)
+    VERIFY.getInternetExplorerVersion = function () {
+        var rv = -1; // Return value if not IE
+        if (navigator.appName == 'Microsoft Internet Explorer') {
+            var ua = navigator.userAgent;
+            var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+            if (re.exec(ua) != null) rv = parseFloat( RegExp.$1 );
+        }
+        return rv;
     };
 }());
