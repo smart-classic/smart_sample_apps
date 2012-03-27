@@ -59,6 +59,11 @@ class TestRDF(unittest.TestCase):
         self.assertEquals(ct, RDF_MIME, "HTTP content-type '%s' should be '%s'" % (ct, RDF_MIME))
 
 def testRDF (graph, model):
+    '''Service method testing a graph against a data model from the ontology
+    
+    Returns a string containing the applicable error messages or an empty
+    string when no pronlems have been found.'''
+
     # Vars for tracking of the test state
     message = ""
 
@@ -351,11 +356,42 @@ class TestOntology(TestRDF):
     
 class TestCapabilities(TestJSON):
     '''Tests for the capabilities API'''
-    pass
+    
+    def testStructure (self):
+        '''A simple structure test for the capabilities JSON output'''
+        
+        if self.json:
+        
+            d = self.json
+            
+            for k in d.keys():
+                if "methods" not in d[k].keys():
+                    self.fail ("Missing methods for API '%s'" % k)
+                else:
+                    for m in d[k]["methods"]:
+                        if m not in ("GET", "POST", "PUT", "DELETE"):
+                            self.fail ("Improper method '%s' for API '%s'" % (m,k))
+                            
     
 class TestManifests(TestJSON):
     '''Tests for the manifests'''
-    pass
+
+    def testStructure (self):
+        '''A simple structure test for the manifests JSON output'''
+        
+        if self.json:
+        
+            for manifest in self.json:
+                keys = manifest.keys()
+                if "name" not in keys or not isinstance(manifest["name"], basestring) :
+                    self.fail ("All app manifests must have a 'name' string property")
+                if "description" not in keys or not isinstance(manifest["description"], basestring) :
+                    self.fail ("All app manifests must have a 'description' string property")
+                if "id" not in keys or not isinstance(manifest["id"], basestring) :
+                    self.fail ("All app manifests must have a 'id' string property")
+                if "mode" not in keys or manifest["mode"] not in ("ui","background") :
+                    self.fail ("'mode' property must be one of ('ui','background')")
+    
     
 class TestPreferences(unittest.TestCase):
     '''Tests for the Preferences API'''
