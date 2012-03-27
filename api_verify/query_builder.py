@@ -158,34 +158,34 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
             out5 = ""
             first = True
             for p in res[target]["properties"]:
-                if p["name"] != str(NS['sp']['belongsTo']):
-                    if p["cardinality"] in ["1","1 - Many"]:
-                        id += 1
-                        nscode, rdfstr = normalize(p["name"])
-                        if nscode not in prefs1:
-                            prefs1.append (nscode)
-                        out2 += " " * (4 * 2)
-                        out2 += " ".join((myid, rdfstr, "?s" + str(id), ".\n"))
-                        if first:
-                            first = False
-                        else:
-                            out4 += " || "
-                        out4 += "!BOUND(?s" + str(id) + ")"
+                if p["cardinality"] in ["1","1 - Many"]:
+                    id += 1
+                    nscode, rdfstr = normalize(p["name"])
+                    if nscode not in prefs1:
+                        prefs1.append (nscode)
+                    out2 += " " * (4 * 2)
+                    out2 += " ".join((myid, rdfstr, "?s" + str(id), ".\n"))
+                    if first:
+                        first = False
+                    else:
+                        out4 += " || "
+                    out4 += "!BOUND(?s" + str(id) + ")"
+                    if p["name"] != str(NS['sp']['belongsTo']):
                         id, out3, queries, targets = generate_sparql (res, str(p["type"]), id, 2, queries, targets)
                         out2 += out3
                         if "constraints" in p.keys():
                             queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
-                    else:
-                        id += 1
-                        id, out3, queries, targets = generate_sparql (res, str(p["type"]), id, 2, queries, targets)
-                        if "constraints" in p.keys():
-                            queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
-                    if p["cardinality"] in ["1", "0 - 1"]:
-                        nscode, rdfstr = normalize(p["name"])
-                        if nscode not in prefs2:
-                            prefs2.append (nscode)
-                        out5 += " " * 4
-                        out5 += "OPTIONAL {" + " ".join((myid, rdfstr, "?s" + str(id), "."))+ "}\n"
+                elif p["name"] != str(NS['sp']['belongsTo']):
+                    id += 1
+                    id, out3, queries, targets = generate_sparql (res, str(p["type"]), id, 2, queries, targets)
+                    if "constraints" in p.keys():
+                        queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
+                if p["cardinality"] in ["1", "0 - 1"]:
+                    nscode, rdfstr = normalize(p["name"])
+                    if nscode not in prefs2:
+                        prefs2.append (nscode)
+                    out5 += " " * 4
+                    out5 += "OPTIONAL {" + " ".join((myid, rdfstr, "?s" + str(id), "."))+ "}\n"
             out4 += " )"
             out2 += " " * 4 + "}\n" + out4
             if not first:
