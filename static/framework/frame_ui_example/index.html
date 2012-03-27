@@ -1,49 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>EMR Frame App</title>
+    <title>Frame UI Example</title>
 
     <!-- Instantiate SMART, to access the container's SMART Connect Host -->
-    <script  src='../smart/scripts/smart-api-client.js'>
+    <script  src='http://sandbox-dev.smartplatforms.org:8001/framework/smart/scripts/smart-api-client.js'>
     </script>
 
     <!-- Instantiate SMART_HOST, to provide a SMART Connect Host to framed apps-->
     <script  src='http://sandbox-dev.smartplatforms.org/static/smart_common/resources/smart-api-container.js'>
     </script>
-
-    <script  src='smart-frame-ui.js'>
+    
+    <!-- Glue to link the above libraries -->
+    <script  src='http://sandbox-dev.smartplatforms.org:8001/framework/smart/scripts/smart-frame-ui.js'>
     </script>
 
     <script>
-
-
      SMART.ready(function() {
-       if (SMART.context.record) {
-         $("#record_id").val(SMART.record.id);
-         $("#record_name").val(SMART.record.full_name);
-       };
 
-       SMART.PATIENTS_get(function(response) {
-	  
-          var patients = response.graph.where("?p rdf:type sp:Demographics")
-                                         .where("?p <http://www.w3.org/2006/vcard/ns#n> ?n")
-                                         .where("?n <http://www.w3.org/2006/vcard/ns#given-name> ?givenName")
-                                         .where("?n <http://www.w3.org/2006/vcard/ns#family-name> ?familyName");
-
-          var pselect = $("#patients"), p;
-          for (var i = 0; i < patients.length; i++) {
-	      p = patients[i];
-              pselect.append("<option value='"+p.p.value._string+"'>"+p.givenName.value + " " + p.familyName.value+"</option>");
-          }
-
-       });
+       $("#record_name").text(SMART.record.full_name);
 
        var iframes = [$("#app1"), $("#app2"), $("#app3")];
        SMART.MANIFESTS_get(function(response) {
 
-	 var carousel = jQuery("#carousel"),
-	     manifests = response.json;
-	     
+         var carousel = jQuery("#carousel"),
+             manifests = response.json;
+             
            carousel.html("");
            var click_count = -1;
 
@@ -62,13 +44,7 @@
              carousel.append(app);
              app.click(function(){
                var next_frame = iframes[click_count % iframes.length];
-               var app_context = jQuery.extend({}, SMART.context);
-               app_context.record = { 
-                                      id: $("#patients").val().match(/.*\/(.*?)\/demographics$/)[1],
-                                      full_name: $("#patients option:selected").text() 
-                                    };
-               
-               SMART_HOST.launch_app(m, app_context, {elt: next_frame});
+               SMART_HOST.launch_app(m, SMART.context, {elt: next_frame});
                pending_click();
              });
            });
@@ -82,12 +58,12 @@
     </script>
   </head>
   <body>
-    <b>Choose a patient and some apps from the carousel below!</b><br>
-    <select id="patients"></select>
+    <b>Choose some apps from the carousel below!</b><br>
+    <div id="record_name">loading patient...</div>
     <span id="carousel">carousel here...</span><br><br>
 
       <iframe SEAMLESS src="about:blank" id="app1" width="290px" height="280px" style="float:left"> </iframe>
       <iframe SEAMLESS src="about:blank" id="app2" width="600px" height="280px" style="float:left"> </iframe>
       <iframe SEAMLESS src="about:blank" id="app3" width="100%" height="500px"> </iframe>
-  </body>    
+  </body>
 </html>

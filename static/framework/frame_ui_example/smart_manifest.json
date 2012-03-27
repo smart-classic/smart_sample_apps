@@ -1,0 +1,14 @@
+{
+  "name" : "Frame UI Example",
+  "description" : "Sample Frame UI app that can display three SMART apps simultaneously",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "frame-ui-example@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "base_url" : "http://localhost:8001",
+  "mode" : "frame_ui",
+  "scope": "record",
+  
+  "index" :  "{base_url}/framework/frame_ui_example/index.html",
+  "icon" :  "{base_url}/framework/frame_ui_example/icon.png"
+}
