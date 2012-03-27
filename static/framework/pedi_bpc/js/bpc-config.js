@@ -234,7 +234,7 @@ if (!BPC) {
             var i;
             
             for (i = 0; i < codes.length; i++) {
-                if (termCode === codes[i].codeValue) {
+                if (termCode.toLowerCase() === codes[i].codeValue.toLowerCase()) {
                     return codes[i].codeTitle;
                 }
             }
