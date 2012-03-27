@@ -5147,7 +5147,7 @@ system = http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=cvx#</rdfs:c
 
     <owl:NamedIndividual rdf:about="http://loinc.org/codes/8310-5">
         <rdf:type rdf:resource="&spcode;VitalSign"/>
-        <dcterms:title>Body temperapture</dcterms:title>
+        <dcterms:title>Body temperature</dcterms:title>
     </owl:NamedIndividual>
     
 
