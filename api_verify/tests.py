@@ -389,8 +389,8 @@ class TestManifests(TestJSON):
                     self.fail ("All app manifests must have a 'description' string property")
                 if "id" not in keys or not isinstance(manifest["id"], basestring) :
                     self.fail ("All app manifests must have a 'id' string property")
-                if "mode" not in keys or manifest["mode"] not in ("ui","background") :
-                    self.fail ("'mode' property must be one of ('ui','background')")
+                if "mode" not in keys or manifest["mode"] not in ("ui","background","frame_ui") :
+                    self.fail ("'mode' property must be one of ('ui','background','frame_ui')")
     
     
 class TestPreferences(unittest.TestCase):
