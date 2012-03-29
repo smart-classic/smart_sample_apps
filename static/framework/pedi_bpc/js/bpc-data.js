@@ -221,8 +221,8 @@ if (!BPC) {
 
             // Sort the height data array
             height_data.sort(function (a,b) {
-                var x = a.date,
-                    y = b.date;
+                var x = parse_date(a.date).getTime(),
+                    y = parse_date(b.date).getTime();
                 
                 return ( (x<y) ? -1: ((x>y)?1:0));
             });
@@ -323,8 +323,8 @@ if (!BPC) {
         // Sort the patient data records by timestamp
         patient.data.sort(function (a,b) {
         
-            var x = a.timestamp,
-                y = b.timestamp;
+            var x = parse_date(a.timestamp).getTime(),
+                y = parse_date(b.timestamp).getTime();
                 
             return ( (x<y) ? -1: ((x>y)?1:0));
         });
