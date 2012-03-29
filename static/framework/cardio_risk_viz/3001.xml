@@ -19,7 +19,7 @@
   <sp:LabResult>
       <sp:labName>
         <sp:CodedValue>
-          <sp:code rdf:resource="http://loinc.org/codes/2093-3"/>
+          <sp:code rdf:resource="http://purl.bioontology.org/ontology/LNC/2093-3"/>
           <dcterms:title>Serum cholesterol</dcterms:title>
         </sp:CodedValue>
       </sp:labName>
@@ -66,7 +66,7 @@
   <sp:LabResult>
       <sp:labName>
         <sp:CodedValue>
-          <sp:code rdf:resource="http://loinc.org/codes/2085-9"/>
+          <sp:code rdf:resource="http://purl.bioontology.org/ontology/LNC/2085-9"/>
           <dcterms:title>Serum HDL Cholesterol</dcterms:title>
         </sp:CodedValue>
       </sp:labName>
@@ -113,7 +113,7 @@
   <sp:LabResult>
       <sp:labName>
         <sp:CodedValue>
-          <sp:code rdf:resource="http://loinc.org/codes/2089-1"/>
+          <sp:code rdf:resource="http://purl.bioontology.org/ontology/LNC/2089-1"/>
           <dcterms:title>Serum LDL Cholesterol</dcterms:title>
         </sp:CodedValue>
       </sp:labName>
@@ -162,7 +162,7 @@
   <sp:LabResult>
       <sp:labName>
         <sp:CodedValue>
-          <sp:code rdf:resource="http://loinc.org/codes/30522-7"/>
+          <sp:code rdf:resource="http://purl.bioontology.org/ontology/LNC/30522-7"/>
           <dcterms:title>C Reactive Protein (High Sensitivity)</dcterms:title>
         </sp:CodedValue>
       </sp:labName>

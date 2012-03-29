@@ -58,7 +58,7 @@ var get_labs = function() {
         labs.graph
             .where("?l rdf:type sp:LabResult")
             .where("?l sp:labName ?ln")
-            .where("?ln sp:code <http://loinc.org/codes/30522-7>")
+            .where("?ln sp:code <http://purl.bioontology.org/ontology/LNC/30522-7>")
             .where("?l sp:quantitativeResult ?qr") // predicate
             .where("?qr rdf:type sp:QuantitativeResult") // type
             .where("?qr sp:valueAndUnit ?vu")
@@ -68,7 +68,7 @@ var get_labs = function() {
         labs.graph
             .where("?l rdf:type sp:LabResult")
             .where("?l sp:labName ?ln")
-            .where("?ln sp:code <http://loinc.org/codes/2093-3>")
+            .where("?ln sp:code <http://purl.bioontology.org/ontology/LNC/2093-3>")
             .where("?l sp:quantitativeResult ?qr")
             .where("?qr rdf:type sp:QuantitativeResult")
             .where("?qr sp:valueAndUnit ?vu")
@@ -78,7 +78,7 @@ var get_labs = function() {
         labs.graph
             .where("?l rdf:type sp:LabResult")
             .where("?l sp:labName ?ln")
-            .where("?ln sp:code <http://loinc.org/codes/2085-9>")
+            .where("?ln sp:code <http://purl.bioontology.org/ontology/LNC/2085-9>")
             .where("?l sp:quantitativeResult ?qr")
             .where("?qr rdf:type sp:QuantitativeResult")
             .where("?qr sp:valueAndUnit ?vu")

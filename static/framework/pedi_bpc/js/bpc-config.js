@@ -210,7 +210,7 @@ if (!BPC) {
     BPC.getTermLabel = (function () {
     
         var prefixSmart = "http://smartplatforms.org/terms/codes/",
-            prefixSnomed = "http://www.ihtsdo.org/snomed-ct/concepts/",
+            prefixSnomed = "http://purl.bioontology.org/ontology/SNOMEDCT/",
             codes = [];
             
         codes = [

@@ -20,9 +20,9 @@
     },
     "http://smartplatforms.org/terms#LabResult": {
         "methods": ["GET"],
-        "codes": [ "http://loinc.org/codes/30522-7", 
-	  	           "http://loinc.org/codes/2093-3", 
-                   "http://loinc.org/codes/2085-9"]
+        "codes": [ "http://purl.bioontology.org/ontology/LNC/30522-7", 
+	  	           "http://purl.bioontology.org/ontology/LNC/2093-3", 
+                   "http://purl.bioontology.org/ontology/LNC/2085-9"]
     }
   }
 }
