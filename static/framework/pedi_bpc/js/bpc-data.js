@@ -182,7 +182,7 @@ if (!BPC) {
         $("#patient-info").text(String(patient));
 
         // Caculate the current age of the patient
-        age = years_apart(new Date().toISOString(), demographics.birthday);
+        age = years_apart(new XDate().toISOString(), demographics.birthday);
 
         // Display warning dialog if the patient has reached adult age
         if (age >= BPC.ADULT_AGE) {
