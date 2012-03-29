@@ -178,7 +178,7 @@ if (!BPC) {
             i;
 
         // Initialize the patient information area
-        patient = new BPC.Patient(demographics.name, parse_date(demographics.birthday).toString(s.dateFormat), demographics.gender);
+        patient = new BPC.Patient(demographics.name, demographics.birthday, demographics.gender);
         $("#patient-info").text(String(patient));
 
         // Caculate the current age of the patient
