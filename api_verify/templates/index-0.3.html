@@ -14,8 +14,8 @@
    <script src="/static/lib/jquery.event.hover.js"></script>
    <script src="/static/lib/jquery.mouseyDialog.js"></script>
 
-   <!-- AJAX wrappers -->
-   <script src="/static/js/load_data.js"></script>
+   <!-- JS functions for the app -->
+   <script src="/static/js/utils.js"></script>
 
 </head>
 <body>
@@ -36,54 +36,14 @@
     // When SMART connect is ready
     SMART.ready(function () {
     
-        // First, load the API calls list
+        // Load the API calls list and then initialize the app
         $.when(VERIFY.loadCalls("v0.3"))
-         .then(function () {
-            // Then construct and output a placeholder table for all the calls and icons
-            // with the icon defaulting to busy state. Finally, execute the api call tests.
-
-            // Local variables
-            var res,
-                smart_model,
-                call_py,
-                call_js,
-                call,
-                model,
-                SP = "http://smartplatforms.org/terms#";
-            
-            // Table header
-            res = "<table class='nicetable'>";
-            res += "<thead><tr><th>DataModel</th><th>JS</th><th>REST</th></tr></thead><tbody>";
-            
-            // Table body
-            for (model in VERIFY.calls) {
-                call_py = VERIFY.calls[model].call_py;
-                call_js = VERIFY.calls[model].call_js;
-                res += "<tr><td>"+model.replace(SP,"")+"</td><td align='center' id='"+call_js+"'><img src='/static/images/ajax-loader.gif'/></td><td align='center' id='"+call_py+"'><img src='/static/images/ajax-loader.gif'/></td></tr>";
-            }
-            
-            // Table footer
-            res += "</tbody></table>";
-            
-            // Output the table
-            $('#results').html(res);
-            
-            // With all the API calls
-            for (model in VERIFY.calls) {
-            
-                // Fetch the call name and the data model name
-                call = VERIFY.calls[model];
-                smart_model = model.replace(SP,"");
-                
-                // Run the api call tests on both the Python and JS interfaces
-                VERIFY.callREST(call.call_py);
-                VERIFY.callJS(call.call_js, smart_model);
-            }
-            
-         }, function () {
-            // Bring up an error message dialog upon failing to load the API calls list
-            alert("Could not load the needed data");
-         });
+         .then( VERIFY.initializeApp,
+                function () {
+                    // Bring up an error message dialog upon failing to load the API calls list
+                    alert("Could not load the needed data");
+                }
+              );
     });
 }());
 </script>

@@ -70,7 +70,10 @@ def testRDF (graph, model):
     # Generate the queries
     queries = query_builder.get_queries(model)
     
+    # Iterate over the queries
     for query in queries:
+    
+        # Get the query type and the query string
         type = query["type"]
         q = query["query"]
         
@@ -79,14 +82,16 @@ def testRDF (graph, model):
             # Run the query and report any failures
             results = graph.query(q)
             
-            # Stingify the results
+            # Stingify the results (limit to first 3)
+            # This is needed to work around a bug in rdflib where the non-matched results
+            # are still return as "none" objects
             myres = []
             for r in results:
-                if len (myres) < 3:
+                if len (myres) < 3 and r:
                     myres.append(str(r))
             
             # If we get a result (the queries are assumed to be negative),
-            # then we fail the test
+            # then we should build a failure message about the event
             if len(myres) > 0 :
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
@@ -98,18 +103,31 @@ def testRDF (graph, model):
             # Run the query and report any failures
             results = graph.query(q)
             
+            # Lists the first 3 unmatched results
             unmatched_results = []
 
+            # With each result
             for r in results:
+            
+                # Assume unmatched until a match is found
                 matched = False
                 
+                # Build a tuple from the fields in the result
+                res = (str(r[0]).lower(),str(r[1]).lower(),str(r[2]).lower(),str(r[3]).lower(),str(r[4]).lower())
+                
+                # With each constraint
                 for c in query["constraints"]:
-                    if (str(r[0]).lower(),str(r[1]).lower(),str(r[2]).lower(),str(r[3]).lower(),str(r[4]).lower()) == (c['uri'].lower(), c['code'].lower(), c['identifier'].lower(), c['title'].lower(), c['system'].lower()):
+                
+                    # Match the result against the constraint via case-insensitive matching
+                    con = (c['uri'].lower(), c['code'].lower(), c['identifier'].lower(), c['title'].lower(), c['system'].lower())
+                    if res == con:
                         matched = True
-                        
+                
+                # Add the unmatched result as a string to the list of unmatched results (limit is 3)
                 if not matched and len (unmatched_results) < 3:
-                    unmatched_results.append(" ".join((str(r[0]),str(r[1]),str(r[2]),str(r[3]),str(r[4]))))
+                    unmatched_results.append(" ".join(res))
             
+            # Finally, if we have any unmatched results, we should construct a failure message about them
             if len (unmatched_results) > 0:
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
@@ -126,9 +144,10 @@ def testRDF (graph, model):
             # Stingify the results
             myres = []
             for r in results:
-                myres.append(str(r))
+                if len (myres) < 3 and r:
+                    myres.append(str(r))
             
-            # Find all the duplicates in the result set
+            # Find the first 3 duplicates in the result set
             checked = []
             duplicates = []
             for s in myres:
@@ -137,14 +156,15 @@ def testRDF (graph, model):
                 elif len(duplicates) < 3:
                     duplicates.append (s)
                   
-            # Fail the test when we have duplicates
+            # Set up a failure message when we have duplicates
             if len(duplicates) > 0:
                 
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
                 message += "Got unexpected duplicates (first 3 shown) " + str(duplicates)
                 message += " in the results from the query:\n" + q + "\n"
-                    
+                 
+    # Return the failure message
     return message
   
 class TestDataModelStructure(unittest.TestCase):
@@ -161,6 +181,7 @@ class TestDataModelStructure(unittest.TestCase):
         '''Tests the data model structure with an automatically generated SPARQL queries based on the ontology'''
 
         if self.rdf:
+
             # Run the queries against the RDF and get the error message (if any)
             message = testRDF (self.rdf, currentModel)
 
@@ -192,7 +213,7 @@ class TestAllergies(TestRDF):
     def testStructure2(self):
         '''Tests the data model structure with automatically generated SPARQL queries based on the ontology
         
-        This model is a corner case, because it is allowed to confirm to either one of two patterns (Allergy and AllergyExclusion)'''
+        This model is a corner case, because it is allowed to confirm to either one of two patterns (Allergy or AllergyExclusion)'''
         if self.rdf:
             # Run the queries against the RDF and get the error messages (if any)
             message1 = testRDF (self.rdf, "Allergy")
