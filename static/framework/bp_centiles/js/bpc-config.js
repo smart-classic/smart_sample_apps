@@ -234,7 +234,7 @@ if (!BPC) {
             var i;
 
             if (!termCode) {
-                return "";
+                return;
             }
 
             for (i = 0; i < codes.length; i++) {
