@@ -232,7 +232,11 @@ if (!BPC) {
         
         return function (termCode) {
             var i;
-            
+
+            if (!termCode) {
+                return "";
+            }
+
             for (i = 0; i < codes.length; i++) {
                 if (termCode.toLowerCase() === codes[i].codeValue.toLowerCase()) {
                     return codes[i].codeTitle;
