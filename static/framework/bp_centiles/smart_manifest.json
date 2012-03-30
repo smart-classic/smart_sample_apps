@@ -1,17 +1,18 @@
 {
   "name" : "BP Centiles",
-  "description" : "Display pediatric blood pressures with calculated percentiles",
+  "description" : "Displays blood pressure data with calculated percentiles (for pediatric patients)",
   "author" : "Nikolai Schwertner",
-  "id" : "pedi_bpc@apps.smartplatforms.org",
+  "id" : "bp_centiles@apps.smartplatforms.org",
   "version" : ".1a",
 
   "mode" : "ui",
   "scope" : "record",
 
   "base_url" : "http://localhost:8001",
-  "index" :  "{base_url}/framework/pedi_bpc/index.html",
-  "icon" :  "{base_url}/framework/pedi_bpc/icon.png",
-  
+  "index" :  "{base_url}/framework/bp_centiles/index.html",
+  "icon" :  "{base_url}/framework/bp_centiles/icon.png",
+
+  "smart_version": "0.4",
   "requires" : {
        "http://smartplatforms.org/terms#Demographics": {
          "methods": ["GET"]
