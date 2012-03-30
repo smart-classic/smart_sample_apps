@@ -7,8 +7,16 @@
 * @returns {Number} A decimal number representing the years difference
 */
 var years_apart = function(d1, d2) {
-    // An approximatimation which doesn't take into account leap years
-    var res = (parse_date(d1).getTime()-parse_date(d2).getTime())/ (1000 * 60 * 60 * 24 * 365); 
+
+    // Parse the dates
+    d1 = parse_date(d1);
+    d2 = parse_date(d2);
+    
+    // The diffYears method in XDate returns the years difference as
+    // a decimal fraction
+    var res = d1.diffYears(d2) ; 
+    
+    // The difference should always be a positive number
     return Math.abs(res);
 };
 
