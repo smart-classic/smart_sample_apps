@@ -77,15 +77,19 @@ def generate_data_for_type(t, res):
         for c in sorted(t.object_properties + t.data_properties, key=lambda r: str(r.uri)):
             target = ""
             constraints = {}
+            values = {}
 
             if type(c) is rdf_ontology.OWL_ObjectProperty:
                 target = type_name_string(c.to_class)
                 further = filter(lambda x: isinstance(x.all_values_from, rdf_ontology.OWL_Restriction), c.restrictions)
                 for f in further:
                     p = str(f.all_values_from.on_property)
-                    pc = f.all_values_from.all_values_from
-                    pc = type_name_string(pc)
-                    constraints[p] = pc
+                    avf = f.all_values_from
+                    if avf.has_value:
+                        values[p] = avf.has_value
+                    else:
+                        pc = avf.all_values_from
+                        constraints[p] = type_name_string(pc)
 
             elif type(c) is rdf_ontology.OWL_DataProperty:
                 avf = filter(lambda x: x.all_values_from, c.restrictions)
@@ -95,8 +99,58 @@ def generate_data_for_type(t, res):
 
             prop = {"name":type_name_string(c), "type": target, "cardinality": c.cardinality_string}
             if len(constraints) > 0: prop["constraints"] = constraints
+            if len(values) > 0: prop["values"] = values
             res[name]["properties"].append(prop)
                 
+def generate_value_check_sparql (target, property, type, values, queries = None, targets = None):
+
+    if queries is None: queries = []
+    if targets is None: targets = []
+    
+    prefs = ["rdf"]
+    first = True
+    id = 0
+    
+    target_ns, target = normalize(target)
+    if target_ns not in prefs:
+        prefs.append (target_ns)
+    
+    property_ns, property = normalize(property)
+    if property_ns not in prefs:
+        prefs.append (property_ns)
+       
+    type_ns, type = normalize(type)
+    if type_ns not in prefs:
+        prefs.append (type_ns)
+    
+    out = """SELECT  ?p
+WHERE {
+   ?s rdf:type %s .
+   ?s %s ?p .
+   ?p rdf:type %s .
+""" % (target, property, type)
+    out2 = ""
+
+    for predicate in values:
+        nscode, rdfstr = normalize(predicate)
+        if nscode not in prefs:
+            prefs.append (nscode)
+        out += '   ?p %s ?u%s .\n' % (rdfstr, id)
+        if first:
+            first = False
+        else:
+            out2 += " || "
+        out2 += '?u%s != "%s"' % (id, values[predicate])
+        id += 1
+    
+    out += "   FILTER (%s) ." % out2
+    out = getPrefixDefs(prefs) + out + "\n}"
+    
+    queries.append({"type":"negative", "query": out})
+    targets.append(target)
+    
+    return queries, targets
+
 def generate_constrained_sparql (res, target, type, constraints, queries = None, targets = None):
 
     if queries is None: queries = []
@@ -165,6 +219,13 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
                         prefs1.append (nscode)
                     out2 += " " * (4 * 2)
                     out2 += " ".join((myid, rdfstr, "?s" + str(id), ".\n"))
+                    if "values" in p.keys():
+                        for predicate in p["values"]:
+                            nscode, rdfstr = normalize(predicate)
+                            if nscode not in prefs1:
+                                prefs1.append (nscode)
+                            out2 += " " * (4 * 2)
+                            out2 += " ".join(("?s" + str(id), rdfstr, '"' + p["values"][predicate] + '"', ".\n")) 
                     if first:
                         first = False
                     else:
@@ -175,9 +236,12 @@ def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = N
                         out2 += out3
                         if "constraints" in p.keys():
                             queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
+                            
                 elif p["name"] != str(NS['sp']['belongsTo']):
                     id += 1
                     id, out3, queries, targets = generate_sparql (res, str(p["type"]), id, 2, queries, targets)
+                    if "values" in p.keys():
+                        queries, targets = generate_value_check_sparql (target, str(p["name"]), str(p["type"]), p["values"], queries, targets)
                     if "constraints" in p.keys():
                         queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
                 if p["cardinality"] in ["1", "0 - 1"]:
