@@ -1,3 +1,5 @@
+import copy
+
 from settings import APP_PATH
 from smart_client.common import rdf_ontology
 from smart_client.common.util import NS, anyuri
@@ -102,14 +104,11 @@ def generate_data_for_type(t, res):
             if len(values) > 0: prop["values"] = values
             res[name]["properties"].append(prop)
                 
-def generate_value_check_sparql (target, property, type, values, queries = None, targets = None):
+def generate_value_check_sparql (target, property, type, values, queries = None):
 
     if queries is None: queries = []
-    if targets is None: targets = []
     
     prefs = ["rdf"]
-    first = True
-    id = 0
     
     target_ns, target = normalize(target)
     if target_ns not in prefs:
@@ -129,27 +128,20 @@ WHERE {
    ?s %s ?p .
    ?p rdf:type %s .
 """ % (target, property, type)
-    out2 = ""
+
 
     for predicate in values:
+        myprefs = copy.deepcopy(prefs)
+        out2 = out
         nscode, rdfstr = normalize(predicate)
         if nscode not in prefs:
-            prefs.append (nscode)
-        out += '   ?p %s ?u%s .\n' % (rdfstr, id)
-        if first:
-            first = False
-        else:
-            out2 += " || "
-        out2 += '?u%s != "%s"' % (id, values[predicate])
-        id += 1
+            myprefs.append (nscode)
+        out2 += '   ?p %s ?u .\n' % (rdfstr)
+        out2 += '   FILTER (?u != "%s")\n' % (values[predicate])
+        out2 = getPrefixDefs(prefs) + out2 + "}"
+        queries.append({"type": "negative", "query": out2, "description": "Units should be '%s'" % (values[predicate])})
     
-    out += "   FILTER (%s) ." % out2
-    out = getPrefixDefs(prefs) + out + "\n}"
-    
-    queries.append({"type":"negative", "query": out})
-    targets.append(target)
-    
-    return queries, targets
+    return queries
 
 def generate_constrained_sparql (res, target, type, constraints, queries = None, targets = None):
 
@@ -179,87 +171,96 @@ WHERE {
    FILTER (str(?code) != sp:Code) .
 }""" % (getPrefixDefs(prefs), rdfstr1, rdfstr2)
 
-        queries.append({"type":"select", "query": out, "constraints": res[constraint]["oneOf"]})
+        queries.append({
+            "type": "select",
+            "query": out,
+            "description": "Select query",
+            "constraints": res[constraint]["oneOf"]
+        })
         targets.append(target)
     
     return queries, targets
       
-def generate_sparql (res, target, id = 0, depth = 1, queries = None, targets = None):
+def generate_sparql (res, target, depth = 1, queries = None, targets = None):
 
     if queries is None: queries = []
     if targets is None: targets = []
 
     out = ""
-    myid = "?s" + str(id)
+    out_b = ""
+    myid = "?s"
 
     if str(target) not in (str(NS['rdfs']['Literal']), str(NS['xsd']['dateTime']), str(anyuri)):
         nscode, rdfstr = normalize(target)
         out += " " * (4 * depth)
         out += " ".join((myid, "rdf:type", rdfstr, ".\n"))
+        out_b += " " * (4 * depth)
+        out_b += " ".join(("?o", "rdf:type", rdfstr, ".\n"))
         if "properties" in res[target].keys() and target not in targets:
-            prefs1 = ["rdf"]
-            prefs2 = ["rdf"]
+            prefs = ["rdf"]
             targets.append(target)
             nscode, rdfstr = normalize(target)
-            if nscode not in prefs1:
-                prefs1.append (nscode)
-            if nscode not in prefs2:
-                prefs2.append (nscode)
+            if nscode not in prefs:
+                prefs.append (nscode)
             out1 = " " * 4
             out1 += " ".join((myid, "rdf:type", rdfstr, ".\n"))
-            out2 = out1 + " " * 4 + "OPTIONAL {\n"
-            out4 = " " * 4 + "FILTER ( "
-            out5 = ""
-            first = True
             for p in res[target]["properties"]:
                 if p["cardinality"] in ["1","1 - Many"]:
-                    id += 1
                     nscode, rdfstr = normalize(p["name"])
-                    if nscode not in prefs1:
-                        prefs1.append (nscode)
+                    myprefs = copy.deepcopy(prefs)
+                    if nscode not in myprefs:
+                        myprefs.append (nscode)
+                    out2 = out1 + " " * 4 + "OPTIONAL {\n"
                     out2 += " " * (4 * 2)
-                    out2 += " ".join((myid, rdfstr, "?s" + str(id), ".\n"))
+                    out2 += " ".join((myid, rdfstr, "?o .\n"))
                     if "values" in p.keys():
                         for predicate in p["values"]:
                             nscode, rdfstr = normalize(predicate)
-                            if nscode not in prefs1:
-                                prefs1.append (nscode)
+                            if nscode not in myprefs:
+                                myprefs.append (nscode)
                             out2 += " " * (4 * 2)
-                            out2 += " ".join(("?s" + str(id), rdfstr, '"' + p["values"][predicate] + '"', ".\n")) 
-                    if first:
-                        first = False
-                    else:
-                        out4 += " || "
-                    out4 += "!BOUND(?s" + str(id) + ")"
+                            out2 += " ".join(("?o", rdfstr, '"' + p["values"][predicate] + '"', ".\n")) 
+                    out4 = " " * 4 + "FILTER ( "
+                    out4 += "!BOUND(?o)"
                     if p["name"] != str(NS['sp']['belongsTo']):
-                        id, out3, queries, targets = generate_sparql (res, str(p["type"]), id, 2, queries, targets)
+                        out3, queries, targets = generate_sparql (res, str(p["type"]), 2, queries, targets)
                         out2 += out3
                         if "constraints" in p.keys():
                             queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
+                    
+                    out4 += " )"
+                    out2 += " " * 4 + "}\n" + out4
+                    #NS['rdf']['type']
+                    nscode, targ = normalize(target)
+                    nscode, prop = normalize(p["name"])
+                    queries.append({
+                       "type":"negative",
+                       "query": "%sSELECT %s\nWHERE {\n%s\n}" % (getPrefixDefs(myprefs), myid, out2),
+                       "description": "%s must have at least one %s property" % (targ, prop)
+                    })
                             
                 elif p["name"] != str(NS['sp']['belongsTo']):
-                    id += 1
-                    id, out3, queries, targets = generate_sparql (res, str(p["type"]), id, 2, queries, targets)
+                    out3, queries, targets = generate_sparql (res, str(p["type"]), 2, queries, targets)
                     if "values" in p.keys():
-                        queries, targets = generate_value_check_sparql (target, str(p["name"]), str(p["type"]), p["values"], queries, targets)
+                        queries = generate_value_check_sparql (target, str(p["name"]), str(p["type"]), p["values"], queries)
                     if "constraints" in p.keys():
                         queries, targets = generate_constrained_sparql (res, str(p["name"]), str(p["type"]), p["constraints"], queries, targets)
                 if p["cardinality"] in ["1", "0 - 1"]:
-                    nscode, rdfstr = normalize(p["name"])
-                    if nscode not in prefs2:
-                        prefs2.append (nscode)
-                    out5 += " " * 4
-                    out5 += "OPTIONAL {" + " ".join((myid, rdfstr, "?s" + str(id), "."))+ "}\n"
-            out4 += " )"
-            out2 += " " * 4 + "}\n" + out4
-            if not first:
-                #NS['rdf']['type']
-                queries.append({"type":"negative", "query": "%sSELECT %s\nWHERE {\n%s\n}" % (getPrefixDefs(prefs1), myid, out2)})
-                if len(out5) > 0:
+                    myprefs = copy.deepcopy (prefs)
+                    nscode, myprop = normalize(p["name"])
+                    if nscode not in myprefs:
+                        myprefs.append (nscode)
+                    out5 = " " * 4
+                    out5 += " ".join((myid, myprop, "?v ."))+ "\n"
                     out5 = out1 + out5
-                    queries.append({"type":"singular", "query": "%sSELECT %s\nWHERE {\n%s}" % (getPrefixDefs(prefs2), myid, out5)})
+                    nscode, rdfstr = normalize(target)
+                    queries.append({
+                        "type": "singular",
+                        "query": "%sSELECT %s\nWHERE {\n%s}" % (getPrefixDefs(myprefs), myid, out5),
+                        "description": "%s should have no more than one %s properties" % (rdfstr, myprop)
+                    })
                 
-    return id, out, queries, targets
+    return out_b, queries, targets
     
 main_types = []
 loaded = False
@@ -285,7 +286,7 @@ def get_queries (model):
     #import json
     #print json.dumps(res[str(NS['sp'][model])], sort_keys=True, indent=4)
 
-    a, b, queries, c = generate_sparql (res, str(NS['sp'][model]))#, 0, 1, [], [])
+    a, queries, b = generate_sparql (res, str(NS['sp'][model]))#, 0, 1, [], [])
     
     return queries
 

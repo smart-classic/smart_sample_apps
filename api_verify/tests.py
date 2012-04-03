@@ -76,6 +76,7 @@ def testRDF (graph, model):
         # Get the query type and the query string
         type = query["type"]
         q = query["query"]
+        desc = query["description"]
         
         # Negative queries should not return any results
         if type == "negative":
@@ -95,6 +96,7 @@ def testRDF (graph, model):
             if len(myres) > 0 :
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
+                message += "\nProblem description: " + desc + "\n"
                 message += "Got unexpected results (first 3 shown) " + str(myres)
                 message += " from the query:\n" + q + "\n"
         
@@ -131,6 +133,7 @@ def testRDF (graph, model):
             if len (unmatched_results) > 0:
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
+                message += "\nProblem description: " + desc + "\n"
                 message += "Got invalid results (first 3 shown) " + str(unmatched_results)
                 message += " from the query:\n" + q + "\n"
                     
@@ -161,6 +164,7 @@ def testRDF (graph, model):
                 
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
+                message += "\nProblem description: " + desc + "\n"
                 message += "Got unexpected duplicates (first 3 shown) " + str(duplicates)
                 message += " in the results from the query:\n" + q + "\n"
                  
@@ -331,14 +335,12 @@ class TestVitalSigns(TestRDF, TestDataModelStructure):
                 q = """
                     PREFIX dcterms:<http://purl.org/dc/terms/>
                     PREFIX sp:<http://smartplatforms.org/terms#>
-                    SELECT  ?systolic ?diastolic ?units1 ?units2
+                    SELECT  ?systolic ?diastolic
                     WHERE {
                        _:%s sp:systolic ?s .
                        ?s sp:value ?systolic .
-                       ?s sp:unit ?units1 .
                        _:%s sp:diastolic ?d .
                        ?d sp:value ?diastolic .
-                       ?d sp:unit ?units2 .
                     }
                     """ % (bloodPressure, bloodPressure)
             
@@ -349,8 +351,6 @@ class TestVitalSigns(TestRDF, TestDataModelStructure):
                     # Fetch the query results
                     systolic = str(t[0])
                     diastolic = str(t[1])
-                    units1 = str(t[2])
-                    units2 = str(t[3])
                     
                     # See if the systolic value is a numeric
                     try:
@@ -363,13 +363,6 @@ class TestVitalSigns(TestRDF, TestDataModelStructure):
                         float(diastolic)
                     except ValueError:
                         self.fail("Could not parse diastolic pressure value: " + diastolic)
-                    
-                    # Make sure that the units are mmHg
-                    if units1 != 'mm[Hg]':
-                        self.fail("Encountered bad units: " + units1)
-                        
-                    if units2 != 'mm[Hg]':
-                        self.fail("Encountered bad units: " + units2)
                 
 class TestOntology(TestRDF):
     '''Tests for the ontology'''
