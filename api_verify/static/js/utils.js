@@ -182,6 +182,7 @@ if (!VERIFY) {
         
         // Disable the validate button
         $('#validate').button('disable');
+        $('#custom_messages').hide();
         $('#spinner').show();
         
         // Auto-select the content type based on the model
