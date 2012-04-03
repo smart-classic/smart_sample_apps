@@ -208,7 +208,7 @@ if (!VERIFY) {
                 
                 // Default message
                 if (messages.length === 0) {
-                    console_text = "No problems detected";
+                    console_text = "No problems detected (model = '" + model + "')";
                 }
 
                 // Hack to convert the line endings to \r when IE is used
