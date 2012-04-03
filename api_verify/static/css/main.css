@@ -13,6 +13,10 @@ body {
     display:none;
 }
 
+#results {
+    margin-top: 10px;
+}
+
 table.nicetable {
     font-family: verdana,arial,sans-serif;
     font-size:11px;
@@ -39,5 +43,5 @@ table.nicetable td {
 	padding-right: 8px;
     border-style: solid;
     border-color: #a9c6c9;
-    background-color:#d4e3e5;
+    background-color:#E4ECED;
 }
