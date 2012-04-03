@@ -32,6 +32,7 @@ $def with (version)
     <ul>
         <li><a href="#tab_all">All</a></li>
         <li><a href="#tab_custom">Custom</a></li>
+        <li><a href="#tab_queries">Queries</a></li>
         <li><a href="#tab_help">Help</a></li>
     </ul>
     
@@ -76,6 +77,16 @@ $def with (version)
         </div>
     </div>
     
+    <div id="tab_queries">
+        <div>
+            <p>Select model:</p>
+            <p><select id="model2"><option></option></select></p>
+            <p id="queries_label">Queries description:</p>
+            <div id="spinner2"><p><img src='/static/images/ajax-loader.gif' /></p></div>
+            <div><p><textarea id="queries" class="console" cols="80" rows="30" readonly="readonly"></textarea></p></div>
+        </div>
+    </div>
+    
     <div id="tab_help">
         <div>
             About the API Verifier
@@ -98,6 +109,9 @@ $def with (version)
     \$('#validate').button();
     \$('#validate').button('disable');
     \$('#validate').click(VERIFY.validateCustomData);
+    
+    // Initialize the queries model selector
+    \$('#model2').change(VERIFY.updateQueries);
 
     // When SMART connect is ready
     SMART.ready(function () {

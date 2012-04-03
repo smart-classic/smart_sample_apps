@@ -26,7 +26,7 @@ from smart_client.generate_api import call_name
 from settings import APP_PATH
 
 # Import the testing framework utilities
-from tests import runTest, getMessages
+from tests import runTest, getMessages, describeQueries
 
 # Default configuration settings for the SMART client
 SMART_SERVER_OAUTH = {
@@ -48,7 +48,8 @@ urls = ('/smartapp/index.html', 'index04',
         '/smartapp/smart_manifest-0.4.json', 'manifest04',
         '/smartapp/smart_manifest-0.3.json', 'manifest03',
         '/smartapp/icon.png', 'icon',
-        '/smartapp/runtests', 'run_tests')
+        '/smartapp/runtests', 'run_tests',
+        '/smartapp/describe', 'describe_queries')
         
 class icon:
     '''Disseminator for the app icon'''
@@ -166,6 +167,17 @@ class run_tests:
 
         # Return the failure messages encoded as JSON
         return json.dumps(messages, sort_keys=True, indent=4)
+
+class describe_queries:
+    def GET(self):
+        '''Returns a string describing the test queries used in testing a data model'''
+        
+        # Get the input data from the HTTP header
+        model = web.input().model
+
+        # Return description
+        return describeQueries(model)
+        
         
 def get_call(target):
     '''Returns the name of the SMART python client convenience method

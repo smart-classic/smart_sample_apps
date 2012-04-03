@@ -491,3 +491,25 @@ def getShortMessage (message):
     
     s = message.split("AssertionError: ")
     return s[1]
+    
+    model = "VitalSigns"
+out = ""
+
+def describeQueries (model):
+    '''Returns a string describing the test queries used in testing a data model'''
+
+    out = ""
+
+    for q in query_builder.get_queries(model):
+
+        out += "Test:\n   %s\n" % q["description"]
+        if q["type"] == "negative":
+            out += "Fail condition:\n   Query returns a non-empty result set\n"
+        elif q["type"] == "singular":
+            out += "Fail condition:\n   Query result set contains duplicates\n"
+        elif q["type"] == "select":
+            out += "Fail condition:\n   The results of the query don't match any of the patterns:\n"
+            out += json.dumps(q["constraints"], sort_keys=True, indent=4).replace("[\n","").replace("]","")
+        out += "Query:\n   " + "\n   ".join(q["query"].split("\n")) + "\n\n"
+        
+    return out

@@ -174,7 +174,7 @@ WHERE {
         queries.append({
             "type": "select",
             "query": out,
-            "description": "Select query",
+            "description": "Coded values should match constraints",
             "constraints": res[constraint]["oneOf"]
         })
         targets.append(target)
@@ -282,9 +282,6 @@ def get_queries (model):
             generate_data_for_type(t, res)
             
         loaded = True
-        
-    #import json
-    #print json.dumps(res[str(NS['sp'][model])], sort_keys=True, indent=4)
 
     a, queries, b = generate_sparql (res, str(NS['sp'][model]))#, 0, 1, [], [])
     

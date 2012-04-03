@@ -228,6 +228,45 @@ if (!VERIFY) {
         );
     };
     
+    /**
+    * Updates the queries description based on the model selected
+    */
+    VERIFY.updateQueries = function () {
+        var model = $('#model2').val();
+        
+        if (model.length == 0) {
+            $('#queries_label').hide();
+            $('#spinner2').hide();
+            $('#queries').hide();
+            return;
+        }
+        
+        
+        $('#queries').hide();
+        $('#queries_label').show();
+        $('#spinner2').show();
+        
+        // Ajax call to the server
+        $.get(
+            "describe",
+            {'model': model},
+            function (responseText) {
+                // Hack to convert the line endings to \r when IE is used
+                if (VERIFY.getInternetExplorerVersion() > 0) {
+                    responseText = responseText.replace(/\n/g, "\r");
+                }
+                
+                // Hide the spinner
+                $('#spinner2').hide();
+
+                // Refresh the console and show it if there is any text to display in it
+                $('#queries').text(responseText);
+                $('#queries').show();
+            },
+            "html"
+        );
+    };
+    
     // Initialize the console text storage
     VERIFY.console_text = "";
     
@@ -340,6 +379,10 @@ if (!VERIFY) {
         // Output the table and options
         $('#results').html(table_str);
         $('#model').html(options_str);
+        
+        // Output the queries descriptor model options
+        options_str = "<option></option>\n" + options_str;
+        $('#model2').html(options_str);
         
         // Enable the validate button
         $('#validate').button('enable');
