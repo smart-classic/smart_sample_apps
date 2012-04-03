@@ -210,7 +210,7 @@ class TestJSON(unittest.TestCase):
          
 class TestAllergies(TestRDF):
     '''Tests for Allergies data model'''
-    def testStructure2(self):
+    def testStructureAllergy(self):
         '''Tests the data model structure with automatically generated SPARQL queries based on the ontology
         
         This model is a corner case, because it is allowed to confirm to either one of two patterns (Allergy or AllergyExclusion)'''

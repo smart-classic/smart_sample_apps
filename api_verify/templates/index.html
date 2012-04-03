@@ -1,3 +1,4 @@
+$def with (version)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,7 @@
    <link rel="stylesheet" href="/static/themes/custom-theme/jquery-ui-1.8.18.custom.css" type="text/css" media="screen" />
 
    <!-- SMART Connect client (includes jQuery)-->
-   <script src="/static/smart/smart-api-client.js"></script>
+   <script src="/static/smart-${version}/smart-api-client.js"></script>
    
    <!-- Standard JS libraries -->
    <script src="/static/lib/jquery-1.6.2.js"></script>
@@ -24,7 +25,7 @@
 </head>
 <body>
 
-<h2>API Verifier (SMART v0.4)</h2>
+<h2>API Verifier (SMART v${version})</h2>
 
 <div id="tabs">
 
@@ -46,7 +47,29 @@
             <p>Select model:</p>
             <p><select id="model"></select></p>
             <p>Enter data:</p>
-            <p><textarea id="rdf_input" cols="80" rows="16"></textarea></p>
+            <p><textarea id="rdf_input" cols="80" rows="16">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;rdf:RDF
+  xmlns:spcode=&quot;http://smartplatforms.org/terms/codes/&quot;
+  xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+  xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;
+  xmlns:sp=&quot;http://smartplatforms.org/terms#&quot;
+&gt;
+  &lt;sp:AllergyExclusion&gt;
+    &lt;sp:allergyExclusionName&gt;
+      &lt;sp:CodedValue&gt;
+        &lt;sp:code rdf:resource=&quot;http://purl.bioontology.org/ontology/SNOMEDCT/160244002&quot;/&gt;
+        &lt;dcterms:title&gt;no known allergies&lt;/dcterms:title&gt;
+      &lt;/sp:CodedValue&gt;
+    &lt;/sp:allergyExclusionName&gt;
+    &lt;sp:belongsTo rdf:resource=&quot;patient&quot;/&gt;
+  &lt;/sp:AllergyExclusion&gt;
+  &lt;sp:Code rdf:about=&quot;http://purl.bioontology.org/ontology/SNOMEDCT/160244002&quot;&gt;
+    &lt;rdf:type rdf:resource=&quot;http://smartplatforms.org/terms/codes/AllergyExclusion&quot;/&gt;
+    &lt;sp:system&gt;http://purl.bioontology.org/ontology/SNOMEDCT/&lt;/sp:system&gt;
+    &lt;dcterms:title&gt;no known allergies&lt;/dcterms:title&gt;
+    &lt;dcterms:identifier&gt;160244002&lt;/dcterms:identifier&gt;
+  &lt;/sp:Code&gt;
+&lt;/rdf:RDF&gt;</textarea></p>
             <p><input id="validate" type="button" value="Validate" /></p>
             <div id="spinner"><p><img src='/static/images/ajax-loader.gif' /></p></div>
             <div><p><textarea id="custom_messages" class="console" cols="80" rows="8" readonly="readonly"></textarea></p></div>
@@ -66,21 +89,21 @@
     "use strict";
     
     // Initialize the jQuert UI tabs object
-    $('#tabs').tabs();
+    \$('#tabs').tabs();
 
     // Ajax calls should not be cached
-    $.ajaxSetup({cache: false});
+    \$.ajaxSetup({cache: false});
     
     // Initialize the validate button (custom validator)
-    $('#validate').button();
-    $('#validate').button('disable');
-    $('#validate').click(VERIFY.validateCustomData);
+    \$('#validate').button();
+    \$('#validate').button('disable');
+    \$('#validate').click(VERIFY.validateCustomData);
 
     // When SMART connect is ready
     SMART.ready(function () {
     
         // Load the API calls list and then initialize the app
-        $.when(VERIFY.loadCalls())
+        \$.when(VERIFY.loadCalls("${version}"))
          .then( VERIFY.initializeApp,
                 function () {
                     // Bring up an error message dialog upon failing to load the API calls list

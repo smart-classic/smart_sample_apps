@@ -80,17 +80,15 @@ class manifest03:
 class index04:
     '''Disseminator for the SMART v0.4 tester index page'''
     def GET(self):
-        f = open(APP_PATH + '/templates/index-0.4.html', 'r')
-        html = f.read()
-        f.close()
+        template_html = web.template.frender(APP_PATH + '/templates/index.html')
+        html = template_html("0.4")
         return html
         
 class index03:
     '''Disseminator for the SMART v0.3 tester index page'''
     def GET(self):
-        f = open(APP_PATH + '/templates/index-0.3.html', 'r')
-        html = f.read()
-        f.close()
+        template_html = web.template.frender(APP_PATH + '/templates/index.html')
+        html = template_html("0.3")
         return html
 
 class get_calls:

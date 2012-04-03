@@ -37,7 +37,7 @@ if (!VERIFY) {
                 
                 // Copy the API calls as appropriate into temp
                 for (target in data) {
-                    if (version === "v0.3") {
+                    if (version === "0.3") {
                         // For version 0.3 of SMART copy only the specific calls below
                         if (target === SP + "Allergy" ||
                             target === SP + "Demographics" ||
