@@ -5,10 +5,14 @@
    <!-- Stylesheets -->
    <link rel="stylesheet" href="/static/css/main.css" type="text/css" media="screen" />
    <link rel="stylesheet" href="/static/css/mousey-dialog.css" type="text/css" media="screen" />
-   <link rel="stylesheet" href="/static/css/jash.css" type="text/css" media="screen" />
+   <link rel="stylesheet" href="/static/themes/redmond/jquery.ui.all.css" type="text/css" media="screen" />
 
    <!-- SMART Connect client (includes jQuery)-->
    <script src="/static/smart/smart-api-client.js"></script>
+   
+   <!-- Standard JS libraries -->
+   <script src="/static/lib/jquery-1.6.2.js"></script>
+   <script src="/static/lib/jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
    
    <!-- jQuery plugins -->
    <script src="/static/lib/jquery.event.hover.js"></script>
@@ -22,16 +26,55 @@
 
 <h2>API Verifier (SMART v0.4)</h2>
 
-<div id="results"></div>
+<div id="tabs">
 
-<div><p><textarea id="JashInput" cols="80" rows="8"></textarea></p></div>
+    <ul>
+        <li><a href="#tab_all">All</a></li>
+        <li><a href="#tab_custom">Custom</a></li>
+        <li><a href="#tab_help">Help</a></li>
+    </ul>
+    
+    <div id="tab_all">
+        <div>
+            <div id="results"></div>
+            <div><p><textarea id="all_messages" cols="80" rows="8" readonly="readonly"></textarea></p></div>
+        </div>
+    </div>
+    
+    <div id="tab_custom">
+        <div>
+            <p>Select model:</p>
+            <p><select id="model"></select></p>
+            <p>Enter data:</p>
+            <p><textarea id="rdf_input" cols="80" rows="8"></textarea></p>
+            <p><input id="validate" type="button" value="Validate" /></p>
+            <div id="spinner"><p><img src='/static/images/ajax-loader.gif' /></p></div>
+            <div><p><textarea id="custom_messages" class="console" cols="80" rows="8" readonly="readonly"></textarea></p></div>
+        </div>
+    </div>
+    
+    <div id="tab_help">
+        <div>
+            About the API Verifier
+        </div>
+    </div>
+    
+</div>
 
 <script>
 (function () {
     "use strict";
+    
+    // Initialize the jQuert UI tabs object
+    $('#tabs').tabs();
 
     // Ajax calls should not be cached
     $.ajaxSetup({cache: false});
+    
+    // Initialize the validate button (custom validator)
+    $('#validate').button();
+    $('#validate').button('disable');
+    $('#validate').click(VERIFY.validateCustomData);
 
     // When SMART connect is ready
     SMART.ready(function () {
@@ -47,5 +90,6 @@
     });
 }());
 </script>
+
 </body>
 </html>

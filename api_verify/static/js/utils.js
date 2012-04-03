@@ -171,6 +171,62 @@ if (!VERIFY) {
         );
     };
     
+    /**
+    * Validates custom SMART data and displays the result
+    */
+    VERIFY.validateCustomData = function () {
+    
+        var contentType,
+            model = $('#model').val(),
+            data = $('#rdf_input').val();
+        
+        // Disable the validate button
+        $('#validate').button('disable');
+        $('#spinner').show();
+        
+        // Auto-select the content type based on the model
+        if (model === "AppManifest" || model === "Container") {
+            contentType = "application/json";
+        } else if (model === "UserPreferences") {
+            contentType = "text/plain";
+        } else {
+            contentType = "application/rdf+xml";
+        }
+        
+        // Ajax call to the server
+        $.post(
+            "runtests",
+            {'model': model, 'data': data, 'content_type': contentType},
+            function (responseText) {
+                var messages = JSON.parse (responseText),
+                    console_text = "";
+                
+                for (var i = 0; i < messages.length; i++) {
+                    console_text += messages[i] + "\n";
+                }
+                
+                // Default message
+                if (messages.length === 0) {
+                    console_text = "No problems detected";
+                }
+
+                // Hack to convert the line endings to \r when IE is used
+                if (VERIFY.getInternetExplorerVersion() > 0) {
+                    console_text = console_text.replace(/\n/g, "\r");
+                }
+
+                // Refresh the console and show it if there is any text to display in it
+                $('#custom_messages').text(console_text);
+                $('#custom_messages').show();
+                
+                // Reset the validate button state
+                $('#spinner').hide();
+                $('#validate').button('enable');
+            },
+            "html"
+        );
+    };
+    
     // Initialize the console text storage
     VERIFY.console_text = "";
     
@@ -226,8 +282,8 @@ if (!VERIFY) {
 
         // Refresh the console and show it if there is any text to display in it
         if (VERIFY.console_text.length > 0) {
-            $('#JashInput').text(VERIFY.console_text);
-            $('#JashInput').show();
+            $('#all_messages').text(VERIFY.console_text);
+            $('#all_messages').show();
         }
     };
 
@@ -262,24 +318,30 @@ if (!VERIFY) {
             call_js,
             call,
             model,
+            options_str = "",
             SP = "http://smartplatforms.org/terms#";
         
         // Table header
         table_str = "<table class='nicetable'>";
         table_str += "<thead><tr><th>DataModel</th><th>JS</th><th>REST</th></tr></thead><tbody>";
         
-        // Table body
+        // Table body (and options string)
         for (model in VERIFY.calls) {
             call_py = VERIFY.calls[model].call_py;
             call_js = VERIFY.calls[model].call_js;
             table_str += "<tr><td>"+model.replace(SP,"")+"</td><td align='center' id='"+call_js+"'><img src='/static/images/ajax-loader.gif'/></td><td align='center' id='"+call_py+"'><img src='/static/images/ajax-loader.gif'/></td></tr>";
+            options_str += "<option>" + model.replace(SP,"") + "</option>\n";
         }
         
         // Table footer
         table_str += "</tbody></table>";
         
-        // Output the table
+        // Output the table and options
         $('#results').html(table_str);
+        $('#model').html(options_str);
+        
+        // Enable the validate button
+        $('#validate').button('enable');
         
         // With all the API calls
         for (model in VERIFY.calls) {
