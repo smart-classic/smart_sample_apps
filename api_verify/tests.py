@@ -4,7 +4,7 @@
 # Revision history:
 #     2012-02-24 Initial release
 
-# Import some general modules
+# Standard module imports
 import os
 import unittest
 import string
@@ -100,8 +100,8 @@ def testRDF (graph, model):
                 message += "Got unexpected results (first 3 shown) " + str(myres)
                 message += " from the query:\n" + q + "\n"
         
-        # The results of select queries should match one of the constraints       
-        elif type == "select":       
+        # The results of match queries should match one of the constraints       
+        elif type == "match":       
             # Run the query and report any failures
             results = graph.query(q)
             
@@ -139,7 +139,7 @@ def testRDF (graph, model):
                     
         # Singular queries test for violations of "no more than 1" restrictions.
         # There should be no duplicates in the result set
-        elif type == "singular":
+        elif type == "noduplicates":
             
             # Run the query and report any failures
             results = graph.query(q)
@@ -505,9 +505,9 @@ def describeQueries (model):
         out += "Test:\n   %s\n" % q["description"]
         if q["type"] == "negative":
             out += "Fail condition:\n   Query returns a non-empty result set\n"
-        elif q["type"] == "singular":
+        elif q["type"] == "noduplicates":
             out += "Fail condition:\n   Query result set contains duplicates\n"
-        elif q["type"] == "select":
+        elif q["type"] == "match":
             out += "Fail condition:\n   The results of the query don't match any of the patterns:\n"
             out += json.dumps(q["constraints"], sort_keys=True, indent=4).replace("[\n","").replace("]","")
         out += "Query:\n   " + "\n   ".join(q["query"].split("\n")) + "\n\n"
