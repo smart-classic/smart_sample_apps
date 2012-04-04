@@ -96,9 +96,10 @@ def testRDF (graph, model):
             if len(myres) > 0 :
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
-                message += "\nProblem description: " + desc + "\n"
-                message += "Got unexpected results (first 3 shown) " + str(myres)
-                message += " from the query:\n" + q + "\n"
+                message += "\nUnexpected results (first 3 shown):\n"
+                for m in myres:
+                    message += "   " + m + "\n"
+                message += describeQuery(query) + "\n"
         
         # The results of match queries should match one of the constraints       
         elif type == "match":       
@@ -133,9 +134,10 @@ def testRDF (graph, model):
             if len (unmatched_results) > 0:
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
-                message += "\nProblem description: " + desc + "\n"
-                message += "Got invalid results (first 3 shown) " + str(unmatched_results)
-                message += " from the query:\n" + q + "\n"
+                message += "\nInvalid results (first 3 shown):\n"
+                for m in unmatched_results:
+                    message += "   " + m + "\n"
+                message += describeQuery(query) + "\n"
                     
         # Singular queries test for violations of "no more than 1" restrictions.
         # There should be no duplicates in the result set
@@ -164,9 +166,10 @@ def testRDF (graph, model):
                 
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
-                message += "\nProblem description: " + desc + "\n"
-                message += "Got unexpected duplicates (first 3 shown) " + str(duplicates)
-                message += " in the results from the query:\n" + q + "\n"
+                message += "\nUnexpected duplicates (first 3 shown):\n"
+                for m in duplicates:
+                    message += "   " + m + "\n"
+                message += describeQuery(query) + "\n"
                  
     # Return the failure message
     return message
@@ -492,24 +495,28 @@ def getShortMessage (message):
     s = message.split("AssertionError: ")
     return s[1]
     
-    model = "VitalSigns"
-out = ""
+def describeQuery (q):
+    '''Returns a string describing a test query'''
+
+    out = "Test:\n   %s\n" % q["description"]
+    if q["type"] == "negative":
+        out += "Fail condition:\n   Query returns a non-empty result set\n"
+    elif q["type"] == "noduplicates":
+        out += "Fail condition:\n   Query result set contains duplicates\n"
+    elif q["type"] == "match":
+        out += "Fail condition:\n   The results of the query don't match any of the patterns:\n"
+        out += json.dumps(q["constraints"], sort_keys=True, indent=4).replace("[\n","").replace("]","")
+    out += "Query:\n   " + "\n   ".join(q["query"].split("\n"))
+        
+    return out
+
 
 def describeQueries (model):
     '''Returns a string describing the test queries used in testing a data model'''
 
-    out = ""
+    out = "-" * 80 + "\n"
 
     for q in query_builder.get_queries(model):
-
-        out += "Test:\n   %s\n" % q["description"]
-        if q["type"] == "negative":
-            out += "Fail condition:\n   Query returns a non-empty result set\n"
-        elif q["type"] == "noduplicates":
-            out += "Fail condition:\n   Query result set contains duplicates\n"
-        elif q["type"] == "match":
-            out += "Fail condition:\n   The results of the query don't match any of the patterns:\n"
-            out += json.dumps(q["constraints"], sort_keys=True, indent=4).replace("[\n","").replace("]","")
-        out += "Query:\n   " + "\n   ".join(q["query"].split("\n")) + "\n\n"
+        out += describeQuery(q) + "\n" + "-" * 80 + "\n"
         
     return out
