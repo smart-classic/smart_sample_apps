@@ -405,7 +405,7 @@ class TestManifests(TestJSON):
                 self.fail ("The JSON payload should be a list:")
         
             for manifest in self.json:
-                if type(self.json) != dict:
+                if type(manifest) != dict:
                     self.fail ("The manifest definition should be a dictionary")
                 keys = manifest.keys()
                 if "name" not in keys or not isinstance(manifest["name"], basestring) :
