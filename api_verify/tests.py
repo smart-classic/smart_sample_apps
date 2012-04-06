@@ -381,6 +381,9 @@ class TestCapabilities(TestJSON):
         
             d = self.json
             
+            if type(d) != dict:
+                self.fail ("The JSON payload should be a dictionary")
+            
             for k in d.keys():
                 if "methods" not in d[k].keys():
                     self.fail ("Missing methods for API '%s'" % k)
@@ -398,7 +401,12 @@ class TestManifests(TestJSON):
         
         if self.json:
         
+            if type(self.json) != list:
+                self.fail ("The JSON payload should be a list:")
+        
             for manifest in self.json:
+                if type(self.json) != dict:
+                    self.fail ("The manifest definition should be a dictionary")
                 keys = manifest.keys()
                 if "name" not in keys or not isinstance(manifest["name"], basestring) :
                     self.fail ("All app manifests must have a 'name' string property")
