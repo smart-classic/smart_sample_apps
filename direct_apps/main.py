@@ -50,7 +50,7 @@ SMART_SERVER_PARAMS = {
 }
 
 # URL mappings for web.py
-urls = ('/smartapp/index.html', 'index_apps',
+urls = ('/smartapp/index.html', 'index_msg',
         '/smartapp/index-msg.html', 'index_msg',
         '/smartapp/index-apps.html', 'index_apps',
         '/smartapp/getapps', 'get_apps',

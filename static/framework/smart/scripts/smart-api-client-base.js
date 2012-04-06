@@ -182,8 +182,16 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
             url: "/records/search",
             method: "GET"
 	    }, function(r) {
-            var rdf = sc.process_rdf(r.contentType, r.body);
-            dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+            var rdf,
+                json;
+            try {
+                rdf = _this.process_rdf(r.contentType, r.body);
+            } catch(err) {
+                try {
+                    json = JSON.parse(r.body);
+                } catch(err) {}
+            }
+            dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf, json: json});
 	    }, function(r) {
             dfd.reject({status: r.status, message: r.message});
 	    });
@@ -215,8 +223,16 @@ SMART_CONNECT_CLIENT.prototype.NOTES_get = function(callback_success, callback_e
 		url : "/records/" + _this.record.id + "/notes/",
 		data : {}
 	}, function(r) {
-		var rdf = _this.process_rdf(r.contentType, r.body);
-		dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});
+        var rdf,
+            json;
+        try {
+            rdf = _this.process_rdf(r.contentType, r.body);
+        } catch(err) {
+            try {
+                json = JSON.parse(r.body);
+            } catch(err) {}
+        }
+        dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf, json: json});
 	}, function(r) {
         dfd.reject({status: r.status, message: r.message});
     });
