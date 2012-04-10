@@ -128,15 +128,21 @@ def testRDF (graph, model):
                 
                 # Add the unmatched result as a string to the list of unmatched results (limit is 3)
                 if not matched and len (unmatched_results) < 3:
-                    unmatched_results.append(" ".join(res))
+                    out = "    {\n"
+                    out += '        "code": ' + str(r[1]) + ',\n'
+                    out += '        "identifier": ' + str(r[2]) + ',\n'
+                    out += '        "system": ' + str(r[4]) + ',\n'
+                    out += '        "title": ' + str(r[3]) + ',\n'
+                    out += '        "uri": ' + str(r[0]) + ',\n'
+                    out += "    }"
+                    unmatched_results.append(out)
             
             # Finally, if we have any unmatched results, we should construct a failure message about them
             if len (unmatched_results) > 0:
                 if len(message) == 0:
                     message = "RDF structure check failed\n"
                 message += "\nInvalid results (first 3 shown):\n"
-                for m in unmatched_results:
-                    message += "   " + m + "\n"
+                message += ",\n".join(unmatched_results) + "\n"
                 message += describeQuery(query) + "\n"
                     
         # Singular queries test for violations of "no more than 1" restrictions.
@@ -269,12 +275,11 @@ class TestVitalSigns(TestRDF, TestDataModelStructure):
             q = """
                 PREFIX dcterms:<http://purl.org/dc/terms/>
                 PREFIX sp:<http://smartplatforms.org/terms#>
-                SELECT  ?vital_date ?height ?units
+                SELECT  ?vital_date ?height
                 WHERE {
                    ?v dcterms:date ?vital_date .
                    ?v sp:height ?h .
                    ?h sp:value ?height .
-                   ?h sp:unit ?units .
                 }
                 """
             
@@ -285,8 +290,7 @@ class TestVitalSigns(TestRDF, TestDataModelStructure):
                 # Store the data in local variables
                 vital_date = str(d[0])
                 height = str(d[1])
-                units = str(d[2])
-                
+
                 # Test the date parsing
                 try:
                     dateutil.parser.parse(vital_date)
@@ -298,11 +302,7 @@ class TestVitalSigns(TestRDF, TestDataModelStructure):
                     float(height)
                 except ValueError:
                     self.fail("Could not parse height value: " + height)
-                
-                # The units should be meters
-                if units != 'm':
-                    self.fail("Encountered bad units: " + units)
-                    
+
     def testBloodPressure(self):
         '''Tests the blood pressure component of the vital signs RDF'''
         
@@ -514,7 +514,8 @@ def describeQuery (q):
     elif q["type"] == "match":
         out += "Fail condition:\n   The results of the query don't match any of the patterns:\n"
         out += json.dumps(q["constraints"], sort_keys=True, indent=4).replace("[\n","").replace("]","")
-    out += "Query:\n   " + "\n   ".join(q["query"].split("\n"))
+    out += "Query:\n   " + "\n   ".join(q["query"].split("\n")) + "\n"
+    out += "For further information:\n   %s" % q["doc"]
         
     return out
 

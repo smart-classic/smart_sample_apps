@@ -44,45 +44,15 @@ urls = ('/smartapp/index.html', 'index04',
         '/smartapp/index-0.3.html', 'index03',
         '/smartapp/getcalls', 'get_calls',
         '/smartapp/apicall', 'api_call',
-        '/smartapp/smart_manifest.json', 'manifest04',
-        '/smartapp/smart_manifest-0.4.json', 'manifest04',
-        '/smartapp/smart_manifest-0.3.json', 'manifest03',
-        '/smartapp/icon.png', 'icon',
         '/smartapp/runtests', 'run_tests',
         '/smartapp/describe', 'describe_queries')
-        
-class icon:
-    '''Disseminator for the app icon'''
-    def GET(self):
-        f = open(APP_PATH + '/smartapp/icon.png', 'r')
-        data = f.read()
-        f.close()
-        web.header('Content-Type', 'image/png')
-        return data
-
-class manifest04:
-    '''Disseminator for the SMART v0.4 manifest'''
-    def GET(self):
-        f = open(APP_PATH + '/smartapp/smart_manifest-0.4.json', 'r')
-        json = f.read()
-        f.close()
-        web.header('Content-Type', 'application/json')
-        return json
-        
-class manifest03:
-    '''Disseminator for the SMART v0.3 manifest'''
-    def GET(self):
-        f = open(APP_PATH + '/smartapp/smart_manifest-0.3.json', 'r')
-        json = f.read()
-        f.close()
-        web.header('Content-Type', 'application/json')
-        return json
 
 class index04:
     '''Disseminator for the SMART v0.4 tester index page'''
     def GET(self):
         template_html = web.template.frender(APP_PATH + '/templates/index.html')
         html = template_html("0.4")
+        web.header('Content-Type', 'text/html')
         return html
         
 class index03:
@@ -90,6 +60,7 @@ class index03:
     def GET(self):
         template_html = web.template.frender(APP_PATH + '/templates/index.html')
         html = template_html("0.3")
+        web.header('Content-Type', 'text/html')
         return html
 
 class get_calls:

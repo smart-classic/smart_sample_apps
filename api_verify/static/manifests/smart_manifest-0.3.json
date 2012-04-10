@@ -4,12 +4,12 @@
   "author" : "Nikolai Schwertner, Children's Hospital Boston",
   "id" : "api-verifier@apps.smartplatforms.org",
   "version" : ".1a",
-  "smart_version": "0.4",
+  "smart_version": "0.3",
 
   "mode" : "ui",
   "scope" : "record",
 
   "base_url" : "http://apiverifier.smartplatforms.org",
-  "index" :  "{base_url}/smartapp/index-0.4.html",
-  "icon" :  "{base_url}/smartapp/icon.png"
+  "index" :  "{base_url}/smartapp/index-0.3.html",
+  "icon" :  "{base_url}/static/images/icon.png"
 }

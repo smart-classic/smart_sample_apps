@@ -2,3 +2,6 @@
 
 # The absolute path of the SMART API Verifier deployment
 APP_PATH = '/path/to/smart/api_verify'
+
+# The base for the data model documentation
+DOC_BASE = 'http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_Data_Model#'

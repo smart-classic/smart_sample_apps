@@ -8,25 +8,58 @@
 import copy
 
 # Import the app settings
-from settings import APP_PATH
+from settings import APP_PATH, DOC_BASE
 
 # Imports from the SMART client
 from smart_client.common import rdf_ontology
 from smart_client.common.util import NS, anyuri
 
-def split_uri(t):
-    '''Splits a URI after the last # or / symbol and return the two parts'''
-    try: 
-        res = str(t).rsplit("#",1)
-        res[0] += "#"
-        return res[0], res[1]
+# Import rdflib modules
+import rdflib
+from rdflib import Graph
+from rdflib.namespace import NamespaceManager
+
+# --- begin hack --- #
+# Because the split_uri function in rdflib 3.2.0 does not support
+# the full range of URIs that we need to split (for example, it will choke
+# on "http://example.com/1234"), we have to wrap it in custom code.
+# If the library splitter returns a result, fine. If not, then we
+# try to produce a result via our custom split code (NJS 2012-04-09)
+original_function = rdflib.namespace.split_uri
+
+def _wrapper(uri):    
+    try:
+        return original_function(unicode(uri))
     except:
         try: 
-            res = str(t).rsplit("/",1)
-            res[0] += "/"
+            res = unicode(uri).rsplit("#",1)
+            res[0] += "#"
             return res[0], res[1]
-        except: 
-            return ""
+        except:
+            try: 
+                res = unicode(uri).rsplit("/",1)
+                res[0] += "/"
+                return (unicode(res[0]), unicode(res[1]))
+            except: 
+                 raise Exception("Can't split '%s'" % uri)
+             
+rdflib.namespace.split_uri = _wrapper
+
+def split_uri (uri):
+    return rdflib.namespace.split_uri(uri)
+# --- end hack --- #
+
+# Query builder state variables
+main_types = []
+data = {}
+loaded = False
+
+# Initialize the namespace manager object
+namespace_manager = NamespaceManager(Graph())
+
+# Import the namespaces into the namespace manager
+for ns in NS.keys():
+    namespace_manager.bind(ns, NS[ns], override=False)
           
 def normalize (uri, prefixes = None):
     '''Converts a URI into a 'namespace:term' string or <uri> entity 
@@ -47,10 +80,13 @@ def normalize (uri, prefixes = None):
         prefixes.append(namespace)
         
     # Return the 'namespace:term' string or the <url> (if no prefix matches)
-    if namespace:
-        return ":".join((namespace, term))
-    else:
-        return "<%s>" % uri
+    return namespace_manager.normalizeUri(unicode(uri))
+    
+def type_name_string(t):
+    '''Returns the standard name of a data model'''
+    if t.name:
+        return str(t.name)
+    return str(split_uri(str(t.uri))[1])
 
 def get_prefix_defs (prefixes):
     '''Returns the prefix definition part of a SPARQL query bases on a list of prefixes'''
@@ -72,6 +108,8 @@ def generate_data_for_type(t, res):
     # and initialize the corresponding key in res
     name = str(t.uri)
     res[name] = {}
+    
+    res[name]["name"] = type_name_string(t)
 
     if t.equivalent_classes: # For types with class equivalencies
         
@@ -144,13 +182,13 @@ def generate_data_for_type(t, res):
             # Append the properties definition
             res[name]["properties"].append(prop)
                 
-def generate_value_query (model, property, type, values, queries):
+def generate_value_query (data, model, property, type, values, queries):
     
     # Intialize the common prefixes list
     prefixes = ["rdf"]
     
     # Normalize the data URIs
-    model = normalize(model, prefixes)
+    model_norm = normalize(model, prefixes)
     property = normalize(property, prefixes)
     type = normalize(type, prefixes)
     
@@ -160,7 +198,7 @@ WHERE {
    ?s rdf:type %s .
    ?s %s ?p .
    ?p rdf:type %s .
-""" % (model, property, type)
+""" % (model_norm, property, type)
 
     # Now let's build a query for each predicate in the values
     for predicate in values:
@@ -174,10 +212,15 @@ WHERE {
         q += '   ?p %s ?u .\n' % (obj)
         q += '   FILTER (?u != "%s")\n}' % (values[predicate])
         
+        # Documentation URL
+        doc_model = data[model]["name"].replace(" ", "_")
+        doc_url = DOC_BASE + doc_model + "_RDF"
+        
         # Add the query to the list of generated queries
         queries.append({
             "type": "negative",
             "query": q,
+            "doc": doc_url,
             "description": "%s %s %s value should be '%s'" % (property, type, obj, values[predicate])
         })
 
@@ -211,12 +254,18 @@ WHERE {
    ?uri sp:system ?system .
    FILTER (str(?code) != sp:Code) .
 }""" % (get_prefix_defs(prefixes), model, type)
-
+    
+    # Documentation URL
+    constraint_type = str(split_uri(constraint)[1])
+    doc_model = data[constraint]["name"].replace(" ", "_")
+    doc_url = DOC_BASE + doc_model + "_code_RDF"
+    
     # Add the query to the list of queries
     queries.append({
         "type": "match",
         "query": q,
-        "description": "Coded values should match constraints",
+        "description": "The code(s) should be (a) valid " + constraint_type,
+        "doc": doc_url,
         "constraints": data[constraint]["oneOf"]
     })
       
@@ -249,6 +298,10 @@ def generate_queries (data, queries, type_url, visited_types = None):
         # SPARQL fragment common to many select and 
         select_header = " " * INDENT
         select_header += " ".join((SUBJECT, "rdf:type", type, ".\n"))
+        
+        # Documentation URL
+        doc_model = data[type_url]["name"].replace(" ", "_")
+        doc_url = DOC_BASE + doc_model + "_RDF"
         
         # For all the properties of the type
         for p in data[type_url]["properties"]:
@@ -305,6 +358,7 @@ def generate_queries (data, queries, type_url, visited_types = None):
                 queries.append({
                    "type":"negative",
                    "query": q,
+                   "doc": doc_url,
                    "description": "%s must have at least one %s property" % (type, predicate)
                 })
              
@@ -316,7 +370,7 @@ def generate_queries (data, queries, type_url, visited_types = None):
                 
                 # If there are values constraints, generate value queries
                 if "values" in p.keys():
-                    generate_value_query (type_url, p_name, p_type, p["values"], queries)
+                    generate_value_query (data, type_url, p_name, p_type, p["values"], queries)
                     
                 # If there are equivalent class constraints for types that have not been processed
                 if "constraints" in p.keys() and p_name not in visited_types:
@@ -340,6 +394,7 @@ def generate_queries (data, queries, type_url, visited_types = None):
                 queries.append({
                     "type": "noduplicates",
                     "query": q,
+                    "doc": doc_url,
                     "description": "%s should have no more than one %s properties" % (type, predicate)
                 })
            
@@ -347,11 +402,6 @@ def generate_queries (data, queries, type_url, visited_types = None):
     out = " " * (INDENT * 2)
     out += " ".join((OBJECT, "rdf:type", type, ".\n"))
     return out
-    
-# Query builder state variables
-main_types = []
-data = {}
-loaded = False
 
 def get_queries (model):
     '''Returns a list of test sparql queries for the given model'''
