@@ -45,3 +45,8 @@ table.nicetable td {
     border-color: #a9c6c9;
     background-color:#E4ECED;
 }
+
+table.legend {
+    margin-left: 50px;
+    margin-right: 50px;
+}
