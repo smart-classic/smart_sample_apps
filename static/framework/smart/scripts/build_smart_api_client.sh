@@ -8,9 +8,9 @@ python build.py > smart-temp.js
 
 echo "(function(window){" >> smart-api-client.js
 
-cat jquery.min.js  jquery.rdfquery.core-1.0.js  >> smart-api-client.js
-echo "\nvar $ = window.jQuery.noConflict(true), jQuery = $;" >> smart-api-client.js
-cat jschannel.js smart-temp.js  >> smart-api-client.js
+cat jquery.min.js >> smart-api-client.js
+echo "var $ = window.jQuery.noConflict(true), jQuery = $;" >> smart-api-client.js
+cat jquery.rdfquery.core-1.0.js jschannel.js smart-temp.js  >> smart-api-client.js
 
 echo "})(window);" >> smart-api-client.js
 
