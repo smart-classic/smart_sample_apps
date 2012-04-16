@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <!--
+    Diabetes Mellitus Monograph SMART App
+    =====================================
+    
+    From the SMART Project <http://www.smartplatforms.org/>
+    
+    Arjun Sanyal <arjun.sanyal@childrens.harvard.edu> - Design and Implementation
+  -->
+  <head>
+    <title>Diabetes Mellitus Monograph</title>
+      <style>
+        #errors {
+          font-size: 16px;
+          font-family: Calibri, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+          color: #555;
+        }
+      </style>
+      <script src='../smart/scripts/smart-api-client.js'></script>
+      <script>
+        var pt = {};
+
+        var ALLERGIES_get = function() {
+          return $.Deferred(function(dfd){
+              SMART.ALLERGIES_get().success(function(allergies) {
+                debugger
+                // $.extend(pt, demos.graph
+                //     .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+                //     .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
+                //     .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                //     .where('?r v:n ?n')
+                //     .where('?n rdf:type v:Name')
+                //     .where('?n v:given-name ?givenName')
+                //     .where('?n v:family-name ?familyName')
+                //     .where('?r foaf:gender ?gender')
+                //     .where('?r v:bday ?birthday')
+                //     .get(0))
+                
+                // allergies list (with last update)
+                
+                dfd.resolve();
+              });
+            }).promise();
+        };
+
+        var DEMOGRAPHICS_get = function() {
+          return $.Deferred(function(dfd){
+            SMART.DEMOGRAPHICS_get().success(function(demos) {
+              $.extend(pt, demos.graph
+                  .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+                  .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
+                  .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                  .where('?r v:n ?n')
+                  .where('?n rdf:type v:Name')
+                  .where('?n v:given-name ?givenName')
+                  .where('?n v:family-name ?familyName')
+                  .where('?r foaf:gender ?gender')
+                  .where('?r v:bday ?birthday')
+                  .get(0))
+              dfd.resolve();
+            });
+          }).promise();
+        };
+
+        var LAB_RESULTS_get = function() {
+          return $.Deferred(function(dfd){
+            SMART.DEMOGRAPHICS_get().success(function(demos) {
+              debugger
+              // SMART.LAB_RESULTS_get(function(labs){
+              //     labs.where("?l rdf:type sp:LabResult")
+              //         .where("?l sp:labName ?ln")
+              //         .where("?ln sp:code <http://loinc.org/codes/30522-7>")
+              //         .where("?l sp:quantitativeResult ?qr") // predicate
+              //         .where("?qr rdf:type sp:QuantitativeResult") // type
+              //         .where("?qr sp:valueAndUnit ?vu")
+              //         .where("?vu sp:value ?v")
+              //         .each(function(){ p.hsCRP.value = Number(this.v.value); })
+              //           
+              
+              // sort labs for graphing
+
+              // BP labs (with goal e.g. < 130/80)
+              // LDL labs (with goal < 100)
+              // A1C labs (goal < 7)
+
+              // last known values for 
+
+              // Ur tp
+              // &micro; alb/cre
+              // SGOT
+              // Chol
+              // Tri
+              // HDL
+              // LDL
+              // BUN
+              // Cre
+              // Glu
+              // A1C
+              
+              dfd.resolve();
+            });
+          }).promise();
+        };
+
+        var MEDS_get = function() {
+          return $.Deferred(function(dfd){
+            SMART.DEMOGRAPHICS_get().success(function(demos) {
+              debugger
+              // meds list (with last update)
+              dfd.resolve();
+            });
+          }).promise();
+        };
+
+        var NOTES_get = function() {
+          return $.Deferred(function(dfd){
+            SMART.DEMOGRAPHICS_get().success(function(demos) {
+              debugger
+              dfd.resolve();
+            });
+          }).promise();
+        };
+
+        var PROBLEMS_get = function() {
+          return $.Deferred(function(dfd){
+            SMART.DEMOGRAPHICS_get().success(function(demos) {
+              debugger
+              dfd.resolve();
+            });
+          }).promise();
+        };
+
+        var VITAL_SIGNS_get = function() {
+          return $.Deferred(function(dfd){
+            SMART.DEMOGRAPHICS_get().success(function(demos) {
+              debugger
+              // weight
+              // height
+              // BP (last)
+              
+              dfd.resolve();
+            });
+          }).promise();
+        };
+            
+            
+            // Other Info
+            // last foot exam (??)
+            // last eye exam (??)
+            // smoking status (?? demo)
+            // aspirin (asa / nsaid intolerance -- allergy?)
+            // ACE / ARB (on ace/arb)
+            // last pneumovax date (Immunization?)
+            // last flu shot (IImmunization?)
+            
+            // major CV comorbidities (with last updated)
+            // other problems
+            
+            // reminders
+
+
+        SMART.ready(function() {
+            $.when(ALLERGIES_get()
+                 , DEMOGRAPHICS_get()
+                 , LAB_RESULTS_get()
+                 , MEDS_get()
+                 , NOTES_get()
+                 , PROBLEMS_get()
+                 , VITAL_SIGNS_get()
+                 ).then(function() {
+              debugger
+              console.log(pt.birthday.value
+                        , pt.familyName.value
+                        , pt.gender.value
+                        , pt.givenName.value
+                        )
+            });
+        });
+
+    </script>
+  </head>
+  <body style="margin: none;">
+    <div id='errors' style='display: none; width: 600px; margin: 100px auto;'></div>
+    <div id='holder' style='display: none; height: 1200px; width: 780px;'>
+    </div>
+    <div id='log'></div>
+  </body>
+</html>
