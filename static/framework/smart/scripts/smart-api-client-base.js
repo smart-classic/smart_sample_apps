@@ -12,6 +12,7 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
     var channel = null;
 
     this.is_ready = false;
+    this.jQuery = this.$ = jQuery;
 
     this.ready = function(callback) {
 	this.ready_callback = callback;
