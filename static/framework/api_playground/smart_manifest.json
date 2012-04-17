@@ -8,7 +8,6 @@
   "mode" : "ui",	
   "scope": "record",
 
-  "base_url" : "http://localhost:8001",
-  "icon" :  "{base_url}/framework/api_playground/icon.png",
-  "index" :  "{base_url}/framework/api_playground/index.html"
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/api_playground/icon.png",
+  "index":  "http://sample-apps.smartplatforms.org/framework/api_playground/index.html"
 }

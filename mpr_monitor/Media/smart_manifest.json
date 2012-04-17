@@ -8,9 +8,9 @@
   "mode" : "ui",
   "scope" : "record",
 
-  "base_url" : "http://mpr-monitor.smartplatforms.org",
-  "index" :  "{base_url}/smartapp/index.html",
-  "icon" :  "{base_url}/smartapp/icon.png",
+  "base_url" : "",
+  "index" :  "http://mpr-monitor.smartplatforms.org/smartapp/index.html",
+  "icon" :  "http://mpr-monitor.smartplatforms.org/smartapp/icon.png",
   
   "requires" : {
        "http://smartplatforms.org/terms#Demographics": {

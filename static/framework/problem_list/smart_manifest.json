@@ -9,9 +9,8 @@
   "mode" : "ui",
   "scope": "record",
 
-  "base_url" : "http://localhost:8001",
-  "index" : "{base_url}/framework/problem_list/index.html",	
-  "icon" : "{base_url}/framework/problem_list/icon.png",
+  "index" : "http://sample-apps.smartplatforms.org/framework/problem_list/index.html",	
+  "icon" : "http://sample-apps.smartplatforms.org/framework/problem_list/icon.png",
   
   "requires" : {
        "http://smartplatforms.org/terms#Problem": {

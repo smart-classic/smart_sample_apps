@@ -5,9 +5,7 @@
   "id" : "smart-connector@apps.smartplatforms.org",
   "version" : ".1a",
 
-  "base_url" : "http://localhost:8001/surescripts_connector/",
-
   "mode" : "background",
   "scope": "container",
-  "icon" :  "{base_url}/icon.png"
+  "icon" :  "http://sample-apps.smartplatforms.org/icon.png"
 }

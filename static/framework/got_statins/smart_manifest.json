@@ -8,9 +8,8 @@
   "mode" : "ui",
   "scope": "record",
 
-  "base_url" : "http://localhost:8001",
-  "index" : "{base_url}/framework/got_statins/index.html",
-  "icon" :  "{base_url}/framework/got_statins/icon.png",
+  "index" : "http://sample-apps.smartplatforms.org/framework/got_statins/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/got_statins/icon.png",
   
   "requires" : {
        "http://smartplatforms.org/terms#Medication": {

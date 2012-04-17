@@ -11,8 +11,8 @@
   "mode" : "ui",
   "scope": "record",
 
-  "index" :              "{base_url}/framework/cardio_risk_viz/index.html",
-  "icon" :  "{base_url}/framework/cardio_risk_viz/icon.png",
+  "index" : "http://sample-apps.smartplatforms.org/framework/cardio_risk_viz/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/cardio_risk_viz/icon.png",
 
   "requires": {
     "http://smartplatforms.org/terms#Demographics": {

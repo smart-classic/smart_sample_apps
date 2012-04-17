@@ -5,10 +5,9 @@
   "id" : "frame-ui-example@apps.smartplatforms.org",
   "version" : ".1a",
 
-  "base_url" : "http://localhost:8001",
   "mode" : "frame_ui",
   "scope": "record",
   
-  "index" :  "{base_url}/framework/frame_ui_example/index.html",
-  "icon" :  "{base_url}/framework/frame_ui_example/icon.png"
+  "index" :  "http://sample-apps.smartplatforms.org/framework/frame_ui_example/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/frame_ui_example/icon.png"
 }
