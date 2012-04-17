@@ -8,9 +8,8 @@
   "mode" : "ui",
   "scope" : "record",
 
-  "base_url" : "http://directapps.smartplatforms.org",
-  "index" :  "{base_url}/smartapp/index-msg.html",
-  "icon" :  "{base_url}/smartapp/icon-msg.png",
+  "index" :  "http://directapps.smartplatforms.org/smartapp/index-msg.html",
+  "icon" :  "http://directapps.smartplatforms.org/smartapp/icon-msg.png",
   
   "requires" : {
        "http://smartplatforms.org/terms#Demographics": {

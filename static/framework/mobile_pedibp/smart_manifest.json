@@ -8,14 +8,9 @@
   "optimalBrowserEnvironments": ["mobile"],
   "supportedBrowserEnvironments": ["mobile"],
 
-  "base_url" : "http://localhost:8001",
   "mode" : "ui",
-  "activities" : {
-    "main" :              "{base_url}/framework/mobile_pedibp/bootstrap.html",
-    "view_medications" :  "{base_url}/framework/mobile_pedibp/bootstrap.html"
-  },
-	
-  "web_hooks" : { },
+  "scope" : "record",
 
-  "icon" :  "{base_url}/framework/mobile_pedibp/icon.png"
+  "index" : "http://sample-apps.smartplatforms.org/framework/mobile_pedibp/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/mobile_pedibp/icon.png"
 }
