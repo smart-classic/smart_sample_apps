@@ -62,7 +62,7 @@ web.py, rdflib, rdflibextras, pyparsing, and dateutil.
 
 To get started on ubuntu, you can
   sudo apt-get install python-webpy python-setuptools python-pyparsing python-dateutil
-  sudo easy_install -U "rdflib>=3.0.0" rdfextras dateutil
+  sudo easy_install -U "rdflib>=3.0.0" rdfextras
 
 Now, obtain the app code:
   git clone https://github.com/chb/smart_sample_apps
