@@ -6,6 +6,7 @@
 
 # Standard module imports
 import copy
+import threading
 
 # Import the app settings
 from settings import APP_PATH, DOC_BASE
@@ -18,6 +19,9 @@ from smart_client.common.util import NS, anyuri
 import rdflib
 from rdflib import Graph
 from rdflib.namespace import NamespaceManager
+
+# Global threading synchronization object
+lock = threading.Lock()
 
 # --- begin hack --- #
 # Because the split_uri function in rdflib 3.2.0 does not support
@@ -48,6 +52,18 @@ rdflib.namespace.split_uri = _wrapper
 def split_uri (uri):
     return rdflib.namespace.split_uri(uri)
 # --- end hack --- #
+
+# Query builder state variables
+main_types = []
+data = {}
+loaded = False
+
+# Initialize the namespace manager object
+namespace_manager = NamespaceManager(Graph())
+
+# Import the namespaces into the namespace manager
+for ns in NS.keys():
+    namespace_manager.bind(ns, NS[ns], override=False)
           
 def normalize (uri, prefixes = None):
     '''Converts a URI into a 'namespace:term' string or <uri> entity 
@@ -394,32 +410,34 @@ def generate_queries (data, queries, type_url, visited_types = None):
 def get_queries (model):
     '''Returns a list of test sparql queries for the given model'''
     
-    queries = []
-    generate_queries (data, queries, str(NS['sp'][model]))
-    return queries
-
-
-# Query builder state variables
-main_types = []
-data = {}
-loaded = False
-
-# Initialize the namespace manager object
-namespace_manager = NamespaceManager(Graph())
-
-# Import the namespaces into the namespace manager
-for ns in NS.keys():
-    namespace_manager.bind(ns, NS[ns], override=False)
+    global loaded
     
-# Parse the ontology when necessary
-if not rdf_ontology.api_types:
-    rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+    # The lock assures that any concurrent threads are synchronized so that
+    # they don't interfere with each other through the global variables
+    with lock:
+    
+        queries = []
+        
+        # Load the data from the ontology as needed
+        if not loaded:
+        
+            # Parse the ontology when necessary
+            if not rdf_ontology.api_types:
+                rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+        
+            # Build a list of data types that need to be added to the data definitions
+            for t in rdf_ontology.api_types:
+                if t.is_statement or len(t.calls) > 0 or rdf_ontology.sp.Component in [x.uri for x in t.parents]:
+                    main_types.append(t)
+            
+            # Build the data definitions object with each data type
+            for t in main_types: 
+                generate_data_for_type(t, data)
+               
+            # The data is now loaded
+            loaded = True
 
-# Build a list of data types that need to be added to the data definitions
-for t in rdf_ontology.api_types:
-    if t.is_statement or len(t.calls) > 0 or rdf_ontology.sp.Component in [x.uri for x in t.parents]:
-        main_types.append(t)
-
-# Build the data definitions object with each data type
-for t in main_types: 
-    generate_data_for_type(t, data)
+        # Generate the queries
+        generate_queries (data, queries, str(NS['sp'][model]))
+        
+        return queries
