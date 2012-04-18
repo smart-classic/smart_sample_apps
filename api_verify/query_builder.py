@@ -6,6 +6,7 @@
 
 # Standard module imports
 import copy
+import threading
 
 # Import the app settings
 from settings import APP_PATH, DOC_BASE
@@ -18,6 +19,9 @@ from smart_client.common.util import NS, anyuri
 import rdflib
 from rdflib import Graph
 from rdflib.namespace import NamespaceManager
+
+# Global threading synchronization object
+lock = threading.Lock()
 
 # --- begin hack --- #
 # Because the split_uri function in rdflib 3.2.0 does not support
@@ -408,28 +412,32 @@ def get_queries (model):
     
     global loaded
     
-    queries = []
+    # The lock assures that any concurrent threads are synchronized so that
+    # they don't interfere with each other through the global variables
+    with lock:
     
-    # Load the data from the ontology as needed
-    if not loaded:
-    
-        # Parse the ontology when necessary
-        if not rdf_ontology.api_types:
-            rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
-    
-        # Build a list of data types that need to be added to the data definitions
-        for t in rdf_ontology.api_types:
-            if t.is_statement or len(t.calls) > 0 or rdf_ontology.sp.Component in [x.uri for x in t.parents]:
-                main_types.append(t)
+        queries = []
         
-        # Build the data definitions object with each data type
-        for t in main_types: 
-            generate_data_for_type(t, data)
-           
-        # The data is now loaded
-        loaded = True
+        # Load the data from the ontology as needed
+        if not loaded:
+        
+            # Parse the ontology when necessary
+            if not rdf_ontology.api_types:
+                rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+        
+            # Build a list of data types that need to be added to the data definitions
+            for t in rdf_ontology.api_types:
+                if t.is_statement or len(t.calls) > 0 or rdf_ontology.sp.Component in [x.uri for x in t.parents]:
+                    main_types.append(t)
+            
+            # Build the data definitions object with each data type
+            for t in main_types: 
+                generate_data_for_type(t, data)
+               
+            # The data is now loaded
+            loaded = True
 
-    # Generate the queries
-    generate_queries (data, queries, str(NS['sp'][model]))
-    
-    return queries
+        # Generate the queries
+        generate_queries (data, queries, str(NS['sp'][model]))
+        
+        return queries
