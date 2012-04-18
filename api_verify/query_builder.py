@@ -410,11 +410,11 @@ def generate_queries (data, queries, type_url, visited_types = None):
 def get_queries (model):
     '''Returns a list of test sparql queries for the given model'''
     
-    global loaded
-    
     # The lock assures that any concurrent threads are synchronized so that
     # they don't interfere with each other through the global variables
     with lock:
+    
+        global loaded
     
         queries = []
         
