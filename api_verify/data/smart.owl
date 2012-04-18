@@ -1743,45 +1743,29 @@ For instance, below are two allergies: first, an allergy to the entire class of 
 
     <!-- http://smartplatforms.org/terms#Container -->
 
-    <owl:Class rdf:about="http://smartplatforms.org/terms#Container">
+    <owl:Class rdf:about="http://smartplatforms.org/terms#Capabilities">
         <rdfs:label>Capabilities</rdfs:label>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://smartplatforms.org/terms#capability"/>
-                <owl:allValuesFrom rdf:resource="&rdfs;Literal"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <api:example rdf:datatype="&rdf;XMLLiteral">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;rdf:RDF xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
-         xmlns:sp=&quot;http://smartplatforms.org/terms#&quot;&gt;
-  &lt;rdf:Description rdf:about=&quot;http://localhost:7000&quot;&gt;
-    &lt;rdf:type rdf:resource=&quot;http://smartplatforms.org/terms#Container&quot;/&gt;
-    &lt;sp:capability rdf:resource=&quot;http://smartplatforms.org/capability/SNOMED/lookup&quot;/&gt;
-    &lt;sp:capability rdf:resource=&quot;http://smartplatforms.org/capability/SPL/lookup&quot;/&gt;
-    &lt;sp:capability rdf:resource=&quot;http://smartplatforms.org/capability/Pillbox/lookup&quot;/&gt;
-  &lt;/rdf:Description&gt;
-&lt;/rdf:RDF&gt;
+	<api:example rdf:datatype="&rdf;XMLLiteral">
+{
+    &quot;http://smartplatforms.org/terms#Demographics&quot;: {
+        &quot;methods&quot;: [
+            &quot;GET&quot;
+        ]
+    }, 
+    &quot;http://smartplatforms.org/terms#Encounter&quot;: {
+        &quot;methods&quot;: [
+            &quot;GET&quot;
+        ]
+    }, 
+    &quot;http://smartplatforms.org/terms#VitalSigns&quot;: {
+        &quot;methods&quot;: [
+            &quot;GET&quot;
+        ]
+    }
+}
 </api:example>
-        <rdfs:comment>A SMART Container&#39;s capabilities are reported as an RDF graph. So far only three capabilities have been defined, as shown in the example below. These are:
-
-    * lookup in SNOMED
-    * lookup in FDA Structured Product Labels
-    * lookup in NLM Pillbox.</rdfs:comment>
+<rdfs:comment>A SMART Container exposes a set of capabilities as a JSON structure.  The example below shows the capabilities of a container that provides Demographics, Encounters, and Vital Signs only.</rdfs:comment>
     </owl:Class>
-    <owl:Axiom>
-        <rdfs:label>capability</rdfs:label>
-        <rdfs:comment>Capability URI (e.g. http://smartplatforms.org/capability/Pillbox/lookup)</rdfs:comment>
-        <owl:annotatedSource rdf:resource="http://smartplatforms.org/terms#Container"/>
-        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
-        <owl:annotatedTarget>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://smartplatforms.org/terms#capability"/>
-                <owl:allValuesFrom rdf:resource="&rdfs;Literal"/>
-            </owl:Restriction>
-        </owl:annotatedTarget>
-    </owl:Axiom>
-    
-
 
     <!-- http://smartplatforms.org/terms#DataType -->
 
@@ -5770,7 +5754,7 @@ system = http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=cvx#</rdfs:c
         <api:category>container_items</api:category>
         <rdfs:comment>Get capabilities for a container</rdfs:comment>
         <api:method>GET</api:method>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Container"/>
+        <api:target rdf:resource="http://smartplatforms.org/terms#Capabilities"/>
     </owl:NamedIndividual>
     
 
