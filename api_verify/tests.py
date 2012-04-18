@@ -442,7 +442,7 @@ class TestPreferences(unittest.TestCase):
 tests = {'Allergy': TestAllergies,
          'AppManifest': TestManifests,
          'Demographics': TestDemographics,
-         'Container': TestCapabilities,
+         'Capabilities': TestCapabilities,
          'Encounter': TestEncounters,
          'Fulfillment': TestFulfillments,
          'Immunization': TestImmunizations,
