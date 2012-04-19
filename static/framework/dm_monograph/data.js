@@ -118,10 +118,9 @@ SMART.ready(function() {
          // , PROBLEMS_get()
          // , VITAL_SIGNS_get()
          ).then(function() {
-           
-           // console.log('SMART?', SMART)
-           // console.log('SMART.record.full_name?', SMART.record.full_name)
-           // console.log('SMART.record.id?', SMART.record.id)
+           // some misc data
+           pt.full_name = SMART.record.full_name;
+           pt.record_id = SMART.record.id;
            
       // console.log(pt.birthday.value
       //           , pt.familyName.value
