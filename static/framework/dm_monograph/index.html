@@ -3,10 +3,13 @@
   <!--
     Diabetes Mellitus Monograph SMART App
     =====================================
-    
+
     From the SMART Project <http://www.smartplatforms.org/>
-    
     Arjun Sanyal <arjun.sanyal@childrens.harvard.edu> - Design and Implementation
+
+    Todo:
+    - fill in requires in manifest file
+
   -->
   <head>
     <title>Diabetes Mellitus Monograph</title>
@@ -18,162 +21,109 @@
         }
       </style>
       <script src='../smart/scripts/smart-api-client.js'></script>
+      <script src='./jquery-1.7.2.min.js'></script>
       <script>
         var pt = {};
 
-        var ALLERGIES_get = function() {
-          return $.Deferred(function(dfd){
-              SMART.ALLERGIES_get().success(function(allergies) {
-                debugger
-                // $.extend(pt, demos.graph
-                //     .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-                //     .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
-                //     .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-                //     .where('?r v:n ?n')
-                //     .where('?n rdf:type v:Name')
-                //     .where('?n v:given-name ?givenName')
-                //     .where('?n v:family-name ?familyName')
-                //     .where('?r foaf:gender ?gender')
-                //     .where('?r v:bday ?birthday')
-                //     .get(0))
-                
-                // allergies list (with last update)
-                
-                dfd.resolve();
-              });
-            }).promise();
+        var error_callback = function(e){
+          alert('error '+e.status+' see console.')
+          console.log(e.status);
+          console.log(e.message.contentType);
+          console.log(e.message.data);
+          dfd.reject(e.message);
         };
 
-        var DEMOGRAPHICS_get = function() {
+        // Data API Calls (in alphabetical order)
+        var ALLERGIES_get = function(){
           return $.Deferred(function(dfd){
-            SMART.DEMOGRAPHICS_get().success(function(demos) {
-              $.extend(pt, demos.graph
-                  .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-                  .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
+            SMART.ALLERGIES_get()
+              .success(function(allergies){
+                var no_known_allergies_p = allergies.graph
+                  .prefix('dcterms','http://purl.org/dc/terms/')
+                  .prefix('sp','http://smartplatforms.org/terms#')
                   .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-                  .where('?r v:n ?n')
-                  .where('?n rdf:type v:Name')
-                  .where('?n v:given-name ?givenName')
-                  .where('?n v:family-name ?familyName')
-                  .where('?r foaf:gender ?gender')
-                  .where('?r v:bday ?birthday')
-                  .get(0))
-              dfd.resolve();
-            });
+                  .where('?allergy_id rdf:type sp:AllergyExclusion')
+                  .where('?allergy_id sp:allergyExclusionName ?bn')
+                  .where('?bn sp:code ?snomed_code_uri')
+                  .where('?snomed_code_uri dcterms:identifier "1602440022"')
+                  .length
+
+                $.extend(pt, {'no_known_allergies_p': no_known_allergies_p})
+
+                dfd.resolve();
+              })
+              .error(error_callback);
           }).promise();
         };
 
-        var LAB_RESULTS_get = function() {
+        var DEMOGRAPHICS_get = function(){
           return $.Deferred(function(dfd){
-            SMART.DEMOGRAPHICS_get().success(function(demos) {
-              debugger
-              // SMART.LAB_RESULTS_get(function(labs){
-              //     labs.where("?l rdf:type sp:LabResult")
-              //         .where("?l sp:labName ?ln")
-              //         .where("?ln sp:code <http://loinc.org/codes/30522-7>")
-              //         .where("?l sp:quantitativeResult ?qr") // predicate
-              //         .where("?qr rdf:type sp:QuantitativeResult") // type
-              //         .where("?qr sp:valueAndUnit ?vu")
-              //         .where("?vu sp:value ?v")
-              //         .each(function(){ p.hsCRP.value = Number(this.v.value); })
-              //           
-              
-              // sort labs for graphing
-
-              // BP labs (with goal e.g. < 130/80)
-              // LDL labs (with goal < 100)
-              // A1C labs (goal < 7)
-
-              // last known values for 
-
-              // Ur tp
-              // &micro; alb/cre
-              // SGOT
-              // Chol
-              // Tri
-              // HDL
-              // LDL
-              // BUN
-              // Cre
-              // Glu
-              // A1C
-              
-              dfd.resolve();
-            });
+            SMART.DEMOGRAPHICS_get()
+              .success(function(demos){
+                $.extend(pt, demos.graph
+                    .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+                    .prefix('v', 'http://www.w3.org/2006/vcard/ns#')
+                    .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                    .where('?r v:n ?n')
+                    .where('?n rdf:type v:Name')
+                    .where('?n v:given-name ?givenName')
+                    .where('?n v:family-name ?familyName')
+                    .where('?r foaf:gender ?gender')
+                    .where('?r v:bday ?birthday')
+                    .get(0))
+                dfd.resolve();
+              })
+              .error(error_callback);
           }).promise();
         };
 
-        var MEDS_get = function() {
+        
+
+        var VITAL_SIGNS_get = function(){
           return $.Deferred(function(dfd){
-            SMART.DEMOGRAPHICS_get().success(function(demos) {
-              debugger
-              // meds list (with last update)
-              dfd.resolve();
-            });
+            SMART.VITAL_SIGNS_get()
+              .success(function(r){
+
+                r.graph
+                 .prefix('sp',       'http://smartplatforms.org/terms#')
+                 .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                 .prefix('dcterms',  'http://purl.org/dc/terms/')
+                 .where('?bn         rdf:type         sp:VitalSign')
+                 .where('?bn         sp:vitalName     ?vital_name')
+                 .where('?bn         sp:value         ?value')
+                 .where('?bn         sp:unit          ?unit')
+                 .where('?vital_name sp:code          <http://purl.bioontology.org/ontology/LNC/8462-4>')
+                 .where('?bn2        sp:diastolic     ?bn')
+                 .where('?bn2        rdf:type         sp:BloodPressure')
+                 .where('?vital_id   sp:bloodPressure ?bn2')
+                 .where('?vital_id   dcterms:date     ?date')
+                 .each(function(){
+                   console.log('diastolic blood pressure'
+                             , this.value.value
+                             , this.unit.value
+                             , this.date.value)
+                 })
+                dfd.resolve();
+              })
+              .error(error_callback);
           }).promise();
         };
-
-        var NOTES_get = function() {
-          return $.Deferred(function(dfd){
-            SMART.DEMOGRAPHICS_get().success(function(demos) {
-              debugger
-              dfd.resolve();
-            });
-          }).promise();
-        };
-
-        var PROBLEMS_get = function() {
-          return $.Deferred(function(dfd){
-            SMART.DEMOGRAPHICS_get().success(function(demos) {
-              debugger
-              dfd.resolve();
-            });
-          }).promise();
-        };
-
-        var VITAL_SIGNS_get = function() {
-          return $.Deferred(function(dfd){
-            SMART.DEMOGRAPHICS_get().success(function(demos) {
-              debugger
-              // weight
-              // height
-              // BP (last)
-              
-              dfd.resolve();
-            });
-          }).promise();
-        };
-            
-            
-            // Other Info
-            // last foot exam (??)
-            // last eye exam (??)
-            // smoking status (?? demo)
-            // aspirin (asa / nsaid intolerance -- allergy?)
-            // ACE / ARB (on ace/arb)
-            // last pneumovax date (Immunization?)
-            // last flu shot (IImmunization?)
-            
-            // major CV comorbidities (with last updated)
-            // other problems
-            
-            // reminders
-
-
+        
         SMART.ready(function() {
             $.when(ALLERGIES_get()
                  , DEMOGRAPHICS_get()
-                 , LAB_RESULTS_get()
-                 , MEDS_get()
-                 , NOTES_get()
-                 , PROBLEMS_get()
                  , VITAL_SIGNS_get()
+                 // , MEDS_get()
+                 // , NOTES_get()
+                 // , PROBLEMS_get()
+                 // , VITAL_SIGNS_get()
                  ).then(function() {
-              debugger
               console.log(pt.birthday.value
                         , pt.familyName.value
                         , pt.gender.value
                         , pt.givenName.value
+                        , "no_known_allergies_p?"
+                        , pt.no_known_allergies_p
                         )
             });
         });
@@ -181,9 +131,8 @@
     </script>
   </head>
   <body style="margin: none;">
-    <div id='errors' style='display: none; width: 600px; margin: 100px auto;'></div>
-    <div id='holder' style='display: none; height: 1200px; width: 780px;'>
-    </div>
-    <div id='log'></div>
+    <div id='errors' style='display: none; margin: 100px auto;'></div>
+    <div id='content'></div>
+    <div id='log' style='display: none;'></div>
   </body>
 </html>
