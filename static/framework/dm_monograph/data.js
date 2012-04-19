@@ -105,14 +105,59 @@ var VITAL_SIGNS_get = function(){
   }).promise();
 };
 
+var LAB_RESULTS_get = function(){
+  return $.Deferred(function(dfd){
+    SMART.LAB_RESULTS_get()
+      .success(function(r){
+        // LDL Codes
+        //
+        // LOINC Code, Long name, Short Name, class, rank # of 2000
+        // 13457-7	Cholesterol in LDL [Mass/volume] in Serum or Plasma by calculation	LDLc SerPl Calc-mCnc	CHEM	63
+        // 2089-1	Cholesterol in LDL [Mass/volume] in Serum or Plasma	LDLc SerPl-mCnc	CHEM	92
+        // 18262-6	Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay	LDLc SerPl Direct Assay-mCnc	CHEM	249
+        // Other possible codes (unused): 12773‐8, 18261‐8, 22748‐8, 24331‐1, 39469‐2, 49132‐4
+
+        // FIXME: code is for wbc # bld NOT LDL!!
+        ldl_array = [];
+        r.graph
+         .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',      'http://smartplatforms.org/terms#')
+         .prefix('dcterms', 'http://purl.org/dc/terms/')
+         .where('?lr  rdf:type              sp:LabResult')
+         .where('?lr  sp:labName            ?bn1')
+         .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/26464-8>')
+         .where('?lr  sp:quantitativeResult ?bn2')
+         .where('?bn2 rdf:type              sp:QuantitativeResult')
+         .where('?bn2 sp:valueAndUnit       ?bn3')
+         .where('?bn3 rdf:type              sp:ValueAndUnit')
+         .where('?bn3 sp:value              ?value')
+         .where('?bn3 sp:unit               ?unit')
+         .where('?lr  sp:specimenCollected  ?bn4')
+         .where('?bn4 sp:startDate          ?date')
+         .each(function(){
+           ldl_array.push({
+             'value': this.value.value,
+             'unit':  this.unit.value,
+             'date':  this.date.value
+           })
+         })
+
+        debugger
+
+        dfd.resolve();
+      })
+      .error(error_callback);
+  }).promise();
+};
+
 
 // On SMART.ready, do all the data api calls and synchronize
 // when they are all complete.
-
 SMART.ready(function() {
     $.when(ALLERGIES_get()
          , DEMOGRAPHICS_get()
          , VITAL_SIGNS_get()
+         , LAB_RESULTS_get()
          // , MEDS_get()
          // , NOTES_get()
          // , PROBLEMS_get()
