@@ -2,7 +2,7 @@
 // Get the data for the DM app
 //
 
-$ = SMART.$
+$ = jQuery = SMART.$
 pt = {}; // Attach data properties to pt object with $.extend
 
 var error_callback = function(e){
@@ -142,38 +142,8 @@ var LAB_RESULTS_get = function(){
            })
          })
 
-        debugger
-
-        dfd.resolve();
+         dfd.resolve();
       })
       .error(error_callback);
   }).promise();
 };
-
-
-// On SMART.ready, do all the data api calls and synchronize
-// when they are all complete.
-SMART.ready(function() {
-    $.when(ALLERGIES_get()
-         , DEMOGRAPHICS_get()
-         , VITAL_SIGNS_get()
-         , LAB_RESULTS_get()
-         // , MEDS_get()
-         // , NOTES_get()
-         // , PROBLEMS_get()
-         // , VITAL_SIGNS_get()
-         ).then(function() {
-           // some misc data
-           pt.full_name = SMART.record.full_name;
-           pt.record_id = SMART.record.id;
-           
-      // console.log(pt.birthday.value
-      //           , pt.familyName.value
-      //           , pt.gender.value
-      //           , pt.givenName.value
-      //           , "no_known_allergies_p?"
-      //           , pt.no_known_allergies_p
-      //           )
-    });
-});
-

@@ -20,12 +20,95 @@
           color: #555;
         }
       </style>
+      <!-- order: smart-api-client, xdate, data, flot, excanvas -->
       <script src='../smart/scripts/smart-api-client.js'></script>
+      <script src='./xdate.js'></script>
       <script src='./data.js'></script>
+      <script src='./flot/jquery.flot.js'></script>
+      <!--[if lte IE 8]><script src="./flot/excanvas.min.js"></script><![endif]-->
+      <script>
+        // On SMART.ready, do all the data api calls and synchronize
+        // when they are all complete.
+        SMART.ready(function(){
+          $.when(ALLERGIES_get()
+               , DEMOGRAPHICS_get()
+               , VITAL_SIGNS_get()
+               , LAB_RESULTS_get()
+               // , MEDS_get()
+               // , NOTES_get()
+               // , PROBLEMS_get()
+               // , VITAL_SIGNS_get()
+          )
+          .then(function(){
+            // some misc data
+            pt.full_name = SMART.record.full_name;
+            // pt.record_id = SMART.record.id;
+            // console.log(pt.birthday.value
+            //           , pt.familyName.value
+            //           , pt.gender.value
+            //           , pt.givenName.value
+            //           , "no_known_allergies_p?"
+            //           , pt.no_known_allergies_p
+            //           )
+
+            // testing flot
+            var flot_options = {
+              xaxis: {
+                mode: 'time',
+                timeformat: "%y",
+                // tickLength: 0
+                // minTickSize: [1, 'year']
+              },
+              yaxis: {
+                min: 50,
+                max: 200,
+                ticks: [50, 100, 150, 200],
+                tickLength: 0
+              },
+              series: {
+                lines: {
+                  show: false
+                },
+                points: {
+                  show: true
+                },
+                grid: {
+                  // color: '#cccccc',
+                  // backgroundColor: '#cccccc',
+                  borderWidth: 1,
+                  markings: [
+                    { xaxis: { from: 0, to: 2 }, yaxis: { from: 10, to: 10 }, color: "#000000" }
+                  ]
+                }
+              }
+            }
+
+            var dbp_array_for_flot = [];
+            var sbp_array_for_flot = [];
+
+            $.each(pt.dbp_array, function(i,v){
+              var d = new XDate(v.date);
+              // console.log(p[0], v.date, d.toISOString(), p[1]);
+              dbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
+            });
+
+            $.each(pt.sbp_array, function(i,v){
+              var d = new XDate(v.date);
+              // console.log(p[0], v.date, d.toISOString(), p[1]);
+              sbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
+            });
+
+            var plot = $.plot($("#content"),
+                   [dbp_array_for_flot, sbp_array_for_flot],
+                   flot_options
+            );
+          });
+        });
+      </script>
   </head>
   <body style="margin: none;">
     <div id='errors' style='display: none; margin: 100px auto;'></div>
-    <div id='content'></div>
+    <div id='content' style="width:600px; height:300px"></div>
     <div id='log' style='display: none;'></div>
   </body>
 </html>
