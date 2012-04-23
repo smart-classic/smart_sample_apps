@@ -13,12 +13,48 @@
   -->
   <head>
     <title>Diabetes Mellitus Monograph</title>
+      <link rel='stylesheet' href='./assets/fluid_grid_80_9_0.css'>
       <style>
         #errors {
           font-size: 16px;
           font-family: Calibri, "Helvetica Neue", Helvetica, Verdana, sans-serif;
           color: #555;
         }
+
+        body {
+          background-color: white;
+          font-family: Verdana, "Lucida Grande", "Helvetica Neue", Helvetica, Calibri, sans-serif;
+          font-size: 12px !important;
+        }
+
+        .grid_1,
+        .grid_2,
+        .grid_3,
+        .grid_4,
+        .grid_5,
+        .grid_6,
+        .grid_7,
+        .grid_8,
+        .grid_9 {
+          display:inline;
+          float: left;
+          position: relative;
+
+          /* fixme: usually 1% each, but  */
+          margin-left: 1% !important;
+          margin-right: 1% !important;
+        }
+
+        .container_9 {
+          /* usually width: 92% and both margins at 4% each */
+          width: 99%;
+          margin-left: 1% !important;
+          margin-right: 0 !important;
+        }
+
+        .section_header { background-color: rgb(207, 201, 254); }
+        .bold { font-weight: bold; }
+
       </style>
       <!-- order: smart-api-client, xdate, data, flot, excanvas -->
       <script src='../smart/scripts/smart-api-client.js'></script>
@@ -34,8 +70,8 @@
           $.when(
                  ALLERGIES_get()
                , DEMOGRAPHICS_get()
-               // , VITAL_SIGNS_get()
-               // , LAB_RESULTS_get()
+               , VITAL_SIGNS_get()
+               , LAB_RESULTS_get()
                // , MEDS_get()
                // , NOTES_get()
                // , PROBLEMS_get()
@@ -53,64 +89,141 @@
             //           , pt.no_known_allergies_p
             //           )
 
-            // // testing flot
-            // var flot_options = {
-            //   xaxis: {
-            //     mode: 'time',
-            //     timeformat: "%y",
-            //     // tickLength: 0
-            //     // minTickSize: [1, 'year']
-            //   },
-            //   yaxis: {
-            //     min: 50,
-            //     max: 200,
-            //     ticks: [50, 100, 150, 200],
-            //     tickLength: 0
-            //   },
-            //   series: {
-            //     lines: {
-            //       show: false
-            //     },
-            //     points: {
-            //       show: true
-            //     },
-            //     grid: {
-            //       // color: '#cccccc',
-            //       // backgroundColor: '#cccccc',
-            //       borderWidth: 1,
-            //       markings: [
-            //         { xaxis: { from: 0, to: 2 }, yaxis: { from: 10, to: 10 }, color: "#000000" }
-            //       ]
-            //     }
-            //   }
-            // }
-            // 
-            // var dbp_array_for_flot = [];
-            // var sbp_array_for_flot = [];
-            // 
-            // $.each(pt.dbp_array, function(i,v){
-            //   var d = new XDate(v.date);
-            //   // console.log(p[0], v.date, d.toISOString(), p[1]);
-            //   dbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
-            // });
-            // 
-            // $.each(pt.sbp_array, function(i,v){
-            //   var d = new XDate(v.date);
-            //   // console.log(p[0], v.date, d.toISOString(), p[1]);
-            //   sbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
-            // });
-            // 
-            // var plot = $.plot($("#content"),
-            //        [dbp_array_for_flot, sbp_array_for_flot],
-            //        flot_options
-            // );
+            // testing flot
+            var x_min = new XDate('2010').valueOf();
+            var x_max = new XDate().valueOf()
+
+            var flot_options = {
+              xaxis: {
+                mode: 'time',
+                timeformat: '%y',
+                min: x_min,
+                max: x_max,
+                tickSize: [1, 'year'],
+                minTickSize: [1, 'year']
+                // tickLength: 0
+              },
+              yaxis: {
+                min: 50,
+                max: 200,
+                ticks: [50, 100, 150, 200],
+                tickLength: 0
+              },
+              series: {
+                lines: {
+                  show: false
+                },
+                points: {
+                  show: true
+                },
+                grid: {
+                  // color: '#cccccc',
+                  // backgroundColor: '#cccccc',
+                  borderWidth: 1,
+                  markings: [
+                    { xaxis: { from: 0, to: 2 }, yaxis: { from: 10, to: 10 }, color: "#000000" }
+                  ]
+                }
+              }
+            }
+
+            var dbp_array_for_flot = [];
+            var sbp_array_for_flot = [];
+
+            $.each(pt.dbp_array, function(i,v){
+              var d = new XDate(v.date);
+              // console.log(p[0], v.date, d.toISOString(), p[1]);
+              dbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
+            });
+
+            $.each(pt.sbp_array, function(i,v){
+              var d = new XDate(v.date);
+              // console.log(p[0], v.date, d.toISOString(), p[1]);
+              sbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
+            });
+
+            // set graph div dimentions for flot
+            var w = $('#column_1').width();
+            var h = 100;
+            $('#bp_graph').width(w).height(h);
+            $('#ldl_graph').width(w).height(h);
+            $('#a1c_graph').width(w).height(h);
+
+            var plot = $.plot($("#bp_graph"),
+                   [dbp_array_for_flot, sbp_array_for_flot],
+                   flot_options
+            );
+
+            var plot = $.plot($("#ldl_graph"),
+                   [dbp_array_for_flot, sbp_array_for_flot],
+                   flot_options
+            );
+
+            var plot = $.plot($("#a1c_graph"),
+                   [dbp_array_for_flot, sbp_array_for_flot],
+                   flot_options
+            );
           });
         });
       </script>
   </head>
-  <body style="margin: none;">
-    <div id='errors' style='display: none; margin: 100px auto;'></div>
-    <div id='content' style="width:600px; height:300px"></div>
-    <div id='log' style='display: none;'></div>
+  <body style="margin: 0px;">
+    <div id='content' class="container_9">
+      <div id='top_line' class='grid_9' style='padding-left: 2em; font-weight: bold'>
+        <span style='text-transform: uppercase'>Claus, Santa J 0000004 (MGH) 01/01/1949 (62 yrs.) M</span>
+      </div>
+
+      <div class='clear'></div>
+
+      <div id='column_1' class='grid_2' style='border: none; height: 1000px;'>
+        <div class='section_header'>
+          <span class='bold'>BP</span> goal &lt; 130/80
+        </div>
+
+        <div id='bp_graph' style='padding-top: 6px;'></div>
+
+        <div id='last_known_values' style='padding-top: 2em;'>
+          <div class='section_header'><span class='bold'>Last Known Values</span></div>
+        </div>
+      </div>
+
+      <div id='column_2' class='grid_2' style='border: none; height: 1000px;'>
+        <div class='section_header'><span class='bold'>LDL</span> goal &lt; 100</div>
+
+        <div id='ldl_graph' style='padding-top: 6px;'></div>
+
+        <div id='other_info' style='padding-top: 2em;'>
+          <div class='section_header'><span class='bold'>Other Info</span></div>
+        </div>
+
+        <div id='major_cv_comorbidities' style='padding-top: 2em;'>
+          <div class='section_header'><span class='bold'>Major CV Comorbidities</span></div>
+        </div>
+
+        <div id='other_problems' style='padding-top: 2em;'>
+          <div class='section_header'><span class='bold'>Other Problems</span></div>
+        </div>
+      </div>
+
+      <div id='column_3' class='grid_5'  style='border: none; height: 1000px;'>
+        <div class='section_header'><span class='bold'>A1C</span> goal &lt; 7</div>
+
+        <div id='a1c_graph' style='padding-top: 6px;'></div>
+
+        <div id='reminders' style='padding-top: 2em;'>
+          <div class='section_header'><span class='bold'>Reminders</span></div>
+          TODO
+        </div>
+
+        <div id='allergies' style='padding-top: 2em;'>
+          <div class='section_header'><span class='bold'>Allergies</span></div>
+        </div>
+
+        <div id='medications' style='padding-top: 2em;'>
+          <div class='section_header'><span class='bold'>Medications</span></div>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>

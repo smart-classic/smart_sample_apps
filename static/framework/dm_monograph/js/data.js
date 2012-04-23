@@ -54,9 +54,25 @@ var DEMOGRAPHICS_get = function(){
 
         pt.name = pt.n;
 
-        // testing json-ld
-        jsdata = { '@graph': [] };
-        debugger
+        // // testing json-ld
+        // jsdata = { '@graph': [] };
+        // demos.graph
+        //      .where('?s ?p ?o')
+        //      .each(function(i, bindings, triples){
+        //        // note: this.s == bindings.s == triples[0].subject
+        //        if (i>0) {
+        //          // .dump() returns RDF/JSON representation
+        //          console.log('s: ', this.s.dump().value, ' (', this.s.dump().type, ')');
+        //          console.log('p: ', this.p.dump().value, ' (', this.p.dump().type, ')');
+        //          console.log('o: ', this.o.dump().value, ' (', this.o.dump().type, ')', '\n');
+        //
+        //          // jstriple = {
+        //          //   '@id': this.s.dump().value,
+        //          //   ''
+        //          // };
+        //          // debugger;
+        //        }
+        //      })
 
         dfd.resolve();
       })
