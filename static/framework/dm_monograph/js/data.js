@@ -53,6 +53,11 @@ var DEMOGRAPHICS_get = function(){
             .get(0))
 
         pt.name = pt.n;
+
+        // testing json-ld
+        jsdata = { '@graph': [] };
+        debugger
+
         dfd.resolve();
       })
       .error(error_callback);
