@@ -7,13 +7,19 @@
     From the SMART Project <http://www.smartplatforms.org/>
     Arjun Sanyal <arjun.sanyal@childrens.harvard.edu> - Design and Implementation
 
+    Grid is a 960.gs fluid grid with:
+    col width = 80, no col = 9, gutter width = 0 for 720px total
+    Trying 60, 12, 0
+
     Todo:
     - fill in requires in manifest file
+    - consider using 1280px window size which means ~1050 app width
+      - http://cssgrid.net/ 1140px 12 col grid
 
   -->
   <head>
     <title>Diabetes Mellitus Monograph</title>
-      <link rel='stylesheet' href='./assets/fluid_grid_80_9_0.css'>
+      <link rel='stylesheet' href='./assets/fluid_grid_60_12_0.css'>
       <style>
         #errors {
           font-size: 16px;
@@ -25,6 +31,7 @@
           background-color: white;
           font-family: Verdana, "Lucida Grande", "Helvetica Neue", Helvetica, Calibri, sans-serif;
           font-size: 12px !important;
+          line-height: 1.5em;
         }
 
         .grid_1,
@@ -35,7 +42,10 @@
         .grid_6,
         .grid_7,
         .grid_8,
-        .grid_9 {
+        .grid_9,
+        .grid_10,
+        .grid_11,
+        .grid_12 {
           display:inline;
           float: left;
           position: relative;
@@ -45,7 +55,7 @@
           margin-right: 1% !important;
         }
 
-        .container_9 {
+        .container_12 {
           /* usually width: 92% and both margins at 4% each */
           width: 99%;
           margin-left: 1% !important;
@@ -168,14 +178,14 @@
       </script>
   </head>
   <body style="margin: 0px;">
-    <div id='content' class="container_9">
-      <div id='top_line' class='grid_9' style='padding-left: 2em; font-weight: bold'>
+    <div id='content' class="container_12">
+      <div id='top_line' class='grid_12' style='padding-left: 2em; font-weight: bold'>
         <span style='text-transform: uppercase'>Claus, Santa J 0000004 (MGH) 01/01/1949 (62 yrs.) M</span>
       </div>
 
       <div class='clear'></div>
 
-      <div id='column_1' class='grid_2' style='border: none; height: 1000px;'>
+      <div id='column_1' class='grid_3' style='border: none; height: 1000px;'>
         <div class='section_header'>
           <span class='bold'>BP</span> goal &lt; 130/80
         </div>
@@ -187,7 +197,7 @@
         </div>
       </div>
 
-      <div id='column_2' class='grid_2' style='border: none; height: 1000px;'>
+      <div id='column_2' class='grid_3' style='border: none; height: 1000px;'>
         <div class='section_header'><span class='bold'>LDL</span> goal &lt; 100</div>
 
         <div id='ldl_graph' style='padding-top: 6px;'></div>
@@ -205,7 +215,7 @@
         </div>
       </div>
 
-      <div id='column_3' class='grid_5'  style='border: none; height: 1000px;'>
+      <div id='column_3' class='grid_6'  style='border: none; height: 1000px;'>
         <div class='section_header'><span class='bold'>A1C</span> goal &lt; 7</div>
 
         <div id='a1c_graph' style='padding-top: 6px;'></div>
