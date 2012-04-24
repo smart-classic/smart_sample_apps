@@ -2,7 +2,6 @@
 // Get the data for the DM app
 //
 
-$ = jQuery = SMART.$
 pt = {}; // Attach data properties to pt object with $.extend
 
 var error_callback = function(e){
@@ -168,3 +167,151 @@ var LAB_RESULTS_get = function(){
       .error(error_callback);
   }).promise();
 };
+
+// On SMART.ready, do all the data api calls and synchronize
+// when they are all complete.
+SMART.ready(function(){
+  $.when(
+         ALLERGIES_get()
+       , DEMOGRAPHICS_get()
+       , VITAL_SIGNS_get()
+       , LAB_RESULTS_get()
+       // , MEDS_get()
+       // , NOTES_get()
+       // , PROBLEMS_get()
+       // , VITAL_SIGNS_get()
+  )
+  .then(function(){
+
+    $('#family_name').text(pt.family_name.value)
+    $('#given_name').text(pt.given_name.value)
+    $('#record_id').text(SMART.record.id)
+    $('#birthday').text(pt.bday.value)
+    var b = new XDate(pt.bday.value)
+    $('#age').text(Math.round(b.diffYears(new XDate())));
+    $('#gender').text(pt.gender.value[0])
+
+    // testing flot
+    var x_min = new XDate('2010').valueOf();
+    var x_max = new XDate().valueOf()
+
+    var flot_options_bp = {
+      xaxis: {
+        mode: 'time',
+        timeformat: '%y',
+        min: x_min,
+        max: x_max,
+        tickSize: [1, 'year'],
+        minTickSize: [1, 'year']
+        // tickLength: 0
+      },
+      yaxis: {
+        min: 50,
+        max: 200,
+        ticks: [50, 100, 150, 200],
+        tickLength: 0
+      },
+      series: {
+        lines: {
+          show: false
+        },
+        points: {
+          show: true
+        }
+      },
+      grid: {
+        // dark gray rbg(204, 204, 204)  #cccccc
+        // light gray rbg(235, 235, 235) #ebebeb
+        // color: '#ebebeb',
+        backgroundColor: '#ebebeb',
+        borderWidth: 1,
+        markings: [
+          { yaxis: { from: 80, to: 80 }, color: "#ccc" },
+          { yaxis: { from: 130, to: 130 }, color: "#ccc" }
+        ]
+      }
+    }
+
+    // alter the options for the other two graphs
+    var flot_options_ldl = $.extend(true, {}, flot_options_bp);
+    var flot_options_a1c = $.extend(true, {}, flot_options_bp);
+
+    flot_options_ldl.yaxis = {
+      min: 0,
+      max: 200,
+      ticks: [0, 50, 100, 150, 200],
+      tickLength: 0
+    }
+
+    flot_options_ldl.grid = {
+      backgroundColor: '#ebebeb',
+      borderWidth: 1,
+      markings: [
+        { yaxis: { from: 200, to: 100 }, color: "#ccc" },
+      ]
+    }
+
+    flot_options_a1c.yaxis = {
+      min: 0,
+      max: 20,
+      ticks: [0, 5, 10, 15, 20],
+      tickLength: 0
+    }
+
+    flot_options_a1c.grid = {
+      backgroundColor: '#ebebeb',
+      borderWidth: 1,
+      markings: [
+        { yaxis: { from: 20, to: 7 }, color: "#ccc" },
+      ]
+    }
+
+    var dbp_array = [];
+    var sbp_array = [];
+    var ldl_array = [];
+    var a1c_array = [];
+
+    $.each(pt.dbp_array, function(i,v){
+      var d = new XDate(v.date);
+      dbp_array.push([d.valueOf(), Number(v.value)]);
+    });
+
+    $.each(pt.sbp_array, function(i,v){
+      var d = new XDate(v.date);
+      sbp_array.push([d.valueOf(), Number(v.value)]);
+    });
+
+    ldl_array = sbp_array;
+
+    $.each(sbp_array, function(i,v){
+      a1c_array.push(
+        [sbp_array[i][0],
+         sbp_array[i][1]/10
+        ]
+      );
+    })
+
+    // set the heights for the graphs and set the width
+    // of the a1c graph to be the same as the other graphs
+    // var w = $('#column_1').width();
+    var h = 100;
+    $('#bp_graph').height(h);
+    $('#ldl_graph').height(h);
+    $('#a1c_graph').height(h).width($('#bp_graph').width());
+
+    var plot = $.plot($("#bp_graph"),
+           [dbp_array, sbp_array],
+           flot_options_bp
+    );
+
+    var plot = $.plot($("#ldl_graph"),
+           [ldl_array],
+           flot_options_ldl
+    );
+
+    var plot = $.plot($("#a1c_graph"),
+           [a1c_array],
+           flot_options_a1c
+    );
+  });
+});
