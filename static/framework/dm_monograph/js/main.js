@@ -5,7 +5,7 @@
 // p1272431 Stephan Graham, p967332 William Robinson
 
 
-pt = {}; // Attach data properties to pt object with $.extend
+pt = {}; // Attach data properties to pt object
 
 var error_callback = function(e){
   alert('error '+e.status+' see console.')
@@ -41,20 +41,23 @@ var DEMOGRAPHICS_get = function(){
   return $.Deferred(function(dfd){
     SMART.DEMOGRAPHICS_get()
       .success(function(demos){
-        $.extend(pt, demos.graph
-            .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-            .prefix('v',    'http://www.w3.org/2006/vcard/ns#')
-            .prefix('rdf',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-            .prefix('sp',   'http://smartplatforms.org/terms#')
-            .where('?r      v:n           ?n')
-            .where('?n      rdf:type      v:Name')
-            .where('?n      v:given-name  ?given_name')
-            .where('?n      v:family-name ?family_name')
-            .where('?r      foaf:gender   ?gender')
-            .where('?r      v:bday        ?bday')
-            .get(0))
+        var d = demos.graph
+                     .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+                     .prefix('v',    'http://www.w3.org/2006/vcard/ns#')
+                     .prefix('rdf',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                     .prefix('sp',   'http://smartplatforms.org/terms#')
+                     .where('?r      v:n           ?n')
+                     .where('?n      rdf:type      v:Name')
+                     .where('?n      v:given-name  ?given_name')
+                     .where('?n      v:family-name ?family_name')
+                     .where('?r      foaf:gender   ?gender')
+                     .where('?r      v:bday        ?bday')
+                     .get(0)
 
-        pt.name = pt.n;
+        pt.family_name = d.family_name.value;
+        pt.given_name = d.given_name.value;
+        pt.gender = d.gender.value;
+        pt.bday = d.bday.value;
 
         // // testing json-ld
         // jsdata = { '@graph': [] };
@@ -160,13 +163,17 @@ var LAB_RESULTS_get = function(){
            // FIXME: hack push all dates + 3 years
            var d = new XDate(this.date.value)
            d.addYears(3, true);
-           
+
            pt.ldl_array.push([
              d.valueOf(),
              Number(this.value.value)
            ])
          })
 
+         pt.ldl_latest = _.chain(pt.ldl_array)
+                          .sortBy(function(item){ return item[0]; })
+                          .last()
+                          .value() || null
 
          // A1C Codes
          //
@@ -203,6 +210,11 @@ var LAB_RESULTS_get = function(){
             ])
           })
 
+          pt.a1c_latest = _.chain(pt.a1c_array)
+                           .sortBy(function(item){ return item[0]; })
+                           .last()
+                           .value() || null
+
 
           // Ur Tp
           //
@@ -234,8 +246,12 @@ var LAB_RESULTS_get = function(){
                Number(this.value.value)
              ])
            })
-           
-           debugger;
+
+           pt.ur_tp_latest = _.chain(pt.ur_tp_array)
+                              .sortBy(function(item){ return item[0]; })
+                              .last()
+                              .value() || null
+
 
          // Microalbumin/Creatinine [Mass ratio] in Urine
          //
@@ -243,7 +259,7 @@ var LAB_RESULTS_get = function(){
          // 14958-3,Microalbumin/Creatinine [Mass ratio] in 24 hour Urine,Microalbumin/Creat 24H Ur-mRto,CHEM,1979
          
          // FIXME: ONLY top code!!
-         pt.a1c_array = [];
+         pt.micro_alb_cre_ratio_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -265,11 +281,17 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.micro_alb_cre_ratio_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
+
+          pt.micro_alb_cre_ratio_latest = _.chain(pt.micro_alb_cre_ratio_array)
+                                           .sortBy(function(item){ return item[0]; })
+                                           .last()
+                                           .value() || null
+
 
          // Aspartate aminotransferase / SGOT / AST
          //
@@ -278,7 +300,7 @@ var LAB_RESULTS_get = function(){
          // LOINC Code, Long name, Short Name, class, rank # of 2000
          // 1920-8,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,AST SerPl-cCnc,CHEM,19
 
-         pt.a1c_array = [];
+         pt.sgot_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -300,16 +322,21 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.sgot_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
 
+          pt.sgot_array_latest = _.chain(pt.sgot_array)
+                                   .sortBy(function(item){ return item[0]; })
+                                   .last()
+                                   .value() || null
+
          // Cholesterol (total): only 1 code!!
          //
          // 2093-3,Cholesterol [Mass/volume] in Serum or Plasma,Cholest SerPl-mCnc,CHEM,32
-         pt.a1c_array = [];
+         pt.cholesterol_total_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -331,11 +358,16 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.cholesterol_total_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
+
+          pt.cholesterol_total_latest = _.chain(pt.cholesterol_total_array)
+                                   .sortBy(function(item){ return item[0]; })
+                                   .last()
+                                   .value() || null
 
          // Tri
          //
@@ -344,7 +376,7 @@ var LAB_RESULTS_get = function(){
          
          // fixme only 1 code!
 
-         pt.a1c_array = [];
+         pt.triglyceride_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -366,16 +398,21 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.triglyceride_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
 
+          pt.triglyceride_latest = _.chain(pt.triglyceride_array)
+                                   .sortBy(function(item){ return item[0]; })
+                                   .last()
+                                   .value() || null
+
          // HDL
          // 2085-9,Cholesterol in HDL [Mass/volume] in Serum or Plasma,HDLc SerPl-mCnc,CHEM,38
 
-         pt.a1c_array = [];
+         pt.hdl_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -397,11 +434,16 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.hdl_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
+
+          pt.hdl_latest = _.chain(pt.hdl_array)
+                                    .sortBy(function(item){ return item[0]; })
+                                    .last()
+                                    .value() || null
 
          // BUN
          //
@@ -409,7 +451,7 @@ var LAB_RESULTS_get = function(){
          // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
 
          // fixme only top code
-         pt.a1c_array = [];
+         pt.bun_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -431,11 +473,16 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.bun_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
+
+          pt.bun_latest = _.chain(pt.bun_latest)
+                                    .sortBy(function(item){ return item[0]; })
+                                    .last()
+                                    .value() || null
 
          // Cre
          //
@@ -443,7 +490,7 @@ var LAB_RESULTS_get = function(){
          // 38483-4,Creatinine [Mass/volume] in Blood,Creat Bld-mCnc,CHEM,283
 
          // fixme only top code
-         pt.a1c_array = [];
+         pt.creatinine_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -465,18 +512,24 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.creatinine_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
+
+          pt.creatinine_latest = _.chain(pt.creatinine_array)
+                                   .sortBy(function(item){ return item[0]; })
+                                   .last()
+                                   .value() || null
+
 
          // Glu
          // 2345-7,Glucose [Mass/volume] in Serum or Plasma,Glucose SerPl-mCnc,CHEM,4
          // 2339-0,Glucose [Mass/volume] in Blood,Glucose Bld-mCnc,CHEM,13
 
          // fixme only top code
-         pt.a1c_array = [];
+         pt.glucose_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -498,11 +551,16 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.glucose_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
+
+          pt.glucose_latest = _.chain(pt.glucose_array)
+                                   .sortBy(function(item){ return item[0]; })
+                                   .last()
+                                   .value() || null
 
          // BUN
          //
@@ -510,7 +568,7 @@ var LAB_RESULTS_get = function(){
          // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
 
          // fixme only top code
-         pt.a1c_array = [];
+         pt.bun_array = [];
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
@@ -532,11 +590,16 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.bun_array.push([
               d.valueOf(),
               Number(this.value.value)
             ])
           })
+
+          pt.bun_latest = _.chain(pt.bun_array)
+                                   .sortBy(function(item){ return item[0]; })
+                                   .last()
+                                   .value() || null
 
 
          dfd.resolve();
@@ -560,13 +623,13 @@ SMART.ready(function(){
   )
   .then(function(){
 
-    $('#family_name').text(pt.family_name.value)
-    $('#given_name').text(pt.given_name.value)
+    $('#family_name').text(pt.family_name)
+    $('#given_name').text(pt.given_name)
     $('#record_id').text(SMART.record.id)
-    $('#birthday').text(pt.bday.value)
-    var b = new XDate(pt.bday.value)
+    $('#birthday').text(pt.bday)
+    var b = new XDate(pt.bday)
     $('#age').text(Math.round(b.diffYears(new XDate())));
-    $('#gender').text(pt.gender.value[0])
+    $('#gender').text(pt.gender[0])
 
     // testing flot
     var x_min = new XDate('2010').valueOf();

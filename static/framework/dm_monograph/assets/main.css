@@ -49,3 +49,10 @@ body {
 .normal { font-weight: normal; }
 
 #top_line { padding-left: 2em; font-weight: bold; text-transform: uppercase; }
+
+.lkv_box { float: left; width: 30%; }
+.test_name { font-weight: bold; }
+.test_latest_value { font-weight: bold; }
+.lkv_line_outer { border: 1px solid; }
+.lkv_line_inner_1 { border: 1px solid blue; }
+.lkv_line_inner_2 { border: 1px solid red;}
