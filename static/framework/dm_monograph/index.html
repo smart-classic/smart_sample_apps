@@ -62,7 +62,10 @@
           margin-right: 0 !important;
         }
 
-        .section_header { background-color: rgb(207, 201, 254); }
+        .section_header {
+          background-color: rgb(207, 201, 254);
+          margin-bottom: 6px;
+        }
         .bold { font-weight: bold; }
 
       </style>
@@ -70,7 +73,8 @@
       <script src='../smart/scripts/smart-api-client.js'></script>
       <script src='./js/xdate.js'></script>
       <script src='./js/data.js'></script>
-      <script src='./js/flot/jquery.flot.js'></script>
+      <script src='./js/flot/jquery.flot.min.js'></script>
+      <script src='./js/flot/jquery.flot.resize.min.js'></script>
       <script src='./js/jsonld.js'></script>
       <!--[if lte IE 8]><script src="./flot/excanvas.min.js"></script><![endif]-->
       <script>
@@ -152,12 +156,13 @@
               sbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
             });
 
-            // set graph div dimentions for flot
-            var w = $('#column_1').width();
+            // set the heights for the graphs and set the width
+            // of the a1c graph to be the same as the other graphs
+            // var w = $('#column_1').width();
             var h = 100;
-            $('#bp_graph').width(w).height(h);
-            $('#ldl_graph').width(w).height(h);
-            $('#a1c_graph').width(w).height(h);
+            $('#bp_graph').height(h);
+            $('#ldl_graph').height(h);
+            $('#a1c_graph').height(h).width($('#bp_graph').width());
 
             var plot = $.plot($("#bp_graph"),
                    [dbp_array_for_flot, sbp_array_for_flot],
