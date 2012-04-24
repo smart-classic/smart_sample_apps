@@ -92,16 +92,14 @@
                // , VITAL_SIGNS_get()
           )
           .then(function(){
-            // some misc data
-            pt.full_name = SMART.record.full_name;
-            // pt.record_id = SMART.record.id;
-            // console.log(pt.birthday.value
-            //           , pt.familyName.value
-            //           , pt.gender.value
-            //           , pt.givenName.value
-            //           , "no_known_allergies_p?"
-            //           , pt.no_known_allergies_p
-            //           )
+
+            $('#family_name').text(pt.family_name.value)
+            $('#given_name').text(pt.given_name.value)
+            $('#record_id').text(SMART.record.id)
+            $('#birthday').text(pt.bday.value)
+            var b = new XDate(pt.bday.value)
+            $('#age').text(Math.round(b.diffYears(new XDate())));
+            $('#gender').text(pt.gender.value[0])
 
             // testing flot
             var x_min = new XDate('2010').valueOf();
@@ -185,7 +183,18 @@
   <body style="margin: 0px;">
     <div id='content' class="container_12">
       <div id='top_line' class='grid_12' style='padding-left: 2em; font-weight: bold'>
-        <span style='text-transform: uppercase'>Claus, Santa J 0000004 (MGH) 01/01/1949 (62 yrs.) M</span>
+        <span style='text-transform: uppercase'>
+          <span id='family_name'></span>,
+          <span id='given_name'></span>
+          &nbsp;
+          <span id='record_id'></span>
+          &nbsp;
+          <span id='birthday'></span>
+          &nbsp;
+          (<span id='age'></span> <span style='text-transform: lowercase'>YRS.</span>)
+          &nbsp;
+          <span id='gender'></span>
+          </span>
       </div>
 
       <div class='clear'></div>
