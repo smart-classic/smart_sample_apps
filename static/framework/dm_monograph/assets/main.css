@@ -12,27 +12,6 @@ body {
   margin: 0px;
 }
 
-.grid_1,
-.grid_2,
-.grid_3,
-.grid_4,
-.grid_5,
-.grid_6,
-.grid_7,
-.grid_8,
-.grid_9,
-.grid_10,
-.grid_11,
-.grid_12 {
-  display:inline;
-  float: left;
-  position: relative;
-
-  /* fixme: usually 1% each, but  */
-  margin-left: 1% !important;
-  margin-right: 1% !important;
-}
-
 .container_12 {
   /* usually width: 92% and both margins at 4% each */
   width: 99%;
@@ -47,12 +26,10 @@ body {
 }
 .bold { font-weight: bold; }
 .normal { font-weight: normal; }
+.smaller { font-size: smaller;}
 
 #top_line { padding-left: 2em; font-weight: bold; text-transform: uppercase; }
 
-.lkv_box { float: left; width: 30%; }
 .test_name { font-weight: bold; }
 .test_latest_value { font-weight: bold; }
-.lkv_line_outer { border: 1px solid; }
-.lkv_line_inner_1 { border: 1px solid blue; }
-.lkv_line_inner_2 { border: 1px solid red;}
+.gray { background-color: #ebebeb;}
