@@ -7,15 +7,13 @@
     From the SMART Project <http://www.smartplatforms.org/>
     Arjun Sanyal <arjun.sanyal@childrens.harvard.edu> - Design and Implementation
 
-    Grid is a 960.gs fluid grid with:
-    col width = 80, no col = 9, gutter width = 0 for 720px total
-    Trying 60, 12, 0
+    Notes:
+    - Designed for a 1280x1024 window size
+    - Using a 960.gs fluid grid with col width = 60, no col = 9,
+      and gutter width = 0 for 720px total
 
-    Todo:
+    TODO:
     - fill in requires in manifest file
-    - consider using 1280px window size which means ~1050 app width
-      - http://cssgrid.net/ 1140px 12 col grid
-
   -->
   <head>
     <title>Diabetes Mellitus Monograph</title>
@@ -76,7 +74,7 @@
       <script src='./js/flot/jquery.flot.min.js'></script>
       <script src='./js/flot/jquery.flot.resize.min.js'></script>
       <script src='./js/jsonld.js'></script>
-      <!--[if lte IE 8]><script src="./flot/excanvas.min.js"></script><![endif]-->
+      <!--[if lte IE 8]><script src="./js/flot/excanvas.min.js"></script><![endif]-->
       <script>
         // On SMART.ready, do all the data api calls and synchronize
         // when they are all complete.
@@ -105,7 +103,7 @@
             var x_min = new XDate('2010').valueOf();
             var x_max = new XDate().valueOf()
 
-            var flot_options = {
+            var flot_options_bp = {
               xaxis: {
                 mode: 'time',
                 timeformat: '%y',
@@ -127,32 +125,79 @@
                 },
                 points: {
                   show: true
-                },
-                grid: {
-                  // color: '#cccccc',
-                  // backgroundColor: '#cccccc',
-                  borderWidth: 1,
-                  markings: [
-                    { xaxis: { from: 0, to: 2 }, yaxis: { from: 10, to: 10 }, color: "#000000" }
-                  ]
                 }
+              },
+              grid: {
+                // dark gray rbg(204, 204, 204)  #cccccc
+                // light gray rbg(235, 235, 235) #ebebeb
+                // color: '#ebebeb',
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [
+                  { yaxis: { from: 80, to: 80 }, color: "#ccc" },
+                  { yaxis: { from: 130, to: 130 }, color: "#ccc" }
+                ]
               }
             }
 
-            var dbp_array_for_flot = [];
-            var sbp_array_for_flot = [];
+            // alter the options for the other two graphs
+            var flot_options_ldl = $.extend(true, {}, flot_options_bp);
+            var flot_options_a1c = $.extend(true, {}, flot_options_bp);
+
+            flot_options_ldl.yaxis = {
+              min: 0,
+              max: 200,
+              ticks: [0, 50, 100, 150, 200],
+              tickLength: 0
+            }
+
+            flot_options_ldl.grid = {
+              backgroundColor: '#ebebeb',
+              borderWidth: 1,
+              markings: [
+                { yaxis: { from: 200, to: 100 }, color: "#ccc" },
+              ]
+            }
+
+            flot_options_a1c.yaxis = {
+              min: 0,
+              max: 20,
+              ticks: [0, 5, 10, 15, 20],
+              tickLength: 0
+            }
+
+            flot_options_a1c.grid = {
+              backgroundColor: '#ebebeb',
+              borderWidth: 1,
+              markings: [
+                { yaxis: { from: 20, to: 7 }, color: "#ccc" },
+              ]
+            }
+
+            var dbp_array = [];
+            var sbp_array = [];
+            var ldl_array = [];
+            var a1c_array = [];
 
             $.each(pt.dbp_array, function(i,v){
               var d = new XDate(v.date);
-              // console.log(p[0], v.date, d.toISOString(), p[1]);
-              dbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
+              dbp_array.push([d.valueOf(), Number(v.value)]);
             });
 
             $.each(pt.sbp_array, function(i,v){
               var d = new XDate(v.date);
-              // console.log(p[0], v.date, d.toISOString(), p[1]);
-              sbp_array_for_flot.push([d.valueOf(), Number(v.value)]);
+              sbp_array.push([d.valueOf(), Number(v.value)]);
             });
+
+            ldl_array = sbp_array;
+
+            $.each(sbp_array, function(i,v){
+              a1c_array.push(
+                [sbp_array[i][0],
+                 sbp_array[i][1]/10
+                ]
+              );
+            })
 
             // set the heights for the graphs and set the width
             // of the a1c graph to be the same as the other graphs
@@ -163,18 +208,18 @@
             $('#a1c_graph').height(h).width($('#bp_graph').width());
 
             var plot = $.plot($("#bp_graph"),
-                   [dbp_array_for_flot, sbp_array_for_flot],
-                   flot_options
+                   [dbp_array, sbp_array],
+                   flot_options_bp
             );
 
             var plot = $.plot($("#ldl_graph"),
-                   [dbp_array_for_flot, sbp_array_for_flot],
-                   flot_options
+                   [ldl_array],
+                   flot_options_ldl
             );
 
             var plot = $.plot($("#a1c_graph"),
-                   [dbp_array_for_flot, sbp_array_for_flot],
-                   flot_options
+                   [a1c_array],
+                   flot_options_a1c
             );
           });
         });
