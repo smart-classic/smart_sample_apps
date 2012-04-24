@@ -18,55 +18,8 @@
   <head>
     <title>Diabetes Mellitus Monograph</title>
       <link rel='stylesheet' href='./assets/fluid_grid_60_12_0.css'>
-      <style>
-        #errors {
-          font-size: 16px;
-          font-family: Calibri, "Helvetica Neue", Helvetica, Verdana, sans-serif;
-          color: #555;
-        }
+      <link rel='stylesheet' href='./assets/main.css'>
 
-        body {
-          background-color: white;
-          font-family: Verdana, "Lucida Grande", "Helvetica Neue", Helvetica, Calibri, sans-serif;
-          font-size: 12px !important;
-          line-height: 1.5em;
-        }
-
-        .grid_1,
-        .grid_2,
-        .grid_3,
-        .grid_4,
-        .grid_5,
-        .grid_6,
-        .grid_7,
-        .grid_8,
-        .grid_9,
-        .grid_10,
-        .grid_11,
-        .grid_12 {
-          display:inline;
-          float: left;
-          position: relative;
-
-          /* fixme: usually 1% each, but  */
-          margin-left: 1% !important;
-          margin-right: 1% !important;
-        }
-
-        .container_12 {
-          /* usually width: 92% and both margins at 4% each */
-          width: 99%;
-          margin-left: 1% !important;
-          margin-right: 0 !important;
-        }
-
-        .section_header {
-          background-color: rgb(207, 201, 254);
-          margin-bottom: 6px;
-        }
-        .bold { font-weight: bold; }
-
-      </style>
       <!-- order: smart-api-client, xdate, data, flot, excanvas -->
       <script src='../smart/scripts/smart-api-client.js'></script>
       <script src='./js/xdate.js'></script>
@@ -75,6 +28,7 @@
       <script src='./js/flot/jquery.flot.resize.min.js'></script>
       <script src='./js/jsonld.js'></script>
       <!--[if lte IE 8]><script src="./js/flot/excanvas.min.js"></script><![endif]-->
+
       <script>
         // On SMART.ready, do all the data api calls and synchronize
         // when they are all complete.
@@ -225,71 +179,70 @@
         });
       </script>
   </head>
-  <body style="margin: 0px;">
+  <body>
     <div id='content' class="container_12">
-      <div id='top_line' class='grid_12' style='padding-left: 2em; font-weight: bold'>
-        <span style='text-transform: uppercase'>
-          <span id='family_name'></span>,
-          <span id='given_name'></span>
-          &nbsp;
-          <span id='record_id'></span>
-          &nbsp;
-          <span id='birthday'></span>
-          &nbsp;
-          (<span id='age'></span> <span style='text-transform: lowercase'>YRS.</span>)
-          &nbsp;
-          <span id='gender'></span>
-          </span>
+      <div id='top_line' class='grid_12'>
+        <span id='family_name'></span>,
+        <span id='given_name'></span>
+        &nbsp;
+        <span id='record_id'></span>
+        &nbsp;
+        <span id='birthday'></span>
+        &nbsp;
+        (<span id='age'></span> <span style='text-transform: lowercase'>YRS.</span>)
+        &nbsp;
+        <span id='gender'></span>
       </div>
 
       <div class='clear'></div>
 
-      <div id='column_1' class='grid_3' style='border: none; height: 1000px;'>
+      <div id='column_1' class='grid_3'>
         <div class='section_header'>
-          <span class='bold'>BP</span> goal &lt; 130/80
+          BP <span class='normal'>goal &lt; 130/80</span>
         </div>
 
-        <div id='bp_graph' style='padding-top: 6px;'></div>
+        <div id='bp_graph'></div>
 
-        <div id='last_known_values' style='padding-top: 2em;'>
-          <div class='section_header'><span class='bold'>Last Known Values</span></div>
-        </div>
-      </div>
-
-      <div id='column_2' class='grid_3' style='border: none; height: 1000px;'>
-        <div class='section_header'><span class='bold'>LDL</span> goal &lt; 100</div>
-
-        <div id='ldl_graph' style='padding-top: 6px;'></div>
-
-        <div id='other_info' style='padding-top: 2em;'>
-          <div class='section_header'><span class='bold'>Other Info</span></div>
-        </div>
-
-        <div id='major_cv_comorbidities' style='padding-top: 2em;'>
-          <div class='section_header'><span class='bold'>Major CV Comorbidities</span></div>
-        </div>
-
-        <div id='other_problems' style='padding-top: 2em;'>
-          <div class='section_header'><span class='bold'>Other Problems</span></div>
+        <div id='last_known_values'>
+          <div class='section_header'>Last Known Values</div>
         </div>
       </div>
 
-      <div id='column_3' class='grid_6'  style='border: none; height: 1000px;'>
-        <div class='section_header'><span class='bold'>A1C</span> goal &lt; 7</div>
-
-        <div id='a1c_graph' style='padding-top: 6px;'></div>
-
-        <div id='reminders' style='padding-top: 2em;'>
-          <div class='section_header'><span class='bold'>Reminders</span></div>
-          TODO
+      <div id='column_2' class='grid_3'>
+        <div class='section_header'>
+          LDL <span class='normal'>goal &lt; 100</span>
         </div>
 
-        <div id='allergies' style='padding-top: 2em;'>
-          <div class='section_header'><span class='bold'>Allergies</span></div>
+        <div id='ldl_graph'></div>
+
+        <div id='other_info'>
+          <div class='section_header'>Other Info</div>
         </div>
 
-        <div id='medications' style='padding-top: 2em;'>
-          <div class='section_header'><span class='bold'>Medications</span></div>
+        <div id='major_cv_comorbidities'>
+          <div class='section_header'>Major CV Comorbidities</div>
+        </div>
+
+        <div id='other_problems'>
+          <div class='section_header'>Other Problems</div>
+        </div>
+      </div>
+
+      <div id='column_3' class='grid_6'>
+        <div class='section_header'>A1C <span class='normal'>goal &lt; 7</span></div>
+
+        <div id='a1c_graph'></div>
+
+        <div id='reminders'>
+          <div class='section_header'>Reminders</div>
+        </div>
+
+        <div id='allergies'>
+          <div class='section_header'>Allergies</div>
+        </div>
+
+        <div id='medications'>
+          <div class='section_header'>Medications</div>
         </div>
       </div>
     </div>
