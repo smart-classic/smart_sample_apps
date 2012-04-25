@@ -15,6 +15,10 @@ var error_callback = function(e){
   dfd.reject(e.message);
 };
 
+var _round = function(val, dec){
+  return Math.round(val*Math.pow(10,dec))/Math.pow(10,dec);
+}
+
 var ALLERGIES_get = function(){
   return $.Deferred(function(dfd){
     SMART.ALLERGIES_get()
@@ -137,23 +141,54 @@ var VITAL_SIGNS_get = function(){
         _get_bps('systolic');
         _get_bps('diastolic')
 
-        // debugger;
 
-        // weight
-        // r.graph
-        //  .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-        //  .prefix('sp',       'http://smartplatforms.org/terms#')
-        //  .prefix('dc',  'http://purl.org/dc/terms/')
-        //  .where('?bn         rdf:type         sp:VitalSign')
-        //  .where('?bn         sp:vitalName     ?vital_name')
-        //  .where('?bn         sp:value         ?value')
-        //  .where('?bn         sp:unit          ?unit')
-        //  .where('?vital_name sp:code          ' + code)
-        //  .where('?bn2        sp:'+ type +'    ?bn')
-        //  .where('?bn2        rdf:type         sp:BloodPressure')
-        //  .where('?vital_id   sp:bloodPressure ?bn2')
-        //  .where('?vital_id   dc:date     ?date')
-        //  .each(function(){})
+        pt.weight_array = [];
+        pt.weight_latest = null;
+        r.graph
+         .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',       'http://smartplatforms.org/terms#')
+         .prefix('dc',       'http://purl.org/dc/terms/')
+         .where('?vital_id   sp:weight        ?bn')
+         .where('?vital_id   dc:date          ?date')
+         .where('?bn         sp:vitalName     ?bn2')
+         .where('?bn2        sp:code          <http://purl.bioontology.org/ontology/LNC/3141-9>')
+         .where('?bn         rdf:type         sp:VitalSign')
+         .where('?bn         sp:value         ?value')
+         .where('?bn         sp:unit          ?unit')
+         .each(function(){
+           pt.weight_array.push([
+             new XDate(this.date.value).valueOf(),
+             Number(this.value.value),
+             this.unit.value
+           ])
+         })
+
+        pt.weight_array = _(pt.weight_array).sortBy(function(item){ return item[0]; })
+        pt.weight_latest = _(pt.weight_array).last() || null
+
+        pt.height_array = [];
+        pt.height_latest = null;
+        r.graph
+         .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',       'http://smartplatforms.org/terms#')
+         .prefix('dc',       'http://purl.org/dc/terms/')
+         .where('?vital_id   sp:height        ?bn')
+         .where('?vital_id   dc:date          ?date')
+         .where('?bn         sp:vitalName     ?bn2')
+         .where('?bn2        sp:code          <http://purl.bioontology.org/ontology/LNC/8302-2>')
+         .where('?bn         rdf:type         sp:VitalSign')
+         .where('?bn         sp:value         ?value')
+         .where('?bn         sp:unit          ?unit')
+         .each(function(){
+           pt.height_array.push([
+             new XDate(this.date.value).valueOf(),
+             Number(this.value.value),
+             this.unit.value
+           ])
+         })
+
+        pt.height_array = _(pt.height_array).sortBy(function(item){ return item[0]; })
+        pt.height_latest = _(pt.height_array).last() || null
 
         dfd.resolve();
       })
@@ -668,11 +703,16 @@ SMART.ready(function(){
     $('#a1c_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
     $('#a1c_latest_unit').text(pt.a1c_latest ? pt.a1c_latest[2] : null)
 
-    // // other info
-    // $('#weigth_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
-    // $('#weigth_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
-    // $('#height_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
-    // $('#height_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
+
+    // other info
+    $('#weight_latest_date').text(pt.weight_latest ? new XDate(pt.weight_latest[0]).toString('MM/dd/yy') : null)
+    $('#weight_latest_val') .text(pt.weight_latest ? _round(pt.weight_latest[1], 2) : null)
+    $('#weight_latest_unit').text(pt.weight_latest ? pt.weight_latest[2] : null)
+
+    $('#height_latest_date').text(pt.height_latest ? new XDate(pt.height_latest[0]).toString('MM/dd/yy') : null)
+    $('#height_latest_val') .text(pt.height_latest ? _round(pt.height_latest[1], 2) : null)
+    $('#height_latest_unit').text(pt.height_latest ? pt.height_latest[2] : null)
+
     // $('#pneumovax_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
     // $('#flu_shot_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
 
