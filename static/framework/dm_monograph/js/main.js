@@ -161,7 +161,6 @@ var LAB_RESULTS_get = function(){
         r.graph
          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',      'http://smartplatforms.org/terms#')
-         .prefix('dcterms', 'http://purl.org/dc/terms/')
          .where('?lr  rdf:type              sp:LabResult')
          .where('?lr  sp:labName            ?bn1')
          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/13457-7>')
@@ -201,7 +200,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
@@ -241,7 +239,6 @@ var LAB_RESULTS_get = function(){
           r.graph
            .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
            .prefix('sp',      'http://smartplatforms.org/terms#')
-           .prefix('dcterms', 'http://purl.org/dc/terms/')
            .where('?lr  rdf:type              sp:LabResult')
            .where('?lr  sp:labName            ?bn1')
            .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/5804-0>')
@@ -273,7 +270,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/14959-1>')
@@ -311,7 +307,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/1920-8>')
@@ -346,7 +341,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2093-3>')
@@ -383,7 +377,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2571-8>')
@@ -417,7 +410,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2085-9>')
@@ -454,7 +446,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
@@ -491,7 +482,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2160-0>')
@@ -528,7 +518,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2345-7>')
@@ -565,7 +554,6 @@ var LAB_RESULTS_get = function(){
          r.graph
           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',      'http://smartplatforms.org/terms#')
-          .prefix('dcterms', 'http://purl.org/dc/terms/')
           .where('?lr  rdf:type              sp:LabResult')
           .where('?lr  sp:labName            ?bn1')
           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
