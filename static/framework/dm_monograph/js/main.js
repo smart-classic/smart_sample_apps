@@ -22,11 +22,11 @@ var ALLERGIES_get = function(){
         var no_known_allergies_p = r.graph
           .prefix('rdf',           'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',            'http://smartplatforms.org/terms#')
-          .prefix('dcterms',       'http://purl.org/dc/terms/')
+          .prefix('dc',            'http://purl.org/dc/terms/')
           .where('?allergy_id      rdf:type                sp:AllergyExclusion')
           .where('?allergy_id      sp:allergyExclusionName ?bn')
           .where('?bn              sp:code                 ?snomed_code_uri')
-          .where('?snomed_code_uri dcterms:identifier      "1602440022"')
+          .where('?snomed_code_uri dc:identifier           "1602440022"')
           .length
 
         $.extend(pt, {'no_known_allergies_p': no_known_allergies_p})
@@ -42,17 +42,17 @@ var DEMOGRAPHICS_get = function(){
     SMART.DEMOGRAPHICS_get()
       .success(function(demos){
         var d = demos.graph
-                     .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-                     .prefix('v',    'http://www.w3.org/2006/vcard/ns#')
-                     .prefix('rdf',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-                     .prefix('sp',   'http://smartplatforms.org/terms#')
-                     .where('?r      v:n           ?n')
-                     .where('?n      rdf:type      v:Name')
-                     .where('?n      v:given-name  ?given_name')
-                     .where('?n      v:family-name ?family_name')
-                     .where('?r      foaf:gender   ?gender')
-                     .where('?r      v:bday        ?bday')
-                     .get(0)
+          .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
+          .prefix('v',    'http://www.w3.org/2006/vcard/ns#')
+          .prefix('rdf',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',   'http://smartplatforms.org/terms#')
+          .where('?r      v:n           ?n')
+          .where('?n      rdf:type      v:Name')
+          .where('?n      v:given-name  ?given_name')
+          .where('?n      v:family-name ?family_name')
+          .where('?r      foaf:gender   ?gender')
+          .where('?r      v:bday        ?bday')
+          .get(0)
 
         pt.family_name = d.family_name.value;
         pt.given_name = d.given_name.value;
@@ -97,7 +97,7 @@ var VITAL_SIGNS_get = function(){
           r.graph
            .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
            .prefix('sp',       'http://smartplatforms.org/terms#')
-           .prefix('dcterms',  'http://purl.org/dc/terms/')
+           .prefix('dc',       'http://purl.org/dc/terms/')
            .where('?bn         rdf:type         sp:VitalSign')
            .where('?bn         sp:vitalName     ?vital_name')
            .where('?bn         sp:value         ?value')
@@ -106,7 +106,7 @@ var VITAL_SIGNS_get = function(){
            .where('?bn2        sp:'+ type +'    ?bn')
            .where('?bn2        rdf:type         sp:BloodPressure')
            .where('?vital_id   sp:bloodPressure ?bn2')
-           .where('?vital_id   dcterms:date     ?date')
+           .where('?vital_id   dc:date          ?date')
            .each(function(){
              if (type === 'systolic') {
                bp_array = pt.sbp_array;
@@ -136,6 +136,25 @@ var VITAL_SIGNS_get = function(){
         pt.sbp_latest = null;
         _get_bps('systolic');
         _get_bps('diastolic')
+
+        // debugger;
+
+        // weight
+        // r.graph
+        //  .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+        //  .prefix('sp',       'http://smartplatforms.org/terms#')
+        //  .prefix('dc',  'http://purl.org/dc/terms/')
+        //  .where('?bn         rdf:type         sp:VitalSign')
+        //  .where('?bn         sp:vitalName     ?vital_name')
+        //  .where('?bn         sp:value         ?value')
+        //  .where('?bn         sp:unit          ?unit')
+        //  .where('?vital_name sp:code          ' + code)
+        //  .where('?bn2        sp:'+ type +'    ?bn')
+        //  .where('?bn2        rdf:type         sp:BloodPressure')
+        //  .where('?vital_id   sp:bloodPressure ?bn2')
+        //  .where('?vital_id   dc:date     ?date')
+        //  .each(function(){})
+
         dfd.resolve();
       })
       .error(error_callback);
@@ -159,21 +178,20 @@ var LAB_RESULTS_get = function(){
         // FIXME: ONLY top LDL code!!
         pt.ldl_array = [];
         r.graph
-         .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',      'http://smartplatforms.org/terms#')
-         .where('?lr  rdf:type              sp:LabResult')
-         .where('?lr  sp:labName            ?bn1')
-         .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/13457-7>')
-         .where('?lr  sp:quantitativeResult ?bn2')
-         .where('?bn2 rdf:type              sp:QuantitativeResult')
-         .where('?bn2 sp:valueAndUnit       ?bn3')
-         .where('?bn3 rdf:type              sp:ValueAndUnit')
-         .where('?bn3 sp:value              ?value')
-         .where('?bn3 sp:unit               ?unit')
-         .where('?lr  sp:specimenCollected  ?bn4')
-         .where('?bn4 sp:startDate          ?date')
+         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',  'http://smartplatforms.org/terms#')
+         .where('?lr    rdf:type              sp:LabResult')
+         .where('?lr    sp:labName            ?bn1')
+         .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/13457-7>')
+         .where('?lr    sp:quantitativeResult ?bn2')
+         .where('?bn2   rdf:type              sp:QuantitativeResult')
+         .where('?bn2   sp:valueAndUnit       ?bn3')
+         .where('?bn3   rdf:type              sp:ValueAndUnit')
+         .where('?bn3   sp:value              ?value')
+         .where('?bn3   sp:unit               ?unit')
+         .where('?lr    sp:specimenCollected  ?bn4')
+         .where('?bn4   sp:startDate          ?date')
          .each(function(){
-
            // FIXME: hack push all dates + 3 years
            var d = new XDate(this.date.value)
            d.addYears(3, true);
@@ -198,21 +216,20 @@ var LAB_RESULTS_get = function(){
          // FIXME: ONLY top A1c code!!
          pt.a1c_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -237,19 +254,19 @@ var LAB_RESULTS_get = function(){
           // FIXME: ONLY top code!!
           pt.ur_tp_array = [];
           r.graph
-           .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-           .prefix('sp',      'http://smartplatforms.org/terms#')
-           .where('?lr  rdf:type              sp:LabResult')
-           .where('?lr  sp:labName            ?bn1')
-           .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/5804-0>')
-           .where('?lr  sp:quantitativeResult ?bn2')
-           .where('?bn2 rdf:type              sp:QuantitativeResult')
-           .where('?bn2 sp:valueAndUnit       ?bn3')
-           .where('?bn3 rdf:type              sp:ValueAndUnit')
-           .where('?bn3 sp:value              ?value')
-           .where('?bn3 sp:unit               ?unit')
-           .where('?lr  sp:specimenCollected  ?bn4')
-           .where('?bn4 sp:startDate          ?date')
+           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+           .prefix('sp',  'http://smartplatforms.org/terms#')
+           .where('?lr    rdf:type              sp:LabResult')
+           .where('?lr    sp:labName            ?bn1')
+           .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/5804-0>')
+           .where('?lr    sp:quantitativeResult ?bn2')
+           .where('?bn2   rdf:type              sp:QuantitativeResult')
+           .where('?bn2   sp:valueAndUnit       ?bn3')
+           .where('?bn3   rdf:type              sp:ValueAndUnit')
+           .where('?bn3   sp:value              ?value')
+           .where('?bn3   sp:unit               ?unit')
+           .where('?lr    sp:specimenCollected  ?bn4')
+           .where('?bn4   sp:startDate          ?date')
            .each(function(){
              pt.ur_tp_array.push([
                 new XDate(this.date.value).valueOf(),
@@ -268,21 +285,20 @@ var LAB_RESULTS_get = function(){
          // FIXME: ONLY top code!!
          pt.micro_alb_cre_ratio_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/14959-1>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/14959-1>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -305,21 +321,20 @@ var LAB_RESULTS_get = function(){
          // 1920-8,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,AST SerPl-cCnc,CHEM,19
          pt.sgot_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/1920-8>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/1920-8>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -339,21 +354,20 @@ var LAB_RESULTS_get = function(){
          // 2093-3,Cholesterol [Mass/volume] in Serum or Plasma,Cholest SerPl-mCnc,CHEM,32
          pt.cholesterol_total_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2093-3>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2093-3>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -375,21 +389,20 @@ var LAB_RESULTS_get = function(){
          // fixme only 1 code!
          pt.triglyceride_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2571-8>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2571-8>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -408,21 +421,20 @@ var LAB_RESULTS_get = function(){
          // 2085-9,Cholesterol in HDL [Mass/volume] in Serum or Plasma,HDLc SerPl-mCnc,CHEM,38
          pt.hdl_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2085-9>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2085-9>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -444,21 +456,20 @@ var LAB_RESULTS_get = function(){
          // fixme only top code
          pt.bun_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -480,21 +491,20 @@ var LAB_RESULTS_get = function(){
          // fixme only top code
          pt.creatinine_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2160-0>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2160-0>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -516,21 +526,20 @@ var LAB_RESULTS_get = function(){
          // fixme only top code
          pt.glucose_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/2345-7>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2345-7>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
-
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
             d.addYears(3, true);
@@ -552,19 +561,19 @@ var LAB_RESULTS_get = function(){
          // fixme only top code
          pt.bun_array = [];
          r.graph
-          .prefix('rdf',     'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',      'http://smartplatforms.org/terms#')
-          .where('?lr  rdf:type              sp:LabResult')
-          .where('?lr  sp:labName            ?bn1')
-          .where('?bn1 sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
-          .where('?lr  sp:quantitativeResult ?bn2')
-          .where('?bn2 rdf:type              sp:QuantitativeResult')
-          .where('?bn2 sp:valueAndUnit       ?bn3')
-          .where('?bn3 rdf:type              sp:ValueAndUnit')
-          .where('?bn3 sp:value              ?value')
-          .where('?bn3 sp:unit               ?unit')
-          .where('?lr  sp:specimenCollected  ?bn4')
-          .where('?bn4 sp:startDate          ?date')
+          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+          .prefix('sp',  'http://smartplatforms.org/terms#')
+          .where('?lr    rdf:type              sp:LabResult')
+          .where('?lr    sp:labName            ?bn1')
+          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
+          .where('?lr    sp:quantitativeResult ?bn2')
+          .where('?bn2   rdf:type              sp:QuantitativeResult')
+          .where('?bn2   sp:valueAndUnit       ?bn3')
+          .where('?bn3   rdf:type              sp:ValueAndUnit')
+          .where('?bn3   sp:value              ?value')
+          .where('?bn3   sp:unit               ?unit')
+          .where('?lr    sp:specimenCollected  ?bn4')
+          .where('?bn4   sp:startDate          ?date')
           .each(function(){
 
             // FIXME: hack push all dates + 3 years
@@ -659,6 +668,13 @@ SMART.ready(function(){
     $('#a1c_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
     $('#a1c_latest_unit').text(pt.a1c_latest ? pt.a1c_latest[2] : null)
 
+    // // other info
+    // $('#weigth_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
+    // $('#weigth_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
+    // $('#height_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
+    // $('#height_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
+    // $('#pneumovax_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
+    // $('#flu_shot_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
 
     //
     // flot
