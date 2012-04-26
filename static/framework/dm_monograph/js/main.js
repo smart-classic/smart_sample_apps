@@ -206,8 +206,8 @@ var VITAL_SIGNS_get = function(){
          .each(function(){
            pt.weight_array.push([
              new XDate(this.date.value).valueOf(),
-             Number(this.value.value),
-             this.unit.value
+             this.unit.value === 'kg' ? Number(this.value.value) * 2.2 : Number(this.value.value),
+             this.unit.value === 'kg' ? 'lbs' : this.unit.value
            ])
          })
 
@@ -230,8 +230,8 @@ var VITAL_SIGNS_get = function(){
          .each(function(){
            pt.height_array.push([
              new XDate(this.date.value).valueOf(),
-             Number(this.value.value),
-             this.unit.value
+             this.unit.value === 'm' ? Number(this.value.value) *  3.2808399 : Number(this.value.value),
+             this.unit.value === 'm' ? 'ft' : this.unit.value
            ])
          })
 
