@@ -632,6 +632,36 @@ var LAB_RESULTS_get = function(){
   }).promise();
 };
 
+
+var PROBLEMS_get = function(){
+  return $.Deferred(function(dfd){
+    SMART.PROBLEMS_get()
+      .success(function(r){
+        pt.problems_array = [];
+
+        r.graph
+         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',  'http://smartplatforms.org/terms#')
+         .prefix('dc',  'http://purl.org/dc/terms/')
+         .where('?id    rdf:type       sp:Problem')
+         .where('?id    sp:startDate   ?date')
+         .where('?id    sp:problemName ?bn')
+         .where('?bn    rdf:type       sp:CodedValue')
+         .where('?bn    dc:title       ?title')
+         .each(function(){
+           pt.problems_array.push([
+             new XDate(this.date.value).valueOf(),
+             this.title.value
+           ])
+         })
+
+        pt.problems_array = _(pt.problems_array).sortBy(function(item){ return item[0]; })
+        dfd.resolve();
+      })
+      .error(error_callback);
+  }).promise();
+};
+
 // On SMART.ready, do all the data api calls and synchronize
 // when they are all complete.
 SMART.ready(function(){
@@ -640,9 +670,9 @@ SMART.ready(function(){
        , DEMOGRAPHICS_get()
        , VITAL_SIGNS_get()
        , LAB_RESULTS_get()
+       , PROBLEMS_get()
        // , MEDS_get()
        // , NOTES_get()
-       // , PROBLEMS_get()
        // , VITAL_SIGNS_get()
   )
   .then(function(){
@@ -703,7 +733,6 @@ SMART.ready(function(){
     $('#a1c_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
     $('#a1c_latest_unit').text(pt.a1c_latest ? pt.a1c_latest[2] : null)
 
-
     // other info
     $('#weight_latest_date').text(pt.weight_latest ? new XDate(pt.weight_latest[0]).toString('MM/dd/yy') : null)
     $('#weight_latest_val') .text(pt.weight_latest ? _round(pt.weight_latest[1], 2) : null)
@@ -715,6 +744,44 @@ SMART.ready(function(){
 
     // $('#pneumovax_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
     // $('#flu_shot_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
+
+    // problems
+    _(pt.problems_array).each(function(e){
+      // create a div with class problem
+      $('<div></div>', {
+        class: 'problem',
+        text: e[1]
+      }).appendTo('#problems')
+    })
+
+    // (some) cv comorbidities
+    // fixme: I'm sure there are many more...
+    // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
+    var cv_comorbidities = _(pt.problems_array).filter(function(e) {
+      var title = e[1];
+      if (title.match(/heart disease/i)) return true;
+      if (title.match(/Congestive Heart Failure/i)) return true;
+      if (title.match(/Myocardial Infarction/i)) return true;
+      if (title.match(/Cerebrovascular Disease	/i)) return true;
+      if (title.match(/Hypertension/i)) return true;
+      if (title.match(/neuropathic pain/i)) return true;
+      if (title.match(/coronary arteriosclerosis/i)) return true;
+      if (title.match(/chronic renal impariment/i)) return true;
+      if (title.match(/cardiac bypass graft surgery/i)) return true;
+      if (title.match(/Preinfarction syndrome/i)) return true;
+      if (title.match(/Chest pain/i)) return true;
+      if (title.match(/Chronic ischemic heart disease/i)) return true;
+      if (title.match(/Disorder of cardiovascular system/i)) return true;
+      if (title.match(/Precordial pain/i)) return true;
+      return false;
+    })
+
+    _(cv_comorbidities).each(function(e){
+      $('<div></div>', {
+        class: 'cv_comorbidity',
+        text: e[1]
+      }).appendTo('#cv_comorbidities')
+    })
 
     //
     // flot
