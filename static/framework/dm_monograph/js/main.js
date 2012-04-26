@@ -22,19 +22,67 @@ var _round = function(val, dec){
 var ALLERGIES_get = function(){
   return $.Deferred(function(dfd){
     SMART.ALLERGIES_get()
+      // pt's with allergies: J Diaz, K Lewis, K Kelly, R Robinson
       .success(function(r){
-        var no_known_allergies_p = r.graph
-          .prefix('rdf',           'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',            'http://smartplatforms.org/terms#')
-          .prefix('dc',            'http://purl.org/dc/terms/')
-          .where('?allergy_id      rdf:type                sp:AllergyExclusion')
-          .where('?allergy_id      sp:allergyExclusionName ?bn')
-          .where('?bn              sp:code                 ?snomed_code_uri')
-          .where('?snomed_code_uri dc:identifier           "1602440022"')
-          .length
+        pt.allergies_array = [];
+        r.graph
+         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',  'http://smartplatforms.org/terms#')
+         .prefix('dc',  'http://purl.org/dc/terms/')
+         .where('?id    rdf:type             sp:Allergy')
+         .where('?id    sp:drugClassAllergen ?bn')
+         .where('?bn    dc:title             ?title')
+         .where('?id    sp:allergicReaction  ?bn2')
+         .where('?bn2   dc:title             ?reaction')
+         .each(function(){
+           pt.allergies_array.push([
+             this.title.value.toString(),
+             this.reaction.value.toString()
+           ])
+         })
 
-        $.extend(pt, {'no_known_allergies_p': no_known_allergies_p})
+        r.graph
+         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',  'http://smartplatforms.org/terms#')
+         .prefix('dc',  'http://purl.org/dc/terms/')
+         .where('?id    rdf:type            sp:Allergy')
+         .where('?id    sp:foodAllergen     ?bn')
+         .where('?bn    dc:title            ?title')
+         .where('?id    sp:allergicReaction ?bn2')
+         .where('?bn2   dc:title            ?reaction')
+         .each(function(){
+           pt.allergies_array.push([
+             this.title.value.toString(),
+             this.reaction.value.toString()
+           ])
+         })
+        dfd.resolve();
+      })
+      .error(error_callback);
+  }).promise();
+};
 
+var MEDS_get = function(){
+  return $.Deferred(function(dfd){
+    SMART.MEDS_get()
+      .success(function(r){
+        pt.meds_array = [];
+        r.graph
+         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',  'http://smartplatforms.org/terms#')
+         .prefix('dc',  'http://purl.org/dc/terms/')
+         .where('?id    rdf:type        sp:Medication')
+         .where('?id    sp:drugName     ?bn')
+         .where('?bn    dc:title        ?title')
+         .where('?id    sp:instructions ?instruction')
+         .each(function(){
+           pt.meds_array.push([
+             this.title.value.toString(),
+             this.instruction.value.toString()
+           ])
+         })
+
+        console.log(pt.meds_array)
         dfd.resolve();
       })
       .error(error_callback);
@@ -638,7 +686,6 @@ var PROBLEMS_get = function(){
     SMART.PROBLEMS_get()
       .success(function(r){
         pt.problems_array = [];
-
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -671,7 +718,7 @@ SMART.ready(function(){
        , VITAL_SIGNS_get()
        , LAB_RESULTS_get()
        , PROBLEMS_get()
-       // , MEDS_get()
+       , MEDS_get()
        // , NOTES_get()
        // , VITAL_SIGNS_get()
   )
@@ -754,6 +801,8 @@ SMART.ready(function(){
       }).appendTo('#problems')
     })
 
+    $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+
     // (some) cv comorbidities
     // fixme: I'm sure there are many more...
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
@@ -782,6 +831,28 @@ SMART.ready(function(){
         text: e[1]
       }).appendTo('#cv_comorbidities')
     })
+
+    $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+
+    // allergies
+    _(pt.allergies_array).each(function(e){
+      $('<div></div>', {
+        class: 'allergy',
+        html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1] + '.'
+      }).appendTo('#allergies')
+    })
+
+    $('.allergy').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+
+    // medications
+    _(pt.meds_array).each(function(e){
+      $('<div></div>', {
+        class: 'medication',
+        html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1] + '.'
+      }).appendTo('#medications')
+    })
+
+    $('.medication').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
 
     //
     // flot
