@@ -115,29 +115,51 @@ SMART.get_iframe = function (app_instance, callback){
     callback(iframe[0]);
 };
 
-SMART.handle_api = function(app_instance, api_call, callback)
+SMART.handle_api = function(app_instance, api_call, callback_success, callback_error)
 {
+	var success = function(data, status_code, xhr) {
+            var ct = xhr.getResponseHeader("Content-Type") || "unknown";
+            callback_success({
+                contentType: ct.split(";")[0],  
+                data: data});
+        };
+
+	var error = function(xhr, textStatus, error) {
+            console.log(textStatus);
+            console.log(error);
+            var ct = xhr.getResponseHeader("Content-Type") || "unknown";
+            callback_error (xhr.status, {
+                contentType: ct.split(";")[0], 
+                data: xhr.responseText});
+	};
+
       // Return a fake medication list containing just simvastatin...
-      if (api_call.method=="GET" && api_call.func.match(/^.*\/records\/search/))
-	 $.get('sample_demographics.xml', callback, 'text');
-      else if (api_call.method=="GET" && api_call.func.match(/^.*\/demographics$/))
-	 $.get('sample_demographics.xml', callback, 'text');
-      else if (api_call.method=="GET" && api_call.func.match(/^.*\/medications\/$/))
-	 $.get('sample_data.xml', callback, 'text');
-      else if (api_call.method=="GET" && api_call.func.match(/^\/apps\/manifests$/))
-	 callback(JSON.stringify(all_manifests));
+      if (api_call.method=="GET" && api_call.func.match(/^.*\/records\/search/)) {
+			 $.ajax({type: 'get', url: 'sample_demographics.xml', dataType: 'text'})
+					.success(success).error(error);
+			}
+      else if (api_call.method=="GET" && api_call.func.match(/^.*\/demographics$/)) {
+			 $.ajax({type: 'get', url: 'sample_demographics.xml', dataType: 'text'})
+					.success(success).error(error);
+			}
+      else if (api_call.method=="GET" && api_call.func.match(/^.*\/medications\/$/)) {
+				 $.ajax({type: 'get', url: 'sample_data.xml', dataType: 'text'})
+					.success(success).error(error);
+			}
+      else if (api_call.method=="GET" && api_call.func.match(/^\/apps\/manifests$/)) {
+				 callback(JSON.stringify(all_manifests));
+			}
       else if (api_call.method=="GET" && api_call.func.match(/^\/apps\/(.+)\/manifest$/))
       {
          var app_id = api_call.func.match(/^\/apps\/(.+)\/manifest$/)[1];
          var manifest = manifest_hash[app_id];
          if (!manifest) return;
-	 callback(JSON.stringify(manifest));
+				 callback(JSON.stringify(manifest));
       }
-      else
+      else {
         alert("Function " + api_call.func + " not implemented yet.");
-
+			}
 };
-
 
 var clicked = function(app_id) {
   SMART.launch_app(manifest_hash[app_id], simple_context);

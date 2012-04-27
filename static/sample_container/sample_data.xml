@@ -7,11 +7,7 @@
     <route xmlns="http://smartplatforms.org/terms#">oral</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2001-07-25</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2001-07-25</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">4</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
     <drugName xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5619"/>
 </rdf:Description>
 
@@ -26,11 +22,7 @@
     <route xmlns="http://smartplatforms.org/terms#">injectable</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2002-07-01</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2002-07-01</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">mg/ml</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">40</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg/mL</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">40</dose>
     <drugName xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5621"/>
 </rdf:Description>
 
@@ -45,11 +37,7 @@
     <route xmlns="http://smartplatforms.org/terms#">oral</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2003-02-07</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2003-02-07</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">2</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
     <drugName xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5623"/>
 </rdf:Description>
 
@@ -64,11 +52,7 @@
     <route xmlns="http://smartplatforms.org/terms#">rectal</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2003-02-07</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2003-02-07</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">mg/ml</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">5</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
     <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5625"/>
 </rdf:Description>
 
@@ -83,11 +67,7 @@
     <route xmlns="http://smartplatforms.org/terms#">oral</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2006-03-06</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2006-03-06</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">4</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">4</dose>
     <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5627"/>
 </rdf:Description>
 
@@ -102,11 +82,7 @@
     <route xmlns="http://smartplatforms.org/terms#">rectal</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2006-05-30</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2006-05-30</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">120</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
     <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5629"/>
 </rdf:Description>
 
@@ -121,11 +97,7 @@
     <route xmlns="http://smartplatforms.org/terms#">oral</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2007-02-15</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2007-02-15</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">MG</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">100</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">100</dose>
     <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5631"/>
 </rdf:Description>
 
@@ -140,11 +112,7 @@
     <route xmlns="http://smartplatforms.org/terms#">oral</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2009-02-13</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2009-02-13</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">4</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">2</dose>
     <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5633"/>
 </rdf:Description>
 
@@ -159,11 +127,7 @@
     <route xmlns="http://smartplatforms.org/terms#">intravenous</route>
     <startDate xmlns="http://smartplatforms.org/terms#">2009-06-19</startDate>
     <endDate xmlns="http://smartplatforms.org/terms#">2009-06-19</endDate>
-    <doseUnit xmlns="http://smartplatforms.org/terms#">mg</doseUnit>
-    <strength xmlns="http://smartplatforms.org/terms#">500</strength>
-    <strengthUnit xmlns="http://smartplatforms.org/terms#">mg</strengthUnit>
     <frequency xmlns="http://smartplatforms.org/terms#">daily</frequency>
-    <dose xmlns="http://smartplatforms.org/terms#">500</dose>
     <code xmlns="http://smartplatforms.org/terms#" rdf:nodeID="r1294169778r21765r5635"/>
 </rdf:Description>
 
