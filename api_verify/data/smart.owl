@@ -2198,7 +2198,12 @@ For instance, below are two allergies: first, an allergy to the entire class of 
       &lt;/sp:Pharmacy&gt;
     &lt;/sp:pharmacy&gt;
     &lt;sp:pbm&gt;T00000000001011&lt;/sp:pbm&gt;
-    &lt;sp:dispenseQuantity&gt;60&lt;/sp:dispenseQuantity&gt;
+    &lt;sp:quantityDispensed&gt;
+      &lt;sp:ValueAndUnit&gt;
+        &lt;sp:value&gt;60&lt;/sp:value&gt;
+        &lt;sp:unit&gt;{tablet}&lt;/sp:unit&gt;
+      &lt;/sp:ValueAndUnit&gt;
+    &lt;/sp:dispenseQuantity&gt;
     &lt;sp:dispenseDaysSupply&gt;30&lt;/sp:dispenseDaysSupply&gt;
  &lt;/sp:Fulfillment&gt;
 &lt;/rdf:RDF&gt;</api:example>
@@ -5560,21 +5565,6 @@ system = http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=cvx#</rdfs:c
         <rdf:type rdf:resource="&spcode;AllergySeverity"/>
         <dcterms:title>Moderate</dcterms:title>
     </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#delete_demographics -->
-
-    <owl:NamedIndividual rdf:about="&calls;delete_demographics">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:path>/records/{record_id}/demographics</api:path>
-        <api:category>record_items</api:category>
-        <api:by_internal_id>true</api:by_internal_id>
-        <rdfs:comment>Delete demographics for a patient</rdfs:comment>
-        <api:method>DELETE</api:method>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Demographics"/>
-    </owl:NamedIndividual>
-    
 
 
     <!-- http://smartplatforms.org/terms/api/calls#delete_preferences -->
@@ -5953,148 +5943,7 @@ system = http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=cvx#</rdfs:c
         <api:method>POST</api:method>
         <api:target rdf:resource="http://smartplatforms.org/terms#Alert"/>
     </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_allergy -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_allergy">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:category>record_item</api:category>
-        <rdfs:comment>Post allergies for a patient</rdfs:comment>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:path>/records/{record_id}/allergies/</api:path>
-        <api:method>POST</api:method>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Allergy"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_demographics -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_demographics">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:method>POST</api:method>
-        <api:path>/records/{record_id}/demographics</api:path>
-        <api:category>record_items</api:category>
-        <rdfs:comment>Add to demographics for a patient with a newly-supplied graph</rdfs:comment>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Demographics"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_encounter -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_encounter">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:category>record_item</api:category>
-        <rdfs:comment>Post encounters for a patient</rdfs:comment>
-        <api:path>/records/{record_id}/encounters/</api:path>
-        <api:method>POST</api:method>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Encounter"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_fulfillment -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_fulfillment">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:category>record_item</api:category>
-        <api:by_internal_id>true</api:by_internal_id>
-        <rdfs:comment>Post fulfillments for a patient</rdfs:comment>
-        <api:path>/records/{record_id}/fulfillments/</api:path>
-        <api:method>POST</api:method>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Fulfillment"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_immunization -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_immunization">
-        <rdf:type rdf:resource="&api;call"/>
-        <rdfs:comment>Post one immunization for a patient</rdfs:comment>
-        <api:method>POST</api:method>
-        <api:category>record_item</api:category>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:path>/records/{record_id}/immunizations/</api:path>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Immunization"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_lab_results -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_lab_results">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:path>/records/{record_id}/lab_results/</api:path>
-        <api:category>record_item</api:category>
-        <rdfs:comment>Post lab results for a patient</rdfs:comment>
-        <api:method>POST</api:method>
-        <api:target rdf:resource="http://smartplatforms.org/terms#LabResult"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_medical_record -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_medical_record">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:method>POST</api:method>
-        <api:path>/records/</api:path>
-        <api:category>record_items</api:category>
-        <rdfs:comment>Create a new medical record from the supplied graph</rdfs:comment>
-        <api:target rdf:resource="http://smartplatforms.org/terms#MedicalRecord"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_medication -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_medication">
-        <rdf:type rdf:resource="&api;call"/>
-        <rdfs:comment>Post new medication for a patient</rdfs:comment>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:method>POST</api:method>
-        <api:path>/records/{record_id}/medications/</api:path>
-        <api:category>record_items</api:category>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Medication"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_problems -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_problems">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:method>POST</api:method>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:category>record_item</api:category>
-        <api:path>/records/{record_id}/problems/</api:path>
-        <rdfs:comment>Post problems for a patient</rdfs:comment>
-        <api:target rdf:resource="http://smartplatforms.org/terms#Problem"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://smartplatforms.org/terms/api/calls#post_vital_signs -->
-
-    <owl:NamedIndividual rdf:about="&calls;post_vital_signs">
-        <rdf:type rdf:resource="&api;call"/>
-        <api:category>record_item</api:category>
-        <rdfs:comment>Post vital signs for a patient</rdfs:comment>
-        <api:by_internal_id>true</api:by_internal_id>
-        <api:path>/records/{record_id}/vital_signs/</api:path>
-        <api:method>POST</api:method>
-        <api:target rdf:resource="http://smartplatforms.org/terms#VitalSigns"/>
-    </owl:NamedIndividual>
-    
-
+   
 
     <!-- http://smartplatforms.org/terms/api/calls#put_preferences -->
 
