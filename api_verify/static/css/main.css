@@ -2,6 +2,10 @@ body {
     font: 62.5% "Trebuchet MS", sans-serif;
 }
 
+#tabs, a[href='#tab_all'] {
+    display:none;
+}
+
 #all_messages, #custom_messages, #rdf_input, #queries {
 	padding: 2px;
 	font-family: monospace;

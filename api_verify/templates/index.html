@@ -27,6 +27,8 @@ $def with (version)
 
 <h2>API Verifier (SMART v${version})</h2>
 
+<div id="spinner_main"><p><img src='/static/images/ajax-loader.gif' /></p></div>
+
 <div id="tabs">
 
     <ul>
@@ -182,12 +184,15 @@ $def with (version)
     
         // Load the API calls list and then initialize the app
         \$.when(VERIFY.loadCalls("${version}"))
-         .then( VERIFY.initializeApp,
+          .then(VERIFY.initializeApp,
                 function () {
                     // Bring up an error message dialog upon failing to load the API calls list
                     alert("Could not load the needed data");
                 }
               );
+    }).fail(function () {
+        \$.when(VERIFY.loadCalls("${version}", "standalone"))
+          .then(VERIFY.fallback);
     });
 }());
 </script>

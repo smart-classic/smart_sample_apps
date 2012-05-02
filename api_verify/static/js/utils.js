@@ -19,12 +19,12 @@ if (!VERIFY) {
     /**
     * Loads the SMART API calls matrix into the global object
     */
-    VERIFY.loadCalls = function (version) {
+    VERIFY.loadCalls = function (version, standalone) {
         var dfd = $.Deferred();
         
         $.get(
             "getcalls",
-            {'oauth_header': SMART.credentials.oauth_header},
+            {},
             function (responseText) {
                 
                 // Local variables
@@ -57,18 +57,20 @@ if (!VERIFY) {
                 // Update data to point at temp
                 data = temp;
                 
-                // Get the SMART connect client methods registry
-                m = SMART.methods;
-                
-                // Match the methods from the SMART connect client against the
-                // python library methods and update the data object as appropriate
-                for (i = 0; i < m.length; i++) {
-                    if (m[i].method === "GET" && 
-                        (m[i].category === "record_items" ||
-                         m[i].name === "MANIFESTS_get" ||
-                         m[i].name === "ONTOLOGY_get" ||
-                         m[i].name === "CAPABILITIES_get")) {
-                        if (data[m[i].target]) data[m[i].target].call_js = m[i].name;
+                if (!standalone) {
+                    // Get the SMART connect client methods registry
+                    m = SMART.methods;
+                    
+                    // Match the methods from the SMART connect client against the
+                    // python library methods and update the data object as appropriate
+                    for (i = 0; i < m.length; i++) {
+                        if (m[i].method === "GET" && 
+                            (m[i].category === "record_items" ||
+                             m[i].name === "MANIFESTS_get" ||
+                             m[i].name === "ONTOLOGY_get" ||
+                             m[i].name === "CAPABILITIES_get")) {
+                            if (data[m[i].target]) data[m[i].target].call_js = m[i].name;
+                        }
                     }
                 }
                 
@@ -360,6 +362,12 @@ if (!VERIFY) {
             model,
             options_str = "",
             SP = "http://smartplatforms.org/terms#";
+            
+        // Hide the spinner and display the tabs
+        $("a[href='#tab_all']").show();
+        $('#tabs').tabs( "select" , "#tab_all" );
+        $('#spinner_main').hide();
+        $('#tabs').show();
         
         // Table header
         table_str = "<table class='nicetable'>";
@@ -381,8 +389,7 @@ if (!VERIFY) {
         $('#model').html(options_str);
         
         // Output the queries descriptor model options
-        options_str = "<option></option>\n" + options_str;
-        $('#model2').html(options_str);
+        $('#model2').html("<option></option>\n" + options_str);
         
         // Enable the validate button
         $('#validate').button('enable');
@@ -399,6 +406,29 @@ if (!VERIFY) {
             VERIFY.callJS(call.call_js, smart_model);
         }
             
+    };
+    
+    // Call this method should the SMART connect object fail (i.e. the page has been loaded outside a container)
+    VERIFY.fallback = function () {
+    
+        var options_str = "",
+            SP = "http://smartplatforms.org/terms#",
+            model;
+            
+        for (model in VERIFY.calls) {
+            options_str += "<option>" + model.replace(SP,"") + "</option>\n";
+        }
+        
+        $('#model').html(options_str);
+        $('#model2').html("<option></option>\n" + options_str);
+        $('#validate').button('enable');
+    
+        // Hide the spinner and display the tabs
+        $("a[href='#tab_all']").hide();
+        $('#tabs').tabs( "select" , "#tab_custom" );
+        $('#spinner_main').hide();
+        $('#tabs').show();
+        alert ("Load the API verifier within a SMART container to test its conformance to the SMART specifications");
     };
     
 }());
