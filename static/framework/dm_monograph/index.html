@@ -29,6 +29,7 @@
       <script src='./js/flot/jquery.flot.resize.min.js'></script>
       <!--[if lte IE 8]><script src="./js/flot/excanvas.min.js"></script><![endif]-->
       <script src='./js/underscore.min.js'></script>
+      <script src='./js/json2.js'></script>
       <script src='./js/main.js'></script>
   </head>
   <body>
@@ -272,8 +273,9 @@
 
         <div id='a1c_graph'></div>
 
-        <div id='reminders'>
+        <div id='reminders_outer'>
           <div class='section_header'>Reminders</div>
+          <div id='reminders'></div>
         </div>
 
         <div id='allergies_outer'>

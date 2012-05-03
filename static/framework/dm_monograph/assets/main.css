@@ -22,6 +22,7 @@ body {
 .section_header {
   background-color: rgb(207, 201, 254);
   margin-bottom: 6px;
+  margin-top: 6px;
   font-weight: bold;
 }
 .bold { font-weight: bold; }
@@ -32,4 +33,5 @@ body {
 
 .test_name { font-weight: bold; }
 .test_latest_value { font-weight: bold; }
-.gray { background-color: #ebebeb;}
+.gray { background-color: #ebebeb; }
+.red { color: red; }

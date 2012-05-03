@@ -82,7 +82,7 @@ var MEDS_get = function(){
            ])
          })
 
-        console.log(pt.meds_array)
+        // console.log(pt.meds_array)
         dfd.resolve();
       })
       .error(error_callback);
@@ -111,24 +111,56 @@ var DEMOGRAPHICS_get = function(){
         pt.gender = d.gender.value;
         pt.bday = d.bday.value;
 
-        // // testing json-ld
-        // jsdata = { '@graph': [] };
-        // demos.graph
-        //      .where('?s ?p ?o')
-        //      .each(function(i, bindings, triples){
-        //        // note: this.s == bindings.s == triples[0].subject
-        //        if (i>0) {
-        //          // .dump() returns RDF/JSON representation
-        //          console.log('s: ', this.s.dump().value, ' (', this.s.dump().type, ')');
-        //          console.log('p: ', this.p.dump().value, ' (', this.p.dump().type, ')');
-        //          console.log('o: ', this.o.dump().value, ' (', this.o.dump().type, ')', '\n');
-        //
-        //          // jstriple = {
-        //          //   '@id': this.s.dump().value,
-        //          //   ''
-        //          // };
-        //        }
-        //      })
+        // testing json-ld
+        jsdata = { '@graph': [] };
+        demos.graph
+             .where('?s ?p ?o')
+             .each(function(i, bindings, triples){
+
+               var jstriple_dump = function(jst){
+                 // console.log('@id: ', jst['@id'])
+                 // console.log(jst);
+               }
+
+               // note: this.s == bindings.s == triples[0].subject
+               if (i>0) {
+                 // .dump() returns RDF/JSON representation
+                 // console.log(this.s.dump().value
+                 //           , '('
+                 //           , this.s.dump().type
+                 //           , ')'
+                 //           , this.p.dump().value
+                 //           , '('
+                 //           , this.p.dump().type
+                 //           , ')'
+                 //           , this.o.dump().value
+                 //           , '('
+                 //           , this.o.dump().type
+                 //           , ')'
+                 //           , '\n');
+
+                 jstriple = {
+                   '@id': this.s.dump().value,
+                 };
+
+                 // if o is a literal
+                 if (this.o.dump().type === 'literal') {
+                   jstriple[this.p.dump().value] = [this.o.dump().value]
+                 }
+                 else if (this.p.dump().value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+                   jstriple['@type'] = this.o.dump().value
+                 }
+                 else if (this.o.dump().type === 'uri' || 'bnode') {
+                   jstriple[this.p.dump().value] = [{
+                     '@id': this.o.dump().value
+                   }]
+                 }
+
+                 jsdata['@graph'].push(jstriple);
+               }
+             })
+
+          // console.log(JSON.stringify(jsdata))
 
         dfd.resolve();
       })
@@ -313,9 +345,9 @@ var LAB_RESULTS_get = function(){
           .where('?lr    sp:specimenCollected  ?bn4')
           .where('?bn4   sp:startDate          ?date')
           .each(function(){
-            // FIXME: hack push all dates + 3 years
+
             var d = new XDate(this.date.value)
-            d.addYears(3, true);
+            // d.addYears(3, true);
 
             pt.a1c_array.push([
               d.valueOf(),
@@ -673,6 +705,75 @@ var LAB_RESULTS_get = function(){
           pt.bun_array = _(pt.bun_array).sortBy(function(item){ return item[0]; })
           pt.bun_latest = _(pt.bun_array).last() || null
 
+
+          //
+          // Reminders
+          //
+          var reminder_data = [
+          {
+            'title_html':         'glycemia',
+            'reminder_html':      'Consider checking A1C today',
+            'lab_variable':       pt.a1c_latest,
+            'lab_name_html':      'A1C',
+            'target_min':         0,
+            'target_max':         7,
+            'target_unit':        '%',
+            'target_range_text':  'less than 7%',
+            'overdue_in_months':  6,
+            'extra_info_html':    null
+          },
+          {
+            'title_html':         'lipids',
+            'reminder_html':      'Consider checking lipids today',
+            'lab_variable':       pt.ldl_latest,
+            'lab_name_html':      'LDL',
+            'target_min':         0,
+            'target_max':         100,
+            'target_unit':        'mg/dl',
+            'target_range_text':  'less than 100mg/dl',
+            'overdue_in_months':  6,
+            'extra_info_html':    'Consider more aggressive target of &lt; 70 (established CAD).'
+          },
+          {
+            'title_html':         'albuminuria',
+            'reminder_html':      'Consider checking urine &micro;alb/cre ratio today',
+            'lab_variable':       pt.micro_alb_cre_ratio_latest,
+            'lab_name_html':      'urine &alb/cre ratio',
+            'target_min':         0,
+            'target_max':         30,
+            'target_unit':        'mg/g',
+            'target_range_text':  'less than 30', // FIXME: we don't really know this
+            'overdue_in_months':  6, // FIXME: we don't really know this
+            'extra_info_html':    '&micro;alb/cre ratio test preferred over non-ratio &micro;alp screening tests.'
+          }]
+
+          // use pt since it's where everything else is
+          pt.reminders_array = [];
+
+          var process_reminders = function(reminder_data){
+            _(reminder_data).each(function(r){
+              if (r.lab_variable) {
+                // is the latest date within the given range?
+                var today = new XDate();
+                var d = new XDate(r.lab_variable[0])
+                r.overdue_p = false;
+                if (d.diffMonths(today) > r.overdue_in_months) { r.overdue_p = true; }
+
+                // is the latest value within the given range?
+                r.in_range_p = false;
+                if (r.target_min < r.lab_variable[1] < r.target_max) {
+                  r.in_range_p = true;
+                }
+
+                pt.reminders_array.push(r);
+              } else {
+                return;
+              }
+            })
+          }
+
+          process_reminders(reminder_data);
+
          // resolved!
          dfd.resolve();
       })
@@ -853,6 +954,39 @@ SMART.ready(function(){
     })
 
     $('.medication').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+
+    //
+    // reminders
+    //
+    _(pt.reminders_array).each(function(e){
+
+      // {
+      //   'title_html':         'glycemia',
+      //   'reminder_html':      'Consider checking A1C today',
+      //   'lab_variable':       pt.a1c_latest,
+      //   'lab_name_html':      'A1C',
+      //   'target_min':         0,
+      //   'target_max':         7,
+      //   'target_unit':        '%',
+      //   'target_range_text':  'less than 7%',
+      //   'overdue_in_months':  6,
+      //   'extra_info_html':    null
+      // },
+
+      // e.in_range_p
+      // todo: use templating here
+      var html = '<span class=\'bold\'>' + e.title_html + '</span> ';
+      if (e.overdue_p) {
+        html = html + '<span class=\'bold red\'>'  + e.reminder_html + '</span> <br />';
+      }
+
+      $('<div></div>', {
+        class: 'reminder',
+        html: html
+      }).appendTo('#reminders')
+    })
+
+    $('.reminder').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
 
     //
     // flot
