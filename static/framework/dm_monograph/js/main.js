@@ -711,40 +711,40 @@ var LAB_RESULTS_get = function(){
           //
           var reminder_data = [
           {
-            'title_html':         'glycemia',
-            'reminder_html':      'Consider checking A1C today',
-            'lab_variable':       pt.a1c_latest,
-            'lab_name_html':      'A1C',
-            'target_min':         0,
-            'target_max':         7,
-            'target_unit':        '%',
-            'target_range_text':  'less than 7%',
-            'overdue_in_months':  6,
-            'extra_info_html':    null
+            'title_html':             'glycemia',
+            'reminder_html':          'Consider checking A1C today',
+            'lab_variable':           pt.a1c_latest,
+            'lab_name_html':          'A1C',
+            'target_min':             0,
+            'target_max':             7,
+            'target_unit':            '%',
+            'target_range_text_html': 'less than 7%',
+            'overdue_in_months':      6,
+            'extra_info_html':        null
           },
           {
-            'title_html':         'lipids',
-            'reminder_html':      'Consider checking lipids today',
-            'lab_variable':       pt.ldl_latest,
-            'lab_name_html':      'LDL',
-            'target_min':         0,
-            'target_max':         100,
-            'target_unit':        'mg/dl',
-            'target_range_text':  'less than 100mg/dl',
-            'overdue_in_months':  6,
-            'extra_info_html':    'Consider more aggressive target of &lt; 70 (established CAD).'
+            'title_html':             'lipids',
+            'reminder_html':          'Consider checking lipids today',
+            'lab_variable':           pt.ldl_latest,
+            'lab_name_html':          'LDL',
+            'target_min':             0,
+            'target_max':             100,
+            'target_unit':            'mg/dl',
+            'target_range_text_html': 'less than 100mg/dl',
+            'overdue_in_months':      6,
+            'extra_info_html':        'Consider more aggressive target of &lt; 70 (established CAD).'
           },
           {
-            'title_html':         'albuminuria',
-            'reminder_html':      'Consider checking urine &micro;alb/cre ratio today',
-            'lab_variable':       pt.micro_alb_cre_ratio_latest,
-            'lab_name_html':      'urine &alb/cre ratio',
-            'target_min':         0,
-            'target_max':         30,
-            'target_unit':        'mg/g',
-            'target_range_text':  'less than 30', // FIXME: we don't really know this
-            'overdue_in_months':  6, // FIXME: we don't really know this
-            'extra_info_html':    '&micro;alb/cre ratio test preferred over non-ratio &micro;alp screening tests.'
+            'title_html':             'albuminuria',
+            'reminder_html':          'Consider checking urine &micro;alb/cre ratio today',
+            'lab_variable':           pt.micro_alb_cre_ratio_latest,
+            'lab_name_html':          'urine &alb/cre ratio',
+            'target_min':             0,
+            'target_max':             30,
+            'target_unit':            'mg/g',
+            'target_range_text_html': 'less than 30', // FIXME: we don't really know this
+            'overdue_in_months':      6, // FIXME: we don't really know this
+            'extra_info_html':        '&micro;alb/cre ratio test preferred over non-ratio &micro;alp screening tests.'
           }]
 
           // use pt since it's where everything else is
@@ -757,11 +757,13 @@ var LAB_RESULTS_get = function(){
                 var today = new XDate();
                 var d = new XDate(r.lab_variable[0])
                 r.overdue_p = false;
-                if (d.diffMonths(today) > r.overdue_in_months) { r.overdue_p = true; }
+                r.months_ago = Math.round(d.diffMonths(today));
+                if (r.months_ago > r.overdue_in_months) { r.overdue_p = true; }
 
                 // is the latest value within the given range?
                 r.in_range_p = false;
-                if (r.target_min < r.lab_variable[1] < r.target_max) {
+                if (r.target_min < r.lab_variable[1] &&
+                    r.lab_variable[1] < r.target_max) {
                   r.in_range_p = true;
                 }
 
@@ -959,25 +961,21 @@ SMART.ready(function(){
     // reminders
     //
     _(pt.reminders_array).each(function(e){
-
-      // {
-      //   'title_html':         'glycemia',
-      //   'reminder_html':      'Consider checking A1C today',
-      //   'lab_variable':       pt.a1c_latest,
-      //   'lab_name_html':      'A1C',
-      //   'target_min':         0,
-      //   'target_max':         7,
-      //   'target_unit':        '%',
-      //   'target_range_text':  'less than 7%',
-      //   'overdue_in_months':  6,
-      //   'extra_info_html':    null
-      // },
-
-      // e.in_range_p
       // todo: use templating here
       var html = '<span class=\'bold\'>' + e.title_html + '</span> ';
       if (e.overdue_p) {
         html = html + '<span class=\'bold red\'>'  + e.reminder_html + '</span> <br />';
+      }
+
+      var d = new XDate(e.lab_variable[0])
+      html = html + 'Last ' + e.lab_name_html +
+        ' ('+ e.lab_variable[1] + e.lab_variable[2] + ') ' +
+        ' done on ' + d.toString('MM/dd/yy') + ' (' + e.months_ago + ' months ago)' ;
+
+      if (e.in_range_p) {
+        html = html + ' within target range (' + e.target_range_text_html + ').'
+      } else {
+        html = html + ' <span class=\'bold\'>out of target range</span> (' + e.target_range_text_html + ').'
       }
 
       $('<div></div>', {
