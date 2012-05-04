@@ -11,21 +11,57 @@
 //
 // Plain lab name implies latest result
 pt = {};
+pt.a1c = null;
+pt.a1c_arr = [];
+pt.a1c_next
 pt.allergies_arr = [];
-pt.meds_arr = [];
-pt.family_name = null;
-pt.given_name = null;
-pt.gender = null;
 pt.bday = null;
-pt.dbp_arr = [];
-pt.sbp_arr = [];
+pt.bun = null;
+pt.bun_arr = [];
+pt.bun_next = null;
+pt.chol_total = null;
+pt.chol_total_arr = [];
+pt.chol_total_next = null;
+pt.creatinine = null;
+pt.creatinine_arr = [];
+pt.creatinine_next = null;
 pt.dbp = null;
-pt.sbp = null;
+pt.dbp_arr = [];
 pt.dbp_next = null;
+pt.family_name = null;
+pt.gender = null;
+pt.given_name = null;
+pt.glucose = null;
+pt.glucose_arr = [];
+pt.glucose_next = null;
+pt.hdl = null;
+pt.hdl_arr = [];
+pt.hdl_next = null;
+pt.height = null;
+pt.height_arr = [];
+pt.ldl = null;
+pt.ldl_arr = [];
+pt.ldl_next = null;
+pt.m_alb_cre_ratio = null;
+pt.m_alb_cre_ratio_arr = [];
+pt.m_alb_cre_ratio_next = null;
+pt.meds_arr = [];
+pt.problems_arr = [];
+pt.reminders_arr = [];
+pt.sbp = null;
+pt.sbp_arr = [];
 pt.sbp_next = null;
-pt.weight_arr = [];
+pt.sgot = null;
+pt.sgot_arr = [];
+pt.sgot_next = null;
+pt.triglyceride = null;
+pt.triglyceride_arr = [];
+pt.triglyceride_next = null;
+pt.ur_tp = null;
+pt.ur_tp_arr = [];
+pt.ur_tp_next = null;
 pt.weight = null;
-
+pt.weight_arr = [];
 
 //
 // Utility Functions
@@ -197,7 +233,7 @@ var VITAL_SIGNS_get = function(){
     SMART.VITAL_SIGNS_get()
       .success(function(r){
         var _get_bps = function(type) {
-          var code = null;
+          var code = '';
           var bp_arr = [];
           var bp, bp_next = {};
 
@@ -267,8 +303,6 @@ var VITAL_SIGNS_get = function(){
         pt.weight_arr = _(pt.weight_arr).sortBy(function(item){ return item[0]; })
         pt.weight = _(pt.weight_arr).last() || null
 
-        pt.height_arr = [];
-        pt.height = null;
         r.graph
          .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',       'http://smartplatforms.org/terms#')
@@ -301,10 +335,6 @@ var LAB_RESULTS_get = function(){
   return $.Deferred(function(dfd){
     SMART.LAB_RESULTS_get()
       .success(function(r){
-        //
-        // FIXME: DRY (obviously)
-        //
-
         // LDL Codes
         //
         // LOINC Code, Long name, Short Name, class, rank # of 2000
@@ -312,7 +342,6 @@ var LAB_RESULTS_get = function(){
         // 2089-1	Cholesterol in LDL [Mass/volume] in Serum or Plasma	LDLc SerPl-mCnc	CHEM	92
         // 18262-6	Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay	LDLc SerPl Direct Assay-mCnc	CHEM	249
         // FIXME: ONLY top LDL code!!
-        pt.ldl_arr = [];
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -351,7 +380,6 @@ var LAB_RESULTS_get = function(){
          // 4548-4,Hemoglobin A1c/Hemoglobin.total in Blood,Hgb A1c MFr Bld,HEM/BC,81
          // 17856-6,Hemoglobin A1c/Hemoglobin.total in Blood by HPLC,Hgb A1c MFr Bld HPLC,HEM/BC,215
          // FIXME: ONLY top A1c code!!
-         pt.a1c_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -368,8 +396,9 @@ var LAB_RESULTS_get = function(){
           .where('?bn4   sp:startDate          ?date')
           .each(function(){
 
+            // fixme: hack pushing date 2 yrs
             var d = new XDate(this.date.value)
-            // d.addYears(3, true);
+            d.addYears(2, true);
 
             pt.a1c_arr.push([
               d.valueOf(),
@@ -389,7 +418,6 @@ var LAB_RESULTS_get = function(){
           // 35663-4,Protein [Mass/volume] in unspecified time Urine,Prot ?Tm Ur-mCnc,UA,635
           // 21482-5,Protein [Mass/volume] in 24 hour Urine,Prot 24H Ur-mCnc,CHEM,1696
           // FIXME: ONLY top code!!
-          pt.ur_tp_arr = [];
           r.graph
            .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
            .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -421,7 +449,6 @@ var LAB_RESULTS_get = function(){
          // 14959-1,Microalbumin/Creatinine [Mass ratio] in Urine,Microalbumin/Creat Ur-mRto,CHEM,212
          // 14958-3,Microalbumin/Creatinine [Mass ratio] in 24 hour Urine,Microalbumin/Creat 24H Ur-mRto,CHEM,1979
          // FIXME: ONLY top code!!
-         pt.m_alb_cre_ratio_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -458,7 +485,6 @@ var LAB_RESULTS_get = function(){
          //
          // LOINC Code, Long name, Short Name, class, rank # of 2000
          // 1920-8,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,AST SerPl-cCnc,CHEM,19
-         pt.sgot_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -492,7 +518,6 @@ var LAB_RESULTS_get = function(){
          // Cholesterol (total): only 1 code!! Yay!
          //
          // 2093-3,Cholesterol [Mass/volume] in Serum or Plasma,Cholest SerPl-mCnc,CHEM,32
-         pt.chol_total_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -528,7 +553,6 @@ var LAB_RESULTS_get = function(){
          // 2571-8,Triglyceride [Mass/volume] in Serum or Plasma,Trigl SerPl-mCnc,CHEM,36
          // 3043-7,Triglyceride [Mass/volume] in Blood,Trigl Bld-mCnc,CHEM,1592
          // fixme only 1 code!
-         pt.triglyceride_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -561,7 +585,6 @@ var LAB_RESULTS_get = function(){
 
          // HDL
          // 2085-9,Cholesterol in HDL [Mass/volume] in Serum or Plasma,HDLc SerPl-mCnc,CHEM,38
-         pt.hdl_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -597,7 +620,6 @@ var LAB_RESULTS_get = function(){
          // 3094-0,Urea nitrogen [Mass/volume] in Serum or Plasma,BUN SerPl-mCnc,CHEM,6
          // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
          // fixme only top code
-         pt.bun_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -633,7 +655,6 @@ var LAB_RESULTS_get = function(){
          // 2160-0,Creatinine [Mass/volume] in Serum or Plasma,Creat SerPl-mCnc,CHEM,1
          // 38483-4,Creatinine [Mass/volume] in Blood,Creat Bld-mCnc,CHEM,283
          // fixme only top code
-         pt.creatinine_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -668,7 +689,6 @@ var LAB_RESULTS_get = function(){
          // 2345-7,Glucose [Mass/volume] in Serum or Plasma,Glucose SerPl-mCnc,CHEM,4
          // 2339-0,Glucose [Mass/volume] in Blood,Glucose Bld-mCnc,CHEM,13
          // fixme only top code
-         pt.glucose_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -704,7 +724,6 @@ var LAB_RESULTS_get = function(){
          // 3094-0,Urea nitrogen [Mass/volume] in Serum or Plasma,BUN SerPl-mCnc,CHEM,6
          // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
          // fixme only top code
-         pt.bun_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -777,9 +796,6 @@ var LAB_RESULTS_get = function(){
             'extra_info_html':        '&micro;alb/cre ratio test preferred over non-ratio &micro;alp screening tests.'
           }]
 
-          // use pt since it's where everything else is
-          pt.reminders_arr = [];
-
           var process_reminders = function(reminder_data){
             _(reminder_data).each(function(r){
               if (r.lab_variable) {
@@ -818,7 +834,6 @@ var PROBLEMS_get = function(){
   return $.Deferred(function(dfd){
     SMART.PROBLEMS_get()
       .success(function(r){
-        pt.problems_arr = [];
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -852,8 +867,6 @@ SMART.ready(function(){
        , LAB_RESULTS_get()
        , PROBLEMS_get()
        , MEDS_get()
-       // , NOTES_get()
-       // , VITAL_SIGNS_get()
   )
   .then(function(){
 
