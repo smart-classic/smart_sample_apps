@@ -195,10 +195,12 @@ var VITAL_SIGNS_get = function(){
              if (type === 'systolic') {
                bp_array = pt.sbp_array;
                bp_latest = pt.sbp_latest;
+               bp_latest_next = pt.sbp_latest_next;
              }
              else {
                bp_array = pt.dbp_array;
                bp_latest = pt.dbp_latest;
+               bp_latest_next = pt.dbp_latest_next;
              }
 
              bp_array.push([
@@ -211,6 +213,7 @@ var VITAL_SIGNS_get = function(){
            // FIXME: DRY
            pt.bp_array = _(pt.bp_array).sortBy(function(item){ return item[0]; })
            pt.bp_latest = _(pt.bp_array).last() || null
+           pt.bp_latest_next = _(pt.bp_array).last(2)[0] || null
         }
 
         // ruby style!
@@ -218,9 +221,10 @@ var VITAL_SIGNS_get = function(){
         pt.sbp_array = [];
         pt.dbp_latest = null;
         pt.sbp_latest = null;
+        pt.dbp_latest_next = null;
+        pt.sbp_latest_next = null;
         _get_bps('systolic');
         _get_bps('diastolic')
-
 
         pt.weight_array = [];
         pt.weight_latest = null;
@@ -322,6 +326,7 @@ var LAB_RESULTS_get = function(){
 
          pt.ldl_array = _(pt.ldl_array).sortBy(function(item){ return item[0]; })
          pt.ldl_latest = _(pt.ldl_array).last() || null
+         pt.ldl_latest_next = _(pt.ldl_array).last(2)[0] || null
 
          // A1C Codes
          //
@@ -358,7 +363,7 @@ var LAB_RESULTS_get = function(){
 
           pt.a1c_array = _(pt.a1c_array).sortBy(function(item){ return item[0]; })
           pt.a1c_latest = _(pt.a1c_array).last() || null
-
+          pt.a1c_latest_next = _(pt.a1c_array).last(2)[0] || null
 
           // Ur Tp
           //
@@ -392,6 +397,7 @@ var LAB_RESULTS_get = function(){
 
            pt.ur_tp_array = _(pt.ur_tp_array).sortBy(function(item){ return item[0]; })
            pt.ur_tp_latest = _(pt.ur_tp_array).last() || null
+           pt.ur_tp_latest_next = _(pt.ur_tp_array).last(2)[0] || null
 
          // Microalbumin/Creatinine [Mass ratio] in Urine
          //
@@ -427,6 +433,7 @@ var LAB_RESULTS_get = function(){
 
           pt.micro_alb_cre_ratio_array = _(pt.micro_alb_cre_ratio_array).sortBy(function(item){ return item[0]; })
           pt.micro_alb_cre_ratio_latest = _(pt.micro_alb_cre_ratio_array).last() || null
+          pt.micro_alb_cre_ratio_latest_next = _(pt.micro_alb_cre_ratio_array).last(2)[0] || null
 
          // Aspartate aminotransferase / SGOT / AST
          //
@@ -463,6 +470,7 @@ var LAB_RESULTS_get = function(){
 
           pt.sgot_array = _(pt.sgot_array).sortBy(function(item){ return item[0]; })
           pt.sgot_latest = _(pt.sgot_array).last() || null
+          pt.sgot_latest_next = _(pt.sgot_array).last(2)[0] || null
 
          // Cholesterol (total): only 1 code!! Yay!
          //
@@ -496,6 +504,7 @@ var LAB_RESULTS_get = function(){
 
           pt.cholesterol_total_array = _(pt.cholesterol_total_array).sortBy(function(item){ return item[0]; })
           pt.cholesterol_total_latest = _(pt.cholesterol_total_array).last() || null
+          pt.cholesterol_total_latest_next = _(pt.cholesterol_total_array).last(2)[0] || null
 
          // Tri
          //
@@ -531,6 +540,7 @@ var LAB_RESULTS_get = function(){
 
           pt.triglyceride_array = _(pt.triglyceride_array).sortBy(function(item){ return item[0]; })
           pt.triglyceride_latest = _(pt.triglyceride_array).last() || null
+          pt.triglyceride_latest_next = _(pt.triglyceride_array).last(2)[0] || null
 
          // HDL
          // 2085-9,Cholesterol in HDL [Mass/volume] in Serum or Plasma,HDLc SerPl-mCnc,CHEM,38
@@ -563,6 +573,7 @@ var LAB_RESULTS_get = function(){
 
           pt.hdl_array = _(pt.hdl_array).sortBy(function(item){ return item[0]; })
           pt.hdl_latest = _(pt.hdl_array).last() || null
+          pt.hdl_latest_next = _(pt.hdl_array).last(2)[0] || null
 
          // BUN
          //
@@ -598,6 +609,7 @@ var LAB_RESULTS_get = function(){
 
           pt.bun_array = _(pt.bun_array).sortBy(function(item){ return item[0]; })
           pt.bun_latest = _(pt.bun_array).last() || null
+          pt.bun_latest_next = _(pt.bun_array).last(2)[0] || null
 
          // Cre
          //
@@ -633,7 +645,7 @@ var LAB_RESULTS_get = function(){
 
           pt.creatinine_array = _(pt.creatinine_array).sortBy(function(item){ return item[0]; })
           pt.creatinine_latest = _(pt.creatinine_array).last() || null
-
+          pt.creatinine_latest_next = _(pt.creatinine_array).last(2)[0] || null
 
          // Glu
          // 2345-7,Glucose [Mass/volume] in Serum or Plasma,Glucose SerPl-mCnc,CHEM,4
@@ -668,6 +680,7 @@ var LAB_RESULTS_get = function(){
 
           pt.glucose_array = _(pt.glucose_array).sortBy(function(item){ return item[0]; })
           pt.glucose_latest = _(pt.glucose_array).last() || null
+          pt.glucose_latest_next = _(pt.glucose_array).last(2)[0] || null
 
          // BUN
          //
@@ -704,7 +717,7 @@ var LAB_RESULTS_get = function(){
 
           pt.bun_array = _(pt.bun_array).sortBy(function(item){ return item[0]; })
           pt.bun_latest = _(pt.bun_array).last() || null
-
+          pt.bun_latest_next = _(pt.bun_array).last(2)[0] || null
 
           //
           // Reminders
@@ -843,45 +856,89 @@ SMART.ready(function(){
     $('#ur_tp_latest_val') .text(pt.ur_tp_latest ? pt.ur_tp_latest[1] : null)
     $('#ur_tp_latest_unit').text(pt.ur_tp_latest ? pt.ur_tp_latest[2] : null)
 
+    $('#ur_tp_latest_next_date').text(pt.ur_tp_latest_next ? new XDate(pt.ur_tp_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#ur_tp_latest_next_val') .text(pt.ur_tp_latest_next ? pt.ur_tp_latest_next[1] : null)
+    $('#ur_tp_latest_next_unit').text(pt.ur_tp_latest_next ? pt.ur_tp_latest_next[2] : null)
+
     $('#micro_alb_cre_ratio_latest_date').text(pt.micro_alb_cre_ratio_latest ? new XDate(pt.micro_alb_cre_ratio_latest[0]).toString('MM/dd/yy') : null)
     $('#micro_alb_cre_ratio_latest_val') .text(pt.micro_alb_cre_ratio_latest ? pt.micro_alb_cre_ratio_latest[1] : null)
     $('#micro_alb_cre_ratio_latest_unit').text(pt.micro_alb_cre_ratio_latest ? pt.micro_alb_cre_ratio_latest[2] : null)
+
+    $('#micro_alb_cre_ratio_latest_next_date').text(pt.micro_alb_cre_ratio_latest_next ? new XDate(pt.micro_alb_cre_ratio_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#micro_alb_cre_ratio_latest_next_val') .text(pt.micro_alb_cre_ratio_latest_next ? pt.micro_alb_cre_ratio_latest_next[1] : null)
+    $('#micro_alb_cre_ratio_latest_next_unit').text(pt.micro_alb_cre_ratio_latest_next ? pt.micro_alb_cre_ratio_latest_next[2] : null)
 
     $('#sgot_latest_date').text(pt.sgot_latest ? new XDate(pt.sgot_latest[0]).toString('MM/dd/yy') : null)
     $('#sgot_latest_val') .text(pt.sgot_latest ? pt.sgot_latest[1] : null)
     $('#sgot_latest_unit').text(pt.sgot_latest ? pt.sgot_latest[2] : null)
 
+    $('#sgot_latest_next_date').text(pt.sgot_latest_next ? new XDate(pt.sgot_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#sgot_latest_next_val') .text(pt.sgot_latest_next ? pt.sgot_latest_next[1] : null)
+    $('#sgot_latest_next_unit').text(pt.sgot_latest_next ? pt.sgot_latest_next[2] : null)
+
     $('#cholesterol_total_latest_date').text(pt.cholesterol_total_latest ? new XDate(pt.cholesterol_total_latest[0]).toString('MM/dd/yy') : null)
     $('#cholesterol_total_latest_val') .text(pt.cholesterol_total_latest ? pt.cholesterol_total_latest[1] : null)
     $('#cholesterol_total_latest_unit').text(pt.cholesterol_total_latest ? pt.cholesterol_total_latest[2] : null)
+
+    $('#cholesterol_total_latest_next_date').text(pt.cholesterol_total_latest_next ? new XDate(pt.cholesterol_total_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#cholesterol_total_latest_next_val') .text(pt.cholesterol_total_latest_next ? pt.cholesterol_total_latest_next[1] : null)
+    $('#cholesterol_total_latest_next_unit').text(pt.cholesterol_total_latest_next ? pt.cholesterol_total_latest_next[2] : null)
 
     $('#triglyceride_latest_date').text(pt.triglyceride_latest ? new XDate(pt.triglyceride_latest[0]).toString('MM/dd/yy') : null)
     $('#triglyceride_latest_val') .text(pt.triglyceride_latest ? pt.triglyceride_latest[1] : null)
     $('#triglyceride_latest_unit').text(pt.triglyceride_latest ? pt.triglyceride_latest[2] : null)
 
+    $('#triglyceride_latest_next_date').text(pt.triglyceride_latest_next ? new XDate(pt.triglyceride_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#triglyceride_latest_next_val') .text(pt.triglyceride_latest_next ? pt.triglyceride_latest_next[1] : null)
+    $('#triglyceride_latest_next_unit').text(pt.triglyceride_latest_next ? pt.triglyceride_latest_next[2] : null)
+
     $('#hdl_latest_date').text(pt.hdl_latest ? new XDate(pt.hdl_latest[0]).toString('MM/dd/yy') : null)
     $('#hdl_latest_val') .text(pt.hdl_latest ? pt.hdl_latest[1] : null)
     $('#hdl_latest_unit').text(pt.hdl_latest ? pt.hdl_latest[2] : null)
+
+    $('#hdl_latest_next_date').text(pt.hdl_latest_next ? new XDate(pt.hdl_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#hdl_latest_next_val') .text(pt.hdl_latest_next ? pt.hdl_latest_next[1] : null)
+    $('#hdl_latest_next_unit').text(pt.hdl_latest_next ? pt.hdl_latest_next[2] : null)
 
     $('#ldl_latest_date').text(pt.ldl_latest ? new XDate(pt.ldl_latest[0]).toString('MM/dd/yy') : null)
     $('#ldl_latest_val') .text(pt.ldl_latest ? pt.ldl_latest[1] : null)
     $('#ldl_latest_unit').text(pt.ldl_latest ? pt.ldl_latest[2] : null)
 
+    $('#ldl_latest_next_date').text(pt.ldl_latest_next ? new XDate(pt.ldl_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#ldl_latest_next_val') .text(pt.ldl_latest_next ? pt.ldl_latest_next[1] : null)
+    $('#ldl_latest_next_unit').text(pt.ldl_latest_next ? pt.ldl_latest_next[2] : null)
+
     $('#bun_latest_date').text(pt.bun_latest ? new XDate(pt.bun_latest[0]).toString('MM/dd/yy') : null)
     $('#bun_latest_val') .text(pt.bun_latest ? pt.bun_latest[1] : null)
     $('#bun_latest_unit').text(pt.bun_latest ? pt.bun_latest[2] : null)
+
+    $('#bun_latest_next_date').text(pt.bun_latest_next ? new XDate(pt.bun_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#bun_latest_next_val') .text(pt.bun_latest_next ? pt.bun_latest_next[1] : null)
+    $('#bun_latest_next_unit').text(pt.bun_latest_next ? pt.bun_latest_next[2] : null)
 
     $('#creatinine_latest_date').text(pt.creatinine_latest ? new XDate(pt.creatinine_latest[0]).toString('MM/dd/yy') : null)
     $('#creatinine_latest_val') .text(pt.creatinine_latest ? pt.creatinine_latest[1] : null)
     $('#creatinine_latest_unit').text(pt.creatinine_latest ? pt.creatinine_latest[2] : null)
 
+    $('#creatinine_latest_next_date').text(pt.creatinine_latest_next ? new XDate(pt.creatinine_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#creatinine_latest_next_val') .text(pt.creatinine_latest_next ? pt.creatinine_latest_next[1] : null)
+    $('#creatinine_latest_next_unit').text(pt.creatinine_latest_next ? pt.creatinine_latest_next[2] : null)
+
     $('#glucose_latest_date').text(pt.glucose_latest ? new XDate(pt.glucose_latest[0]).toString('MM/dd/yy') : null)
     $('#glucose_latest_val') .text(pt.glucose_latest ? pt.glucose_latest[1] : null)
     $('#glucose_latest_unit').text(pt.glucose_latest ? pt.glucose_latest[2] : null)
 
+    $('#glucose_latest_next_date').text(pt.glucose_latest_next ? new XDate(pt.glucose_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#glucose_latest_next_val') .text(pt.glucose_latest_next ? pt.glucose_latest_next[1] : null)
+    $('#glucose_latest_next_unit').text(pt.glucose_latest_next ? pt.glucose_latest_next[2] : null)
+
     $('#a1c_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
     $('#a1c_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
     $('#a1c_latest_unit').text(pt.a1c_latest ? pt.a1c_latest[2] : null)
+
+    $('#a1c_latest_next_date').text(pt.a1c_latest_next ? new XDate(pt.a1c_latest_next[0]).toString('MM/dd/yy') : null)
+    $('#a1c_latest_next_val') .text(pt.a1c_latest_next ? pt.a1c_latest_next[1] : null)
+    $('#a1c_latest_next_unit').text(pt.a1c_latest_next ? pt.a1c_latest_next[2] : null)
 
     // other info
     $('#weight_latest_date').text(pt.weight_latest ? new XDate(pt.weight_latest[0]).toString('MM/dd/yy') : null)
