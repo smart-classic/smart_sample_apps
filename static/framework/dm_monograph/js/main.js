@@ -9,21 +9,22 @@
 //
 // Patient Object
 //
+// Plain lab name implies latest result
 pt = {};
-pt.allergies_array = [];
-pt.meds_array = [];
+pt.allergies_arr = [];
+pt.meds_arr = [];
 pt.family_name = null;
 pt.given_name = null;
 pt.gender = null;
 pt.bday = null;
-pt.dbp_array = [];
-pt.sbp_array = [];
-pt.dbp_latest = null;
-pt.sbp_latest = null;
-pt.dbp_latest_next = null;
-pt.sbp_latest_next = null;
-pt.weight_array = [];
-pt.weight_latest = null;
+pt.dbp_arr = [];
+pt.sbp_arr = [];
+pt.dbp = null;
+pt.sbp = null;
+pt.dbp_next = null;
+pt.sbp_next = null;
+pt.weight_arr = [];
+pt.weight = null;
 
 
 //
@@ -61,7 +62,7 @@ var ALLERGIES_get = function(){
          .where('?id    sp:allergicReaction  ?bn2')
          .where('?bn2   dc:title             ?reaction')
          .each(function(){
-           pt.allergies_array.push([
+           pt.allergies_arr.push([
              this.title.value.toString(),
              this.reaction.value.toString()
            ])
@@ -77,7 +78,7 @@ var ALLERGIES_get = function(){
          .where('?id    sp:allergicReaction ?bn2')
          .where('?bn2   dc:title            ?reaction')
          .each(function(){
-           pt.allergies_array.push([
+           pt.allergies_arr.push([
              this.title.value.toString(),
              this.reaction.value.toString()
            ])
@@ -101,7 +102,7 @@ var MEDS_get = function(){
          .where('?bn    dc:title        ?title')
          .where('?id    sp:instructions ?instruction')
          .each(function(){
-           pt.meds_array.push([
+           pt.meds_arr.push([
              this.title.value.toString(),
              this.instruction.value.toString()
            ])
@@ -197,8 +198,8 @@ var VITAL_SIGNS_get = function(){
       .success(function(r){
         var _get_bps = function(type) {
           var code = null;
-          var bp_array = [];
-          var bp_latest, bp_latest_next = {};
+          var bp_arr = [];
+          var bp, bp_next = {};
 
           if (type === 'systolic') code = '<http://purl.bioontology.org/ontology/LNC/8480-6>';
           else if (type === 'diastolic') code = '<http://purl.bioontology.org/ontology/LNC/8462-4>';
@@ -219,26 +220,26 @@ var VITAL_SIGNS_get = function(){
            .where('?vital_id   dc:date          ?date')
            .each(function(){
              if (type === 'systolic') {
-               bp_array = pt.sbp_array;
-               bp_latest = pt.sbp_latest;
-               bp_latest_next = pt.sbp_latest_next;
+               bp_arr = pt.sbp_arr;
+               bp = pt.sbp;
+               bp_next = pt.sbp_next;
              }
              else {
-               bp_array = pt.dbp_array;
-               bp_latest = pt.dbp_latest;
-               bp_latest_next = pt.dbp_latest_next;
+               bp_arr = pt.dbp_arr;
+               bp = pt.dbp;
+               bp_next = pt.dbp_next;
              }
 
-             bp_array.push([
+             bp_arr.push([
                new XDate(this.date.value).valueOf(),
                Number(this.value.value),
                this.unit.value
              ])
            })
 
-           bp_array = _(bp_array).sortBy(function(item){ return item[0]; })
-           bp_latest = _(bp_array).last() || null
-           bp_latest_next = _(bp_array).last(2)[0] || null
+           bp_arr = _(bp_arr).sortBy(function(item){ return item[0]; })
+           bp = _(bp_arr).last() || null
+           bp_next = _(bp_arr).last(2)[0] || null
         }
 
         _get_bps('systolic');
@@ -256,18 +257,18 @@ var VITAL_SIGNS_get = function(){
          .where('?bn         sp:value         ?value')
          .where('?bn         sp:unit          ?unit')
          .each(function(){
-           pt.weight_array.push([
+           pt.weight_arr.push([
              new XDate(this.date.value).valueOf(),
              this.unit.value === 'kg' ? Number(this.value.value) * 2.2 : Number(this.value.value),
              this.unit.value === 'kg' ? 'lbs' : this.unit.value
            ])
          })
 
-        pt.weight_array = _(pt.weight_array).sortBy(function(item){ return item[0]; })
-        pt.weight_latest = _(pt.weight_array).last() || null
+        pt.weight_arr = _(pt.weight_arr).sortBy(function(item){ return item[0]; })
+        pt.weight = _(pt.weight_arr).last() || null
 
-        pt.height_array = [];
-        pt.height_latest = null;
+        pt.height_arr = [];
+        pt.height = null;
         r.graph
          .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',       'http://smartplatforms.org/terms#')
@@ -280,15 +281,15 @@ var VITAL_SIGNS_get = function(){
          .where('?bn         sp:value         ?value')
          .where('?bn         sp:unit          ?unit')
          .each(function(){
-           pt.height_array.push([
+           pt.height_arr.push([
              new XDate(this.date.value).valueOf(),
              this.unit.value === 'm' ? Number(this.value.value) *  3.2808399 : Number(this.value.value),
              this.unit.value === 'm' ? 'ft' : this.unit.value
            ])
          })
 
-        pt.height_array = _(pt.height_array).sortBy(function(item){ return item[0]; })
-        pt.height_latest = _(pt.height_array).last() || null
+        pt.height_arr = _(pt.height_arr).sortBy(function(item){ return item[0]; })
+        pt.height = _(pt.height_arr).last() || null
 
         dfd.resolve();
       })
@@ -311,7 +312,7 @@ var LAB_RESULTS_get = function(){
         // 2089-1	Cholesterol in LDL [Mass/volume] in Serum or Plasma	LDLc SerPl-mCnc	CHEM	92
         // 18262-6	Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay	LDLc SerPl Direct Assay-mCnc	CHEM	249
         // FIXME: ONLY top LDL code!!
-        pt.ldl_array = [];
+        pt.ldl_arr = [];
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -333,16 +334,16 @@ var LAB_RESULTS_get = function(){
 
            // array is [js timestamp, value as number, unit as string]
            // flot uses js timestamps on the x axis, we convert them to human-readable strings later
-           pt.ldl_array.push([
+           pt.ldl_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
            ])
          })
 
-         pt.ldl_array = _(pt.ldl_array).sortBy(function(item){ return item[0]; })
-         pt.ldl_latest = _(pt.ldl_array).last() || null
-         pt.ldl_latest_next = _(pt.ldl_array).last(2)[0] || null
+         pt.ldl_arr = _(pt.ldl_arr).sortBy(function(item){ return item[0]; })
+         pt.ldl = _(pt.ldl_arr).last() || null
+         pt.ldl_next = _(pt.ldl_arr).last(2)[0] || null
 
          // A1C Codes
          //
@@ -350,7 +351,7 @@ var LAB_RESULTS_get = function(){
          // 4548-4,Hemoglobin A1c/Hemoglobin.total in Blood,Hgb A1c MFr Bld,HEM/BC,81
          // 17856-6,Hemoglobin A1c/Hemoglobin.total in Blood by HPLC,Hgb A1c MFr Bld HPLC,HEM/BC,215
          // FIXME: ONLY top A1c code!!
-         pt.a1c_array = [];
+         pt.a1c_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -370,16 +371,16 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             // d.addYears(3, true);
 
-            pt.a1c_array.push([
+            pt.a1c_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.a1c_array = _(pt.a1c_array).sortBy(function(item){ return item[0]; })
-          pt.a1c_latest = _(pt.a1c_array).last() || null
-          pt.a1c_latest_next = _(pt.a1c_array).last(2)[0] || null
+          pt.a1c_arr = _(pt.a1c_arr).sortBy(function(item){ return item[0]; })
+          pt.a1c = _(pt.a1c_arr).last() || null
+          pt.a1c_next = _(pt.a1c_arr).last(2)[0] || null
 
           // Ur Tp
           //
@@ -388,7 +389,7 @@ var LAB_RESULTS_get = function(){
           // 35663-4,Protein [Mass/volume] in unspecified time Urine,Prot ?Tm Ur-mCnc,UA,635
           // 21482-5,Protein [Mass/volume] in 24 hour Urine,Prot 24H Ur-mCnc,CHEM,1696
           // FIXME: ONLY top code!!
-          pt.ur_tp_array = [];
+          pt.ur_tp_arr = [];
           r.graph
            .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
            .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -404,23 +405,23 @@ var LAB_RESULTS_get = function(){
            .where('?lr    sp:specimenCollected  ?bn4')
            .where('?bn4   sp:startDate          ?date')
            .each(function(){
-             pt.ur_tp_array.push([
+             pt.ur_tp_arr.push([
                 new XDate(this.date.value).valueOf(),
                 Number(this.value.value),
                 this.unit.value
              ])
            })
 
-           pt.ur_tp_array = _(pt.ur_tp_array).sortBy(function(item){ return item[0]; })
-           pt.ur_tp_latest = _(pt.ur_tp_array).last() || null
-           pt.ur_tp_latest_next = _(pt.ur_tp_array).last(2)[0] || null
+           pt.ur_tp_arr = _(pt.ur_tp_arr).sortBy(function(item){ return item[0]; })
+           pt.ur_tp = _(pt.ur_tp_arr).last() || null
+           pt.ur_tp_next = _(pt.ur_tp_arr).last(2)[0] || null
 
          // Microalbumin/Creatinine [Mass ratio] in Urine
          //
          // 14959-1,Microalbumin/Creatinine [Mass ratio] in Urine,Microalbumin/Creat Ur-mRto,CHEM,212
          // 14958-3,Microalbumin/Creatinine [Mass ratio] in 24 hour Urine,Microalbumin/Creat 24H Ur-mRto,CHEM,1979
          // FIXME: ONLY top code!!
-         pt.micro_alb_cre_ratio_array = [];
+         pt.m_alb_cre_ratio_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -440,16 +441,16 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.micro_alb_cre_ratio_array.push([
+            pt.m_alb_cre_ratio_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.micro_alb_cre_ratio_array = _(pt.micro_alb_cre_ratio_array).sortBy(function(item){ return item[0]; })
-          pt.micro_alb_cre_ratio_latest = _(pt.micro_alb_cre_ratio_array).last() || null
-          pt.micro_alb_cre_ratio_latest_next = _(pt.micro_alb_cre_ratio_array).last(2)[0] || null
+          pt.m_alb_cre_ratio_arr = _(pt.m_alb_cre_ratio_arr).sortBy(function(item){ return item[0]; })
+          pt.m_alb_cre_ratio = _(pt.m_alb_cre_ratio_arr).last() || null
+          pt.m_alb_cre_ratio_next = _(pt.m_alb_cre_ratio_arr).last(2)[0] || null
 
          // Aspartate aminotransferase / SGOT / AST
          //
@@ -457,7 +458,7 @@ var LAB_RESULTS_get = function(){
          //
          // LOINC Code, Long name, Short Name, class, rank # of 2000
          // 1920-8,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,AST SerPl-cCnc,CHEM,19
-         pt.sgot_array = [];
+         pt.sgot_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -477,21 +478,21 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.sgot_array.push([
+            pt.sgot_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.sgot_array = _(pt.sgot_array).sortBy(function(item){ return item[0]; })
-          pt.sgot_latest = _(pt.sgot_array).last() || null
-          pt.sgot_latest_next = _(pt.sgot_array).last(2)[0] || null
+          pt.sgot_arr = _(pt.sgot_arr).sortBy(function(item){ return item[0]; })
+          pt.sgot = _(pt.sgot_arr).last() || null
+          pt.sgot_next = _(pt.sgot_arr).last(2)[0] || null
 
          // Cholesterol (total): only 1 code!! Yay!
          //
          // 2093-3,Cholesterol [Mass/volume] in Serum or Plasma,Cholest SerPl-mCnc,CHEM,32
-         pt.cholesterol_total_array = [];
+         pt.chol_total_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -511,23 +512,23 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.cholesterol_total_array.push([
+            pt.chol_total_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.cholesterol_total_array = _(pt.cholesterol_total_array).sortBy(function(item){ return item[0]; })
-          pt.cholesterol_total_latest = _(pt.cholesterol_total_array).last() || null
-          pt.cholesterol_total_latest_next = _(pt.cholesterol_total_array).last(2)[0] || null
+          pt.chol_total_arr = _(pt.chol_total_arr).sortBy(function(item){ return item[0]; })
+          pt.chol_total = _(pt.chol_total_arr).last() || null
+          pt.chol_total_next = _(pt.chol_total_arr).last(2)[0] || null
 
          // Tri
          //
          // 2571-8,Triglyceride [Mass/volume] in Serum or Plasma,Trigl SerPl-mCnc,CHEM,36
          // 3043-7,Triglyceride [Mass/volume] in Blood,Trigl Bld-mCnc,CHEM,1592
          // fixme only 1 code!
-         pt.triglyceride_array = [];
+         pt.triglyceride_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -547,20 +548,20 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.triglyceride_array.push([
+            pt.triglyceride_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.triglyceride_array = _(pt.triglyceride_array).sortBy(function(item){ return item[0]; })
-          pt.triglyceride_latest = _(pt.triglyceride_array).last() || null
-          pt.triglyceride_latest_next = _(pt.triglyceride_array).last(2)[0] || null
+          pt.triglyceride_arr = _(pt.triglyceride_arr).sortBy(function(item){ return item[0]; })
+          pt.triglyceride = _(pt.triglyceride_arr).last() || null
+          pt.triglyceride_next = _(pt.triglyceride_arr).last(2)[0] || null
 
          // HDL
          // 2085-9,Cholesterol in HDL [Mass/volume] in Serum or Plasma,HDLc SerPl-mCnc,CHEM,38
-         pt.hdl_array = [];
+         pt.hdl_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -580,23 +581,23 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.hdl_array.push([
+            pt.hdl_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.hdl_array = _(pt.hdl_array).sortBy(function(item){ return item[0]; })
-          pt.hdl_latest = _(pt.hdl_array).last() || null
-          pt.hdl_latest_next = _(pt.hdl_array).last(2)[0] || null
+          pt.hdl_arr = _(pt.hdl_arr).sortBy(function(item){ return item[0]; })
+          pt.hdl = _(pt.hdl_arr).last() || null
+          pt.hdl_next = _(pt.hdl_arr).last(2)[0] || null
 
          // BUN
          //
          // 3094-0,Urea nitrogen [Mass/volume] in Serum or Plasma,BUN SerPl-mCnc,CHEM,6
          // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
          // fixme only top code
-         pt.bun_array = [];
+         pt.bun_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -616,23 +617,23 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.bun_array.push([
+            pt.bun_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.bun_array = _(pt.bun_array).sortBy(function(item){ return item[0]; })
-          pt.bun_latest = _(pt.bun_array).last() || null
-          pt.bun_latest_next = _(pt.bun_array).last(2)[0] || null
+          pt.bun_arr = _(pt.bun_arr).sortBy(function(item){ return item[0]; })
+          pt.bun = _(pt.bun_arr).last() || null
+          pt.bun_next = _(pt.bun_arr).last(2)[0] || null
 
          // Cre
          //
          // 2160-0,Creatinine [Mass/volume] in Serum or Plasma,Creat SerPl-mCnc,CHEM,1
          // 38483-4,Creatinine [Mass/volume] in Blood,Creat Bld-mCnc,CHEM,283
          // fixme only top code
-         pt.creatinine_array = [];
+         pt.creatinine_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -652,22 +653,22 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.creatinine_array.push([
+            pt.creatinine_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.creatinine_array = _(pt.creatinine_array).sortBy(function(item){ return item[0]; })
-          pt.creatinine_latest = _(pt.creatinine_array).last() || null
-          pt.creatinine_latest_next = _(pt.creatinine_array).last(2)[0] || null
+          pt.creatinine_arr = _(pt.creatinine_arr).sortBy(function(item){ return item[0]; })
+          pt.creatinine = _(pt.creatinine_arr).last() || null
+          pt.creatinine_next = _(pt.creatinine_arr).last(2)[0] || null
 
          // Glu
          // 2345-7,Glucose [Mass/volume] in Serum or Plasma,Glucose SerPl-mCnc,CHEM,4
          // 2339-0,Glucose [Mass/volume] in Blood,Glucose Bld-mCnc,CHEM,13
          // fixme only top code
-         pt.glucose_array = [];
+         pt.glucose_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -687,23 +688,23 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.glucose_array.push([
+            pt.glucose_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.glucose_array = _(pt.glucose_array).sortBy(function(item){ return item[0]; })
-          pt.glucose_latest = _(pt.glucose_array).last() || null
-          pt.glucose_latest_next = _(pt.glucose_array).last(2)[0] || null
+          pt.glucose_arr = _(pt.glucose_arr).sortBy(function(item){ return item[0]; })
+          pt.glucose = _(pt.glucose_arr).last() || null
+          pt.glucose_next = _(pt.glucose_arr).last(2)[0] || null
 
          // BUN
          //
          // 3094-0,Urea nitrogen [Mass/volume] in Serum or Plasma,BUN SerPl-mCnc,CHEM,6
          // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
          // fixme only top code
-         pt.bun_array = [];
+         pt.bun_arr = [];
          r.graph
           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
           .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -724,16 +725,16 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(this.date.value)
             d.addYears(3, true);
 
-            pt.bun_array.push([
+            pt.bun_arr.push([
               d.valueOf(),
               Number(this.value.value),
               this.unit.value
             ])
           })
 
-          pt.bun_array = _(pt.bun_array).sortBy(function(item){ return item[0]; })
-          pt.bun_latest = _(pt.bun_array).last() || null
-          pt.bun_latest_next = _(pt.bun_array).last(2)[0] || null
+          pt.bun_arr = _(pt.bun_arr).sortBy(function(item){ return item[0]; })
+          pt.bun = _(pt.bun_arr).last() || null
+          pt.bun_next = _(pt.bun_arr).last(2)[0] || null
 
           //
           // Reminders
@@ -742,7 +743,7 @@ var LAB_RESULTS_get = function(){
           {
             'title_html':             'glycemia',
             'reminder_html':          'Consider checking A1C today',
-            'lab_variable':           pt.a1c_latest,
+            'lab_variable':           pt.a1c,
             'lab_name_html':          'A1C',
             'target_min':             0,
             'target_max':             7,
@@ -754,7 +755,7 @@ var LAB_RESULTS_get = function(){
           {
             'title_html':             'lipids',
             'reminder_html':          'Consider checking lipids today',
-            'lab_variable':           pt.ldl_latest,
+            'lab_variable':           pt.ldl,
             'lab_name_html':          'LDL',
             'target_min':             0,
             'target_max':             100,
@@ -766,7 +767,7 @@ var LAB_RESULTS_get = function(){
           {
             'title_html':             'albuminuria',
             'reminder_html':          'Consider checking urine &micro;alb/cre ratio today',
-            'lab_variable':           pt.micro_alb_cre_ratio_latest,
+            'lab_variable':           pt.m_alb_cre_ratio,
             'lab_name_html':          'urine &alb/cre ratio',
             'target_min':             0,
             'target_max':             30,
@@ -777,7 +778,7 @@ var LAB_RESULTS_get = function(){
           }]
 
           // use pt since it's where everything else is
-          pt.reminders_array = [];
+          pt.reminders_arr = [];
 
           var process_reminders = function(reminder_data){
             _(reminder_data).each(function(r){
@@ -796,7 +797,7 @@ var LAB_RESULTS_get = function(){
                   r.in_range_p = true;
                 }
 
-                pt.reminders_array.push(r);
+                pt.reminders_arr.push(r);
               } else {
                 return;
               }
@@ -817,7 +818,7 @@ var PROBLEMS_get = function(){
   return $.Deferred(function(dfd){
     SMART.PROBLEMS_get()
       .success(function(r){
-        pt.problems_array = [];
+        pt.problems_arr = [];
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -828,13 +829,13 @@ var PROBLEMS_get = function(){
          .where('?bn    rdf:type       sp:CodedValue')
          .where('?bn    dc:title       ?title')
          .each(function(){
-           pt.problems_array.push([
+           pt.problems_arr.push([
              new XDate(this.date.value).valueOf(),
              this.title.value
            ])
          })
 
-        pt.problems_array = _(pt.problems_array).sortBy(function(item){ return item[0]; })
+        pt.problems_arr = _(pt.problems_arr).sortBy(function(item){ return item[0]; })
         dfd.resolve();
       })
       .error(error_cb);
@@ -868,108 +869,108 @@ SMART.ready(function(){
     // insert data into html
     // last known values (all arrays sorted by ascending dates)
     // FIXME: DRY
-    $('#ur_tp_latest_date').text(pt.ur_tp_latest ? new XDate(pt.ur_tp_latest[0]).toString('MM/dd/yy') : null)
-    $('#ur_tp_latest_val') .text(pt.ur_tp_latest ? pt.ur_tp_latest[1] : null)
-    $('#ur_tp_latest_unit').text(pt.ur_tp_latest ? pt.ur_tp_latest[2] : null)
+    $('#ur_tp_date').text(pt.ur_tp ? new XDate(pt.ur_tp[0]).toString('MM/dd/yy') : null)
+    $('#ur_tp_val') .text(pt.ur_tp ? pt.ur_tp[1] : null)
+    $('#ur_tp_unit').text(pt.ur_tp ? pt.ur_tp[2] : null)
 
-    $('#ur_tp_latest_next_date').text(pt.ur_tp_latest_next ? new XDate(pt.ur_tp_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#ur_tp_latest_next_val') .text(pt.ur_tp_latest_next ? pt.ur_tp_latest_next[1] : null)
-    $('#ur_tp_latest_next_unit').text(pt.ur_tp_latest_next ? pt.ur_tp_latest_next[2] : null)
+    $('#ur_tp_next_date').text(pt.ur_tp_next ? new XDate(pt.ur_tp_next[0]).toString('MM/dd/yy') : null)
+    $('#ur_tp_next_val') .text(pt.ur_tp_next ? pt.ur_tp_next[1] : null)
+    $('#ur_tp_next_unit').text(pt.ur_tp_next ? pt.ur_tp_next[2] : null)
 
-    $('#micro_alb_cre_ratio_latest_date').text(pt.micro_alb_cre_ratio_latest ? new XDate(pt.micro_alb_cre_ratio_latest[0]).toString('MM/dd/yy') : null)
-    $('#micro_alb_cre_ratio_latest_val') .text(pt.micro_alb_cre_ratio_latest ? pt.micro_alb_cre_ratio_latest[1] : null)
-    $('#micro_alb_cre_ratio_latest_unit').text(pt.micro_alb_cre_ratio_latest ? pt.micro_alb_cre_ratio_latest[2] : null)
+    $('#m_alb_cre_ratio').text(pt.m_alb_cre_ratio ? new XDate(pt.m_alb_cre_ratio[0]).toString('MM/dd/yy') : null)
+    $('#m_alb_cre_ratio_val') .text(pt.m_alb_cre_ratio ? pt.m_alb_cre_ratio[1] : null)
+    $('#m_alb_cre_ratio_unit').text(pt.m_alb_cre_ratio ? pt.m_alb_cre_ratio[2] : null)
 
-    $('#micro_alb_cre_ratio_latest_next_date').text(pt.micro_alb_cre_ratio_latest_next ? new XDate(pt.micro_alb_cre_ratio_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#micro_alb_cre_ratio_latest_next_val') .text(pt.micro_alb_cre_ratio_latest_next ? pt.micro_alb_cre_ratio_latest_next[1] : null)
-    $('#micro_alb_cre_ratio_latest_next_unit').text(pt.micro_alb_cre_ratio_latest_next ? pt.micro_alb_cre_ratio_latest_next[2] : null)
+    $('#m_alb_cre_ratio_next_date').text(pt.m_alb_cre_ratio_next ? new XDate(pt.m_alb_cre_ratio_next[0]).toString('MM/dd/yy') : null)
+    $('#m_alb_cre_ratio_next_val') .text(pt.m_alb_cre_ratio_next ? pt.m_alb_cre_ratio_next[1] : null)
+    $('#m_alb_cre_ratio_next_unit').text(pt.m_alb_cre_ratio_next ? pt.m_alb_cre_ratio_next[2] : null)
 
-    $('#sgot_latest_date').text(pt.sgot_latest ? new XDate(pt.sgot_latest[0]).toString('MM/dd/yy') : null)
-    $('#sgot_latest_val') .text(pt.sgot_latest ? pt.sgot_latest[1] : null)
-    $('#sgot_latest_unit').text(pt.sgot_latest ? pt.sgot_latest[2] : null)
+    $('#sgot_date').text(pt.sgot ? new XDate(pt.sgot[0]).toString('MM/dd/yy') : null)
+    $('#sgot_val') .text(pt.sgot ? pt.sgot[1] : null)
+    $('#sgot_unit').text(pt.sgot ? pt.sgot[2] : null)
 
-    $('#sgot_latest_next_date').text(pt.sgot_latest_next ? new XDate(pt.sgot_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#sgot_latest_next_val') .text(pt.sgot_latest_next ? pt.sgot_latest_next[1] : null)
-    $('#sgot_latest_next_unit').text(pt.sgot_latest_next ? pt.sgot_latest_next[2] : null)
+    $('#sgot_next_date').text(pt.sgot_next ? new XDate(pt.sgot_next[0]).toString('MM/dd/yy') : null)
+    $('#sgot_next_val') .text(pt.sgot_next ? pt.sgot_next[1] : null)
+    $('#sgot_next_unit').text(pt.sgot_next ? pt.sgot_next[2] : null)
 
-    $('#cholesterol_total_latest_date').text(pt.cholesterol_total_latest ? new XDate(pt.cholesterol_total_latest[0]).toString('MM/dd/yy') : null)
-    $('#cholesterol_total_latest_val') .text(pt.cholesterol_total_latest ? pt.cholesterol_total_latest[1] : null)
-    $('#cholesterol_total_latest_unit').text(pt.cholesterol_total_latest ? pt.cholesterol_total_latest[2] : null)
+    $('#chol_total_date').text(pt.chol_total ? new XDate(pt.chol_total[0]).toString('MM/dd/yy') : null)
+    $('#chol_total_val') .text(pt.chol_total ? pt.chol_total[1] : null)
+    $('#chol_total_unit').text(pt.chol_total ? pt.chol_total[2] : null)
 
-    $('#cholesterol_total_latest_next_date').text(pt.cholesterol_total_latest_next ? new XDate(pt.cholesterol_total_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#cholesterol_total_latest_next_val') .text(pt.cholesterol_total_latest_next ? pt.cholesterol_total_latest_next[1] : null)
-    $('#cholesterol_total_latest_next_unit').text(pt.cholesterol_total_latest_next ? pt.cholesterol_total_latest_next[2] : null)
+    $('#chol_total_next_date').text(pt.chol_total_next ? new XDate(pt.chol_total_next[0]).toString('MM/dd/yy') : null)
+    $('#chol_total_next_val') .text(pt.chol_total_next ? pt.chol_total_next[1] : null)
+    $('#chol_total_next_unit').text(pt.chol_total_next ? pt.chol_total_next[2] : null)
 
-    $('#triglyceride_latest_date').text(pt.triglyceride_latest ? new XDate(pt.triglyceride_latest[0]).toString('MM/dd/yy') : null)
-    $('#triglyceride_latest_val') .text(pt.triglyceride_latest ? pt.triglyceride_latest[1] : null)
-    $('#triglyceride_latest_unit').text(pt.triglyceride_latest ? pt.triglyceride_latest[2] : null)
+    $('#triglyceride_date').text(pt.triglyceride ? new XDate(pt.triglyceride[0]).toString('MM/dd/yy') : null)
+    $('#triglyceride_val') .text(pt.triglyceride ? pt.triglyceride[1] : null)
+    $('#triglyceride_unit').text(pt.triglyceride ? pt.triglyceride[2] : null)
 
-    $('#triglyceride_latest_next_date').text(pt.triglyceride_latest_next ? new XDate(pt.triglyceride_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#triglyceride_latest_next_val') .text(pt.triglyceride_latest_next ? pt.triglyceride_latest_next[1] : null)
-    $('#triglyceride_latest_next_unit').text(pt.triglyceride_latest_next ? pt.triglyceride_latest_next[2] : null)
+    $('#triglyceride_next_date').text(pt.triglyceride_next ? new XDate(pt.triglyceride_next[0]).toString('MM/dd/yy') : null)
+    $('#triglyceride_next_val') .text(pt.triglyceride_next ? pt.triglyceride_next[1] : null)
+    $('#triglyceride_next_unit').text(pt.triglyceride_next ? pt.triglyceride_next[2] : null)
 
-    $('#hdl_latest_date').text(pt.hdl_latest ? new XDate(pt.hdl_latest[0]).toString('MM/dd/yy') : null)
-    $('#hdl_latest_val') .text(pt.hdl_latest ? pt.hdl_latest[1] : null)
-    $('#hdl_latest_unit').text(pt.hdl_latest ? pt.hdl_latest[2] : null)
+    $('#hdl_date').text(pt.hdl ? new XDate(pt.hdl[0]).toString('MM/dd/yy') : null)
+    $('#hdl_val') .text(pt.hdl ? pt.hdl[1] : null)
+    $('#hdl_unit').text(pt.hdl ? pt.hdl[2] : null)
 
-    $('#hdl_latest_next_date').text(pt.hdl_latest_next ? new XDate(pt.hdl_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#hdl_latest_next_val') .text(pt.hdl_latest_next ? pt.hdl_latest_next[1] : null)
-    $('#hdl_latest_next_unit').text(pt.hdl_latest_next ? pt.hdl_latest_next[2] : null)
+    $('#hdl_next_date').text(pt.hdl_next ? new XDate(pt.hdl_next[0]).toString('MM/dd/yy') : null)
+    $('#hdl_next_val') .text(pt.hdl_next ? pt.hdl_next[1] : null)
+    $('#hdl_next_unit').text(pt.hdl_next ? pt.hdl_next[2] : null)
 
-    $('#ldl_latest_date').text(pt.ldl_latest ? new XDate(pt.ldl_latest[0]).toString('MM/dd/yy') : null)
-    $('#ldl_latest_val') .text(pt.ldl_latest ? pt.ldl_latest[1] : null)
-    $('#ldl_latest_unit').text(pt.ldl_latest ? pt.ldl_latest[2] : null)
+    $('#ldl_date').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : null)
+    $('#ldl_val') .text(pt.ldl ? pt.ldl[1] : null)
+    $('#ldl_unit').text(pt.ldl ? pt.ldl[2] : null)
 
-    $('#ldl_latest_next_date').text(pt.ldl_latest_next ? new XDate(pt.ldl_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#ldl_latest_next_val') .text(pt.ldl_latest_next ? pt.ldl_latest_next[1] : null)
-    $('#ldl_latest_next_unit').text(pt.ldl_latest_next ? pt.ldl_latest_next[2] : null)
+    $('#ldl_next_date').text(pt.ldl_next ? new XDate(pt.ldl_next[0]).toString('MM/dd/yy') : null)
+    $('#ldl_next_val') .text(pt.ldl_next ? pt.ldl_next[1] : null)
+    $('#ldl_next_unit').text(pt.ldl_next ? pt.ldl_next[2] : null)
 
-    $('#bun_latest_date').text(pt.bun_latest ? new XDate(pt.bun_latest[0]).toString('MM/dd/yy') : null)
-    $('#bun_latest_val') .text(pt.bun_latest ? pt.bun_latest[1] : null)
-    $('#bun_latest_unit').text(pt.bun_latest ? pt.bun_latest[2] : null)
+    $('#bun_date').text(pt.bun ? new XDate(pt.bun[0]).toString('MM/dd/yy') : null)
+    $('#bun_val') .text(pt.bun ? pt.bun[1] : null)
+    $('#bun_unit').text(pt.bun ? pt.bun[2] : null)
 
-    $('#bun_latest_next_date').text(pt.bun_latest_next ? new XDate(pt.bun_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#bun_latest_next_val') .text(pt.bun_latest_next ? pt.bun_latest_next[1] : null)
-    $('#bun_latest_next_unit').text(pt.bun_latest_next ? pt.bun_latest_next[2] : null)
+    $('#bun_next_date').text(pt.bun_next ? new XDate(pt.bun_next[0]).toString('MM/dd/yy') : null)
+    $('#bun_next_val') .text(pt.bun_next ? pt.bun_next[1] : null)
+    $('#bun_next_unit').text(pt.bun_next ? pt.bun_next[2] : null)
 
-    $('#creatinine_latest_date').text(pt.creatinine_latest ? new XDate(pt.creatinine_latest[0]).toString('MM/dd/yy') : null)
-    $('#creatinine_latest_val') .text(pt.creatinine_latest ? pt.creatinine_latest[1] : null)
-    $('#creatinine_latest_unit').text(pt.creatinine_latest ? pt.creatinine_latest[2] : null)
+    $('#creatinine_date').text(pt.creatinine ? new XDate(pt.creatinine[0]).toString('MM/dd/yy') : null)
+    $('#creatinine_val') .text(pt.creatinine ? pt.creatinine[1] : null)
+    $('#creatinine_unit').text(pt.creatinine ? pt.creatinine[2] : null)
 
-    $('#creatinine_latest_next_date').text(pt.creatinine_latest_next ? new XDate(pt.creatinine_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#creatinine_latest_next_val') .text(pt.creatinine_latest_next ? pt.creatinine_latest_next[1] : null)
-    $('#creatinine_latest_next_unit').text(pt.creatinine_latest_next ? pt.creatinine_latest_next[2] : null)
+    $('#creatinine_next_date').text(pt.creatinine_next ? new XDate(pt.creatinine_next[0]).toString('MM/dd/yy') : null)
+    $('#creatinine_next_val') .text(pt.creatinine_next ? pt.creatinine_next[1] : null)
+    $('#creatinine_next_unit').text(pt.creatinine_next ? pt.creatinine_next[2] : null)
 
-    $('#glucose_latest_date').text(pt.glucose_latest ? new XDate(pt.glucose_latest[0]).toString('MM/dd/yy') : null)
-    $('#glucose_latest_val') .text(pt.glucose_latest ? pt.glucose_latest[1] : null)
-    $('#glucose_latest_unit').text(pt.glucose_latest ? pt.glucose_latest[2] : null)
+    $('#glucose_date').text(pt.glucose ? new XDate(pt.glucose[0]).toString('MM/dd/yy') : null)
+    $('#glucose_val') .text(pt.glucose ? pt.glucose[1] : null)
+    $('#glucose_unit').text(pt.glucose ? pt.glucose[2] : null)
 
-    $('#glucose_latest_next_date').text(pt.glucose_latest_next ? new XDate(pt.glucose_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#glucose_latest_next_val') .text(pt.glucose_latest_next ? pt.glucose_latest_next[1] : null)
-    $('#glucose_latest_next_unit').text(pt.glucose_latest_next ? pt.glucose_latest_next[2] : null)
+    $('#glucose_next_date').text(pt.glucose_next ? new XDate(pt.glucose_next[0]).toString('MM/dd/yy') : null)
+    $('#glucose_next_val') .text(pt.glucose_next ? pt.glucose_next[1] : null)
+    $('#glucose_next_unit').text(pt.glucose_next ? pt.glucose_next[2] : null)
 
-    $('#a1c_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
-    $('#a1c_latest_val') .text(pt.a1c_latest ? pt.a1c_latest[1] : null)
-    $('#a1c_latest_unit').text(pt.a1c_latest ? pt.a1c_latest[2] : null)
+    $('#a1c_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : null)
+    $('#a1c_val') .text(pt.a1c ? pt.a1c[1] : null)
+    $('#a1c_unit').text(pt.a1c ? pt.a1c[2] : null)
 
-    $('#a1c_latest_next_date').text(pt.a1c_latest_next ? new XDate(pt.a1c_latest_next[0]).toString('MM/dd/yy') : null)
-    $('#a1c_latest_next_val') .text(pt.a1c_latest_next ? pt.a1c_latest_next[1] : null)
-    $('#a1c_latest_next_unit').text(pt.a1c_latest_next ? pt.a1c_latest_next[2] : null)
+    $('#a1c_next_date').text(pt.a1c_next ? new XDate(pt.a1c_next[0]).toString('MM/dd/yy') : null)
+    $('#a1c_next_val') .text(pt.a1c_next ? pt.a1c_next[1] : null)
+    $('#a1c_next_unit').text(pt.a1c_next ? pt.a1c_next[2] : null)
 
     // other info
-    $('#weight_latest_date').text(pt.weight_latest ? new XDate(pt.weight_latest[0]).toString('MM/dd/yy') : null)
-    $('#weight_latest_val') .text(pt.weight_latest ? _round(pt.weight_latest[1], 2) : null)
-    $('#weight_latest_unit').text(pt.weight_latest ? pt.weight_latest[2] : null)
+    $('#weight_date').text(pt.weight ? new XDate(pt.weight[0]).toString('MM/dd/yy') : null)
+    $('#weight_val') .text(pt.weight ? _round(pt.weight[1], 2) : null)
+    $('#weight_unit').text(pt.weight ? pt.weight[2] : null)
 
-    $('#height_latest_date').text(pt.height_latest ? new XDate(pt.height_latest[0]).toString('MM/dd/yy') : null)
-    $('#height_latest_val') .text(pt.height_latest ? _round(pt.height_latest[1], 2) : null)
-    $('#height_latest_unit').text(pt.height_latest ? pt.height_latest[2] : null)
+    $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
+    $('#height_val') .text(pt.height ? _round(pt.height[1], 2) : null)
+    $('#height_unit').text(pt.height ? pt.height[2] : null)
 
-    // $('#pneumovax_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
-    // $('#flu_shot_latest_date').text(pt.a1c_latest ? new XDate(pt.a1c_latest[0]).toString('MM/dd/yy') : null)
+    // $('#pneumovax_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : null)
+    // $('#flu_shot_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : null)
 
     // problems
-    _(pt.problems_array).each(function(e){
+    _(pt.problems_arr).each(function(e){
       // create a div with class problem
       $('<div></div>', {
         class: 'problem',
@@ -982,7 +983,7 @@ SMART.ready(function(){
     // (some) cv comorbidities
     // fixme: I'm sure there are many more...
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
-    var cv_comorbidities = _(pt.problems_array).filter(function(e) {
+    var cv_comorbidities = _(pt.problems_arr).filter(function(e) {
       var title = e[1];
       if (title.match(/heart disease/i)) return true;
       if (title.match(/Congestive Heart Failure/i)) return true;
@@ -1011,7 +1012,7 @@ SMART.ready(function(){
     $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
 
     // allergies
-    _(pt.allergies_array).each(function(e){
+    _(pt.allergies_arr).each(function(e){
       $('<div></div>', {
         class: 'allergy',
         html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1] + '.'
@@ -1021,7 +1022,7 @@ SMART.ready(function(){
     $('.allergy').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
 
     // medications
-    _(pt.meds_array).each(function(e){
+    _(pt.meds_arr).each(function(e){
       $('<div></div>', {
         class: 'medication',
         html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1] + '.'
@@ -1033,7 +1034,7 @@ SMART.ready(function(){
     //
     // reminders
     //
-    _(pt.reminders_array).each(function(e){
+    _(pt.reminders_arr).each(function(e){
       // todo: use templating here
       var html = '<span class=\'bold\'>' + e.title_html + '</span> ';
       if (e.overdue_p) {
@@ -1147,8 +1148,8 @@ SMART.ready(function(){
     $('#a1c_graph').height(h).width('50%')
 
     // plot'em!
-    $.plot($("#bp_graph"), [pt.dbp_array, pt.sbp_array], flot_options_bp);
-    $.plot($("#ldl_graph"), [pt.ldl_array], flot_options_ldl);
-    $.plot($("#a1c_graph"), [pt.a1c_array], flot_options_a1c);
+    $.plot($("#bp_graph"), [pt.dbp_arr, pt.sbp_arr], flot_options_bp);
+    $.plot($("#ldl_graph"), [pt.ldl_arr], flot_options_ldl);
+    $.plot($("#a1c_graph"), [pt.a1c_arr], flot_options_a1c);
   });
 });
