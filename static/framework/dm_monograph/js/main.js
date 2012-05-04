@@ -1,13 +1,35 @@
 //
-// Get the data for the DM app
+// main.js for Diabetes Monograph App
 //
-// pt's with LDL (13457-7) and a1c (4548-4)
-// p1272431 Stephan Graham, p967332 William Robinson
+// Arjun Sanyal <arjun.sanyal@childrens.harvard.edu>
+//
+// Note: A good pt with a lot of data: p967332 William Robinson
+//
+
+//
+// Patient Object
+//
+pt = {};
+pt.allergies_array = [];
+pt.meds_array = [];
+pt.family_name = null;
+pt.given_name = null;
+pt.gender = null;
+pt.bday = null;
+pt.dbp_array = [];
+pt.sbp_array = [];
+pt.dbp_latest = null;
+pt.sbp_latest = null;
+pt.dbp_latest_next = null;
+pt.sbp_latest_next = null;
+pt.weight_array = [];
+pt.weight_latest = null;
 
 
-pt = {}; // Attach data properties to pt object
-
-var error_callback = function(e){
+//
+// Utility Functions
+//
+var error_cb = function(e){
   alert('error '+e.status+' see console.')
   console.log(e.status);
   console.log(e.message.contentType);
@@ -19,12 +41,16 @@ var _round = function(val, dec){
   return Math.round(val*Math.pow(10,dec))/Math.pow(10,dec);
 }
 
+
+//
+// Data Queries
+//
+
+// pt's with allergies: J Diaz, K Lewis, K Kelly, R Robinson
 var ALLERGIES_get = function(){
   return $.Deferred(function(dfd){
     SMART.ALLERGIES_get()
-      // pt's with allergies: J Diaz, K Lewis, K Kelly, R Robinson
       .success(function(r){
-        pt.allergies_array = [];
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -58,7 +84,7 @@ var ALLERGIES_get = function(){
          })
         dfd.resolve();
       })
-      .error(error_callback);
+      .error(error_cb);
   }).promise();
 };
 
@@ -66,7 +92,6 @@ var MEDS_get = function(){
   return $.Deferred(function(dfd){
     SMART.MEDS_get()
       .success(function(r){
-        pt.meds_array = [];
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',  'http://smartplatforms.org/terms#')
@@ -81,11 +106,9 @@ var MEDS_get = function(){
              this.instruction.value.toString()
            ])
          })
-
-        // console.log(pt.meds_array)
         dfd.resolve();
       })
-      .error(error_callback);
+      .error(error_cb);
   }).promise();
 };
 
@@ -164,7 +187,7 @@ var DEMOGRAPHICS_get = function(){
 
         dfd.resolve();
       })
-      .error(error_callback);
+      .error(error_cb);
   }).promise();
 };
 
@@ -174,6 +197,9 @@ var VITAL_SIGNS_get = function(){
       .success(function(r){
         var _get_bps = function(type) {
           var code = null;
+          var bp_array = [];
+          var bp_latest, bp_latest_next = {};
+
           if (type === 'systolic') code = '<http://purl.bioontology.org/ontology/LNC/8480-6>';
           else if (type === 'diastolic') code = '<http://purl.bioontology.org/ontology/LNC/8462-4>';
           else alert('error: bp type not systolic or diastolic!');
@@ -210,24 +236,14 @@ var VITAL_SIGNS_get = function(){
              ])
            })
 
-           // FIXME: DRY
-           pt.bp_array = _(pt.bp_array).sortBy(function(item){ return item[0]; })
-           pt.bp_latest = _(pt.bp_array).last() || null
-           pt.bp_latest_next = _(pt.bp_array).last(2)[0] || null
+           bp_array = _(bp_array).sortBy(function(item){ return item[0]; })
+           bp_latest = _(bp_array).last() || null
+           bp_latest_next = _(bp_array).last(2)[0] || null
         }
 
-        // ruby style!
-        pt.dbp_array = [];
-        pt.sbp_array = [];
-        pt.dbp_latest = null;
-        pt.sbp_latest = null;
-        pt.dbp_latest_next = null;
-        pt.sbp_latest_next = null;
         _get_bps('systolic');
         _get_bps('diastolic')
 
-        pt.weight_array = [];
-        pt.weight_latest = null;
         r.graph
          .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',       'http://smartplatforms.org/terms#')
@@ -276,7 +292,7 @@ var VITAL_SIGNS_get = function(){
 
         dfd.resolve();
       })
-      .error(error_callback);
+      .error(error_cb);
   }).promise();
 };
 
@@ -792,7 +808,7 @@ var LAB_RESULTS_get = function(){
          // resolved!
          dfd.resolve();
       })
-      .error(error_callback);
+      .error(error_cb);
   }).promise();
 };
 
@@ -821,7 +837,7 @@ var PROBLEMS_get = function(){
         pt.problems_array = _(pt.problems_array).sortBy(function(item){ return item[0]; })
         dfd.resolve();
       })
-      .error(error_callback);
+      .error(error_cb);
   }).promise();
 };
 
