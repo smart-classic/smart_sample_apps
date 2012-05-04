@@ -1128,7 +1128,7 @@ SMART.ready(function(){
     var h = 100;
     $('#bp_graph').height(h);
     $('#ldl_graph').height(h);
-    $('#a1c_graph').height(h).width($('#bp_graph').width());
+    $('#a1c_graph').height(h).width('50%')
 
     // plot'em!
     $.plot($("#bp_graph"), [pt.dbp_array, pt.sbp_array], flot_options_bp);
