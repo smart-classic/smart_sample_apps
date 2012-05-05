@@ -1,99 +1,35 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Med Review App</title>
-    <link href='http://fonts.googleapis.com/css?family=Handlee|Galdeano' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/med_review.css" />
-    <script  src='../smart/scripts/smart-api-client.js'></script>
-  </head>
+<!doctype html>
+<html lang="en" ng-app="medrec">
+	
+<head>
+	<title>Med Review App</title>
+  <meta charset="utf-8">
+	<link href='http://fonts.googleapis.com/css?family=Handlee|Galdeano' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/app.css"/>
+	<script  src='http://localhost:8001/framework/smart/scripts/smart-api-client.js'></script>
+</head>
 
-  <body>
+<body ng-controller="MedRecController">
 
-    <div id='reconciled' class='med-list'>
-    <h2>Reconciled List</h2>
-    </div>
+		<div class="med-list" ng-repeat="medlist in medlists">
+			<h2>{{medlist.sname.value}} ({{medlist.meds.length}} meds)</h2>
+			Compiled on: <b> {{medlist.d.value | date:'MM/dd/yyyy'}}</b><br>
+			<div class='med' ng-repeat="med in medlist.meds">  
+				<input type='checkbox' ng-change='updateReconciled()' ng-model='med.selected' id='list-{{$parent.$index}}_med-{{$index}}'>
+				<label for='list-{{$parent.$index}}_med-{{$index}}'>{{med.t.value}}</label>
+				<br>
+			</div>
+		</div>
 
-	<script>
-	  var reconciled = {};
-	  var $ = jQuery = SMART.jQuery;
+		<div id='reconciled' class='med-list'>
+			<h2>Reconciled List</h2>
+			<div class='med' ng-repeat="med in reconciled">{{med.t.value}}</div>
+		</div>
 
-	  SMART.ready(function() {
-	    SMART.MEDICATION_LISTS_get(function(lists) {
-	   
-	      var by_list = lists.graph.where("?l rdf:type sp:MedicationList")
-	      .where("?l sp:medListSource ?s")
-	      .where("?s dcterms:title ?sname")
-	      .optional("?l dcterms:date ?d")
-	      .optional("?l sp:startDate ?sd")
-	      .optional("?l sp:endDate ?ed");
+  <script src="lib/angular/angular.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/services.js"></script>
+  <script src="js/controllers.js"></script>
 
-	      for (var i = 0; i < by_list.length; i++) {
-		var list = by_list[i];
-		var meds = lists.graph.where(list.l.toString() + ' sp:medication ?m')
-				   .where('?m sp:drugName ?n')
-				   .where('?n dcterms:title ?t');
-
-		addlist(list, meds);
-	      }
-	    });
-	  });
-	  
-	  function addlist(list, meds) {
-
-		var listdiv = $("<div class='med-list'></div>");
-		$("body").prepend(listdiv);
-
-		listdiv.append("<h2>"+list.sname.value+" ("+meds.length+" meds)</h2>");
-
-		if (list.d) {
-		  var d = new Date(list.d.value);
-		  listdiv.append("Compiled on: <b>" + d.toLocaleDateString()+"</b><br>");
-		}
-
-		if (list.sd || list.ed) {
-		  var sd = new Date(list.sd.value);
-		  var ed = new Date(list.ed.value);
-
-		  listdiv.append("Compiled for dates: <b>" +
-				  sd.toLocaleDateString() +
-				  "&mdash;" + 
-				  ed.toLocaleDateString()+
-				  "</b><br>");
-		}
-
-		var meddiv = $("<div class='med'></div>");
-		listdiv.append(meddiv);
-		console.log(meds.length + " meds.\n");
-
-		for (var j = 0; j < meds.length; j++) {
-		  (function() {
-		    var med = meds[j];
-		    var cb = $("<input type='checkbox'>");
-		    meddiv.append(cb);
-		    meddiv.append(med.t.value + "<br>");
-
-		    cb.click(function(t){
-		      if ( $(this).attr("checked") ){
-			reconciled[med.m.toString()] = med.t.value;
-		      } else {
-			delete reconciled[med.m.toString()];
-		      }
-		      drawReconciled();
-		    });
-		  })();
-		}
-	  }
-
-	  function drawReconciled() {
-	    var r = $("#reconciled");
-	    $("div", r).remove();
-
-	    for (var v in reconciled) {
-		var meddiv = $("<div class='med'>"+reconciled[v]+"</div>");
-		r.append(meddiv);
-	    }
-	  }
-
-      </script>
-  </body>
+</body>
 </html>
