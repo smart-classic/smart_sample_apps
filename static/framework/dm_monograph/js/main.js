@@ -985,22 +985,19 @@ SMART.ready(function(){
     if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }
     if (!pt.flu_shot_date) { $('#flu_shot_date').text('Unknown'); }
 
-
     if (pt.problems_arr.length == 0) { $('<div></div>', {text: 'No known problems'}).appendTo('#problems'); }
-    _(pt.problems_arr).each(function(e){
-      $('<div></div>', {
-        class: 'problem',
-        text: e[1]
-      }).appendTo('#problems')
-    })
+    _(pt.problems_arr).chain()
+      .sortBy(function(e){ return e[1]; })
+      .uniq(true, function(e){ return e[1]; }) // note true here for isSorted?
+      .each(function(e){ $('<div></div>', { class: 'problem', text: e[1]}).appendTo('#problems') })
+      .value()
 
     $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
 
     // (some) cv comorbidities
     // fixme: I'm sure there are many more...
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
-    var cv_comorbidities = _(pt.problems_arr)
-      .chain()
+    var cv_comorbidities = _(pt.problems_arr).chain()
       .filter(function(e) {
         var title = e[1];
         if (title.match(/heart disease/i)) return true;
@@ -1020,6 +1017,7 @@ SMART.ready(function(){
         return false;
       })
       .sortBy(function(e){ return e[1]; })
+      .uniq(true, function(e){ return e[1]; })
       .value()
 
     if (cv_comorbidities.length == 0) { $('<div></div>', {text: 'No known CV comorbidities'}).appendTo('#cv_comorbidities'); }
@@ -1045,12 +1043,15 @@ SMART.ready(function(){
 
     // medications
     if (pt.meds_arr.length == 0) { $('<div/>', {text: 'No known medications'}).appendTo('#medications'); }
-    _(pt.meds_arr).each(function(e){
-      $('<div></div>', {
-        class: 'medication',
-        html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1] + '.'
-      }).appendTo('#medications')
-    })
+    _(pt.meds_arr).chain()
+      .sortBy(function(e){ return e[0].toLowerCase(); })
+      .each(function(e){
+        $('<div></div>', {
+          class: 'medication',
+          html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1] + '.'
+        }).appendTo('#medications')
+      })
+      .value()
 
     $('.medication').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
 
