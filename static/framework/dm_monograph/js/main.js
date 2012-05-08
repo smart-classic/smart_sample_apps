@@ -29,6 +29,7 @@ pt.dbp = null;
 pt.dbp_arr = [];
 pt.dbp_next = null;
 pt.family_name = null;
+pt.flu_shot_date = null;
 pt.gender = null;
 pt.given_name = null;
 pt.glucose = null;
@@ -46,6 +47,7 @@ pt.m_alb_cre_ratio = null;
 pt.m_alb_cre_ratio_arr = [];
 pt.m_alb_cre_ratio_next = null;
 pt.meds_arr = [];
+pt.pneumovax_date = null;
 pt.problems_arr = [];
 pt.reminders_arr = [];
 pt.sbp = null;
@@ -220,7 +222,7 @@ var DEMOGRAPHICS_get = function(){
                }
              })
 
-          console.log(JSON.stringify(jsdata))
+          // console.log(JSON.stringify(jsdata))
 
         dfd.resolve();
       })
@@ -972,15 +974,17 @@ SMART.ready(function(){
 
     // other info
     $('#weight_date').text(pt.weight ? new XDate(pt.weight[0]).toString('MM/dd/yy') : null)
-    $('#weight_val') .text(pt.weight ? _round(pt.weight[1], 2) : null)
+    $('#weight_val') .text(pt.weight ? _round(pt.weight[1], 2) : 'Unknown')
     $('#weight_unit').text(pt.weight ? pt.weight[2] : null)
 
     $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
-    $('#height_val') .text(pt.height ? _round(pt.height[1], 2) : null)
+    $('#height_val') .text(pt.height ? _round(pt.height[1], 2) : 'Unknown')
     $('#height_unit').text(pt.height ? pt.height[2] : null)
 
-    // $('#pneumovax_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : null)
-    // $('#flu_shot_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : null)
+    // Fixme: NO pneumovax or flu codes in the current pts...
+    if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }
+    if (!pt.flu_shot_date) { $('#flu_shot_date').text('Unknown'); }
+
 
     if (pt.problems_arr.length == 0) { $('<div></div>', {text: 'No known problems'}).appendTo('#problems'); }
     _(pt.problems_arr).each(function(e){
@@ -995,24 +999,28 @@ SMART.ready(function(){
     // (some) cv comorbidities
     // fixme: I'm sure there are many more...
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
-    var cv_comorbidities = _(pt.problems_arr).filter(function(e) {
-      var title = e[1];
-      if (title.match(/heart disease/i)) return true;
-      if (title.match(/Congestive Heart Failure/i)) return true;
-      if (title.match(/Myocardial Infarction/i)) return true;
-      if (title.match(/Cerebrovascular Disease	/i)) return true;
-      if (title.match(/Hypertension/i)) return true;
-      if (title.match(/neuropathic pain/i)) return true;
-      if (title.match(/coronary arteriosclerosis/i)) return true;
-      if (title.match(/chronic renal impariment/i)) return true;
-      if (title.match(/cardiac bypass graft surgery/i)) return true;
-      if (title.match(/Preinfarction syndrome/i)) return true;
-      if (title.match(/Chest pain/i)) return true;
-      if (title.match(/Chronic ischemic heart disease/i)) return true;
-      if (title.match(/Disorder of cardiovascular system/i)) return true;
-      if (title.match(/Precordial pain/i)) return true;
-      return false;
-    })
+    var cv_comorbidities = _(pt.problems_arr)
+      .chain()
+      .filter(function(e) {
+        var title = e[1];
+        if (title.match(/heart disease/i)) return true;
+        if (title.match(/Congestive Heart Failure/i)) return true;
+        if (title.match(/Myocardial Infarction/i)) return true;
+        if (title.match(/Cerebrovascular Disease	/i)) return true;
+        if (title.match(/Hypertension/i)) return true;
+        if (title.match(/neuropathic pain/i)) return true;
+        if (title.match(/coronary arteriosclerosis/i)) return true;
+        if (title.match(/chronic renal impariment/i)) return true;
+        if (title.match(/cardiac bypass graft surgery/i)) return true;
+        if (title.match(/Preinfarction syndrome/i)) return true;
+        if (title.match(/Chest pain/i)) return true;
+        if (title.match(/Chronic ischemic heart disease/i)) return true;
+        if (title.match(/Disorder of cardiovascular system/i)) return true;
+        if (title.match(/Precordial pain/i)) return true;
+        return false;
+      })
+      .sortBy(function(e){ return e[1]; })
+      .value()
 
     if (cv_comorbidities.length == 0) { $('<div></div>', {text: 'No known CV comorbidities'}).appendTo('#cv_comorbidities'); }
     _(cv_comorbidities).each(function(e){
