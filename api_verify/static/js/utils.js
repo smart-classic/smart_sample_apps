@@ -188,7 +188,7 @@ if (!VERIFY) {
         $('#spinner').show();
         
         // Auto-select the content type based on the model
-        if (model === "AppManifest" || model === "Container") {
+        if (model === "AppManifest" || model === "Container" || model === "Manifest") {
             contentType = "application/json";
         } else if (model === "UserPreferences") {
             contentType = "text/plain";
@@ -225,6 +225,55 @@ if (!VERIFY) {
                 // Reset the validate button state
                 $('#spinner').hide();
                 $('#validate').button('enable');
+            },
+            "html"
+        );
+    };
+    
+    /**
+    * Validates SMART manifests and displays the result
+    */
+    VERIFY.validateManifest = function () {
+    
+        var contentType,
+            model = "Manifest",
+            data = $('#manifest_input').val(),
+            contentType = "application/json";
+        
+        // Disable the validate button
+        $('#validate_manifest').button('disable');
+        $('#custom_messages_manifest').hide();
+        $('#spinner_manifest').show();
+        
+        // Ajax call to the server
+        $.post(
+            "runtests",
+            {'model': model, 'data': data, 'content_type': contentType},
+            function (responseText) {
+                var messages = JSON.parse (responseText),
+                    console_text = "";
+                
+                for (var i = 0; i < messages.length; i++) {
+                    console_text += messages[i] + "\n";
+                }
+                
+                // Default message
+                if (messages.length === 0) {
+                    console_text = "No problems detected (model = '" + model + "')";
+                }
+
+                // Hack to convert the line endings to \r when IE is used
+                if (VERIFY.getInternetExplorerVersion() > 0) {
+                    console_text = console_text.replace(/\n/g, "\r");
+                }
+
+                // Refresh the console and show it if there is any text to display in it
+                $('#custom_messages_manifest').text(console_text);
+                $('#custom_messages_manifest').show();
+                
+                // Reset the validate button state
+                $('#spinner_manifest').hide();
+                $('#validate_manifest').button('enable');
             },
             "html"
         );
@@ -422,6 +471,7 @@ if (!VERIFY) {
         $('#model').html(options_str);
         $('#model2').html("<option></option>\n" + options_str);
         $('#validate').button('enable');
+        $('#validate_manifest').button('enable');
     
         // Hide the spinner and display the tabs
         $("a[href='#tab_all']").hide();
