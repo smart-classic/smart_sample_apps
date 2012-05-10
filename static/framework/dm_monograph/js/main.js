@@ -136,11 +136,13 @@ var MEDS_get = function(){
          .prefix('sp',  'http://smartplatforms.org/terms#')
          .prefix('dc',  'http://purl.org/dc/terms/')
          .where('?id    rdf:type        sp:Medication')
+         .where('?id    sp:startDate    ?date')
          .where('?id    sp:drugName     ?bn')
          .where('?bn    dc:title        ?title')
          .where('?id    sp:instructions ?instruction')
          .each(function(){
            pt.meds_arr.push([
+             new XDate(this.date.value).valueOf(),
              this.title.value.toString(),
              this.instruction.value.toString()
            ])
@@ -877,91 +879,91 @@ SMART.ready(function(){
     // insert data into html
     // last known values (all arrays sorted by ascending dates)
     // FIXME: DRY
-    $('#ur_tp_date').text(pt.ur_tp ? new XDate(pt.ur_tp[0]).toString('MM/dd/yy') : null)
+    $('#ur_tp_date').text(pt.ur_tp ? new XDate(pt.ur_tp[0]).toString('MM/dd/yy') : 'None')
     $('#ur_tp_val') .text(pt.ur_tp ? pt.ur_tp[1] : null)
     $('#ur_tp_unit').text(pt.ur_tp ? pt.ur_tp[2] : null)
 
-    $('#ur_tp_next_date').text(pt.ur_tp_next ? new XDate(pt.ur_tp_next[0]).toString('MM/dd/yy') : null)
+    $('#ur_tp_next_date').text(pt.ur_tp_next ? new XDate(pt.ur_tp_next[0]).toString('MM/dd/yy') : 'None')
     $('#ur_tp_next_val') .text(pt.ur_tp_next ? pt.ur_tp_next[1] : null)
     $('#ur_tp_next_unit').text(pt.ur_tp_next ? pt.ur_tp_next[2] : null)
 
-    $('#m_alb_cre_ratio').text(pt.m_alb_cre_ratio ? new XDate(pt.m_alb_cre_ratio[0]).toString('MM/dd/yy') : null)
+    $('#m_alb_cre_ratio_date').text(pt.m_alb_cre_ratio ? new XDate(pt.m_alb_cre_ratio[0]).toString('MM/dd/yy') : 'None')
     $('#m_alb_cre_ratio_val') .text(pt.m_alb_cre_ratio ? pt.m_alb_cre_ratio[1] : null)
     $('#m_alb_cre_ratio_unit').text(pt.m_alb_cre_ratio ? pt.m_alb_cre_ratio[2] : null)
 
-    $('#m_alb_cre_ratio_next_date').text(pt.m_alb_cre_ratio_next ? new XDate(pt.m_alb_cre_ratio_next[0]).toString('MM/dd/yy') : null)
+    $('#m_alb_cre_ratio_next_date').text(pt.m_alb_cre_ratio_next ? new XDate(pt.m_alb_cre_ratio_next[0]).toString('MM/dd/yy') : 'None')
     $('#m_alb_cre_ratio_next_val') .text(pt.m_alb_cre_ratio_next ? pt.m_alb_cre_ratio_next[1] : null)
     $('#m_alb_cre_ratio_next_unit').text(pt.m_alb_cre_ratio_next ? pt.m_alb_cre_ratio_next[2] : null)
 
-    $('#sgot_date').text(pt.sgot ? new XDate(pt.sgot[0]).toString('MM/dd/yy') : null)
+    $('#sgot_date').text(pt.sgot ? new XDate(pt.sgot[0]).toString('MM/dd/yy') : 'None')
     $('#sgot_val') .text(pt.sgot ? pt.sgot[1] : null)
     $('#sgot_unit').text(pt.sgot ? pt.sgot[2] : null)
 
-    $('#sgot_next_date').text(pt.sgot_next ? new XDate(pt.sgot_next[0]).toString('MM/dd/yy') : null)
+    $('#sgot_next_date').text(pt.sgot_next ? new XDate(pt.sgot_next[0]).toString('MM/dd/yy') : 'None')
     $('#sgot_next_val') .text(pt.sgot_next ? pt.sgot_next[1] : null)
     $('#sgot_next_unit').text(pt.sgot_next ? pt.sgot_next[2] : null)
 
-    $('#chol_total_date').text(pt.chol_total ? new XDate(pt.chol_total[0]).toString('MM/dd/yy') : null)
+    $('#chol_total_date').text(pt.chol_total ? new XDate(pt.chol_total[0]).toString('MM/dd/yy') : 'None')
     $('#chol_total_val') .text(pt.chol_total ? pt.chol_total[1] : null)
     $('#chol_total_unit').text(pt.chol_total ? pt.chol_total[2] : null)
 
-    $('#chol_total_next_date').text(pt.chol_total_next ? new XDate(pt.chol_total_next[0]).toString('MM/dd/yy') : null)
+    $('#chol_total_next_date').text(pt.chol_total_next ? new XDate(pt.chol_total_next[0]).toString('MM/dd/yy') : 'None')
     $('#chol_total_next_val') .text(pt.chol_total_next ? pt.chol_total_next[1] : null)
     $('#chol_total_next_unit').text(pt.chol_total_next ? pt.chol_total_next[2] : null)
 
-    $('#triglyceride_date').text(pt.triglyceride ? new XDate(pt.triglyceride[0]).toString('MM/dd/yy') : null)
+    $('#triglyceride_date').text(pt.triglyceride ? new XDate(pt.triglyceride[0]).toString('MM/dd/yy') : 'None')
     $('#triglyceride_val') .text(pt.triglyceride ? pt.triglyceride[1] : null)
     $('#triglyceride_unit').text(pt.triglyceride ? pt.triglyceride[2] : null)
 
-    $('#triglyceride_next_date').text(pt.triglyceride_next ? new XDate(pt.triglyceride_next[0]).toString('MM/dd/yy') : null)
+    $('#triglyceride_next_date').text(pt.triglyceride_next ? new XDate(pt.triglyceride_next[0]).toString('MM/dd/yy') : 'None')
     $('#triglyceride_next_val') .text(pt.triglyceride_next ? pt.triglyceride_next[1] : null)
     $('#triglyceride_next_unit').text(pt.triglyceride_next ? pt.triglyceride_next[2] : null)
 
-    $('#hdl_date').text(pt.hdl ? new XDate(pt.hdl[0]).toString('MM/dd/yy') : null)
+    $('#hdl_date').text(pt.hdl ? new XDate(pt.hdl[0]).toString('MM/dd/yy') : 'None')
     $('#hdl_val') .text(pt.hdl ? pt.hdl[1] : null)
     $('#hdl_unit').text(pt.hdl ? pt.hdl[2] : null)
 
-    $('#hdl_next_date').text(pt.hdl_next ? new XDate(pt.hdl_next[0]).toString('MM/dd/yy') : null)
+    $('#hdl_next_date').text(pt.hdl_next ? new XDate(pt.hdl_next[0]).toString('MM/dd/yy') : 'None')
     $('#hdl_next_val') .text(pt.hdl_next ? pt.hdl_next[1] : null)
     $('#hdl_next_unit').text(pt.hdl_next ? pt.hdl_next[2] : null)
 
-    $('#ldl_date').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : null)
+    $('#ldl_date').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : 'None')
     $('#ldl_val') .text(pt.ldl ? pt.ldl[1] : null)
     $('#ldl_unit').text(pt.ldl ? pt.ldl[2] : null)
 
-    $('#ldl_next_date').text(pt.ldl_next ? new XDate(pt.ldl_next[0]).toString('MM/dd/yy') : null)
+    $('#ldl_next_date').text(pt.ldl_next ? new XDate(pt.ldl_next[0]).toString('MM/dd/yy') : 'None')
     $('#ldl_next_val') .text(pt.ldl_next ? pt.ldl_next[1] : null)
     $('#ldl_next_unit').text(pt.ldl_next ? pt.ldl_next[2] : null)
 
-    $('#bun_date').text(pt.bun ? new XDate(pt.bun[0]).toString('MM/dd/yy') : null)
+    $('#bun_date').text(pt.bun ? new XDate(pt.bun[0]).toString('MM/dd/yy') : 'None')
     $('#bun_val') .text(pt.bun ? pt.bun[1] : null)
     $('#bun_unit').text(pt.bun ? pt.bun[2] : null)
 
-    $('#bun_next_date').text(pt.bun_next ? new XDate(pt.bun_next[0]).toString('MM/dd/yy') : null)
+    $('#bun_next_date').text(pt.bun_next ? new XDate(pt.bun_next[0]).toString('MM/dd/yy') : 'None')
     $('#bun_next_val') .text(pt.bun_next ? pt.bun_next[1] : null)
     $('#bun_next_unit').text(pt.bun_next ? pt.bun_next[2] : null)
 
-    $('#creatinine_date').text(pt.creatinine ? new XDate(pt.creatinine[0]).toString('MM/dd/yy') : null)
+    $('#creatinine_date').text(pt.creatinine ? new XDate(pt.creatinine[0]).toString('MM/dd/yy') : 'None')
     $('#creatinine_val') .text(pt.creatinine ? pt.creatinine[1] : null)
     $('#creatinine_unit').text(pt.creatinine ? pt.creatinine[2] : null)
 
-    $('#creatinine_next_date').text(pt.creatinine_next ? new XDate(pt.creatinine_next[0]).toString('MM/dd/yy') : null)
+    $('#creatinine_next_date').text(pt.creatinine_next ? new XDate(pt.creatinine_next[0]).toString('MM/dd/yy') : 'None')
     $('#creatinine_next_val') .text(pt.creatinine_next ? pt.creatinine_next[1] : null)
     $('#creatinine_next_unit').text(pt.creatinine_next ? pt.creatinine_next[2] : null)
 
-    $('#glucose_date').text(pt.glucose ? new XDate(pt.glucose[0]).toString('MM/dd/yy') : null)
+    $('#glucose_date').text(pt.glucose ? new XDate(pt.glucose[0]).toString('MM/dd/yy') : 'None')
     $('#glucose_val') .text(pt.glucose ? pt.glucose[1] : null)
     $('#glucose_unit').text(pt.glucose ? pt.glucose[2] : null)
 
-    $('#glucose_next_date').text(pt.glucose_next ? new XDate(pt.glucose_next[0]).toString('MM/dd/yy') : null)
+    $('#glucose_next_date').text(pt.glucose_next ? new XDate(pt.glucose_next[0]).toString('MM/dd/yy') : 'None')
     $('#glucose_next_val') .text(pt.glucose_next ? pt.glucose_next[1] : null)
     $('#glucose_next_unit').text(pt.glucose_next ? pt.glucose_next[2] : null)
 
-    $('#a1c_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : null)
+    $('#a1c_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : 'None')
     $('#a1c_val') .text(pt.a1c ? pt.a1c[1] : null)
     $('#a1c_unit').text(pt.a1c ? pt.a1c[2] : null)
 
-    $('#a1c_next_date').text(pt.a1c_next ? new XDate(pt.a1c_next[0]).toString('MM/dd/yy') : null)
+    $('#a1c_next_date').text(pt.a1c_next ? new XDate(pt.a1c_next[0]).toString('MM/dd/yy') : 'None')
     $('#a1c_next_val') .text(pt.a1c_next ? pt.a1c_next[1] : null)
     $('#a1c_next_unit').text(pt.a1c_next ? pt.a1c_next[2] : null)
 
@@ -1037,11 +1039,11 @@ SMART.ready(function(){
     // medications
     if (pt.meds_arr.length == 0) { $('<div/>', {text: 'No known medications'}).appendTo('#medications'); }
     _(pt.meds_arr).chain()
-      .sortBy(function(e){ return e[0].toLowerCase(); })
+      .sortBy(function(e){ return e[1].toLowerCase(); })
       .each(function(e){
         $('<div></div>', {
           class: 'medication',
-          html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1] + '.'
+          html: '<span class=\'bold\'>' + e[1] + '</span> ' + e[2]
         }).appendTo('#medications')
       })
       .value()
@@ -1084,7 +1086,7 @@ SMART.ready(function(){
         xaxis: {
           mode: 'time',
           timeformat: '%y',
-          min: new XDate('2010').valueOf(),
+          min: new XDate(2009, 11).valueOf(),
           max: new XDate().valueOf(),
           tickSize: [1, 'year'],
           minTickSize: [1, 'year']
