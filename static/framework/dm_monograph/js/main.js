@@ -155,74 +155,67 @@ var DEMOGRAPHICS_get = function(){
   return $.Deferred(function(dfd){
     SMART.DEMOGRAPHICS_get()
       .success(function(demos){
-        var d = demos.graph
-          .prefix('foaf', 'http://xmlns.com/foaf/0.1/')
-          .prefix('v',    'http://www.w3.org/2006/vcard/ns#')
-          .prefix('rdf',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',   'http://smartplatforms.org/terms#')
-          .where('?r      v:n           ?n')
-          .where('?n      rdf:type      v:Name')
-          .where('?n      v:given-name  ?given_name')
-          .where('?n      v:family-name ?family_name')
-          .where('?r      foaf:gender   ?gender')
-          .where('?r      v:bday        ?bday')
-          .get(0)
+        var debug = false;
+        var jld_data = { '@graph': [] };
+        var jld_frame = {
+          "@context": {
+            "dc": "http://purl.org/dc/terms/",
+            "sp": "http://smartplatforms.org/terms#",
+            "foaf": "http://xmlns.com/foaf/0.1/",
+            "v": "http://www.w3.org/2006/vcard/ns#",
+            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+          },
+          "@type": ["sp:Demographics"]
+        }
+        var jld_out = {};
 
-        pt.family_name = d.family_name.value;
-        pt.given_name = d.given_name.value;
-        pt.gender = d.gender.value;
-        pt.bday = d.bday.value;
-
-        // testing json-ld
-        jsdata = { '@graph': [] };
         demos.graph
-             .where('?s ?p ?o')
-             .each(function(i, bindings, triples){
+          .where('?s ?p ?o')
+          .each(function(){
+            if (debug) {
+             console.log(this.s.dump().value
+                       , '('
+                       , this.s.dump().type
+                       , ')'
+                       , this.p.dump().value
+                       , '('
+                       , this.p.dump().type
+                       , ')'
+                       , this.o.dump().value
+                       , '('
+                       , this.o.dump().type
+                       , ')'
+                       , '\n');
+            }
 
-               var jstriple_dump = function(jst){
-                 // console.log('@id: ', jst['@id'])
-                 // console.log(jst);
-               }
+            jstriple = { '@id': this.s.dump().value };
+            if (this.o.dump().type === 'literal') {
+              jstriple[this.p.dump().value] = [this.o.dump().value]
+            }
+            else if (this.p.dump().value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+              jstriple['@type'] = this.o.dump().value
+            }
+            else if (this.o.dump().type === 'uri' || 'bnode') {
+              jstriple[this.p.dump().value] = [{
+                '@id': this.o.dump().value
+              }]
+            }
+            jld_data['@graph'].push(jstriple);
+          })
 
-               // note: this.s == bindings.s == triples[0].subject
-               if (i>0) {
-                 // .dump() returns RDF/JSON representation
-                 // console.log(this.s.dump().value
-                 //           , '('
-                 //           , this.s.dump().type
-                 //           , ')'
-                 //           , this.p.dump().value
-                 //           , '('
-                 //           , this.p.dump().type
-                 //           , ')'
-                 //           , this.o.dump().value
-                 //           , '('
-                 //           , this.o.dump().type
-                 //           , ')'
-                 //           , '\n');
+        // if (debug) console.log(JSON.stringify(jld_data));
 
-                 jstriple = {
-                   '@id': this.s.dump().value,
-                 };
+        // get data from the framed jld output
+        jsonld.frame(jld_data['@graph'], jld_frame, {}, function(err, framed) {
+          jld_out = framed;
+        });
 
-                 // if o is a literal
-                 if (this.o.dump().type === 'literal') {
-                   jstriple[this.p.dump().value] = [this.o.dump().value]
-                 }
-                 else if (this.p.dump().value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-                   jstriple['@type'] = this.o.dump().value
-                 }
-                 else if (this.o.dump().type === 'uri' || 'bnode') {
-                   jstriple[this.p.dump().value] = [{
-                     '@id': this.o.dump().value
-                   }]
-                 }
-
-                 jsdata['@graph'].push(jstriple);
-               }
-             })
-
-          // console.log(JSON.stringify(jsdata))
+        var o = jld_out['@graph'][0]
+        // console.log(o);
+        pt.family_name = o['v:n']['v:family-name']
+        pt.given_name = o['v:n']['v:given-name']
+        pt.gender = o['foaf:gender']
+        pt.bday = o['v:bday']
 
         dfd.resolve();
       })
