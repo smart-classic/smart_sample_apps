@@ -58,45 +58,77 @@
 
         <div class='section_header'>Last Known Values</div>
 
-        <div class="grid_1 alpha" style='width: 30%; margin-right: 0px;'>
-          <div class='bold'>Ur tp</div>
-          <div class='smaller'>0-135&thinsp;mg/dL</div>
+        <div class="grid_1 alpha" style='width: 37%; margin-right: 0px;'>
+          <div>
+            <span class='bold'>Ur tp</span>
+            <span class='smaller' id='ur_tp_unit'></span>
+          </div>
+          <div class='smaller'>0-135</div>
 
-          <div class='gray bold'>&micro;alb/cre</div>
+          <div class='gray'>
+            <span class='bold'>&micro;alb/cre</span>
+            <span class='smaller' id='m_alb_cre_ratio_unit'></span>
+          </div>
           <div class='gray smaller'>&lt; 30.0</div>
 
-          <div class='bold'>SGOT</div>
-          <div class='smaller'>10-40&thinsp;U/L</div>
+          <div>
+            <span class='bold'>SGOT</span>
+            <span class='smaller' id='sgot_unit'></span>
+          </div>
+          <div class='smaller'>10-40</div>
 
-          <div class='gray bold'>Chol</div>
-          <div class='gray smaller'>&lt;&thinsp;200&thinsp;mg/dL</div>
+          <div class='gray'>
+            <span class='bold'>Chol</span>
+            <span class='smaller' id='chol_total_unit'></span>
+          </div>
+          <div class='gray smaller'>&lt;&thinsp;200</div>
 
-          <div class='bold'>Tri</div>
-          <div class='smaller'>&lt;&thinsp;150&thinsp;mg/dL</div>
+          <div>
+            <span class='bold'>Tri</span>
+            <span class='smaller' id='triglyceride_unit'></span>
+          </div>
+          <div class='smaller'>&lt;&thinsp;150</div>
 
-          <div class='gray bold'>HDL</div>
-          <div class='gray smaller'>&gt;&thinsp;40&thinsp;mg/dL</div>
+          <div class='gray'>
+            <span class='bold'>HDL</span>
+            <span class='smaller' id='hdl_unit'></span>
+          </div>
+          <div class='gray smaller'>&gt;&thinsp;40</div>
 
-          <div class='bold'>LDL</div>
-          <div class='smaller'>&lt;&thinsp;100&thinsp;mg/dL</div>
+          <div>
+            <span class='bold'>LDL</span>
+            <span class='smaller' id='ldl_unit'></span>
+          </div>
+          <div class='smaller'>&lt;&thinsp;100</div>
 
-          <div class='gray bold'>BUN</div>
+          <div class='gray'>
+            <span class='bold'>BUN</span>
+            <span class='smaller' id='bun_unit'></span>
+          </div>
           <div class='gray smaller'>8%-25%</div>
 
-          <div class='bold'>Cre</div>
-          <div class='smaller'>.6-1.5&thinsp;mg/dL</div>
+          <div>
+            <span class='bold'>Cre</span>
+            <span class='smaller' id='creatinine_unit'></span>
+          </div>
+          <div class='smaller'>.6-1.5</div>
 
-          <div class='gray bold'>Glu</div>
-          <div class='gray smaller'>70-110&thinsp;mg/dL</div>
+          <div class='gray'>
+            <span class='bold'>Glu</span>
+            <span class='smaller' id='glucose_unit'></span>
+          </div>
+          <div class='gray smaller'>70-110</div>
 
-          <div class='bold'>A1C</div>
+          <div>
+            <span class='bold'>A1C</span>
+            <span class='smaller' id='a1c_unit'></span>
+          </div>
           <div class='smaller'>&lt;&thinsp;7%</div>
         </div>
 
-        <div class="grid_1" style='width: 35%; margin-left: 0px; margin-right: 0px;'>
+        <div class="grid_1" style='width: 31%; margin-left: 0px; margin-right: 0px;'>
           <div>
             <span id='ur_tp_val' class='bold'>&nbsp;</span>
-            <span id='ur_tp_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='ur_tp_date'>&nbsp;</span>
@@ -104,7 +136,6 @@
 
           <div class='gray'>
             <span id='m_alb_cre_ratio_val' class='bold'>&nbsp;</span>
-            <span id='m_alb_cre_ratio_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='m_alb_cre_ratio_date'>&nbsp;</span>
@@ -112,7 +143,6 @@
 
           <div>
             <span id='sgot_val' class='bold'>&nbsp;</span>
-            <span id='sgot_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='sgot_date'>&nbsp;</span>
@@ -120,7 +150,6 @@
 
           <div class='gray'>
             <span id='chol_total_val' class='bold'>&nbsp;</span>
-            <span id='chol_total_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='chol_total_date'>&nbsp;</span>
@@ -128,7 +157,6 @@
 
           <div>
             <span id='triglyceride_val' class='bold'>&nbsp;</span>
-            <span id='triglyceride_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='triglyceride_date'>&nbsp;</span>
@@ -136,7 +164,6 @@
 
           <div class='gray'>
             <span id='hdl_val' class='bold'>&nbsp;</span>
-            <span id='hdl_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='hdl_date'>&nbsp;</span>
@@ -144,7 +171,6 @@
 
           <div>
             <span id='ldl_val' class='bold'>&nbsp;</span>
-            <span id='ldl_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='ldl_date'>&nbsp;</span>
@@ -152,7 +178,6 @@
 
           <div class='gray'>
             <span id='bun_val' class='bold'>&nbsp;</span>
-            <span id='bun_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='bun_date'>&nbsp;</span>
@@ -160,7 +185,6 @@
 
           <div>
             <span id='creatinine_val' class='bold'>&nbsp;</span>
-            <span id='creatinine_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='creatinine_date'>&nbsp;</span>
@@ -168,7 +192,6 @@
 
           <div class='gray'>
             <span id='glucose_val' class='bold'>&nbsp;</span>
-            <span id='glucose_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='glucose_date'>&nbsp;</span>
@@ -176,7 +199,6 @@
 
           <div>
             <span id='a1c_val' class='bold'>&nbsp;</span>
-            <span id='a1c_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='a1c_date'>&nbsp;</span>
@@ -184,10 +206,9 @@
         </div>
 
         <!-- fixme: a bit long, wraps under 1280px -->
-        <div class="grid_1 omega" style='width: 30%; margin-left: 0px;'>
+        <div class="grid_1 omega" style='width: 31%; margin-left: 0px;'>
           <div>
             <span id='ur_tp_next_val' class='bold'>&nbsp;</span>
-            <span id='ur_tp_next_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='ur_tp_next_date'>&nbsp;</span>
@@ -195,7 +216,6 @@
 
           <div class='gray'>
             <span id='m_alb_cre_ratio_next_val' class='bold'>&nbsp;</span>
-            <span id='m_alb_cre_ratio_next_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='m_alb_cre_ratio_next_date'>&nbsp;</span>
@@ -203,7 +223,6 @@
 
           <div>
             <span id='sgot_next_val' class='bold'>&nbsp;</span>
-            <span id='sgot_next_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='sgot_next_date'>&nbsp;</span>
@@ -211,7 +230,6 @@
 
           <div class='gray'>
             <span id='chol_total_next_val' class='bold'>&nbsp;</span>
-            <span id='chol_total_next_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='chol_total_next_date'>&nbsp;</span>
@@ -219,7 +237,6 @@
 
           <div>
             <span id='triglyceride_next_val' class='bold'>&nbsp;</span>
-            <span id='triglyceride_next_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='triglyceride_next_date'>&nbsp;</span>
@@ -227,7 +244,6 @@
 
           <div class='gray'>
             <span id='hdl_next_val' class='bold'>&nbsp;</span>
-            <span id='hdl_next_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='hdl_next_date'>&nbsp;</span>
@@ -235,7 +251,6 @@
 
           <div>
             <span id='ldl_next_val' class='bold'>&nbsp;</span>
-            <span id='ldl_next_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='ldl_next_date'>&nbsp;</span>
@@ -243,7 +258,6 @@
 
           <div class='gray'>
             <span id='bun_next_val' class='bold'>&nbsp;</span>
-            <span id='bun_next_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='bun_next_date'>&nbsp;</span>
@@ -251,7 +265,6 @@
 
           <div>
             <span id='creatinine_next_val' class='bold'>&nbsp;</span>
-            <span id='creatinine_next_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='creatinine_next_date'>&nbsp;</span>
@@ -259,7 +272,6 @@
 
           <div class='gray'>
             <span id='glucose_next_val' class='bold'>&nbsp;</span>
-            <span id='glucose_next_unit'>&nbsp;</span>
           </div>
           <div class='gray'>
             <span id='glucose_next_date'>&nbsp;</span>
@@ -267,7 +279,6 @@
 
           <div>
             <span id='a1c_next_val' class='bold'>&nbsp;</span>
-            <span id='a1c_next_unit'>&nbsp;</span>
           </div>
           <div>
             <span id='a1c_next_date'>&nbsp;</span>
