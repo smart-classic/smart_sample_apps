@@ -22,7 +22,7 @@ body {
 #tabs {display:none; width:780px;}
 .toggle-set { position: relative; float: left; margin-top: 4px; }
 #filter_timerange { position: relative; float: left; margin-left: 6px; }
-#slider-timerange { width: 150px; margin-top: 4px;}
+#slider-timerange { width: 310px; margin-top: 4px;}
 #holder_short { padding-top: 5px; float:left; width: 320px; height: 400px; }
 #holder_long   { padding-top: 5px; clear:both; width: 760px; height: 420px; }
 #holder_table { padding-top: 10px; clear:both; }
@@ -110,15 +110,37 @@ input[type='number'] {border: 1px solid #555;}
     display: none;
 }
 
-#copy {
-    font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
-    right: 1em;
-    text-align: right;
-    width: 786px;
-    margin-top: 5px;
+#footer {
+    margin-top: 2px;
+    width: 780px;
 }
-#copy a {
-    color: #fff;
+
+#version {
+    font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+    text-align: right;
+	width: 100px;
+    position: relative;
+    float: left;
+}
+
+#warning {
+    text-align: left;
+	width: 680px;
+    color: #000;
+    position: relative;
+    float: left;
+    font-weight: bold;
+}
+
+/* Hide the encounter type filter toggle buttons (CHB version) */
+
+#filter_encounter {
+    display: none;
+}
+
+#filter_site {
+    margin-left: 10px;
+    /* margin-left: 158px; */
 }
 
 /* Styling for the table view */
@@ -130,6 +152,7 @@ table.nicetable {
     border-width: 1px;
     border-color: #a9c6c9;
     border-collapse: collapse;
+    margin-left: 10px;
 }
 
 table.nicetable th {

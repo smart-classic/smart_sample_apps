@@ -136,7 +136,7 @@
                             <div id="filter_encounter" class="toggle-set">
                                 <input type="checkbox" id="chkFilterInpatient" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterInpatient"> Inpatient </label>
-                                <input type="checkbox" id="chkFilterAmbulatory" onClick="BPC.updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterAmbulatory" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterAmbulatory"> Ambulatory </label>
                             </div>
                             <div id="filter_site" class="toggle-set">
@@ -349,7 +349,10 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
                 
             </div> <!-- tabs -->
 
-            <div id="copy">v0.8</div>
+            <div id="footer">
+            <div id="warning">Note: Only ambulatory blood pressures are displayed.</div>
+                <div id="version">v0.8 (CHB)</div>
+            </div>
         </div>
         
         <!-- jTemplates template for the table view -->

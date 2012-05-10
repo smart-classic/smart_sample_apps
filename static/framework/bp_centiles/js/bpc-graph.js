@@ -436,10 +436,12 @@ if (!BPC) {
         }
         
         // Draw the two line graphs
+        /*
         if (!shortTerm && pS.length > 0 && pD.length > 0) {
             //if (systolic) pathS.attr({path: pS});
             //else pathD.attr({path: pD});
         }
+        */
         
         // Hack: When on the first run of the long term view drawing, generate a handler for the
         // systolic labels

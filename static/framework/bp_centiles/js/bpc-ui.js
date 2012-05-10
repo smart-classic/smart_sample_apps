@@ -182,6 +182,13 @@ if (!BPC) {
 
         // Initialize the slider range
         BPC.setDateRange($("#slider-timerange").slider("values", 0),$("#slider-timerange").slider("values", 1));
+        
+        // Disable the encounter type buttons
+        $('#chkFilterInpatient').button("disable");
+        $('#chkFilterAmbulatory').button("disable");
+        
+        // Fade in the warning
+        $('#warning').animate({ color: "#a00" }, 3000);
     };
 
     /**

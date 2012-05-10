@@ -33,6 +33,8 @@ if (!BPC) {
         var dfd = $.Deferred();
         SMART.DEMOGRAPHICS_get()
              .success(function(demos) {
+                var demographics, medRecordNumber = '';
+
                 // Query the RDF for the demographics
                 var demographics = demos.graph
                             .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
@@ -44,11 +46,21 @@ if (!BPC) {
                             .where('?n v:family-name ?lastname')
                             .where('?a foaf:gender ?gender')
                             .where('?a v:bday ?birthday')
+                            .optional('?a sp:medicalRecordNumber ?medRecordNumber')
                             .get(0);
-                            
+
+                if (demographics.medRecordNumber)  {
+                    medRecordNumber = demos.graph
+                            .prefix('dcterms','http://purl.org/dc/terms/')
+                            .prefix('sp','http://smartplatforms.org/terms#')
+                            .where(demographics.medRecordNumber.toString() +  ' dcterms:identifier ?identifier')
+                            .get(0).identifier.value.toString();    
+                }
+
                 dfd.resolve({name: demographics.firstname.value.toString() + " " + demographics.lastname.value.toString(),
                              gender: demographics.gender.value.toString(),
-                             birthday: demographics.birthday.value.toString()});
+                             birthday: demographics.birthday.value.toString(),
+                             identifier: medRecordNumber});
             })
             .error(function(e) {
                 dfd.reject(e.message);
@@ -178,7 +190,7 @@ if (!BPC) {
             i;
 
         // Initialize the patient information area
-        patient = new BPC.Patient(demographics.name, demographics.birthday, demographics.gender);
+        patient = new BPC.Patient(demographics.name, demographics.birthday, demographics.gender, demographics.identifier);
         $("#patient-info").text(String(patient));
 
         // Caculate the current age of the patient
@@ -202,7 +214,7 @@ if (!BPC) {
         
         // Display appropriate error message
         if (vitals_height.length === 0 || vitals_bp.length === 0) {
-            BPC.displayError("No vitals in the patient record");
+            BPC.displayError("No ambulatory blood pressure measurements were found in the patient chart.");
         } else {
             
             // No errors detected -> proceed with full data processing
@@ -379,10 +391,11 @@ if (!BPC) {
     * @param {String} birthdate The date of birth of the patient
     * @param {String} sex ('male' or 'female')
     */
-    BPC.Patient = function (name, birthdate, sex) {
+    BPC.Patient = function (name, birthdate, sex, id) {
         this.name = name;
         this.birthdate = birthdate;
         this.sex = sex;
+        this.id = id;
         this.data = [];
     };
 
@@ -394,7 +407,7 @@ if (!BPC) {
         var s = BPC.getViewSettings(),
             d = parse_date (this.birthdate);
             
-        return this.name + " (" + this.sex + ", DOB: " + d.toString(s.dateFormat) + ")";
+        return this.name + " (" + this.sex + ", DOB: " + d.toString(s.dateFormat) + ", MRN: " + this.id + ")";
     };
 
     /**
