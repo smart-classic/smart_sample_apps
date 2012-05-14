@@ -1003,14 +1003,20 @@ SMART.ready(function(){
       })
       .uniq(true, function(e){ return e[1]; })
       .each(function(e){
+        var resolved_n = e[3];
+        var active_n = e[4];
         var c = 'active';
-        if (e[3] && !e[4]) { c = 'resolved'; }
+        if (resolved_n && !active_n) { c = 'resolved'; }
+        var text = e[1];
 
-        var text = e[1] + ' (';
-        if (e[4] > 0) { text = text + e[4]; }
-        if (e[4] > 0 && e[3]) { text = text + ', '; }
-        if (e[3]) { text = text + '<span class="resolved">'+e[3]+'</span>'; }
-        text = text + ')';
+        // don't show unnecessary 1's
+        if (resolved_n + active_n > 1) {
+          text = text + ' <span class="smaller grayer"> (';
+          if (active_n > 0) { text = text + active_n; }
+          if (active_n > 0 && resolved_n) { text = text + ', '; }
+          if (resolved_n) { text = text + '<span class="resolved">'+resolved_n+'</span>'; }
+          text = text + ')</span>';
+        }
 
         $('<div></div>'
          , { 'class': c
@@ -1064,10 +1070,9 @@ SMART.ready(function(){
     // allergies
     if (pt.allergies_arr.length == 0) { $('<div/>', {text: 'No known allergies'}).appendTo('#allergies'); }
     _(pt.allergies_arr).each(function(e){
-
       $('<div></div>', {
         'class': 'allergy',
-        html: '<span class=\'bold\'>' + e[0].split()[0] + '</span> ' + + e[1]
+        html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1]
       }).appendTo('#allergies')
     })
 
@@ -1078,9 +1083,10 @@ SMART.ready(function(){
     _(pt.meds_arr).chain()
       .sortBy(function(e){ return e[1].toLowerCase(); })
       .each(function(e){
+        var a = e[1].split(' ')
         $('<div></div>', {
           'class': 'medication',
-          html: '<span class=\'bold\'>' + e[1] + '</span> ' + e[2]
+          html: '<span class=\'bold\'>' + a[0] + '</span> ' + _(a).rest() + ' ' + e[2]
         }).appendTo('#medications')
       })
       .value()

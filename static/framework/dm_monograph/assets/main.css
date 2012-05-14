@@ -28,6 +28,7 @@ body {
 .bold { font-weight: bold; }
 .normal { font-weight: normal; }
 .smaller { font-size: smaller;}
+.grayer { font-color: #666; }
 .medium { font-size: 12px;}
 
 #top_line { padding-left: 2em; font-weight: bold; text-transform: uppercase; }
