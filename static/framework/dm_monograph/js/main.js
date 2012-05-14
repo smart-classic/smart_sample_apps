@@ -832,18 +832,20 @@ var PROBLEMS_get = function(){
     SMART.PROBLEMS_get()
       .success(function(r){
         r.graph
-         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',  'http://smartplatforms.org/terms#')
-         .prefix('dc',  'http://purl.org/dc/terms/')
-         .where('?id    rdf:type       sp:Problem')
-         .where('?id    sp:startDate   ?date')
-         .where('?id    sp:problemName ?bn')
-         .where('?bn    rdf:type       sp:CodedValue')
-         .where('?bn    dc:title       ?title')
+         .prefix('rdf',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+         .prefix('sp',   'http://smartplatforms.org/terms#')
+         .prefix('dc',   'http://purl.org/dc/terms/')
+         .where('?id     rdf:type       sp:Problem')
+         .where('?id     sp:startDate   ?date')
+         .where('?id     sp:problemName ?bn')
+         .where('?bn     rdf:type       sp:CodedValue')
+         .where('?bn     dc:title       ?title')
+         .optional('?id  sp:endDate     ?end_date')
          .each(function(){
            pt.problems_arr.push([
              new XDate(this.date.value).valueOf(),
-             this.title.value
+             this.title.value,
+             this.end_date ? new XDate(this.end_date.value).valueOf() : null
            ])
          })
 
@@ -981,10 +983,44 @@ SMART.ready(function(){
     if (!pt.flu_shot_date) { $('#flu_shot_date').text('Unknown'); }
 
     if (pt.problems_arr.length == 0) { $('<div></div>', {text: 'No known problems'}).appendTo('#problems'); }
-    _(pt.problems_arr).chain()
+
+    // do two counts: (number current (no enddate), number resolved (has enddate))
+    // note: e[2] is endDate or null, e[3] count of resolved, e[4] count of active
+    _(pt.problems_arr)
+      .chain()
       .sortBy(function(e){ return e[1]; })
-      .uniq(true, function(e){ return e[1]; }) // note true here for isSorted?
-      .each(function(e){ $('<div></div>', { class: 'problem', text: e[1]}).appendTo('#problems') })
+      .map(function(e){
+          // count resolved
+          var f = _(pt.problems_arr).filter(function(e2){ return (e[1] === e2[1] && e2[2] != null); })
+          e[3] = f.length;
+          return e;
+      })
+      .map(function(e){
+          // count active
+          var f = _(pt.problems_arr).filter(function(e2){ return (e[1] === e2[1] && e2[2] == null); })
+          e[4] = f.length;
+          return e;
+      })
+      .uniq(true, function(e){ return e[1]; })
+      .each(function(e){
+        // console.log(e);
+        var c = 'active';
+        if (e[3] && !e[4]) { c = 'resolved'; }
+
+        var text = e[1] + ' (';
+        if (e[4] > 0) { text = text + e[4]; }
+        if (e[4] > 0 && e[3]) { text = text + ', '; }
+        if (e[3]) { text = text + '<span class="resolved">'+e[3]+'</span>'; }
+        text = text + ')';
+
+        $('<div></div>'
+         , { 'class': c
+           , 'html': text
+           }
+         )
+          .addClass('problem')
+          .appendTo('#problems')
+      })
       .value()
 
     $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })

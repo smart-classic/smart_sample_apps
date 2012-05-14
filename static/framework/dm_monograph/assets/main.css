@@ -37,3 +37,6 @@ body {
 .test_next_value { font-weight: bold; font-size: 13px; }
 .gray { background-color: #ebebeb; }
 .red { color: red; }
+
+.active { font-weight: bold; }
+.resolved { text-decoration: line-through;}
