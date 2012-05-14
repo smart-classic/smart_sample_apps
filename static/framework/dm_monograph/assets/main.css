@@ -38,5 +38,5 @@ body {
 .gray { background-color: #ebebeb; }
 .red { color: red; }
 
-.active { font-weight: bold; }
+/*.active { font-weight: bold; }*/
 .resolved { text-decoration: line-through;}

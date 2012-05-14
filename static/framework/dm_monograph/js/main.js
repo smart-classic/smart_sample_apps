@@ -77,6 +77,7 @@ var error_cb = function(e){
 };
 
 var _round = function(val, dec){
+  // console.log(val, dec);
   return Math.round(val*Math.pow(10,dec))/Math.pow(10,dec);
 }
 
@@ -213,7 +214,6 @@ var DEMOGRAPHICS_get = function(){
         });
 
         var o = jld_out['@graph'][0]
-        // console.log(o);
         pt.family_name = o['v:n']['v:family-name']
         pt.given_name = o['v:n']['v:given-name']
         pt.gender = o['foaf:gender']
@@ -971,7 +971,7 @@ SMART.ready(function(){
 
     // other info
     $('#weight_date').text(pt.weight ? new XDate(pt.weight[0]).toString('MM/dd/yy') : null)
-    $('#weight_val') .text(pt.weight ? _round(pt.weight[1], 1) : 'Unknown')
+    $('#weight_val') .text(pt.weight ? _round(pt.weight[1], 0) : 'Unknown')
     $('#weight_unit').text(pt.weight ? pt.weight[2] : null)
 
     $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
@@ -1003,7 +1003,6 @@ SMART.ready(function(){
       })
       .uniq(true, function(e){ return e[1]; })
       .each(function(e){
-        // console.log(e);
         var c = 'active';
         if (e[3] && !e[4]) { c = 'resolved'; }
 
@@ -1024,7 +1023,7 @@ SMART.ready(function(){
       .value()
 
     $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
-    $('.problem:contains("Diabetes")').css('border', '1px solid red')
+    $('.problem:contains("Diabetes")').css('font-weight', 'bold').css('color', 'red');
 
     // (some) cv comorbidities
     // fixme: I'm sure there are many more...
@@ -1055,7 +1054,7 @@ SMART.ready(function(){
     if (cv_comorbidities.length == 0) { $('<div></div>', {text: 'No known CV comorbidities'}).appendTo('#cv_comorbidities'); }
     _(cv_comorbidities).each(function(e){
       $('<div></div>', {
-        class: 'cv_comorbidity',
+        'class': 'cv_comorbidity',
         text: e[1]
       }).appendTo('#cv_comorbidities')
     })
@@ -1065,9 +1064,10 @@ SMART.ready(function(){
     // allergies
     if (pt.allergies_arr.length == 0) { $('<div/>', {text: 'No known allergies'}).appendTo('#allergies'); }
     _(pt.allergies_arr).each(function(e){
+
       $('<div></div>', {
-        class: 'allergy',
-        html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1]
+        'class': 'allergy',
+        html: '<span class=\'bold\'>' + e[0].split()[0] + '</span> ' + + e[1]
       }).appendTo('#allergies')
     })
 
@@ -1079,7 +1079,7 @@ SMART.ready(function(){
       .sortBy(function(e){ return e[1].toLowerCase(); })
       .each(function(e){
         $('<div></div>', {
-          class: 'medication',
+          'class': 'medication',
           html: '<span class=\'bold\'>' + e[1] + '</span> ' + e[2]
         }).appendTo('#medications')
       })
