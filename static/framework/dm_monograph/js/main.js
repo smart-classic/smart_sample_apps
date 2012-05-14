@@ -1034,13 +1034,15 @@ SMART.ready(function(){
     // (some) cv comorbidities
     // fixme: I'm sure there are many more...
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
-    var cv_comorbidities = _(pt.problems_arr).chain()
+
+    var cv_comorbidities = _($('.problem'))
+      .chain()
       .filter(function(e) {
-        var title = e[1];
+        var title = $(e).text();
         if (title.match(/heart disease/i)) return true;
         if (title.match(/Congestive Heart Failure/i)) return true;
         if (title.match(/Myocardial Infarction/i)) return true;
-        if (title.match(/Cerebrovascular Disease	/i)) return true;
+        if (title.match(/Cerebrovascular Disease /i)) return true;
         if (title.match(/Hypertension/i)) return true;
         if (title.match(/neuropathic pain/i)) return true;
         if (title.match(/coronary arteriosclerosis/i)) return true;
@@ -1053,16 +1055,14 @@ SMART.ready(function(){
         if (title.match(/Precordial pain/i)) return true;
         return false;
       })
-      .sortBy(function(e){ return e[1]; })
-      .uniq(true, function(e){ return e[1]; })
+      .map(function(e){
+        return $(e).clone();
+      })
       .value()
 
     if (cv_comorbidities.length == 0) { $('<div></div>', {text: 'No known CV comorbidities'}).appendTo('#cv_comorbidities'); }
     _(cv_comorbidities).each(function(e){
-      $('<div></div>', {
-        'class': 'cv_comorbidity',
-        text: e[1]
-      }).appendTo('#cv_comorbidities')
+      e.addClass('cv_comorbidity').appendTo('#cv_comorbidities')
     })
 
     $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
