@@ -315,8 +315,8 @@ var VITAL_SIGNS_get = function(){
          .each(function(){
            pt.height_arr.push([
              new XDate(this.date.value).valueOf(),
-             this.unit.value === 'm' ? Number(this.value.value) *  3.2808399 : Number(this.value.value),
-             this.unit.value === 'm' ? 'ft' : this.unit.value
+             this.unit.value === 'm' ? Number(this.value.value) / .0254 : Number(this.value.value),
+             this.unit.value === 'm' ? 'in ' : this.unit.value
            ])
          })
 
@@ -976,7 +976,7 @@ SMART.ready(function(){
     $('#weight_unit').text(pt.weight ? pt.weight[2] : null)
 
     $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
-    $('#height_val') .text(pt.height ? _round(pt.height[1], 1) : 'Unknown')
+    $('#height_val') .text(pt.height ? _round(pt.height[1], 0) : 'Unknown')
     $('#height_unit').text(pt.height ? pt.height[2] : null)
 
     // Fixme: NO pneumovax or flu codes in the current pts...
@@ -1085,7 +1085,7 @@ SMART.ready(function(){
         })
         .value()
 
-      $('.problem:contains("Diabetes")').css('font-weight', 'bold').css('color', 'red');
+      $('.problem:contains("Diabetes")').css('color', 'red');
 
       generate_comorbidities();
 
@@ -1107,8 +1107,6 @@ SMART.ready(function(){
         do_stripes()
     };
     
-    sort_by_alpha();
-
     // allergies
     if (pt.allergies_arr.length == 0) { $('<div/>', {text: 'No known allergies'}).appendTo('#allergies'); }
     _(pt.allergies_arr).each(function(e){
@@ -1144,7 +1142,7 @@ SMART.ready(function(){
 
       $('#problems').empty();
       _(p2).each(function(e){ $(e).appendTo('#problems'); })
-      $('.problem:contains("Diabetes")').css('font-weight', 'bold').css('color', 'red');
+      $('.problem:contains("Diabetes")').css('color', 'red');
 
       // re-generate co-morbs
       generate_comorbidities();
@@ -1175,7 +1173,7 @@ SMART.ready(function(){
       // todo: use templating here
       var html = '<span class=\'bold\'>' + e.title_html + '</span> ';
       if (e.overdue_p) {
-        html = html + '<span class=\'bold red\'>'  + e.reminder_html + '</span> <br />';
+        html = html + '<span class=\'red\'>'  + e.reminder_html + '</span> <br />';
       }
 
       var d = new XDate(e.lab_variable[0])
@@ -1194,6 +1192,8 @@ SMART.ready(function(){
         html: html
       }).appendTo('#reminders')
     })
+
+    sort_by_alpha();
 
     var draw_plots = function(){
       var flot_options_bp, flot_options_ldl, flot_options_a1c = {};
