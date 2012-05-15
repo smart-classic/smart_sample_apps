@@ -25,6 +25,7 @@ pt.chol_total_next = null;
 pt.creatinine = null;
 pt.creatinine_arr = [];
 pt.creatinine_next = null;
+pt.current_sort = '';
 pt.dbp = null;
 pt.dbp_arr = [];
 pt.dbp_next = null;
@@ -985,7 +986,7 @@ SMART.ready(function(){
     if (pt.problems_arr.length == 0) { $('<div></div>', {text: 'No known problems'}).appendTo('#problems'); }
 
     var do_stripes = function(){
-      $('.cv_comorbidity, .allergy, .problem, .medication, .reminder').each(function(i,e){ $(e).css({'background-color': 'none'}); })       
+      $('.cv_comorbidity, .allergy, .problem, .medication, .reminder').each(function(i,e){ $(e).css({'background-color': ''}); })
       $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
       $('.allergy').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
       $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
@@ -1033,6 +1034,10 @@ SMART.ready(function(){
 
 
     var sort_by_alpha = function(){
+      // de-bounce
+      if (pt.current_sort == 'alpha') return;
+      pt.current_sort = 'alpha';
+
       // do two counts: (number current (no enddate), number resolved (has enddate))
       // note: e[2] is endDate or null, e[3] count of resolved, e[4] count of active
       $('#problems').empty()
@@ -1120,6 +1125,10 @@ SMART.ready(function(){
     //
 
     var sort_by_date = function(){
+      // de-bounce
+      if (pt.current_sort === 'date') return;
+      pt.current_sort = 'date';
+
       // problems
       // prepend date to all problems (or get attached data)
       var p2 =_($('.problem')).chain()
@@ -1263,12 +1272,12 @@ SMART.ready(function(){
 
     // events
     $('#sort_by_date').on('mouseover',  function(){
-      console.log('1')
       sort_by_date();
+      return false;
     });
     $('#sort_by_alpha').on('mouseover', function(){
-      console.log('2');
       sort_by_alpha();
+      return false;
     });
 
     $('#sort_by_alpha').show()
