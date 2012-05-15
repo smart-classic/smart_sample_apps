@@ -42,3 +42,10 @@ body {
 
 /*.active { font-weight: bold; }*/
 .resolved { text-decoration: line-through;}
+
+a { color: #08c; text-decoration: none;}
+a:hover { border-bottom: 1px solid #08c; }
+a.nohover:hover { border-bottom: none; }
+
+
+.controls { font-size: 14px; }

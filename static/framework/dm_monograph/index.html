@@ -49,9 +49,6 @@
         <span id='gender'></span>
       </div>
 
-      <div id='controls' class='grid_4 omega' style='width: 30%; text-align: right'>
-        Sort <a id='sort_by_date' href='#date'>by date</a> | <a id='sort_by_alpha' href='#alpha'>A-Z</a>
-      </div>
 
       <div class='clear'></div>
 
@@ -348,10 +345,25 @@
         <div style='height: 100px; width:48%; float: left'>
           <div id='a1c_graph'></div>
         </div>
-        <div style='height: 100px; width: 48%; float: left'>
-          <img style='height: 90px; width: 90px; margin-left: 51px;'
+
+        <div style='height: 100px; width: 20%; float: left; margin-left: 1%;'>
+          <img style='height: 90px; width: 90px;'
                src='./assets/glass_logo.png' />
         </div>
+
+        <div id='controls' class='controls' style='width: 30%; float: left;'>
+         <!-- [&#x200A;Sort <a id='sort_by_date' href='#'>by date</a><a id='sort_by_alpha' style='display: none' href='#'>A-Z</a>&#x200A;] -->
+         <a id='sort_by_date' href='#' class='nohover'>
+          <img src='./assets/time_view_icon.png' style='height: 53px; width: 150px; padding-top: 37px;'/>
+         </a>
+
+         <a id='sort_by_alpha' style='display: none' href='#' class='nohover'>
+           <img src='./assets/alpha_view_icon.png' style='height: 53px; width: 150px; padding-top: 37px;'/>
+         </a>
+
+        </div>
+
+        <div class='clear'></div>
 
         <div class='clear'></div>
 

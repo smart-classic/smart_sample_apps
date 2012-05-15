@@ -1271,16 +1271,17 @@ SMART.ready(function(){
     draw_plots();
 
     // events
-    $('#sort_by_date').on('mouseover',  function(){
+    $('#sort_by_date').on('click',  function(){
+      $('#sort_by_date').hide()
+      $('#sort_by_alpha').show()
       sort_by_date();
       return false;
     });
-    $('#sort_by_alpha').on('mouseover', function(){
+    $('#sort_by_alpha').on('click', function(){
+      $('#sort_by_alpha').hide()
+      $('#sort_by_date').show()
       sort_by_alpha();
       return false;
     });
-
-    $('#sort_by_alpha').show()
-    $('#sort_by_date').show()
   });
 });
