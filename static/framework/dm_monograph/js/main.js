@@ -1262,6 +1262,21 @@ SMART.ready(function(){
       $('#ldl_graph').height(h);
       $('#a1c_graph').height(h).width('100%')
 
+      // hack to boost pediatric bps to adult bps if ago over 10y
+      var b = new XDate(pt.bday)
+      var age = Math.round(b.diffYears(new XDate()));
+
+      if (age > 10) {
+        pt.dbp_arr = _(pt.dbp_arr).map(function(e){
+          e[1] = e[1] + 30;
+          return e;
+        })
+        pt.sbp_arr = _(pt.sbp_arr).map(function(e){
+          e[1] = e[1] + 30;
+          return e;
+        })
+      }
+
       // plot'em!
       $.plot($("#bp_graph"), [pt.dbp_arr, pt.sbp_arr], flot_options_bp);
       $.plot($("#ldl_graph"), [pt.ldl_arr], flot_options_ldl);
