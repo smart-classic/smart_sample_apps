@@ -34,7 +34,7 @@
   </head>
   <body>
     <div id='content' class="container_12">
-      <div id='top_line' class='grid_12'>
+      <div id='top_line' class='grid_8 alpha' style='width: 66%; margin-left: 1%'>
         <span id='family_name'></span>,
         <span id='given_name'></span>
         &nbsp;
@@ -45,6 +45,10 @@
         (<span id='age'></span> <span style='text-transform: lowercase'>YRS</span>)
         &nbsp;
         <span id='gender'></span>
+      </div>
+
+      <div id='controls' class='grid_4 omega' style='width: 30%; text-align: right'>
+        Sort <a id='sort_by_date' href='#date' style='display: none'>by date</a> | <a id='sort_by_alpha' href='#alpha' style='display: none'>A-Z</a>
       </div>
 
       <div class='clear'></div>

@@ -984,88 +984,125 @@ SMART.ready(function(){
 
     if (pt.problems_arr.length == 0) { $('<div></div>', {text: 'No known problems'}).appendTo('#problems'); }
 
-    // do two counts: (number current (no enddate), number resolved (has enddate))
-    // note: e[2] is endDate or null, e[3] count of resolved, e[4] count of active
-    _(pt.problems_arr)
-      .chain()
-      .sortBy(function(e){ return e[1]; })
-      .map(function(e){
-          // count resolved
-          var f = _(pt.problems_arr).filter(function(e2){ return (e[1] === e2[1] && e2[2] != null); })
-          e[3] = f.length;
-          return e;
-      })
-      .map(function(e){
-          // count active
-          var f = _(pt.problems_arr).filter(function(e2){ return (e[1] === e2[1] && e2[2] == null); })
-          e[4] = f.length;
-          return e;
-      })
-      .uniq(true, function(e){ return e[1]; })
-      .each(function(e){
-        var resolved_n = e[3];
-        var active_n = e[4];
-        var c = 'active';
-        if (resolved_n && !active_n) { c = 'resolved'; }
-        var text = e[1];
-
-        // don't show unnecessary 1's
-        if (resolved_n + active_n > 1) {
-          text = text + ' <span class="smaller grayer"> (';
-          if (active_n > 0) { text = text + active_n; }
-          if (active_n > 0 && resolved_n) { text = text + ', '; }
-          if (resolved_n) { text = text + '<span class="resolved">'+resolved_n+'</span>'; }
-          text = text + ')</span>';
-        }
-
-        $('<div></div>'
-         , { 'class': c
-           , 'html': text
-           }
-         )
-          .addClass('problem')
-          .appendTo('#problems')
-      })
-      .value()
-
-    $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
-    $('.problem:contains("Diabetes")').css('font-weight', 'bold').css('color', 'red');
+    var do_stripes = function(){
+      $('.cv_comorbidity, .allergy, .problem, .medication, .reminder').each(function(i,e){ $(e).css({'background-color': 'none'}); })       
+      $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+      $('.allergy').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+      $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+      $('.medication').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+      $('.reminder').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+    }
 
     // (some) cv comorbidities
     // fixme: I'm sure there are many more...
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
+    var generate_comorbidities = function(){
+      $('#cv_comorbidities').empty();
 
-    var cv_comorbidities = _($('.problem'))
-      .chain()
-      .filter(function(e) {
-        var title = $(e).text();
-        if (title.match(/heart disease/i)) return true;
-        if (title.match(/Congestive Heart Failure/i)) return true;
-        if (title.match(/Myocardial Infarction/i)) return true;
-        if (title.match(/Cerebrovascular Disease /i)) return true;
-        if (title.match(/Hypertension/i)) return true;
-        if (title.match(/neuropathic pain/i)) return true;
-        if (title.match(/coronary arteriosclerosis/i)) return true;
-        if (title.match(/chronic renal impariment/i)) return true;
-        if (title.match(/cardiac bypass graft surgery/i)) return true;
-        if (title.match(/Preinfarction syndrome/i)) return true;
-        if (title.match(/Chest pain/i)) return true;
-        if (title.match(/Chronic ischemic heart disease/i)) return true;
-        if (title.match(/Disorder of cardiovascular system/i)) return true;
-        if (title.match(/Precordial pain/i)) return true;
-        return false;
+      var cv_comorbidities = _($('.problem'))
+        .chain()
+        .filter(function(e) {
+          var title = $(e).text();
+          if (title.match(/heart disease/i)) return true;
+          if (title.match(/Congestive Heart Failure/i)) return true;
+          if (title.match(/Myocardial Infarction/i)) return true;
+          if (title.match(/Cerebrovascular Disease /i)) return true;
+          if (title.match(/Hypertension/i)) return true;
+          if (title.match(/neuropathic pain/i)) return true;
+          if (title.match(/coronary arteriosclerosis/i)) return true;
+          if (title.match(/chronic renal impariment/i)) return true;
+          if (title.match(/cardiac bypass graft surgery/i)) return true;
+          if (title.match(/Preinfarction syndrome/i)) return true;
+          if (title.match(/Chest pain/i)) return true;
+          if (title.match(/Chronic ischemic heart disease/i)) return true;
+          if (title.match(/Disorder of cardiovascular system/i)) return true;
+          if (title.match(/Precordial pain/i)) return true;
+          return false;
+        })
+        .map(function(e){
+          return $(e).clone();
+        })
+        .value()
+
+      if (cv_comorbidities.length == 0) { $('<div></div>', {text: 'No known CV comorbidities'}).appendTo('#cv_comorbidities'); }
+      _(cv_comorbidities).each(function(e){
+        e.removeClass('problem').addClass('cv_comorbidity').appendTo('#cv_comorbidities')
       })
-      .map(function(e){
-        return $(e).clone();
-      })
-      .value()
 
-    if (cv_comorbidities.length == 0) { $('<div></div>', {text: 'No known CV comorbidities'}).appendTo('#cv_comorbidities'); }
-    _(cv_comorbidities).each(function(e){
-      e.addClass('cv_comorbidity').appendTo('#cv_comorbidities')
-    })
+    }
 
-    $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+
+    var sort_by_alpha = function(){
+      // do two counts: (number current (no enddate), number resolved (has enddate))
+      // note: e[2] is endDate or null, e[3] count of resolved, e[4] count of active
+      $('#problems').empty()
+
+      _(pt.problems_arr)
+        .chain()
+        .sortBy(function(e){ return e[1]; })
+        .map(function(e){
+            // count resolved
+            var f = _(pt.problems_arr).filter(function(e2){ return (e[1] === e2[1] && e2[2] != null); })
+            e[3] = f.length;
+            return e;
+        })
+        .map(function(e){
+            // count active
+            var f = _(pt.problems_arr).filter(function(e2){ return (e[1] === e2[1] && e2[2] == null); })
+            e[4] = f.length;
+            return e;
+        })
+        .uniq(true, function(e){ return e[1]; })
+        .each(function(e){
+          var resolved_n = e[3];
+          var active_n = e[4];
+          var c = 'active';
+          if (resolved_n && !active_n) { c = 'resolved'; }
+          var text = e[1];
+
+          // don't show unnecessary 1's
+          if (resolved_n + active_n > 1) {
+            text = text + ' <span class="smaller grayer"> (';
+            if (active_n > 0) { text = text + active_n; }
+            if (active_n > 0 && resolved_n) { text = text + ', '; }
+            if (resolved_n) { text = text + '<span class="resolved">'+resolved_n+'</span>'; }
+            text = text + ')</span>';
+          }
+
+          $('<div></div>'
+           , { 'class': c
+             , 'html': text
+             }
+           )
+            .addClass('problem')
+            .data(e)
+            .appendTo('#problems')
+        })
+        .value()
+
+      $('.problem:contains("Diabetes")').css('font-weight', 'bold').css('color', 'red');
+
+      generate_comorbidities();
+
+      // medications
+      $('#medications').empty()
+      if (pt.meds_arr.length == 0) { $('<div/>', {text: 'No known medications'}).appendTo('#medications'); }
+      _(pt.meds_arr).chain()
+        .sortBy(function(e){ return e[1].toLowerCase(); })
+        .each(function(e){
+          var a = e[1].split(' ')
+          $('<div></div>', {
+            'class': 'medication',
+            html: '<span class=\'bold\'>' + a[0] + '</span> ' + _(a).rest().join(' ') + ' ' + e[2]
+          })
+          .data(e)
+          .appendTo('#medications')
+        })
+        .value()
+        do_stripes()
+    };
+    
+    sort_by_alpha();
 
     // allergies
     if (pt.allergies_arr.length == 0) { $('<div/>', {text: 'No known allergies'}).appendTo('#allergies'); }
@@ -1073,26 +1110,54 @@ SMART.ready(function(){
       $('<div></div>', {
         'class': 'allergy',
         html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1]
-      }).appendTo('#allergies')
+      })
+      .data(e)
+      .appendTo('#allergies')
     })
 
-    $('.allergy').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+    //
+    // display by date
+    //
 
-    // medications
-    if (pt.meds_arr.length == 0) { $('<div/>', {text: 'No known medications'}).appendTo('#medications'); }
-    _(pt.meds_arr).chain()
-      .sortBy(function(e){ return e[1].toLowerCase(); })
-      .each(function(e){
-        var a = e[1].split(' ')
-        $('<div></div>', {
-          'class': 'medication',
-          html: '<span class=\'bold\'>' + a[0] + '</span> ' + _(a).rest() + ' ' + e[2]
-        }).appendTo('#medications')
-      })
-      .value()
+    var sort_by_date = function(){
+      // problems
+      // prepend date to all problems (or get attached data)
+      var p2 =_($('.problem')).chain()
+        .map(function(e){
+          e = $(e)
+          var date = e.data('0') ? new XDate(e.data('0')).toString('MM/dd/yy') : '';
+          var h = '<span class="date">'+date+'</span>';
+          return e.html(h+' '+e.html())
+        })
+        .sortBy(function(e){ return $(e).data('0'); })
+        .reverse()
+        .value()
 
-    $('.medication').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+      $('#problems').empty();
+      _(p2).each(function(e){ $(e).appendTo('#problems'); })
+      $('.problem:contains("Diabetes")').css('font-weight', 'bold').css('color', 'red');
 
+      // re-generate co-morbs
+      generate_comorbidities();
+
+      // do meds
+      var m2 =_($('.medication')).chain()
+        .map(function(e){
+          e = $(e)
+          var date = e.data('0') ? new XDate(e.data('0')).toString('MM/dd/yy') : '';
+          var h = '<span class="date">'+date+'</span>';
+          return e.html(h+' '+e.html())
+        })
+        .sortBy(function(e){ return $(e).data('0'); })
+        .reverse()
+        .value()
+
+      $('#medications').empty();
+      _(m2).each(function(e){ $(e).appendTo('#medications'); })
+      do_stripes();
+    };
+
+    
     //
     // reminders
     //
@@ -1120,8 +1185,6 @@ SMART.ready(function(){
         html: html
       }).appendTo('#reminders')
     })
-
-    $('.reminder').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
 
     var draw_plots = function(){
       var flot_options_bp, flot_options_ldl, flot_options_a1c = {};
@@ -1197,5 +1260,18 @@ SMART.ready(function(){
     };
 
     draw_plots();
+
+    // events
+    $('#sort_by_date').on('mouseover',  function(){
+      console.log('1')
+      sort_by_date();
+    });
+    $('#sort_by_alpha').on('mouseover', function(){
+      console.log('2');
+      sort_by_alpha();
+    });
+
+    $('#sort_by_alpha').show()
+    $('#sort_by_date').show()
   });
 });
