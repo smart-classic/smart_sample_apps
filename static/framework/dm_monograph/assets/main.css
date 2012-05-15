@@ -31,7 +31,8 @@ body {
 .grayer { font-color: #666; }
 .medium { font-size: 12px;}
 
-#top_line { font-weight: bold; text-transform: uppercase; }
+#top_line { font-weight: bold; text-transform: uppercase; font-size: 14px; }
+.name { font-size: 16px; }
 
 .test_name { font-weight: bold; font-size: 13px; }
 .test_value { font-weight: bold; font-size: 13px; }
