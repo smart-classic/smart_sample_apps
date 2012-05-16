@@ -84,23 +84,50 @@ $def with (version)
         <div>
             <p>Manifest:</p>
             <p><textarea id="manifest_input" cols="80" rows="16">{
-  "name" : "Got Statins?",
-  "description" : "Determines whether patient is taking a statin",
-  "author" : "Josh Mandel, Children's Hospital Boston",
-  "id" : "got-statins@apps.smartplatforms.org",
+  "name" : "My App",
+  "description" : "A test application for SMART",
+  "author" : "SMART Team",
+  "id" : "app123@apps.smartplatforms.org",
   "version" : ".1a",
 
   "mode" : "ui",
   "scope": "record",
 
-  "index" : "http://sample-apps.smartplatforms.org/framework/got_statins/index.html",
-  "icon" :  "http://sample-apps.smartplatforms.org/framework/got_statins/icon.png",
+  "index" : "http://example.com/smartapp/index.html",
+  "icon" :  "http://example.com/smartapp/icon.png",
   
-  "requires" : {
-       "http://smartplatforms.org/terms#Medication": {
-         "methods": ["GET"]
-       }
-  }
+  "smart_version": "0.4",
+  
+  "requires": {
+        "http://smartplatforms.org/terms#Demographics": {
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ]
+        }, 
+        "http://smartplatforms.org/terms#LabResult": {
+            "codes": [
+                "http://purl.bioontology.org/ontology/LNC/30522-7", 
+                "http://purl.bioontology.org/ontology/LNC/2093-3", 
+                "http://purl.bioontology.org/ontology/LNC/2085-9"
+            ], 
+            "methods": [
+                "GET"
+            ]
+        }
+   }, 
+  
+   "supportedBrowserEnvironments": [
+        "desktop", 
+        "tablet",
+        "mobile"
+   ],
+  
+   "optimalBrowserEnvironments": [
+        "desktop"
+   ]
 }</textarea></p>
             <p><input id="validate_manifest" type="button" value="Validate" /></p>
             <div id="spinner_manifest"><p><img src='/static/images/ajax-loader.gif' /></p></div>

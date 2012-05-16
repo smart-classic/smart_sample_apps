@@ -4,7 +4,6 @@
   "author" : "Josh Mandel, Children's Hospital Boston",
   "id" : "problem-list@apps.smartplatforms.org",
   "version" : ".1a",
-  "intents": ["view_problems"],
 
   "mode" : "ui",
   "scope": "record",
