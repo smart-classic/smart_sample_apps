@@ -4,7 +4,6 @@
   "author" : "Josh Mandel, Children's Hospital Boston",
   "id" : "med-adherence@apps.smartplatforms.org",
   "version" : ".1a",
-  "intents": ["view_medications"],
 
   "mode" : "ui",
   "scope": "record",
