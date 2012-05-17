@@ -293,8 +293,8 @@ var VITAL_SIGNS_get = function(){
          .each(function(){
            pt.weight_arr.push([
              new XDate(this.date.value).valueOf(),
-             this.unit.value === 'kg' ? Number(this.value.value) * 2.2 : Number(this.value.value),
-             this.unit.value === 'kg' ? 'lbs' : this.unit.value
+             Number(this.value.value),
+             this.unit.value
            ])
          })
 
@@ -315,8 +315,8 @@ var VITAL_SIGNS_get = function(){
          .each(function(){
            pt.height_arr.push([
              new XDate(this.date.value).valueOf(),
-             this.unit.value === 'm' ? Number(this.value.value) / .0254 : Number(this.value.value),
-             this.unit.value === 'm' ? 'in ' : this.unit.value
+             Number(this.value.value),
+             this.unit.value
            ])
          })
 
@@ -972,12 +972,20 @@ SMART.ready(function(){
 
     // other info
     $('#weight_date').text(pt.weight ? new XDate(pt.weight[0]).toString('MM/dd/yy') : null)
-    $('#weight_val') .text(pt.weight ? _round(pt.weight[1], 0) : 'Unknown')
-    $('#weight_unit').text(pt.weight ? pt.weight[2] : null)
+
+    var weight_val_lb = pt.weight[2] === 'kg' ? pt.weight[1] * 2.2 : null
+    weight_val_lb = weight_val_lb < 22 ? _round(weight_val_lb, 1) : _round(weight_val_lb, 0)
+    var weight_val_kg = pt.weight[1] || null
+    weight_val_kg = weight_val_kg < 10 ? _round(weight_val_kg, 1) : _round(weight_val_kg, 0)
+    $('#weight_val_lb').text(weight_val_lb || 'Unk')
+    $('#weight_val_kg').text(weight_val_kg || 'Unk')
+
+    var height_val_in = pt.height[2] === 'm' ? _round(pt.height[1]  / .0254, 0) : null
+    var height_val_cm = _round(pt.height[1] * 100, 0) || null
 
     $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
-    $('#height_val') .text(pt.height ? _round(pt.height[1], 0) : 'Unknown')
-    $('#height_unit').text(pt.height ? pt.height[2] : null)
+    $('#height_val_in').text(height_val_in || 'Unk')
+    $('#height_val_cm').text(height_val_cm || 'Unk')
 
     // Fixme: NO pneumovax or flu codes in the current pts...
     if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }

@@ -28,7 +28,8 @@ body {
 .bold { font-weight: bold; }
 .normal { font-weight: normal; }
 .smaller { font-size: smaller;}
-.grayer { font-color: #666; }
+.grayer { color: #666; }
+.x-grayer { color: #999; }
 .medium { font-size: 12px;}
 
 #top_line { font-weight: bold; text-transform: uppercase; font-size: 14px; }
