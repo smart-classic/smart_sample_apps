@@ -32,4 +32,4 @@ for c in rdf_ontology.SMART_Class.store.values():
         if p.multiple_cardinality:
             context[added]["@container"] = "@set"
 
-print simplejson.dumps(context, sort_keys=True, indent=4)
+print "SMART.jsonld_context = " + simplejson.dumps(context, sort_keys=True, indent=4)

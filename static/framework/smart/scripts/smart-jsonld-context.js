@@ -1,4 +1,4 @@
-{
+SMART.jsonld_context = {
     "Alert": {
         "@id": "http://smartplatforms.org/terms#Alert"
     },
@@ -478,6 +478,7 @@
         "@id": "http://www.w3.org/2006/vcard/ns#additional-name"
     },
     "v_adr": {
+        "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#adr"
     },
     "v_bday": {
