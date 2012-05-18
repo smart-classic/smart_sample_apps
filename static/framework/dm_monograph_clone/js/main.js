@@ -317,8 +317,8 @@ var VITAL_SIGNS_get = function(){
          .each(function(){
            pt.height_arr.push([
              new XDate(this.date.value).valueOf(),
-             this.unit.value === 'm' ? Number(this.value.value) *  3.2808399 : Number(this.value.value),
-             this.unit.value === 'm' ? 'ft' : this.unit.value
+             this.unit.value === 'm' ? Number(this.value.value) *  3.2808399 * 12 : Number(this.value.value),
+             this.unit.value === 'm' ? 'in' : this.unit.value
            ])
          })
 
@@ -972,11 +972,11 @@ SMART.ready(function(){
 
     // other info
     $('#weight_date').text(pt.weight ? new XDate(pt.weight[0]).toString('MM/dd/yy') : null)
-    $('#weight_val') .text(pt.weight ? _round(pt.weight[1], 2) : null)
+    $('#weight_val') .text(pt.weight ? _round(pt.weight[1], 0) : null)
     $('#weight_unit').text(pt.weight ? pt.weight[2] : null)
 
     $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
-    $('#height_val') .text(pt.height ? _round(pt.height[1], 2) : null)
+    $('#height_val') .text(pt.height ? _round(pt.height[1], 0) : null)
     $('#height_unit').text(pt.height ? pt.height[2] : null)
 
     // $('#pneumovax_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : null)
