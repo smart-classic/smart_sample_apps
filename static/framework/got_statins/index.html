@@ -1,58 +1,63 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Got Statins?</title>
-  </head>
-  <body>
+    <head>
+        <title>Got Statins?</title>
+    </head>
+    <body>
 
-    <h1 style="font-family: Arial, sans-serif;">Got Statins?</h1>
-    <a id="TheAnswer" style="font-weight: bold; font-size: 120pt; font-family: Arial, sans-serif; text-decoration: none; color: black;">
-      ... 
-    </a> 
-    <script  src='../smart/scripts/smart-api-client.js'></script>
-    <script  src='../smart/scripts/smart-jsonld-context.js'></script>
-    <script  src='jsonld/js/jsonld.js'></script>
-    <script  src='rdfparser.js'></script>
-    <script>
+        <h1 style="font-family: Arial, sans-serif;">Got Statins?</h1>
+        <a id="TheAnswer" style="font-weight: bold; font-size: 120pt; font-family: Arial, sans-serif; text-decoration: none; color: black;">
+            ... 
+        </a> 
+        <script  src='../smart/scripts/smart-api-client.js'></script>
+        <script  src='../smart/scripts/smart-jsonld-context.js'></script>
+        <script  src='jsonld/js/jsonld.js'></script>
+        <script  src='rdfparser.js'></script>
+        <script>
 
-      var toJson = function(r, cb) {
-        jsonld.fromRDF(r.body, {format: "application/rdf+xml"}, function(err, r) {
-          jsonld.objectify(r, SMART.jsonld_context, cb);
-        });
-      };
+            var toJson = function(r, cb) {
+                jsonld.fromRDF(r.body, {format: "application/rdf+xml"}, function(err, r) {
+                    jsonld.objectify(r, SMART.jsonld_context, cb);
+                });
+            };
 
-      SMART.ready(function(){
-        SMART.MEDS_get().then(function(r) {      
-          toJson(r, function(err, jsld) {
-            var meds = jsld.of_type.Medication,
-            answer = false;
+            SMART.ready(function(){
+                SMART.MEDS_get().then(function(r) {      
+                    toJson(r, function(err, jsld) {
+                        if (err) {
+                            console.log("toJson err " + err);
+                            return err;
+                        }
+                        console.log(jsld);
+                        var meds = jsld.of_type.Medication,
+                        answer = false;
 
-            for (var m in meds) {
-              if (is_a_statin(meds[m].drugName.dcterms_title)) {
-                answer = true;
-              }
+                        for (var m in meds) {
+                            if (is_a_statin(meds[m].drugName.dcterms_title)) {
+                                answer = true;
+                            }
+                        }
+                        document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "No.";
+                    })
+                });
+            });		
+
+            var is_a_statin = function(drug) {
+                if (drug.match(/statin/i)) return true;
+                if (drug.match(/Advicor/i)) return true;
+                if (drug.match(/Altoprev/i)) return true;
+                if (drug.match(/Caduet/i)) return true;
+                if (drug.match(/Crestor/i)) return true;
+                if (drug.match(/Lescol/i)) return true;
+                if (drug.match(/Lipitor/i)) return true;
+                if (drug.match(/Mevacor/i)) return true;
+                if (drug.match(/Pravachol/i)) return true;
+                if (drug.match(/Simcor/i)) return true;
+                if (drug.match(/Vytorin/i)) return true;
+                if (drug.match(/Zocor/i)) return true;
+
+                return false;
             }
-            document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "No.";
-          })
-        });
-      });		
-
-      var is_a_statin = function(drug) {
-        if (drug.match(/statin/i)) return true;
-        if (drug.match(/Advicor/i)) return true;
-        if (drug.match(/Altoprev/i)) return true;
-        if (drug.match(/Caduet/i)) return true;
-        if (drug.match(/Crestor/i)) return true;
-        if (drug.match(/Lescol/i)) return true;
-        if (drug.match(/Lipitor/i)) return true;
-        if (drug.match(/Mevacor/i)) return true;
-        if (drug.match(/Pravachol/i)) return true;
-        if (drug.match(/Simcor/i)) return true;
-        if (drug.match(/Vytorin/i)) return true;
-        if (drug.match(/Zocor/i)) return true;
-
-        return false;
-      }
-    </script>
-  </body>
+        </script>
+    </body>
 </html>
