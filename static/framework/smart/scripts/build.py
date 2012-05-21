@@ -138,6 +138,17 @@ def buildJS (call, path, vars, format, method, target, category):
         out += """        var rdf;
         try {
             rdf = _this.process_rdf(r.contentType, r.body);
+            try {
+              jsonld.fromRDF(r.body, {format: "application/rdf+xml"}, function(err, r) {
+                  jsonld.objectify(r, SMART.jsonld_context, function(err, jsld) {
+                    if (err) {
+                        console.log("toJson err ", err);
+                        return err;
+                    }
+                    dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf, objects: jsld});
+                  })
+                });
+              } catch (err) {}
         } catch(err) {}
         dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});\n"""
     else:
