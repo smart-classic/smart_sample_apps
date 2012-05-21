@@ -137,7 +137,7 @@ SMART.jsonld_context = {
     "allergyExclusionName": {
         "@id": "http://smartplatforms.org/terms#allergyExclusionName"
     },
-    "api_call": {
+    "api__call": {
         "@id": "http://smartplatforms.org/terms/api#call"
     },
     "belongsTo": {
@@ -161,19 +161,20 @@ SMART.jsonld_context = {
     "code": {
         "@id": "http://smartplatforms.org/terms#code"
     },
-    "dcterms_date": {
+    "dcterms__date": {
         "@id": "http://purl.org/dc/terms/date"
     },
-    "dcterms_identifier": {
+    "dcterms__identifier": {
         "@id": "http://purl.org/dc/terms/identifier"
     },
-    "dcterms_title": {
+    "dcterms__title": {
         "@id": "http://purl.org/dc/terms/title"
     },
     "deaNumber": {
         "@id": "http://smartplatforms.org/terms#deaNumber"
     },
     "denominator": {
+        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#denominator"
     },
     "department": {
@@ -209,7 +210,7 @@ SMART.jsonld_context = {
     "facility": {
         "@id": "http://smartplatforms.org/terms#facility"
     },
-    "foaf_gender": {
+    "foaf__gender": {
         "@id": "http://xmlns.com/foaf/0.1/gender"
     },
     "foodAllergen": {
@@ -246,6 +247,7 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#labStatus"
     },
     "maximum": {
+        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#maximum"
     },
     "medicalRecordNumber": {
@@ -259,6 +261,7 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#method"
     },
     "minimum": {
+        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#minimum"
     },
     "narrativeResult": {
@@ -280,6 +283,7 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#npiNumber"
     },
     "numerator": {
+        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#numerator"
     },
     "organization": {
@@ -314,7 +318,6 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#productName"
     },
     "provenance": {
-        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#provenance"
     },
     "provider": {
@@ -332,10 +335,10 @@ SMART.jsonld_context = {
     "race": {
         "@id": "http://smartplatforms.org/terms#race"
     },
-    "rdf_value": {
+    "rdf__value": {
         "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value"
     },
-    "rdfs_Literal": {
+    "rdfs__Literal": {
         "@id": "http://www.w3.org/2000/01/rdf-schema#Literal"
     },
     "refusalReason": {
@@ -353,79 +356,79 @@ SMART.jsonld_context = {
     "sourceCode": {
         "@id": "http://smartplatforms.org/terms#sourceCode"
     },
-    "spcode_AlertLevel": {
+    "spcode__AlertLevel": {
         "@id": "http://smartplatforms.org/terms/codes/AlertLevel"
     },
-    "spcode_AllergyCategory": {
+    "spcode__AllergyCategory": {
         "@id": "http://smartplatforms.org/terms/codes/AllergyCategory"
     },
-    "spcode_AllergyExclusion": {
+    "spcode__AllergyExclusion": {
         "@id": "http://smartplatforms.org/terms/codes/AllergyExclusion"
     },
-    "spcode_AllergySeverity": {
+    "spcode__AllergySeverity": {
         "@id": "http://smartplatforms.org/terms/codes/AllergySeverity"
     },
-    "spcode_BloodPressureBodyPosition": {
+    "spcode__BloodPressureBodyPosition": {
         "@id": "http://smartplatforms.org/terms/codes/BloodPressureBodyPosition"
     },
-    "spcode_BloodPressureBodySite": {
+    "spcode__BloodPressureBodySite": {
         "@id": "http://smartplatforms.org/terms/codes/BloodPressureBodySite"
     },
-    "spcode_BloodPressureMethod": {
+    "spcode__BloodPressureMethod": {
         "@id": "http://smartplatforms.org/terms/codes/BloodPressureMethod"
     },
-    "spcode_EncounterType": {
+    "spcode__EncounterType": {
         "@id": "http://smartplatforms.org/terms/codes/EncounterType"
     },
-    "spcode_ImmunizationAdministrationStatus": {
+    "spcode__ImmunizationAdministrationStatus": {
         "@id": "http://smartplatforms.org/terms/codes/ImmunizationAdministrationStatus"
     },
-    "spcode_ImmunizationClass": {
+    "spcode__ImmunizationClass": {
         "@id": "http://smartplatforms.org/terms/codes/ImmunizationClass"
     },
-    "spcode_ImmunizationProduct": {
+    "spcode__ImmunizationProduct": {
         "@id": "http://smartplatforms.org/terms/codes/ImmunizationProduct"
     },
-    "spcode_ImmunizationRefusalReason": {
+    "spcode__ImmunizationRefusalReason": {
         "@id": "http://smartplatforms.org/terms/codes/ImmunizationRefusalReason"
     },
-    "spcode_LOINC": {
+    "spcode__LOINC": {
         "@id": "http://smartplatforms.org/terms/codes/LOINC"
     },
-    "spcode_LabResultInterpretation": {
+    "spcode__LabResultInterpretation": {
         "@id": "http://smartplatforms.org/terms/codes/LabResultInterpretation"
     },
-    "spcode_LabResultStatus": {
+    "spcode__LabResultStatus": {
         "@id": "http://smartplatforms.org/terms/codes/LabResultStatus"
     },
-    "spcode_MedicalRecordNumber": {
+    "spcode__MedicalRecordNumber": {
         "@id": "http://smartplatforms.org/terms/codes/MedicalRecordNumber"
     },
-    "spcode_MedicationProvenance": {
+    "spcode__MedicationProvenance": {
         "@id": "http://smartplatforms.org/terms/codes/MedicationProvenance"
     },
-    "spcode_NDFRT": {
+    "spcode__NDFRT": {
         "@id": "http://smartplatforms.org/terms/codes/NDFRT"
     },
-    "spcode_RxNorm": {
+    "spcode__RxNorm": {
         "@id": "http://smartplatforms.org/terms/codes/RxNorm"
     },
-    "spcode_RxNorm_Ingredient": {
+    "spcode__RxNorm_Ingredient": {
         "@id": "http://smartplatforms.org/terms/codes/RxNorm_Ingredient"
     },
-    "spcode_RxNorm_Semantic": {
+    "spcode__RxNorm_Semantic": {
         "@id": "http://smartplatforms.org/terms/codes/RxNorm_Semantic"
     },
-    "spcode_SNOMED": {
+    "spcode__SNOMED": {
         "@id": "http://smartplatforms.org/terms/codes/SNOMED"
     },
-    "spcode_TranslationFidelity": {
+    "spcode__TranslationFidelity": {
         "@id": "http://smartplatforms.org/terms/codes/TranslationFidelity"
     },
-    "spcode_UNII": {
+    "spcode__UNII": {
         "@id": "http://smartplatforms.org/terms/codes/UNII"
     },
-    "spcode_VitalSign": {
+    "spcode__VitalSign": {
         "@id": "http://smartplatforms.org/terms/codes/VitalSign"
     },
     "specimenCollected": {
@@ -449,84 +452,84 @@ SMART.jsonld_context = {
     "unit": {
         "@id": "http://smartplatforms.org/terms#unit"
     },
-    "v_Address": {
+    "v__Address": {
         "@id": "http://www.w3.org/2006/vcard/ns#Address"
     },
-    "v_Cell": {
+    "v__Cell": {
         "@id": "http://www.w3.org/2006/vcard/ns#Cell"
     },
-    "v_Home": {
+    "v__Home": {
         "@id": "http://www.w3.org/2006/vcard/ns#Home"
     },
-    "v_Name": {
+    "v__Name": {
         "@id": "http://www.w3.org/2006/vcard/ns#Name"
     },
-    "v_Pref": {
+    "v__Pref": {
         "@id": "http://www.w3.org/2006/vcard/ns#Pref"
     },
-    "v_Tel": {
+    "v__Tel": {
         "@id": "http://www.w3.org/2006/vcard/ns#Tel"
     },
-    "v_VCard": {
+    "v__VCard": {
         "@id": "http://www.w3.org/2006/vcard/ns#VCard"
     },
-    "v_Work": {
+    "v__Work": {
         "@id": "http://www.w3.org/2006/vcard/ns#Work"
     },
-    "v_additional_name": {
+    "v__additional_name": {
         "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#additional-name"
     },
-    "v_adr": {
+    "v__adr": {
         "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#adr"
     },
-    "v_bday": {
+    "v__bday": {
         "@id": "http://www.w3.org/2006/vcard/ns#bday"
     },
-    "v_country_name": {
+    "v__country_name": {
         "@id": "http://www.w3.org/2006/vcard/ns#country-name"
     },
-    "v_email": {
+    "v__email": {
         "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#email"
     },
-    "v_extended_address": {
+    "v__extended_address": {
         "@id": "http://www.w3.org/2006/vcard/ns#extended-address"
     },
-    "v_family_name": {
+    "v__family_name": {
         "@id": "http://www.w3.org/2006/vcard/ns#family-name"
     },
-    "v_given_name": {
+    "v__given_name": {
         "@id": "http://www.w3.org/2006/vcard/ns#given-name"
     },
-    "v_honorific_prefix": {
+    "v__honorific_prefix": {
         "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#honorific-prefix"
     },
-    "v_honorific_suffix": {
+    "v__honorific_suffix": {
         "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#honorific-suffix"
     },
-    "v_locality": {
+    "v__locality": {
         "@id": "http://www.w3.org/2006/vcard/ns#locality"
     },
-    "v_n": {
+    "v__n": {
         "@id": "http://www.w3.org/2006/vcard/ns#n"
     },
-    "v_organization_name": {
+    "v__organization_name": {
         "@id": "http://www.w3.org/2006/vcard/ns#organization-name"
     },
-    "v_postal_code": {
+    "v__postal_code": {
         "@id": "http://www.w3.org/2006/vcard/ns#postal-code"
     },
-    "v_region": {
+    "v__region": {
         "@id": "http://www.w3.org/2006/vcard/ns#region"
     },
-    "v_street_address": {
+    "v__street_address": {
         "@id": "http://www.w3.org/2006/vcard/ns#street-address"
     },
-    "v_tel": {
+    "v__tel": {
         "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#tel"
     },
@@ -534,6 +537,7 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#value"
     },
     "valueAndUnit": {
+        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#valueAndUnit"
     },
     "vitalName": {
@@ -542,10 +546,10 @@ SMART.jsonld_context = {
     "weight": {
         "@id": "http://smartplatforms.org/terms#weight"
     },
-    "xsd_anyURI": {
+    "xsd__anyURI": {
         "@id": "http://www.w3.org/2001/XMLSchema#anyURI"
     },
-    "xsd_dateTime": {
+    "xsd__dateTime": {
         "@id": "http://www.w3.org/2001/XMLSchema#dateTime"
     }
 }
