@@ -544,3 +544,40 @@ SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
         return;
     }
 }
+
+
+SMART_CONNECT_CLIENT.prototype.get_statements = function(rdf) {
+    try {
+        this._statements = [];
+        this._id = 0
+        var _this = this;
+
+        _this._do_node = function(x) {
+            var node = {};
+            var id = '';
+            if (x.dump().type === 'literal') {
+                node = {'nominalValue':  x.dump().value, 'interfaceName': 'LiteralNode'}
+            } else if (x.dump().type === 'bnode') {
+                id = x.value || "_:bnid" + _this._id++;
+                node = {'nominalValue': id, 'interfaceName': 'BlankNode'}
+            } else {
+                node = {'nominalValue': x.dump().value, 'interfaceName': 'IRI'}
+            }
+            return node;
+        }
+
+        rdf.where('?s ?p ?o')
+           .each(function(){
+              // console.log(this.s.dump().value + ' (' + this.s.dump().type + ')'
+              //     , this.p.dump().value + '(' + this.p.dump().type + ')'
+              //     , this.o.dump().value + '(' + this.o.dump().type + ')\n');
+
+                _this._statements.push({
+                    'subject':  _this._do_node(this.s),
+                    'property': _this._do_node(this.p),
+                    'object':   _this._do_node(this.o)
+                });
+           })
+        return this._statements;
+    } catch(err) { console.log(err); }
+}

@@ -139,13 +139,13 @@ def buildJS (call, path, vars, format, method, target, category):
         try {
             rdf = _this.process_rdf(r.contentType, r.body);
             try {
-              jsonld.fromRDF(r.body, {format: "application/rdf+xml"}, function(err, r) {
-                  jsonld.objectify(r, SMART.jsonld_context, function(err, jsld) {
+              jsonld.fromRDF(_this.get_statements(rdf), function(err, r) {
+                  jsonld.objectify(r, SMART.jsonld_context, function(err, jsld_objects) {
                     if (err) {
                         console.log("toJson err ", err);
                         return err;
                     }
-                    dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf, objects: jsld});
+                    dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf, objects: jsld_objects});
                   })
                 });
               } catch (err) { dfd.reject({status: r.status, message: r.message}); }
