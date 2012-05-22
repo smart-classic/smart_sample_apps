@@ -12,15 +12,16 @@
     <div id="the_answer">...</div>
 
     <script src='../smart/scripts/smart-api-client.js'></script>
-    <script src='../smart/scripts/smart-jsonld-context.js'></script>
-    <script src='jsonld/js/jsonld.js'></script>
-    <script src='rdfparser.js'></script>
-
     <script>
       var answer = false;
       SMART.ready(function(){
+        var start_time = Date.now();
+
         SMART.MEDS_get().then(function(r) {
           var meds = r.objects.of_type.Medication
+
+          // console.log('elapsed time (ms):',  Date.now() - start_time, '# objects:', 'fixme')
+
           for (var i in meds) {
             if (is_a_statin(meds[i].drugName.dcterms__title)) { answer = true; }
           }
