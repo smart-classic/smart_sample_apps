@@ -148,9 +148,8 @@ def buildJS (call, path, vars, format, method, target, category):
                     dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf, objects: jsld});
                   })
                 });
-              } catch (err) {}
-        } catch(err) {}
-        dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf});\n"""
+              } catch (err) { dfd.reject({status: r.status, message: r.message}); }
+        } catch(err) { dfd.reject({status: r.status, message: err}); }\n"""
     else:
         out += "        dfd.resolve({body: r.body, contentType: r.contentType});\n"
     
