@@ -37,9 +37,9 @@ if (!BPC) {
     *
     * @param {Object} newPatient The new patient object
     */
-    BPC.initApp = function (patient) {
+    BPC.initApp = function (patient, demo_mode) {
         
-        var i;
+        var i, age;
 
         if (patient) {
             // Update the global patient handle
@@ -47,6 +47,9 @@ if (!BPC) {
             
             // Initialize the patient object
             BPC.initPatient (patient);
+            
+            // Clear the error message
+            $("#info").text("").hide();
             
             // Draw the views
             $("#tabs").show();
@@ -70,6 +73,40 @@ if (!BPC) {
                            height: patient.data[i].height, 
                            systolic: patient.data[i].systolic, 
                            diastolic: patient.data[i].diastolic});
+            }
+            
+            // Display the demo dialog, if needed
+            if (demo_mode) {
+                $( "#dialog-demo" ).dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    resizable: false,
+                    modal: true,
+                    buttons: {
+                        Ok: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
+            }
+            
+            // Caculate the current age of the patient
+            age = years_apart(new XDate().toISOString(), patient.birthdate);
+            
+            // Display warning dialog if the patient has reached adult age
+            if (age >= BPC.ADULT_AGE) {
+                $("#alert-message").text(demographics.name + " is " + BPC.getYears(age) + " years old!");
+                $( "#dialog-message" ).dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    resizable: false,
+                    modal: true,
+                    buttons: {
+                        Ok: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
             }
         }
     }
