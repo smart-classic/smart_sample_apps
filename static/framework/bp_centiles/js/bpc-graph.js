@@ -95,7 +95,7 @@ if (!BPC) {
             
             // Display warning dialog if the patient has reached adult age
             if (age >= BPC.ADULT_AGE) {
-                $("#alert-message").text(demographics.name + " is " + BPC.getYears(age) + " years old!");
+                $("#alert-message").text(patient.name + " is " + BPC.getYears(age) + " years old!");
                 $( "#dialog-message" ).dialog({
                     closeOnEscape: false,
                     draggable: false,
