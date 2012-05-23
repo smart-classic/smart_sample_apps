@@ -2,14 +2,18 @@ body {
     font: 62.5% "Trebuchet MS", sans-serif;
 }
 
-#all_messages, #custom_messages, #rdf_input, #queries {
+#tabs, a[href='#tab_all'] {
+    display:none;
+}
+
+#all_messages, #custom_messages, #custom_messages_manifest, #manifest_input, #rdf_input, #queries {
 	padding: 2px;
 	font-family: monospace;
 	font-size: 11px;
     width: 99%;
 }
 
-#all_messages, #custom_messages, #queries, #queries_label, #spinner, #spinner2  {
+#all_messages, #custom_messages, #custom_messages_manifest, #queries, #queries_label, #spinner, #spinner2, #spinner_manifest  {
     display:none;
 }
 
