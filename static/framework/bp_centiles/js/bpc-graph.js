@@ -262,7 +262,7 @@ if (!BPC) {
             i,
             ii,
             patientType = patient.getDataType(),
-            transitionX = getTransitionX(patient, s);
+            transitionX;
             
         //console.log ("Type: " + patient.getDataType() + " " + getTransitionX(patient, s));
 
@@ -301,6 +301,9 @@ if (!BPC) {
         }
         
         s.Y = (s.height - s.bottomgutter - s.topgutter) / s.max;  // The Y distance per percentile
+        
+        // Calculate the age transition line coordinate
+        transitionX = getTransitionX(patient, s);
         
         // Update the local canvas handle
         if (shortTerm) {
