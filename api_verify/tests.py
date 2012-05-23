@@ -84,7 +84,12 @@ def testRDF (graph, model):
         # Negative queries should not return any results
         if type == "negative":
             # Run the query and report any failures
-            results = graph.query(q)
+            try:
+                results = graph.query(q)
+            except:
+                print "problem with QUERY!"
+                print q
+                
             
             # Stingify the results (limit to first 3)
             # This is needed to work around a bug in rdflib where the non-matched results
@@ -413,8 +418,6 @@ class TestManifests(TestJSON):
         '''Test for the manifests JSON output'''
         
         if self.json:
-        
-            print data
         
             if type(self.json) != list:
                 self.fail ("The JSON payload should be a list")
