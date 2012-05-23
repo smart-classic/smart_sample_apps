@@ -51,12 +51,20 @@ if (!BPC) {
             // Clear the error message
             $("#info").text("").hide();
             
+            // Initialize the UI
+            BPC.initUI ();
+            
+            // Initialize the default filter buttons state
+            // Note: this is a workaround for a jQuery/jQueryUI issue where the state of the underlying object
+            // is not updated by jQuery UI clicks and overrides the state of the jQuery ui button element
+            $('[for=chkFilterAmbulatory]').click();
+            $('[for=chkFilterArm]').click();
+            $('[for=chkFilterSitting]').click();
+            $('[for=chkFilterAuscultation]').click();
+            
             // Draw the views
             $("#tabs").show();
             BPC.drawViews (patient,BPC.zones);
-            
-            // Initialize the UI
-            BPC.initUI ();
             
             // Find the last pre-adult data record available
             for (i = patient.data.length - 1; i >= 0; i--) {
