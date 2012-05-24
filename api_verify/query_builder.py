@@ -11,8 +11,8 @@ import copy
 from settings import APP_PATH, DOC_BASE
 
 # Imports from the SMART client
-from smart_client.common import rdf_ontology
-from smart_client.common.util import NS, anyuri
+from smart_client.common.rdf_tools import rdf_ontology
+from smart_client.common.rdf_tools.util import NS, anyuri
 
 # Import rdflib modules
 import rdflib

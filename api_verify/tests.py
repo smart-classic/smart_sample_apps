@@ -23,7 +23,7 @@ import query_builder
 from manifest_tests import manifest_structure_validator
 
 # RDF parsing wrapper from the SMART python client
-from smart_client.common.util import parse_rdf
+from smart_client.common.rdf_tools.util import parse_rdf
 
 # Global variables for state synchronization accross the test suites
 lock = threading.Lock()

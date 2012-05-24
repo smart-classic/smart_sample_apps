@@ -22,7 +22,7 @@ sys.path.append(abspath)
 from smart_client import oauth
 from smart_client.smart import SmartClient
 from smart_client.rdf_utils import anonymize_smart_rdf
-from smart_client.common.rdf_ontology import get_api_calls
+from smart_client.common.rdf_tools.rdf_ontology import get_api_calls
 from smart_client.generate_api import call_name
 
 # Import the local markdown module function
