@@ -1,1 +1,0 @@
-../smart_common/utils/manifest_tests.py
