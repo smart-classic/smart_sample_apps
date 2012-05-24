@@ -30,6 +30,7 @@
       <!--[if lte IE 8]><script src="./js/flot/excanvas.min.js"></script><![endif]-->
       <script src='./js/underscore.min.js'></script>
       <script src='./js/json2.js'></script>
+      <script src='./js/jquery.tools.min.js'></script>
       <script src='./js/main.js'></script>
   </head>
   <body>
@@ -318,13 +319,31 @@
           </div>
 
           <div>
-            <div style='width: 68%; float: left'><span class='bold'>pneumovax</span></div>
-            <div style='width: 30%; float: left; text-align: right' id='pneumovax_date'></div>
+            <div style='width: 30%; float: left'><span class='bold'>smoking</span></div>
+            <div style='width: 68%; float: left; text-align: right' id='smoking_status'>not available</div>
             <div class='clear'></div>
           </div>
 
           <div class='gray'>
-            <div style='width: 68%; float: left'><span class='bold'>flu shot</span></div>
+            <div style='width: 30%; float: left'><span class='bold'>aspirin</span></div>
+            <div style='width: 68%; float: left; text-align: right' id='aspirin_tolerance'>not available</div>
+            <div class='clear'></div>
+          </div>
+
+          <div>
+            <div style='width: 30%; float: left'><span class='bold'>ACE/ARB</span></div>
+            <div style='width: 68%; float: left; text-align: right' id='ace_arb_status'>not available</div>
+            <div class='clear'></div>
+          </div>
+
+          <div class='gray'>
+            <div style='width: 68%; float: left'><span class='bold'>last pneumovax</span></div>
+            <div style='width: 30%; float: left; text-align: right' id='pneumovax_date'></div>
+            <div class='clear'></div>
+          </div>
+
+          <div>
+            <div style='width: 68%; float: left'><span class='bold'>last flu shot</span></div>
             <div style='width: 30%; float: left; text-align: right' id='flu_shot_date'></div>
             <div class='clear'></div>
           </div>
@@ -356,7 +375,7 @@
         </div>
 
         <div id='controls' class='controls' style='width: 30%; float: left; text-align: right; padding-top: 38px;'>
-         <input type='button' id='sort_by_date' value='Sort by date' /><input type='button' id='sort_by_alpha' style='display: none' value="Sort A-Z" />
+         <input type='button' id='sort_by_date' value='Chronologic' /><input type='button' id='sort_by_alpha' style='display: none' value="Alphabetical" />
         </div>
 
         <div class='clear'></div>
@@ -377,6 +396,18 @@
           <div class='section_header'>Medications</div>
           <div id='medications'></div>
         </div>
+      </div>
+    </div>
+
+    <input type='button' value='Show LKV overlay' rel="#ov1"/>
+
+    <div class="simple_overlay" id="ov1">
+
+      <h1 style='color: white'>Hello, I'm an overlay!</h1>
+      <div class="details">
+        <h3>testing overlay</h3>
+        <h4>testing overlay</h4>
+        <p>testing overlay</p>
       </div>
     </div>
 

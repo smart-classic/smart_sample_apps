@@ -5,6 +5,45 @@
 //
 // Note: A good pt with a lot of data: p967332 William Robinson
 //
+// for tables: http://www.datatables.net/index
+
+// Notes
+// for ASA / Aspirin allergies
+//
+// Salicylic Acids [Chemical/Ingredient]
+// http://purl.bioontology.org/ontology/NDFRT/N0000007582
+// Aspirin [Chemical/Ingredient]
+// http://purl.bioontology.org/ontology/NDFRT/N0000006582
+// Salicylates [Chemical/Ingredient]
+// http://purl.bioontology.org/ontology/NDFRT/N0000006035
+// Acetylsalicylate
+// http://purl.bioontology.org/ontology/LNC/LP16020-7
+//
+// for NSAID allergies
+//
+// Analgesics, nsaids
+// http://purl.bioontology.org/ontology/LNC/LP31430-9
+//
+// for ACE/ARB
+// ACE Inhibitors
+// benazepril (Lotensin)
+// captopril (Capoten)
+// enalapril (Vasotec)
+// fosinopril (Monopril)
+// lisinopril (Prinivil, Zestril)
+// perindopril (Aceon)
+// quinapril (Accupril)
+// ramipril (Altace)
+// trandolapril (Mavik)
+//
+// Angiotensin II Receptor Blockers (ARBs)
+// candesartan (Atacand)
+// eprosartan (Tevetan)
+// irbesartan (Avapro)
+// losartan (Cozaar)
+// olmesartan (Benicar)
+// telmisartan (Micardis)
+// valsartan (Diovan)
 
 //
 // Patient Object
@@ -988,8 +1027,8 @@ SMART.ready(function(){
     $('#height_val_cm').text(height_val_cm || 'Unk')
 
     // Fixme: NO pneumovax or flu codes in the current pts...
-    if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }
-    if (!pt.flu_shot_date) { $('#flu_shot_date').text('Unknown'); }
+    if (!pt.pneumovax_date) { $('#pneumovax_date').text('-'); }
+    if (!pt.flu_shot_date) { $('#flu_shot_date').text('-'); }
 
     if (pt.problems_arr.length == 0) { $('<div></div>', {text: 'No known problems'}).appendTo('#problems'); }
 
@@ -1306,5 +1345,8 @@ SMART.ready(function(){
       sort_by_alpha();
       return false;
     });
+
+    // testing lkv overlay. fixme: more specific selector
+    $("input[rel]").overlay();
   });
 });
