@@ -10,6 +10,3 @@
 [submodule "smart_client"]
 	path = smart_client
 	url = https://github.com/chb/smart_client_python.git
-[submodule "smart_common"]
-	path = smart_common
-	url = https://github.com/chb/smart_common.git
