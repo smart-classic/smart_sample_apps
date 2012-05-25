@@ -51,10 +51,10 @@ a.nohover:hover { border-bottom: none; }
 .controls { font-size: 14px; }
 
 /* overlay stuff */
-.simple_overlay {
+.overlay {
   display:none;
   z-index:10000;
-  background-color:#333;
+  background-color:#fff;
   width:675px;
   min-height:200px;
   border:1px solid #666;
@@ -64,7 +64,7 @@ a.nohover:hover { border-bottom: none; }
 }
 
 /* close button positioned on upper right corner */
-.simple_overlay .close {
+.overlay .close {
   background-image:url(./close.png);
   position:absolute;
   right:-15px;
@@ -74,8 +74,7 @@ a.nohover:hover { border-bottom: none; }
   width:35px;
 }
 
-/* fixme: rename? */
-.details {
+.overlay .details {
   position:absolute;
   top:15px;
   right:15px;
@@ -84,7 +83,7 @@ a.nohover:hover { border-bottom: none; }
   width:150px;
 }
 
-.details h3 {
+.overlay .details h3 {
   color:#aba;
   font-size:15px;
 }
