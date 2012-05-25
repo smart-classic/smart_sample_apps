@@ -45,6 +45,36 @@
 // telmisartan (Micardis)
 // valsartan (Diovan)
 
+// default flot options (bp)
+var _flot_opts = {
+  xaxis: {
+    mode: 'time',
+    timeformat: '%y',
+    min: new XDate(2009, 11).valueOf(),
+    max: new XDate().valueOf(),
+    tickSize: [1, 'year'],
+    minTickSize: [1, 'year']
+  },
+  yaxis: {
+    min: 50,
+    max: 200,
+    ticks: [50, 100, 150, 200],
+    tickLength: 0
+  },
+  series: {
+    lines: { show: false },
+    points: { show: true }
+  },
+  grid: {
+    backgroundColor: '#ebebeb',
+    borderWidth: 1,
+    markings: [
+      { yaxis: { from: 0, to: 80 }, color: "#ccc" },
+      { yaxis: { from: 200, to: 130 }, color: "#ccc" }
+    ]
+  }
+}
+
 //
 // Patient Object
 //
@@ -52,18 +82,22 @@
 pt = {};
 pt.a1c = null;
 pt.a1c_arr = [];
-pt.a1c_next
+pt.a1c_next = null;
+pt.a1c_flot_opts = {};
 pt.allergies_arr = [];
 pt.bday = null;
 pt.bun = null;
 pt.bun_arr = [];
 pt.bun_next = null;
+pt.bun_flot_opts = {};
 pt.chol_total = null;
 pt.chol_total_arr = [];
 pt.chol_total_next = null;
+pt.chol_total_flot_opts = {};
 pt.creatinine = null;
 pt.creatinine_arr = [];
 pt.creatinine_next = null;
+pt.creatinine_flot_opts = {};
 pt.current_sort = '';
 pt.dbp = null;
 pt.dbp_arr = [];
@@ -75,17 +109,21 @@ pt.given_name = null;
 pt.glucose = null;
 pt.glucose_arr = [];
 pt.glucose_next = null;
+pt.glucose_flot_opts = {};
 pt.hdl = null;
 pt.hdl_arr = [];
 pt.hdl_next = null;
+pt.hdl_flot_opts = {};
 pt.height = null;
 pt.height_arr = [];
 pt.ldl = null;
 pt.ldl_arr = [];
 pt.ldl_next = null;
+pt.ldl_flot_opts = {};
 pt.m_alb_cre_ratio = null;
 pt.m_alb_cre_ratio_arr = [];
 pt.m_alb_cre_ratio_next = null;
+pt.m_alb_cre_ratio_flot_opts = {};
 pt.meds_arr = [];
 pt.pneumovax_date = null;
 pt.problems_arr = [];
@@ -96,17 +134,20 @@ pt.sbp_next = null;
 pt.sgot = null;
 pt.sgot_arr = [];
 pt.sgot_next = null;
+pt.sgot_flot_opts = {};
 pt.triglyceride = null;
 pt.triglyceride_arr = [];
 pt.triglyceride_next = null;
+pt.triglyceride_flot_opts = {};
 pt.ur_tp = null;
 pt.ur_tp_arr = [];
 pt.ur_tp_next = null;
+pt.ur_tp_flot_opts = {};
 pt.weight = null;
 pt.weight_arr = [];
 
 //
-// Utility Functions
+// Utils
 //
 var error_cb = function(e){
   alert('error '+e.status+' see console.')
@@ -410,6 +451,23 @@ var LAB_RESULTS_get = function(){
          pt.ldl_arr = _(pt.ldl_arr).sortBy(function(item){ return item[0]; })
          pt.ldl = _(pt.ldl_arr).last() || null
          pt.ldl_next = _(pt.ldl_arr).last(2)[0] || null
+         $.extend(true,
+           pt.ldl_flot_opts,
+           _flot_opts,
+           {
+             yaxis: {
+               min: 0,
+               max: 200,
+               ticks: [0, 50, 100, 150, 200],
+               tickLength: 0
+             },
+             grid: {
+               backgroundColor: '#ebebeb',
+               borderWidth: 1,
+               markings: [ { yaxis: { from: 200, to: 100 }, color: "#ccc" } ]
+             }
+           }
+         );
 
          // A1C Codes
          //
@@ -447,6 +505,23 @@ var LAB_RESULTS_get = function(){
           pt.a1c_arr = _(pt.a1c_arr).sortBy(function(item){ return item[0]; })
           pt.a1c = _(pt.a1c_arr).last() || null
           pt.a1c_next = _(pt.a1c_arr).last(2)[0] || null
+          $.extend(true,
+            pt.a1c_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 20,
+                ticks: [0, 5, 10, 15, 20],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [ { yaxis: { from: 20, to: 7 }, color: "#ccc" } ]
+              }
+            }
+          );
 
           // Ur Tp
           //
@@ -480,6 +555,23 @@ var LAB_RESULTS_get = function(){
            pt.ur_tp_arr = _(pt.ur_tp_arr).sortBy(function(item){ return item[0]; })
            pt.ur_tp = _(pt.ur_tp_arr).last() || null
            pt.ur_tp_next = _(pt.ur_tp_arr).last(2)[0] || null
+           $.extend(true,
+             pt.ur_tp_flot_opts,
+             _flot_opts,
+             {
+               yaxis: {
+                 min: 0,
+                 max: 200,
+                 ticks: [0, 50, 100, 150, 200],
+                 tickLength: 0
+               },
+               grid: {
+                 backgroundColor: '#ebebeb',
+                 borderWidth: 1,
+                 markings: [ { yaxis: { from: 200, to: 135 }, color: "#ccc" } ]
+               }
+             }
+           );
 
          // Microalbumin/Creatinine [Mass ratio] in Urine
          //
@@ -515,6 +607,23 @@ var LAB_RESULTS_get = function(){
           pt.m_alb_cre_ratio_arr = _(pt.m_alb_cre_ratio_arr).sortBy(function(item){ return item[0]; })
           pt.m_alb_cre_ratio = _(pt.m_alb_cre_ratio_arr).last() || null
           pt.m_alb_cre_ratio_next = _(pt.m_alb_cre_ratio_arr).last(2)[0] || null
+          $.extend(true,
+            pt.m_alb_cre_ratio_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 50,
+                ticks: [0, 10, 20, 30, 40, 50],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [ { yaxis: { from: 50, to: 30 }, color: "#ccc" } ]
+              }
+            }
+          );
 
          // Aspartate aminotransferase / SGOT / AST
          //
@@ -551,6 +660,26 @@ var LAB_RESULTS_get = function(){
           pt.sgot_arr = _(pt.sgot_arr).sortBy(function(item){ return item[0]; })
           pt.sgot = _(pt.sgot_arr).last() || null
           pt.sgot_next = _(pt.sgot_arr).last(2)[0] || null
+          $.extend(true,
+            pt.sgot_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 50,
+                ticks: [0, 10, 20, 30, 40, 50],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [
+                  { yaxis: { from: 10, to: 10 }, color: "#ccc" },
+                  { yaxis: { from: 40, to: 40 }, color: "#ccc" }
+                ]
+              }
+            }
+          );
 
          // Cholesterol (total): only 1 code!! Yay!
          //
@@ -584,6 +713,23 @@ var LAB_RESULTS_get = function(){
           pt.chol_total_arr = _(pt.chol_total_arr).sortBy(function(item){ return item[0]; })
           pt.chol_total = _(pt.chol_total_arr).last() || null
           pt.chol_total_next = _(pt.chol_total_arr).last(2)[0] || null
+          $.extend(true,
+            pt.chol_total_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 300,
+                ticks: [0, 50, 100, 150, 200, 250, 300],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [ { yaxis: { from: 300, to: 200 }, color: "#ccc" } ]
+              }
+            }
+          );
 
          // Tri
          //
@@ -619,6 +765,23 @@ var LAB_RESULTS_get = function(){
           pt.triglyceride_arr = _(pt.triglyceride_arr).sortBy(function(item){ return item[0]; })
           pt.triglyceride = _(pt.triglyceride_arr).last() || null
           pt.triglyceride_next = _(pt.triglyceride_arr).last(2)[0] || null
+          $.extend(true,
+            pt.triglyceride_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 250,
+                ticks: [0, 50, 100, 150, 250],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [ { yaxis: { from: 250, to: 150 }, color: "#ccc" } ]
+              }
+            }
+          );
 
          // HDL
          // 2085-9,Cholesterol in HDL [Mass/volume] in Serum or Plasma,HDLc SerPl-mCnc,CHEM,38
@@ -651,6 +814,23 @@ var LAB_RESULTS_get = function(){
           pt.hdl_arr = _(pt.hdl_arr).sortBy(function(item){ return item[0]; })
           pt.hdl = _(pt.hdl_arr).last() || null
           pt.hdl_next = _(pt.hdl_arr).last(2)[0] || null
+          $.extend(true,
+            pt.hdl_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 150,
+                ticks: [0, 50, 100, 150],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [ { yaxis: { from: 150, to: 40 }, color: "#ccc" } ]
+              }
+            }
+          );
 
          // BUN
          //
@@ -686,6 +866,26 @@ var LAB_RESULTS_get = function(){
           pt.bun_arr = _(pt.bun_arr).sortBy(function(item){ return item[0]; })
           pt.bun = _(pt.bun_arr).last() || null
           pt.bun_next = _(pt.bun_arr).last(2)[0] || null
+          $.extend(true,
+            pt.bun_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 35,
+                ticks: [0, 5, 10, 15, 20, 25, 30, 35],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [
+                  { yaxis: { from: 0, to: 8 }, color: "#ccc" },
+                  { yaxis: { from: 35, to: 25 }, color: "#ccc" }
+                ]
+              }
+            }
+          );
 
          // Cre
          //
@@ -721,6 +921,26 @@ var LAB_RESULTS_get = function(){
           pt.creatinine_arr = _(pt.creatinine_arr).sortBy(function(item){ return item[0]; })
           pt.creatinine = _(pt.creatinine_arr).last() || null
           pt.creatinine_next = _(pt.creatinine_arr).last(2)[0] || null
+          $.extend(true,
+            pt.creatinine_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 2,
+                ticks: [0, 0.5, 1, 1.5, 2],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [
+                  { yaxis: { from: 0, to: 0.6 }, color: "#ccc" },
+                  { yaxis: { from: 2, to: 1.5 }, color: "#ccc" }
+                ]
+              }
+            }
+          );
 
          // Glu
          // 2345-7,Glucose [Mass/volume] in Serum or Plasma,Glucose SerPl-mCnc,CHEM,4
@@ -755,42 +975,26 @@ var LAB_RESULTS_get = function(){
           pt.glucose_arr = _(pt.glucose_arr).sortBy(function(item){ return item[0]; })
           pt.glucose = _(pt.glucose_arr).last() || null
           pt.glucose_next = _(pt.glucose_arr).last(2)[0] || null
-
-         // BUN
-         //
-         // 3094-0,Urea nitrogen [Mass/volume] in Serum or Plasma,BUN SerPl-mCnc,CHEM,6
-         // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
-         // fixme only top code
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
-
-            pt.bun_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
-          })
-
-          pt.bun_arr = _(pt.bun_arr).sortBy(function(item){ return item[0]; })
-          pt.bun = _(pt.bun_arr).last() || null
-          pt.bun_next = _(pt.bun_arr).last(2)[0] || null
+          $.extend(true,
+            pt.glucose_flot_opts,
+            _flot_opts,
+            {
+              yaxis: {
+                min: 0,
+                max: 150,
+                ticks: [0, 25, 50, 100, 125, 150],
+                tickLength: 0
+              },
+              grid: {
+                backgroundColor: '#ebebeb',
+                borderWidth: 1,
+                markings: [
+                  { yaxis: { from: 0, to: 70 }, color: "#ccc" },
+                  { yaxis: { from: 110, to: 150 }, color: "#ccc" }
+                ]
+              }
+            }
+          );
 
           //
           // Reminders
@@ -1242,66 +1446,7 @@ SMART.ready(function(){
 
     sort_by_alpha();
 
-    var draw_plots = function(){
-      var flot_options_bp, flot_options_ldl, flot_options_a1c = {};
-      flot_options_bp = {
-        xaxis: {
-          mode: 'time',
-          timeformat: '%y',
-          min: new XDate(2009, 11).valueOf(),
-          max: new XDate().valueOf(),
-          tickSize: [1, 'year'],
-          minTickSize: [1, 'year']
-        },
-        yaxis: {
-          min: 50,
-          max: 200,
-          ticks: [50, 100, 150, 200],
-          tickLength: 0
-        },
-        series: {
-          lines: { show: false },
-          points: { show: true }
-        },
-        grid: {
-          backgroundColor: '#ebebeb',
-          borderWidth: 1,
-          markings: [
-            { yaxis: { from: 80, to: 80 }, color: "#ccc" },
-            { yaxis: { from: 130, to: 130 }, color: "#ccc" }
-          ]
-        }
-      }
-
-      flot_options_ldl = $.extend(true, {}, flot_options_bp);
-      flot_options_a1c = $.extend(true, {}, flot_options_bp);
-
-      flot_options_ldl.yaxis = {
-        min: 0,
-        max: 200,
-        ticks: [0, 50, 100, 150, 200],
-        tickLength: 0
-      }
-
-      flot_options_ldl.grid = {
-        backgroundColor: '#ebebeb',
-        borderWidth: 1,
-        markings: [ { yaxis: { from: 200, to: 100 }, color: "#ccc" } ]
-      }
-
-      flot_options_a1c.yaxis = {
-        min: 0,
-        max: 20,
-        ticks: [0, 5, 10, 15, 20],
-        tickLength: 0
-      }
-
-      flot_options_a1c.grid = {
-        backgroundColor: '#ebebeb',
-        borderWidth: 1,
-        markings: [ { yaxis: { from: 20, to: 7 }, color: "#ccc" } ]
-      }
-
+    var draw_plots = function(callback){
       // set the heights for the graphs and set the (fluid) width
       // of the a1c graph to be the same as the other graphs
       var h = 100;
@@ -1309,7 +1454,7 @@ SMART.ready(function(){
       $('#ldl_graph').height(h);
       $('#a1c_graph').height(h).width('100%')
 
-      // hack to boost pediatric bps to adult bps if ago over 10y
+      // fixme: hack to boost pediatric bps to adult bps if ago over 10y
       var b = new XDate(pt.bday)
       var age = Math.round(b.diffYears(new XDate()));
 
@@ -1325,9 +1470,24 @@ SMART.ready(function(){
       }
 
       // plot'em!
-      $.plot($("#bp_graph"), [pt.dbp_arr, pt.sbp_arr], flot_options_bp);
-      $.plot($("#ldl_graph"), [pt.ldl_arr], flot_options_ldl);
-      $.plot($("#a1c_graph"), [pt.a1c_arr], flot_options_a1c);
+      $.plot($("#bp_graph"),  [pt.dbp_arr, pt.sbp_arr], _flot_opts);
+      $.plot($("#ldl_graph"), [pt.ldl_arr],             pt.ldl_flot_opts);
+      $.plot($("#a1c_graph"), [pt.a1c_arr],             pt.a1c_flot_opts);
+
+      // fixme: dry
+      $.plot($("#bp_graph_lkv"),  [pt.dbp_arr, pt.sbp_arr], _flot_opts);
+      $.plot($("#ldl_graph_lkv"), [pt.ldl_arr],             pt.ldl_flot_opts);
+      $.plot($("#a1c_graph_lkv"), [pt.a1c_arr],             pt.a1c_flot_opts);
+
+      $.plot($("#ur_tp_graph"),           [pt.ur_tp_arr],           pt.ur_tp_flot_opts);
+      $.plot($("#m_alb_cre_ratio_graph"), [pt.m_alb_cre_ratio_arr], pt.m_alb_cre_ratio_flot_opts);
+      $.plot($("#sgot_graph"),            [pt.sgot_arr],            pt.sgot_flot_opts);
+      $.plot($("#chol_total_graph"),      [pt.chol_total_arr],      pt.chol_total_flot_opts);
+      $.plot($("#triglyceride_graph"),    [pt.triglyceride_arr],    pt.triglyceride_flot_opts);
+      $.plot($("#hdl_graph"),             [pt.hdl_arr],             pt.hdl_flot_opts);
+      $.plot($("#bun_graph"),             [pt.bun_arr],             pt.bun_flot_opts);
+      $.plot($("#creatinine_graph"),      [pt.creatinine_arr],      pt.creatinine_flot_opts);
+      $.plot($("#glucose_graph"),         [pt.glucose_arr],         pt.glucose_flot_opts);
     };
 
     draw_plots();

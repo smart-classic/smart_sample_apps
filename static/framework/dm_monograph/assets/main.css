@@ -52,28 +52,36 @@ a.nohover:hover { border-bottom: none; }
 
 /* overlay stuff */
 .overlay {
+  padding: 10px;
   display:none;
   z-index:10000;
   background-color:#fff;
   width:675px;
   min-height:200px;
-  border:1px solid #666;
+  height: 90%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+/*  border:1px solid #666;*/
   /* CSS3 styling for latest browsers */
   -moz-box-shadow:0 0 90px 5px #000;
   -webkit-box-shadow: 0 0 90px #000;
+  
 }
 
 /* close button positioned on upper right corner */
 .overlay .close {
+  z-index: 15000;
   background-image:url(./close.png);
-  position:absolute;
-  right:-15px;
-  top:-15px;
+/*  position:absolute;
+  right:0px;
+  top:0px;
+*//*  right:-15px;*/
+/*  top:-15px;*/
   cursor:pointer;
   height:35px;
   width:35px;
 }
-
+/*
 .overlay .details {
   position:absolute;
   top:15px;
@@ -86,4 +94,10 @@ a.nohover:hover { border-bottom: none; }
 .overlay .details h3 {
   color:#aba;
   font-size:15px;
+}
+*/
+.lkv_graph {
+  width: 300px;
+  height: 150px;
+  margin: 15px 0px 15px 15px;
 }
