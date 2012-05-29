@@ -729,9 +729,6 @@ var LAB_RESULTS_get = function(){
             }
           );
 
-          console.log(pt.chol_total_arr)
-          console.log(pt.chol_total_flot_opts)
-
          // Tri
          //
          // 2571-8,Triglyceride [Mass/volume] in Serum or Plasma,Trigl SerPl-mCnc,CHEM,36
@@ -1327,7 +1324,13 @@ SMART.ready(function(){
         })
         .value()
 
-      $('.problem:contains("Diabetes")').css('color', 'red');
+      // check for diabetic
+      var d = $('.problem:contains("Diabetes")');
+      if (d.length > 0) {
+        d.css('color', 'red');
+        // if diabetic, show in demographics
+        $('#diabetic_p').text('Diabetic');
+      }
 
       generate_comorbidities();
 
@@ -1497,7 +1500,16 @@ SMART.ready(function(){
       return false;
     });
 
-    // testing lkv overlay. fixme: more specific selector
-    $("input[rel]").overlay();
+    $('#print_page_link').on('click', function(){
+      alert('Work in progress... Coming soon.');
+      return false;
+    })
+
+    $('#help_page_link').on('click', function(){
+      alert('Work in progress... Coming soon.')
+      return false;
+    })
+
+    $("#show_overlay[rel]").overlay();
   });
 });

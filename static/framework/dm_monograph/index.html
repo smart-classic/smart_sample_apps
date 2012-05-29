@@ -48,6 +48,8 @@
         (<span id='age'></span> <span style='text-transform: lowercase'>YRS</span>)
         &nbsp;
         <span id='gender'></span>
+        &nbsp;
+        <span id='diabetic_p' style='font-weight: bold; color: red;'></span>
       </div>
 
 
@@ -60,7 +62,14 @@
 
         <div id='bp_graph'></div>
 
-        <div class='section_header'>Last Known Values</div>
+
+        <div class='section_header'>
+          <div style='width: 60%; float: left'>Last Known Values</div>
+          <div style='width: 40%; float: left; text-align: right'>
+            <a href='' id='show_overlay' rel="#lkv_overlay"/>[show graphs]</a>
+          </div>
+          <div class='clear'></div>
+        </div>
 
         <div class="grid_1 alpha" style='width: 37%; margin-right: 0px;'>
           <div>
@@ -209,7 +218,6 @@
           </div>
         </div>
 
-        <!-- fixme: a bit long, wraps under 1280px -->
         <div class="grid_1 omega" style='width: 31%; margin-left: 0px;'>
           <div>
             <span id='ur_tp_next_val' class='test_next_value'>&nbsp;</span>
@@ -302,8 +310,8 @@
 
           <div>
             <div style='width: 28%; float: left'><span class='bold'>weight</span></div>
-            <div style='width: 40%; float: left'>lbs<span class='x-grayer'>&#8202;/&#8202;kg</span>
-            &nbsp;<span id='weight_val_lb'></span><span class='x-grayer'>&#8202;/&#8202;<span id='weight_val_kg'></span></span>
+            <div style='width: 40%; float: left'>lbs <span id='weight_val_lb'></span>
+              &nbsp;<span class='x-grayer'>kg <span id='weight_val_kg'></span></span>
             </div>
             <div style='width: 30%; float: left; text-align: right' id='weight_date'></div>
             <div class='clear'></div>
@@ -311,10 +319,22 @@
 
           <div class='gray'>
             <div style='width: 28%; float: left'><span class='bold'>height</span></div>
-            <div style='width: 40%; float: left'>in<span class='x-grayer'>&#8202;/&#8202;cm</span>
-            &nbsp;<span id='height_val_in'></span><span class='x-grayer'>&#8202;/&#8202;<span id='height_val_cm'></span></span>
+            <div style='width: 40%; float: left'>in <span id='height_val_in'></span>
+              &nbsp;<span class='x-grayer'>cm <span id='height_val_cm'></span></span>
             </div>
             <div style='width: 30%; float: left; text-align: right' id='height_date'></div>
+            <div class='clear'></div>
+          </div>
+
+          <div>
+            <div style='width: 49%; float: left'><span class='bold'>last foot exam</span></div>
+            <div style='width: 49%; float: left; text-align: right' id='foot_exam_date'>not available</div>
+            <div class='clear'></div>
+          </div>
+
+          <div class='gray'>
+            <div style='width: 49%; float: left'><span class='bold'>last eye exam</span></div>
+            <div style='width: 49%; float: left; text-align: right' id='eye_exam_date'>not available</div>
             <div class='clear'></div>
           </div>
 
@@ -361,8 +381,14 @@
       </div>
 
       <div id='column_3' class='grid_6'>
-        <div class='section_header'>
-          A1C <span class='normal smaller'>goal <span class='medium'>&lt; 7%</span></span>
+        <div>
+          <div class='section_header' style='width: 48%; float: left'> A1C <span class='normal smaller'>goal <span class='medium'>&lt; 7%</span></span></div>
+          <div style='width: 48%; float: left; text-align: right; margin: 12px 0px 6px 0px'>
+            <a href='#' id='print_page_link' rel="#print_page_overlay"/>Printable Patient Page</a>
+            |
+            <a href='#' id='help_page_link' rel="#help_page_overlay"/>Help</a>
+          </div>
+          <div class='clear'></div>
         </div>
 
         <div style='height: 100px; width:48%; float: left'>
@@ -399,24 +425,46 @@
       </div>
     </div>
 
-    <input type='button' value='Show LKV overlay' rel="#lkv_overlay"/>
-
     <div class="overlay" id="lkv_overlay">
-      <div>bp_graph_lkv </div> <div class='lkv_graph' id='bp_graph_lkv'></div>
-      <div>ldl_graph_lkv</div> <div class='lkv_graph' id='ldl_graph_lkv'></div>
-      <div>a1c_graph_lkv</div> <div class='lkv_graph' id='a1c_graph_lkv'></div>
+      <div style='text-align: right'>
+        <a class='close' href='#'>Close</a>
+      </div>
 
-      <br />
+      <div class="section_header">BP</div>
+      <div class='lkv_graph' id='bp_graph_lkv'></div>
 
-      <div>ur_tp_graph</div> <div class='lkv_graph' id='ur_tp_graph'></div>
-      <div>m_alb_cre_ratio_graph</div> <div class='lkv_graph' id='m_alb_cre_ratio_graph'></div>
-      <div>sgot_graph</div> <div class='lkv_graph' id='sgot_graph'></div>
-      <div>chol_total_graph</div> <div class='lkv_graph' id='chol_total_graph'></div>
-      <div>triglyceride_graph</div> <div class='lkv_graph' id='triglyceride_graph'></div>
-      <div>hdl_graph</div> <div class='lkv_graph' id='hdl_graph'></div>
-      <div>bun_graph</div> <div class='lkv_graph' id='bun_graph'></div>
-      <div>creatinine_graph</div> <div class='lkv_graph' id='creatinine_graph'></div>
-      <div>glucose_graph</div> <div class='lkv_graph' id='glucose_graph'></div>
+      <div class="section_header">LDL</div>
+      <div class='lkv_graph' id='ldl_graph_lkv'></div>
+
+      <div class="section_header">A1C</div>
+      <div class='lkv_graph' id='a1c_graph_lkv'></div>
+
+      <div class="section_header">Urine Total Protien</div>
+      <div class='lkv_graph' id='ur_tp_graph'></div>
+
+      <div class="section_header">&micro;alb/cre</div>
+      <div class='lkv_graph' id='m_alb_cre_ratio_graph'></div>
+
+      <div class="section_header">SGOT</div>
+      <div class='lkv_graph' id='sgot_graph'></div>
+
+      <div class="section_header">Cholesterol</div>
+      <div class='lkv_graph' id='chol_total_graph'></div>
+
+      <div class="section_header">Tri</div>
+      <div class='lkv_graph' id='triglyceride_graph'></div>
+
+      <div class="section_header">HDL</div>
+      <div class='lkv_graph' id='hdl_graph'></div>
+
+      <div class="section_header">BUN</div>
+      <div class='lkv_graph' id='bun_graph'></div>
+
+      <div class="section_header">Creatinine</div>
+      <div class='lkv_graph' id='creatinine_graph'></div>
+
+      <div class="section_header">Glucose</div>
+      <div class='lkv_graph' id='glucose_graph'></div>
     </div>
   </body>
 </html>
