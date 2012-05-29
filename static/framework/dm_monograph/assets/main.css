@@ -26,6 +26,18 @@ body {
   font-weight: bold;
 }
 
+.section_subheader {
+  background-color: #E3E0FE;
+  margin-bottom: 3px;
+  margin-top: 6px;
+  padding-left: 6px;
+  font-weight: bold;
+}
+
+/*.problem { padding-left: 12px; }
+.cv_comorbidity { padding-left: 12px; }
+.resolved_problem { padding-left: 12px; }
+*/
 .bold { font-weight: bold; }
 .normal { font-weight: normal; }
 .smaller { font-size: smaller;}
@@ -48,7 +60,7 @@ body {
 .red { color: red; }
 
 /*.active { font-weight: bold; }*/
-.resolved { text-decoration: line-through;}
+.resolved_number { text-decoration: line-through;}
 
 a { color: #08c; text-decoration: none;}
 a:hover { border-bottom: 1px solid #08c; }

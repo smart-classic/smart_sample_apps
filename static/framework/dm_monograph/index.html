@@ -369,14 +369,27 @@
           </div>
         </div>
 
-        <div id='major_cv_comorbidities'>
-          <div class='section_header'>Major CV Comorbidities</div>
-          <div id='cv_comorbidities'></div>
-        </div>
+        <div id='problems_header'>
+          <!-- hidden problems div for sorting. todo: clean this up in the js-->
+          <div class='section_header'>Problems (active, <span class='resolved_number'>resolved</span>)</div>
 
-        <div id='other_problems'>
-          <div class='section_header'>Problems (active, <span class='resolved'>resolved</span>)</div>
-          <div id='problems'></div>
+          <div id='problems' style='display: none'></div>
+
+          <div id='major_cv_comorbidities'>
+            <div class='section_subheader'>Major CV Comorbidities</div>
+            <div id='cv_comorbidities'></div>
+          </div>
+
+          <div>
+            <div class='section_subheader'>Other</div>
+            <div id='other_problems'></div>
+          </div>
+
+          <div>
+            <div class='section_subheader'>Resolved</div>
+            <div id='resolved_problems'></div>
+          </div>
+
         </div>
       </div>
 

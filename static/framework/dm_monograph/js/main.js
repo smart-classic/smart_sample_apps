@@ -1051,7 +1051,6 @@ var LAB_RESULTS_get = function(){
 
           process_reminders(reminder_data);
 
-         // resolved!
          dfd.resolve();
       })
       .error(error_cb);
@@ -1222,13 +1221,24 @@ SMART.ready(function(){
     if (!pt.pneumovax_date) { $('#pneumovax_date').text('-'); }
     if (!pt.flu_shot_date) { $('#flu_shot_date').text('-'); }
 
-    if (pt.problems_arr.length == 0) { $('<div></div>', {text: 'No known problems'}).appendTo('#problems'); }
+    //
+    // Problems
+    //
+    // Get the complete list, then partition into cv_comorbidities, other, and resolved
+    // with no repeats among sublists. Show active and resolved numbers only if that
+    // problem has both active and resolved numbers to show
+
+    if (pt.problems_arr.length == 0) {
+      $('<div></div>', {text: 'None known'}).css('padding-left', '12px').appendTo('#other_problems');
+      $('<div></div>', {text: 'None known'}).css('padding-left', '12px').appendTo('#resolved_problems');
+    }
 
     var do_stripes = function(){
       $('.cv_comorbidity, .allergy, .problem, .medication, .reminder').each(function(i,e){ $(e).css({'background-color': ''}); })
       $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
       $('.allergy').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
       $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+      $('.resolved_problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
       $('.medication').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
       $('.reminder').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
     }
@@ -1236,10 +1246,10 @@ SMART.ready(function(){
     // (some) cv comorbidities
     // fixme: I'm sure there are many more...
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
-    var generate_comorbidities = function(){
+    var partition_comorbidities = function(){
       $('#cv_comorbidities').empty();
 
-      var cv_comorbidities = _($('.problem'))
+      var cv_comorbidities = _($('#other_problems .problem'))
         .chain()
         .filter(function(e) {
           var title = $(e).text();
@@ -1260,18 +1270,36 @@ SMART.ready(function(){
           return false;
         })
         .map(function(e){
-          return $(e).clone();
+          new_e = $(e).clone(true); // with data
+          $(e).remove();
+          return new_e;
         })
         .value()
 
-      if (cv_comorbidities.length == 0) { $('<div></div>', {text: 'No known CV comorbidities'}).appendTo('#cv_comorbidities'); }
+      if (cv_comorbidities.length == 0) { $('<div></div>', {text: 'No current CV comorbidities'}).css('padding-left', '12px').appendTo('#cv_comorbidities'); }
       _(cv_comorbidities).each(function(e){
-        e.removeClass('problem').addClass('cv_comorbidity').appendTo('#cv_comorbidities')
+        e.addClass('cv_comorbidity').appendTo('#cv_comorbidities')
       })
 
     }
 
+    // fixme: hackish
+    var partition_resolved = function(){
+      $('#resolved_problems').empty();
+      var resolved_problems = _($('#other_problems .resolved'))
+        .map(function(e){
+          new_e = $(e).clone(true); // with data
+          $(e).remove();
+          return new_e;
+        })
 
+      if (resolved_problems.length == 0) { $('<div></div>', {text: 'None known'}).css('padding-left', '12px').appendTo('#resolved_problems'); }
+      _(resolved_problems).each(function(e){
+        e.addClass('resolved_problem').appendTo('#resolved_problems')
+      })
+    }
+
+    // this is the only function that generates elements from the actual pt.problems_arr
     var sort_by_alpha = function(){
       // de-bounce
       if (pt.current_sort == 'alpha') return;
@@ -1279,7 +1307,7 @@ SMART.ready(function(){
 
       // do two counts: (number current (no enddate), number resolved (has enddate))
       // note: e[2] is endDate or null, e[3] count of resolved, e[4] count of active
-      $('#problems').empty()
+      $('#problems, #resolved_problems, #cv_comorbidities, #other_problems').empty()
 
       _(pt.problems_arr)
         .chain()
@@ -1304,14 +1332,19 @@ SMART.ready(function(){
           if (resolved_n && !active_n) { c = 'resolved'; }
           var text = e[1];
 
-          // don't show unnecessary 1's
-          if (resolved_n + active_n > 1) {
-            text = text + ' <span class="smaller grayer"> (';
-            if (active_n > 0) { text = text + active_n; }
-            if (active_n > 0 && resolved_n) { text = text + ', '; }
-            if (resolved_n) { text = text + '<span class="resolved">'+resolved_n+'</span>'; }
-            text = text + ')</span>';
+          if (resolved_n > 0 && active_n > 0) {
+            text = text + ' <span class="smaller grayer"> (' + active_n + ', ' +
+              '<span class="resolved_number">'+resolved_n+'</span>)</span>';
           }
+
+          // // don't show unnecessary 1's... old algo.. remove me later
+          // if (resolved_n + active_n > 1) {
+          //   text = text + ' <span class="smaller grayer"> (';
+          //   if (active_n > 0) { text = text + active_n; }
+          //   if (active_n > 0 && resolved_n) { text = text + ', '; }
+          //   if (resolved_n) { text = text + '<span class="resolved_number">'+resolved_n+'</span>'; }
+          //   text = text + ')</span>';
+          // }
 
           $('<div></div>'
            , { 'class': c
@@ -1320,7 +1353,7 @@ SMART.ready(function(){
            )
             .addClass('problem')
             .data(e)
-            .appendTo('#problems')
+            .appendTo('#other_problems')
         })
         .value()
 
@@ -1332,7 +1365,9 @@ SMART.ready(function(){
         $('#diabetic_p').text('Diabetic');
       }
 
-      generate_comorbidities();
+      // do resolved first
+      partition_resolved();
+      partition_comorbidities();
 
       // medications
       $('#medications').empty()
@@ -1366,15 +1401,23 @@ SMART.ready(function(){
     //
     // display by date
     //
+    // note: we assume that we've sorted by alpha (and nodes exist) first
 
     var sort_by_date = function(){
       // de-bounce
       if (pt.current_sort === 'date') return;
       pt.current_sort = 'date';
 
-      // problems
+      // move all the partitioned problems back to the hidden #problems div
+      _($('#resolved_problems, #cv_comorbidities, #other_problems').children())
+        .each(function(e){
+          var p = $(e).clone(true); // with data
+          $(p).appendTo('#problems');
+          $(e).remove();
+        })
+
       // prepend date to all problems (or get attached data)
-      var p2 =_($('.problem')).chain()
+      var p2 =_($('#problems').children()).chain()
         .map(function(e){
           e = $(e)
           var date = e.data('0') ? new XDate(e.data('0')).toString('MM/dd/yy') : '';
@@ -1385,12 +1428,14 @@ SMART.ready(function(){
         .reverse()
         .value()
 
-      $('#problems').empty();
-      _(p2).each(function(e){ $(e).appendTo('#problems'); })
+      // put in other_problems, then partition to other lists
+      _(p2).each(function(e){ $(e).appendTo('#other_problems'); })
+
       $('.problem:contains("Diabetes")').css('color', 'red');
 
-      // re-generate co-morbs
-      generate_comorbidities();
+      // do resolved first
+      partition_resolved()
+      partition_comorbidities();
 
       // do meds
       var m2 =_($('.medication')).chain()
