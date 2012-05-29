@@ -553,21 +553,26 @@ if (!BPC) {
             helpBlanket.click(function () {
             
                 // The state of the help panel
-                var displayed = false;
+                var displayed = false,
+                    animating = false;
             
                 return function () {
                 
                     // get effect type 
                     var selectedEffect = $( "#effectType" ).val();
                     
-                    if (!displayed) {
-                        $( "#help-content" ).stop().show( selectedEffect, {}, 500 );
-                        helpL.attr({text:"Help <<"});
-                        displayed = true;
-                    } else {
-                        helpL.attr({text:"Help >>"});
-                        $( "#help-content" ).stop().hide( selectedEffect, {}, 500 );
-                        displayed = false;
+                    if (!animating) {
+                        if (!displayed) {
+                            animating=true;
+                            $( "#help-content" ).stop().show( selectedEffect, {}, 1000, function () {animating=false;} );
+                            helpL.attr({text:"Help <<"});
+                            displayed = true;
+                        } else {
+                            animating=true;
+                            helpL.attr({text:"Help >>"});
+                            $( "#help-content" ).stop().hide( selectedEffect, {}, 1000, function () {animating=false;} );
+                            displayed = false;
+                        }
                     }
                 };
             } ());
