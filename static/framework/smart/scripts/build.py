@@ -17,7 +17,7 @@ CONTENT_TYPES = {"RDF": "application/rdf+xml",
                  "JSON": "application/json"}
 
 def get_calls():
-    f = open('../../../../../smart_server/smart/document_processing/schema/smart.owl').read()
+    f = open('../../../../smart_client/common/schema/smart.owl').read()
     rdf_ontology.parse_ontology(f)
 
     out = []

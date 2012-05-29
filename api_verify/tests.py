@@ -20,10 +20,10 @@ import dateutil.parser
 import query_builder
 
 # Import the manifest validator function
-from manifest_tests import manifest_structure_validator
+from smart_client.common.utils.manifest_tests import manifest_structure_validator
 
 # RDF parsing wrapper from the SMART python client
-from smart_client.common.util import parse_rdf
+from smart_client.common.rdf_tools.util import parse_rdf
 
 # Global variables for state synchronization accross the test suites
 lock = threading.Lock()
@@ -84,7 +84,12 @@ def testRDF (graph, model):
         # Negative queries should not return any results
         if type == "negative":
             # Run the query and report any failures
-            results = graph.query(q)
+            try:
+                results = graph.query(q)
+            except:
+                print "problem with QUERY!"
+                print q
+                
             
             # Stingify the results (limit to first 3)
             # This is needed to work around a bug in rdflib where the non-matched results
@@ -413,8 +418,6 @@ class TestManifests(TestJSON):
         '''Test for the manifests JSON output'''
         
         if self.json:
-        
-            print data
         
             if type(self.json) != list:
                 self.fail ("The JSON payload should be a list")

@@ -563,12 +563,12 @@ if (!BPC) {
                     var selectedEffect = $( "#effectType" ).val();
                     
                     if (!displayed) {
-                        $( "#help-content" ).stop().show( selectedEffect, {}, 1000 );
+                        $( "#help-content" ).stop().show( selectedEffect, {}, 500 );
                         helpL.attr({text:"Help <<"});
                         displayed = true;
                     } else {
                         helpL.attr({text:"Help >>"});
-                        $( "#help-content" ).stop().hide( selectedEffect, {}, 1000 );
+                        $( "#help-content" ).stop().hide( selectedEffect, {}, 500 );
                         displayed = false;
                     }
                 };
