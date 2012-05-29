@@ -45,7 +45,7 @@
 // telmisartan (Micardis)
 // valsartan (Diovan)
 
-// default flot options (bp)
+// default flot options
 var _flot_opts = {
   xaxis: {
     mode: 'time',
@@ -55,23 +55,13 @@ var _flot_opts = {
     tickSize: [1, 'year'],
     minTickSize: [1, 'year']
   },
-  yaxis: {
-    min: 50,
-    max: 200,
-    ticks: [50, 100, 150, 200],
-    tickLength: 0
-  },
   series: {
     lines: { show: false },
     points: { show: true }
   },
   grid: {
-    backgroundColor: '#ebebeb',
-    borderWidth: 1,
-    markings: [
-      { yaxis: { from: 0, to: 80 }, color: "#ccc" },
-      { yaxis: { from: 200, to: 130 }, color: "#ccc" }
-    ]
+    backgroundColor: 'white',
+    borderWidth: 1
   }
 }
 
@@ -86,6 +76,7 @@ pt.a1c_next = null;
 pt.a1c_flot_opts = {};
 pt.allergies_arr = [];
 pt.bday = null;
+pt.bp_flot_opts = {};
 pt.bun = null;
 pt.bun_arr = [];
 pt.bun_next = null;
@@ -359,6 +350,25 @@ var VITAL_SIGNS_get = function(){
         _get_bps('systolic');
         _get_bps('diastolic')
 
+        $.extend(true,
+          pt.bp_flot_opts,
+          _flot_opts,
+          {
+            yaxis: {
+              min: 50,
+              max: 200,
+              ticks: [50, 100, 150, 200],
+              tickLength: 0
+            },
+            grid: {
+              markings: [
+                { yaxis: { from: 0, to: 80 }, color: "#eee" },
+                { yaxis: { from: 200, to: 130 }, color: "#eee" }
+              ]
+            }
+          }
+        );
+
         r.graph
          .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
          .prefix('sp',       'http://smartplatforms.org/terms#')
@@ -462,9 +472,7 @@ var LAB_RESULTS_get = function(){
                tickLength: 0
              },
              grid: {
-               backgroundColor: '#ebebeb',
-               borderWidth: 1,
-               markings: [ { yaxis: { from: 200, to: 100 }, color: "#ccc" } ]
+               markings: [ { yaxis: { from: 200, to: 100 }, color: "#eee" } ]
              }
            }
          );
@@ -516,9 +524,7 @@ var LAB_RESULTS_get = function(){
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
-                markings: [ { yaxis: { from: 20, to: 7 }, color: "#ccc" } ]
+                markings: [ { yaxis: { from: 20, to: 7 }, color: "#eee" } ]
               }
             }
           );
@@ -566,9 +572,7 @@ var LAB_RESULTS_get = function(){
                  tickLength: 0
                },
                grid: {
-                 backgroundColor: '#ebebeb',
-                 borderWidth: 1,
-                 markings: [ { yaxis: { from: 200, to: 135 }, color: "#ccc" } ]
+                 markings: [ { yaxis: { from: 200, to: 135 }, color: "#eee" } ]
                }
              }
            );
@@ -618,9 +622,7 @@ var LAB_RESULTS_get = function(){
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
-                markings: [ { yaxis: { from: 50, to: 30 }, color: "#ccc" } ]
+                markings: [ { yaxis: { from: 50, to: 30 }, color: "#eee" } ]
               }
             }
           );
@@ -671,11 +673,9 @@ var LAB_RESULTS_get = function(){
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
                 markings: [
-                  { yaxis: { from: 10, to: 10 }, color: "#ccc" },
-                  { yaxis: { from: 40, to: 40 }, color: "#ccc" }
+                  { yaxis: { from: 0, to: 10 }, color: "#eee" },
+                  { yaxis: { from: 50, to: 40 }, color: "#eee" }
                 ]
               }
             }
@@ -720,16 +720,17 @@ var LAB_RESULTS_get = function(){
               yaxis: {
                 min: 0,
                 max: 300,
-                ticks: [0, 50, 100, 150, 200, 250, 300],
+                ticks: [0, 50, 100, 150, 200, 250, 300, 350],
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
-                markings: [ { yaxis: { from: 300, to: 200 }, color: "#ccc" } ]
+                markings: [ { yaxis: { from: 350, to: 200 }, color: "#eee" } ]
               }
             }
           );
+
+          console.log(pt.chol_total_arr)
+          console.log(pt.chol_total_flot_opts)
 
          // Tri
          //
@@ -772,13 +773,11 @@ var LAB_RESULTS_get = function(){
               yaxis: {
                 min: 0,
                 max: 250,
-                ticks: [0, 50, 100, 150, 250],
+                ticks: [0, 50, 100, 150, 200, 250, 300],
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
-                markings: [ { yaxis: { from: 250, to: 150 }, color: "#ccc" } ]
+                markings: [ { yaxis: { from: 300, to: 150 }, color: "#eee" } ]
               }
             }
           );
@@ -825,9 +824,7 @@ var LAB_RESULTS_get = function(){
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
-                markings: [ { yaxis: { from: 150, to: 40 }, color: "#ccc" } ]
+                markings: [ { yaxis: { from: 0, to: 40 }, color: "#eee" } ]
               }
             }
           );
@@ -877,11 +874,9 @@ var LAB_RESULTS_get = function(){
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
                 markings: [
-                  { yaxis: { from: 0, to: 8 }, color: "#ccc" },
-                  { yaxis: { from: 35, to: 25 }, color: "#ccc" }
+                  { yaxis: { from: 0, to: 8 }, color: "#eee" },
+                  { yaxis: { from: 35, to: 25 }, color: "#eee" }
                 ]
               }
             }
@@ -932,11 +927,9 @@ var LAB_RESULTS_get = function(){
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
                 markings: [
-                  { yaxis: { from: 0, to: 0.6 }, color: "#ccc" },
-                  { yaxis: { from: 2, to: 1.5 }, color: "#ccc" }
+                  { yaxis: { from: 0, to: 0.6 }, color: "#eee" },
+                  { yaxis: { from: 2, to: 1.5 }, color: "#eee" }
                 ]
               }
             }
@@ -982,15 +975,13 @@ var LAB_RESULTS_get = function(){
               yaxis: {
                 min: 0,
                 max: 150,
-                ticks: [0, 25, 50, 100, 125, 150],
+                ticks: [0, 50, 100, 150, 200, 250, 300],
                 tickLength: 0
               },
               grid: {
-                backgroundColor: '#ebebeb',
-                borderWidth: 1,
                 markings: [
-                  { yaxis: { from: 0, to: 70 }, color: "#ccc" },
-                  { yaxis: { from: 110, to: 150 }, color: "#ccc" }
+                  { yaxis: { from: 0, to: 70 }, color: "#eee" },
+                  { yaxis: { from: 300, to: 110 }, color: "#eee" }
                 ]
               }
             }
@@ -1470,12 +1461,12 @@ SMART.ready(function(){
       }
 
       // plot'em!
-      $.plot($("#bp_graph"),  [pt.dbp_arr, pt.sbp_arr], _flot_opts);
+      $.plot($("#bp_graph"),  [pt.dbp_arr, pt.sbp_arr], pt.bp_flot_opts);
       $.plot($("#ldl_graph"), [pt.ldl_arr],             pt.ldl_flot_opts);
       $.plot($("#a1c_graph"), [pt.a1c_arr],             pt.a1c_flot_opts);
 
       // fixme: dry
-      $.plot($("#bp_graph_lkv"),  [pt.dbp_arr, pt.sbp_arr], _flot_opts);
+      $.plot($("#bp_graph_lkv"),  [pt.dbp_arr, pt.sbp_arr], pt.bp_flot_opts);
       $.plot($("#ldl_graph_lkv"), [pt.ldl_arr],             pt.ldl_flot_opts);
       $.plot($("#a1c_graph_lkv"), [pt.a1c_arr],             pt.a1c_flot_opts);
 

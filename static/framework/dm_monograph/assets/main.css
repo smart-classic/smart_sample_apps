@@ -97,7 +97,7 @@ a.nohover:hover { border-bottom: none; }
 }
 */
 .lkv_graph {
-  width: 300px;
-  height: 150px;
-  margin: 15px 0px 15px 15px;
+  width: 220px;
+  height: 80px;
+  margin: 15px 0px 30px 15px;
 }
