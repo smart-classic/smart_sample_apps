@@ -10,9 +10,6 @@
 [submodule "smart_client"]
 	path = smart_client
 	url = ../smart_client_python
-[submodule "static/framework/got_statins/jsonld"]
-	path = static/framework/got_statins/jsonld
-	url = git@github.com:jmandel/jsonld.js.git
 [submodule "static/framework/smart/scripts/jsonld"]
 	path = static/framework/smart/scripts/jsonld
 	url = git://github.com/jmandel/jsonld.js.git
