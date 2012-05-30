@@ -1,6 +1,6 @@
 import re
 
-from smart_client.common import rdf_ontology
+from smart_client.common.rdf_tools import rdf_ontology
 
 X_MAP = [("record_id","_this.record.id"),
          ("user_id","_this.user.id"),

@@ -544,3 +544,29 @@ SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
         return;
     }
 }
+
+/* Temporary static convenience method until we fix the ontology */
+SMART_CONNECT_CLIENT.prototype.MANIFEST_get = function(descriptor, callback_success, callback_error) {
+    var _this = this,
+        dfd = $.Deferred(),
+        prm = dfd.promise();
+    prm.success = prm.done;
+    prm.error = prm.fail;
+    if (callback_success) {
+       prm.success(callback_success);
+       if (callback_error) prm.error(callback_error);
+    }
+    this.api_call({
+        method: 'GET',
+        url: "/apps/" + descriptor + "/manifest"
+    }, function(r) {
+        var json;
+        try {
+            json = JSON.parse(r.body);
+        } catch(err) {}
+        dfd.resolve({body: r.body, contentType: r.contentType, json: json});
+    }, function(r) {
+        dfd.reject({status: r.status, message: r.message});
+    });
+    return prm;
+};
