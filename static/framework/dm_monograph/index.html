@@ -49,7 +49,7 @@
         &nbsp;
         <span id='gender'></span>
         &nbsp;
-        <span id='diabetic_p' style='font-weight: bold; color: red;'></span>
+        <span id='diabetic_info' style='font-weight: bold; color: red;'></span>
       </div>
 
 
@@ -66,7 +66,7 @@
         <div class='section_header'>
           <div style='width: 60%; float: left'>Last Known Values</div>
           <div style='width: 40%; float: left; text-align: right'>
-            <a href='' id='show_overlay' rel="#lkv_overlay"/>[show graphs]</a>
+            <a href='' id='show_overlay' rel="#lkv_overlay"/>[Graph]</a>
           </div>
           <div class='clear'></div>
         </div>
@@ -328,65 +328,66 @@
 
           <div>
             <div style='width: 49%; float: left'><span class='bold'>last foot exam</span></div>
-            <div style='width: 49%; float: left; text-align: right' id='foot_exam_date'>not available</div>
+            <!-- hack: just make red since we don't have this data yet -->
+            <div style='width: 49%; float: left; text-align: right' id='foot_exam_date' class='red'>Unknown</div>
             <div class='clear'></div>
           </div>
 
           <div class='gray'>
             <div style='width: 49%; float: left'><span class='bold'>last eye exam</span></div>
-            <div style='width: 49%; float: left; text-align: right' id='eye_exam_date'>not available</div>
+            <div style='width: 49%; float: left; text-align: right' id='eye_exam_date' class='red'>Unknown</div>
             <div class='clear'></div>
           </div>
 
           <div>
             <div style='width: 30%; float: left'><span class='bold'>smoking</span></div>
-            <div style='width: 68%; float: left; text-align: right' id='smoking_status'>not available</div>
+            <div style='width: 68%; float: left; text-align: right' id='smoking_status'>Unknown</div>
             <div class='clear'></div>
           </div>
 
           <div class='gray'>
             <div style='width: 30%; float: left'><span class='bold'>aspirin</span></div>
-            <div style='width: 68%; float: left; text-align: right' id='aspirin_tolerance'>not available</div>
+            <div style='width: 68%; float: left; text-align: right' id='aspirin_tolerance'>Unknown</div>
             <div class='clear'></div>
           </div>
 
           <div>
             <div style='width: 30%; float: left'><span class='bold'>ACE/ARB</span></div>
-            <div style='width: 68%; float: left; text-align: right' id='ace_arb_status'>not available</div>
+            <div style='width: 68%; float: left; text-align: right' id='ace_arb_status'>Unknown</div>
             <div class='clear'></div>
           </div>
 
           <div class='gray'>
             <div style='width: 68%; float: left'><span class='bold'>last pneumovax</span></div>
-            <div style='width: 30%; float: left; text-align: right' id='pneumovax_date'></div>
+            <div style='width: 30%; float: left; text-align: right' id='pneumovax_date' class='red'></div>
             <div class='clear'></div>
           </div>
 
           <div>
             <div style='width: 68%; float: left'><span class='bold'>last flu shot</span></div>
-            <div style='width: 30%; float: left; text-align: right' id='flu_shot_date'></div>
+            <div style='width: 30%; float: left; text-align: right' id='flu_shot_date' class='red'></div>
             <div class='clear'></div>
           </div>
         </div>
 
         <div id='problems_header'>
           <!-- hidden problems div for sorting. todo: clean this up in the js-->
-          <div class='section_header'>Problems (active, <span class='resolved_number'>resolved</span>)</div>
+          <div class='section_header'>Problems (count) as of <span id='problems_as_of'></span></div>
 
           <div id='problems' style='display: none'></div>
 
           <div id='major_cv_comorbidities'>
-            <div class='section_subheader'>Major CV Comorbidities</div>
+            <div class='section_subheader'>Current Major CV Comorbidities</div>
             <div id='cv_comorbidities'></div>
           </div>
 
           <div>
-            <div class='section_subheader'>Other</div>
+            <div class='section_subheader'>Current Problems Other</div>
             <div id='other_problems'></div>
           </div>
 
           <div>
-            <div class='section_subheader'>Resolved</div>
+            <div class='section_subheader'>Previous Problems</div>
             <div id='resolved_problems'></div>
           </div>
 
@@ -397,9 +398,9 @@
         <div>
           <div class='section_header' style='width: 48%; float: left'> A1C <span class='normal smaller'>goal <span class='medium'>&lt; 7%</span></span></div>
           <div style='width: 48%; float: left; text-align: right; margin: 12px 0px 6px 0px'>
-            <a href='#' id='print_page_link' rel="#print_page_overlay"/>Printable Patient Page</a>
+            <a target="_blank" href='./assets/patient_summary_mockup.png' id='print_page_link' rel="#print_page_overlay"/>Patient Summary</a>
             |
-            <a href='#' id='help_page_link' rel="#help_page_overlay"/>Help</a>
+            <a target="_blank" href='./assets/app_explainer_mockup.png' id='help_page_link' rel="#help_page_overlay"/>App Explainer</a>
           </div>
           <div class='clear'></div>
         </div>
@@ -414,7 +415,16 @@
         </div>
 
         <div id='controls' class='controls' style='width: 30%; float: left; text-align: right; padding-top: 38px;'>
-         <input type='button' id='sort_by_date' value='Chronologic' /><input type='button' id='sort_by_alpha' style='display: none' value="Alphabetical" />
+          <div>
+            <input type='button' id='sort_by_date' value='Chronologic' /
+            <input type='button' id='sort_by_alpha' style='display: none' value="Alphabetical" />
+          </div>
+          <div>
+            <a href='#' id='color_controls_link'/>
+              <img style='height: 20px; width: 85px;'
+                   src='./assets/color_controls.png' />
+            </a>
+          </div>
         </div>
 
         <div class='clear'></div>
@@ -443,8 +453,9 @@
         <a class='close' href='#'>Close</a>
       </div>
 
-      <div class="section_header">BP</div>
-      <div class='lkv_graph' id='bp_graph_lkv'></div>
+      <div class="section_header">Last Known Values
+        <span style='font-weight: normal'>Graphed and Detailed</span>
+      </div>
 
       <div class="section_header">LDL</div>
       <div class='lkv_graph' id='ldl_graph_lkv'></div>

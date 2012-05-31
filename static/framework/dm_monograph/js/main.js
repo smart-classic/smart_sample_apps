@@ -1210,16 +1210,26 @@ SMART.ready(function(){
     $('#weight_val_lb').text(weight_val_lb || 'Unk')
     $('#weight_val_kg').text(weight_val_kg || 'Unk')
 
+    var redify = function(lab_variable, id_strings){
+      var today = new XDate();
+      var d = new XDate(lab_variable[0]);
+      var overdue_p = false;
+      if (Math.round(d.diffMonths(today)) > 12) {
+        _(id_strings).each(function(idstr){ $(idstr).css('color', 'red'); })
+      }
+    }
+    redify(pt.weight, ['#weight_val_lb', '#weight_val_kg', '#weight_date']);
+
     var height_val_in = pt.height[2] === 'm' ? _round(pt.height[1]  / .0254, 0) : null
     var height_val_cm = _round(pt.height[1] * 100, 0) || null
-
     $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
-    $('#height_val_in').text(height_val_in || 'Unk')
-    $('#height_val_cm').text(height_val_cm || 'Unk')
+    $('#height_val_in').text(height_val_in || 'Unknown')
+    $('#height_val_cm').text(height_val_cm || 'Unknown')
+    redify(pt.height, ['#height_val_cm', '#height_val_in', '#height_date']);
 
     // Fixme: NO pneumovax or flu codes in the current pts...
-    if (!pt.pneumovax_date) { $('#pneumovax_date').text('-'); }
-    if (!pt.flu_shot_date) { $('#flu_shot_date').text('-'); }
+    if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }
+    if (!pt.flu_shot_date) { $('#flu_shot_date').text('Unknown'); }
 
     //
     // Problems
@@ -1357,12 +1367,12 @@ SMART.ready(function(){
         })
         .value()
 
-      // check for diabetic
+      // show diabetic info in demos line
       var d = $('.problem:contains("Diabetes")');
       if (d.length > 0) {
         d.css('color', 'red');
-        // if diabetic, show in demographics
-        $('#diabetic_p').text('Diabetic');
+        $('#diabetic_info').text('Diabetic');
+        // fixme
       }
 
       // do resolved first
@@ -1514,19 +1524,17 @@ SMART.ready(function(){
       $.plot($("#a1c_graph"), [pt.a1c_arr],             pt.a1c_flot_opts);
 
       // fixme: dry
-      $.plot($("#bp_graph_lkv"),  [pt.dbp_arr, pt.sbp_arr], pt.bp_flot_opts);
-      $.plot($("#ldl_graph_lkv"), [pt.ldl_arr],             pt.ldl_flot_opts);
-      $.plot($("#a1c_graph_lkv"), [pt.a1c_arr],             pt.a1c_flot_opts);
-
       $.plot($("#ur_tp_graph"),           [pt.ur_tp_arr],           pt.ur_tp_flot_opts);
       $.plot($("#m_alb_cre_ratio_graph"), [pt.m_alb_cre_ratio_arr], pt.m_alb_cre_ratio_flot_opts);
       $.plot($("#sgot_graph"),            [pt.sgot_arr],            pt.sgot_flot_opts);
       $.plot($("#chol_total_graph"),      [pt.chol_total_arr],      pt.chol_total_flot_opts);
       $.plot($("#triglyceride_graph"),    [pt.triglyceride_arr],    pt.triglyceride_flot_opts);
       $.plot($("#hdl_graph"),             [pt.hdl_arr],             pt.hdl_flot_opts);
+      $.plot($("#ldl_graph_lkv"),         [pt.ldl_arr],             pt.ldl_flot_opts);
       $.plot($("#bun_graph"),             [pt.bun_arr],             pt.bun_flot_opts);
       $.plot($("#creatinine_graph"),      [pt.creatinine_arr],      pt.creatinine_flot_opts);
       $.plot($("#glucose_graph"),         [pt.glucose_arr],         pt.glucose_flot_opts);
+      $.plot($("#a1c_graph_lkv"),         [pt.a1c_arr],             pt.a1c_flot_opts);
     };
 
     draw_plots();
@@ -1545,13 +1553,8 @@ SMART.ready(function(){
       return false;
     });
 
-    $('#print_page_link').on('click', function(){
+    $('#color_controls_link').on('click', function(){
       alert('Work in progress... Coming soon.');
-      return false;
-    })
-
-    $('#help_page_link').on('click', function(){
-      alert('Work in progress... Coming soon.')
       return false;
     })
 
