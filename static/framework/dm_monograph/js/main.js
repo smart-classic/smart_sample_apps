@@ -1293,7 +1293,6 @@ SMART.ready(function(){
 
     }
 
-    // fixme: hackish
     var partition_resolved = function(){
       $('#resolved_problems').empty();
       var resolved_problems = _($('#other_problems .resolved'))
@@ -1305,10 +1304,15 @@ SMART.ready(function(){
 
       if (resolved_problems.length == 0) { $('<div></div>', {text: 'None known'}).css('padding-left', '12px').appendTo('#resolved_problems'); }
       _(resolved_problems).each(function(e){
-        // add date of close to each resolved_problem
+        e.addClass('resolved_problem').appendTo('#resolved_problems')
+      })
+    }
+
+    var _add_dates_to_resolved = function(){
+      _($('.resolved')).each(function(e){
+        e = $(e);
         var resolved_date = new XDate(e.data('2')).toString('MM/dd/yy')
         e.html(e.html() + ' <span class="smaller">('+resolved_date+')</span>')
-        e.addClass('resolved_problem').appendTo('#resolved_problems')
       })
     }
 
@@ -1317,11 +1321,12 @@ SMART.ready(function(){
       // de-bounce
       if (pt.current_sort == 'alpha') return;
       pt.current_sort = 'alpha';
+      $('#problems, #resolved_problems, #cv_comorbidities, #other_problems').empty()
 
       // do two counts: (number current (no enddate), number resolved (has enddate))
       // note: e[2] is endDate or null, e[3] count of resolved, e[4] count of activee
-      $('#problems, #resolved_problems, #cv_comorbidities, #other_problems').empty()
 
+      // 1. Attach active_n and resolved_n data to each element and put into #other_problems
       _(pt.problems_arr)
         .chain()
         .sortBy(function(e){ return e[1]; })
@@ -1338,34 +1343,59 @@ SMART.ready(function(){
             return e;
         })
         .each(function(e){
-          var resolved_n = e[3];
-          var active_n = e[4];
+          // is this a resolved problem? Note: we can't just look at the resolved_n
+          // since this might not be the one that's resolved
           var c = 'active';
-          if (resolved_n && !active_n) { c = 'resolved'; }
-          var text = e[1];
-
-          // spec is:
-          // if only current and multiple show (n)
-          // if only resolved and multiple show (n)
-          // if both _duplicate_ in both lists and show both (n)'s
-          var _append_n = function(n){
-            text = text + ' <span class="smaller grayer"> (' + n + ')</span>';
-          }
-
-          if (active_n > 1 && !resolved_n) { _append_n(active_n); }
-          if (!active_n && resolved_n > 1) { _append_n(resolved_n); }
-          if (active_n && resolved_n) {
-            // show one active n
-            // show one resolved n
-            console.log('here')
-          }
-
-          $('<div></div>', { 'class': c, 'html': text })
+          if (e[3] > 0 && e[2]) { c = 'resolved'; }
+          $('<div></div>', { 'class': c, 'html': e[1] })
             .addClass('problem')
             .data(e)
             .appendTo('#other_problems')
         })
         .value()
+
+      // 2. Move resolved elements to #resolved_problems
+      partition_resolved()
+
+      // 3. Add counts to each element based on what list it is in
+      var _add_counts = function(list_id){
+        var children = $(list_id).children();
+        _(children)
+          .each(function(e){
+            e = $(e);
+            var count_to_use = e.data('4');
+            if (list_id === '#resolved_problems') { count_to_use = e.data('3'); }
+            if (count_to_use > 1) { e.text(e.text()+' ('+count_to_use+')') }
+          })
+      }
+
+      _add_counts('#resolved_problems');
+      _add_counts('#other_problems');
+
+      var _de_duplicate_problem_list = function(el){
+        var clones = _(el.children())
+          .chain()
+          .uniq(true, function(e){ return $(e).data('1'); })
+          .map(function(e){
+            new_e = $(e).clone(true); // with data
+            $(e).remove();
+            return new_e;
+          })
+          .value()
+
+        $(el).empty();
+        _(clones).each(function(clone){ $(clone).appendTo(el); })
+      }
+
+      // 4. De-dup both lists individually
+      _de_duplicate_problem_list($('#other_problems'));
+      _de_duplicate_problem_list($('#resolved_problems'));
+
+      // 5. Move CV comorbidities into #cv_comorbidities
+      partition_comorbidities();
+
+      // 6. _add_dates_to_resolved
+      _add_dates_to_resolved();
 
       // show diabetic info in demos line
       var d = $('.problem:contains("Diabetes")');
@@ -1397,10 +1427,6 @@ SMART.ready(function(){
       var el = _(pt.problems_arr).max(function(e){ return e[2] || e[0]; })
       var d = new XDate(el[2] || el[0]);
       $('#as_of').html('<span class="smaller">'+d.toString('MM/dd/yy')+'</span>')
-
-      // do resolved first
-      partition_resolved();
-      partition_comorbidities();
 
       // medications
       $('#medications').empty()
