@@ -2,9 +2,9 @@ import re
 
 from smart_client.common import rdf_ontology
 
-X_MAP = [("record_id","_this.record.id"),
-         ("user_id","_this.user.id"),
-         ("smart_app_id","_this.manifest.id")]
+X_MAP = [("record_id","this.record.id"),
+         ("user_id","this.user.id"),
+         ("smart_app_id","this.manifest.id")]
 
 FORMATS = {"Alert": None,
            "User": None,
@@ -27,7 +27,8 @@ def get_calls():
         method = str(t.method)
         target = str(t.target).replace("http://smartplatforms.org/terms#","")
         category = str(t.category)
-        by_internal_id = True if str(t.by_internal_id) == "true" else False
+        by_internal_id = str(t.by_internal_id) == "true"
+
         if path not in ["/apps/{descriptor}/manifest",
         "/records/search?given_name={given_name}&family_name={family_name}&zipcode={zipcode}&birthday={birthday}&gender={gender}&medical_record_number={medical_record_number}",
         "/users/search?given_name={given_name}&family_name={family_name}"]:
@@ -72,97 +73,67 @@ def call_name (path, method, category):
     
 def js_format (path, external_id=False):
     for m in X_MAP:
-        path = path.replace("".join(('{', m[0], '}')),"".join(('" + ', m[1], ' + "')))
-        
+        path = path.replace('{%s}'%m[0], '"+%s+"'%m[1])
+       
     p = re.compile("{.*?}")
-    vars = [s.replace("{","").replace("}","") for s in p.findall(path)]
+    vars = [s[1:-1] for s in p.findall(path)]
     
     for m in vars:
-        path = path.replace("".join(('{', m, '}')),"".join(('" + ', m, ' + "')))
-    
-    res = "".join(('"', path, '"'))
-    
-    if res.endswith(' + ""'):
-        res = rreplace(res, ' + ""', '', 1)
-        
-    if external_id:
-        res += ' + external_id'
-        vars.append ("external_id")
-    
-    return res, vars
+        path = path.replace("{%s}"%m, '"+%s+"'%m)
+
+    return path, vars
     
 def get_format (target):
-    if target in FORMATS.keys():
+    if target in FORMATS:
         return FORMATS[target]
     else:
         return FORMATS["default"]
 
 def buildJS (call, path, vars, format, method, target, category):
-    extra_lines = ""
+
+    contentType = "undefined"
+    data = "undefined"
     
     if method.upper() in ("PUT", "POST"):
         if format and CONTENT_TYPES[format]: 
-            extra_lines = "        contentType: '%s',\n" % CONTENT_TYPES[format]
+            contentType = '"%s"'%CONTENT_TYPES[format]
         else:
             vars = ["content_type"] + vars
-            extra_lines = "        contentType: content_type,\n"
+            contentType = "content_type"
             
         vars = ["data"] + vars
-        extra_lines += "        data: data\n"
+        data = "data"
 
-    out = "SMART_CONNECT_CLIENT.prototype.%s = function(" % call
-    out += ", ".join(vars + ["callback_success", "callback_error"])
-    out += ") {\n"
-    out += "    var _this = this,\n"
-    out += "        dfd = $.Deferred(),\n"
-    out += "        prm = dfd.promise();\n"
-    out += "    prm.success = prm.done;\n"
-    out += "    prm.error = prm.fail;\n"
-    out += "    if (callback_success) {\n"
-    out += "       prm.success(callback_success);\n"
-    out += "       if (callback_error) prm.error(callback_error);\n"
-    out += "    }\n"
-    out += "    this.api_call({\n"
-    out += "        method: '%s',\n" % method.upper()
-    out += "        url: %s\n" % (path + ("," if method.upper() in ("PUT", "POST") else ""))
-    out += extra_lines
-    out += "    }, function(r) {\n"
+    vars = vars + ["callback_success", "callback_error"]
 
-    if method == "GET" and format == "JSON":    
-        out += """        var json;
-        try {
-            json = JSON.parse(r.body);
-        } catch(err) {}
-        dfd.resolve({body: r.body, contentType: r.contentType, json: json});\n"""
-    elif method == "GET" and format == "RDF":
-        out += """        var rdf;
-        try {
-            rdf = _this.process_rdf(r.contentType, r.body);
-            try {
-              jsonld.fromRDF(_this.get_statements(rdf), function(err, r) {
-                  jsonld.objectify(r, SMART.jsonld_context, function(err, jsld_objects) {
-                    if (err) {
-                        console.log("toJson err ", err);
-                        return err;
-                    }
-                    dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf, objects: jsld_objects});
-                  })
-                });
-              } catch (err) { dfd.reject({status: r.status, message: r.message}); }
-        } catch(err) { dfd.reject({status: r.status, message: err}); }\n"""
-    else:
-        out += "        dfd.resolve({body: r.body, contentType: r.contentType});\n"
-    
-    out += """    }, function(r) {
-        dfd.reject({status: r.status, message: r.message});
-    });\n"""
-    out += "    return prm;\n"
-    out += "};\n"
+    out = """SMART_CONNECT_CLIENT.prototype.%s = function(%s) {
+
+        return this.api_call_wrapper({
+            method: "%s",
+            path: "%s",
+            responseFormat: "%s",
+            success: callback_success,
+            failure: callback_error,
+            data: %s,
+            contentType: %s
+        });
+
+   }"""%(  call, 
+            ", ".join(vars),
+            method.upper(),
+            path,
+            format,
+            data,
+            contentType
+        ) 
+
     out += """
-SMART_CONNECT_CLIENT.prototype.register_method ("%s",
-                  "%s", 
-                  "http://smartplatforms.org/terms#%s",
-                  "%s");""" % (call, method, target, category)
+    
+    SMART_CONNECT_CLIENT.prototype.register_method(
+      "%s",
+      "%s", 
+      "http://smartplatforms.org/terms#%s",
+      "%s");""" % (call, method, target, category)
     
     return out
     
@@ -187,7 +158,6 @@ if __name__ == "__main__":
         print methods[m]
         print
 
-    # Alias for backwards compatibility
     print "SMART_CONNECT_CLIENT.prototype.MEDS_get = SMART_CONNECT_CLIENT.prototype.MEDICATIONS_get;\n"
     print "SMART_CONNECT_CLIENT.prototype.MEDS_get_all = SMART_CONNECT_CLIENT.prototype.MEDS_get;\n"
         
