@@ -59,7 +59,7 @@ body {
 .red { color: red; }
 
 /*.active { font-weight: bold; }*/
-.resolved_number { text-decoration: line-through;}
+/*.resolved_number { text-decoration: line-through;}*/
 
 a { color: #08c; text-decoration: none;}
 a:hover { border-bottom: 1px solid #08c; }

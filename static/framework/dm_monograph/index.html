@@ -35,7 +35,7 @@
   </head>
   <body>
     <div id='content' class="container_12">
-      <div id='top_line' class='grid_8 alpha' style='width: 66%; margin-left: 1%'>
+      <div id='top_line'>
         <span class='name'>
           <span id='family_name'></span>,
           <span id='given_name'></span>
@@ -50,6 +50,7 @@
         <span id='gender'></span>
         &nbsp;
         <span id='diabetic_info' style='font-weight: bold; color: red;'></span>
+        <span id='diabetic_dates' style='text-transform: lowercase;'></span>
       </div>
 
 
@@ -372,17 +373,17 @@
 
         <div id='problems_header'>
           <!-- hidden problems div for sorting. todo: clean this up in the js-->
-          <div class='section_header'>Problems (count) as of <span id='problems_as_of'></span></div>
+          <div class='section_header'>Problems as of <span id='as_of'></span></div>
 
           <div id='problems' style='display: none'></div>
 
           <div id='major_cv_comorbidities'>
-            <div class='section_subheader'>Current Major CV Comorbidities</div>
+            <div class='section_subheader'>Major CV Comorbidities</div>
             <div id='cv_comorbidities'></div>
           </div>
 
           <div>
-            <div class='section_subheader'>Current Problems Other</div>
+            <div class='section_subheader'>Problems Other</div>
             <div id='other_problems'></div>
           </div>
 
@@ -416,14 +417,8 @@
 
         <div id='controls' class='controls' style='width: 30%; float: left; text-align: right; padding-top: 38px;'>
           <div>
-            <input type='button' id='sort_by_date' value='Chronologic' /
+            <input type='button' id='sort_by_date' value='Chronologic' />
             <input type='button' id='sort_by_alpha' style='display: none' value="Alphabetical" />
-          </div>
-          <div>
-            <a href='#' id='color_controls_link'/>
-              <img style='height: 20px; width: 85px;'
-                   src='./assets/color_controls.png' />
-            </a>
           </div>
         </div>
 

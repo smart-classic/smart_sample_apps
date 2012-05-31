@@ -1218,14 +1218,14 @@ SMART.ready(function(){
         _(id_strings).each(function(idstr){ $(idstr).css('color', 'red'); })
       }
     }
-    redify(pt.weight, ['#weight_val_lb', '#weight_val_kg', '#weight_date']);
+    redify(pt.weight, ['#weight_date']);
 
     var height_val_in = pt.height[2] === 'm' ? _round(pt.height[1]  / .0254, 0) : null
     var height_val_cm = _round(pt.height[1] * 100, 0) || null
     $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
     $('#height_val_in').text(height_val_in || 'Unknown')
     $('#height_val_cm').text(height_val_cm || 'Unknown')
-    redify(pt.height, ['#height_val_cm', '#height_val_in', '#height_date']);
+    redify(pt.height, ['#height_date']);
 
     // Fixme: NO pneumovax or flu codes in the current pts...
     if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }
@@ -1305,6 +1305,9 @@ SMART.ready(function(){
 
       if (resolved_problems.length == 0) { $('<div></div>', {text: 'None known'}).css('padding-left', '12px').appendTo('#resolved_problems'); }
       _(resolved_problems).each(function(e){
+        // add date of close to each resolved_problem
+        var resolved_date = new XDate(e.data('2')).toString('MM/dd/yy')
+        e.html(e.html() + ' <span class="smaller">('+resolved_date+')</span>')
         e.addClass('resolved_problem').appendTo('#resolved_problems')
       })
     }
@@ -1316,7 +1319,7 @@ SMART.ready(function(){
       pt.current_sort = 'alpha';
 
       // do two counts: (number current (no enddate), number resolved (has enddate))
-      // note: e[2] is endDate or null, e[3] count of resolved, e[4] count of active
+      // note: e[2] is endDate or null, e[3] count of resolved, e[4] count of activee
       $('#problems, #resolved_problems, #cv_comorbidities, #other_problems').empty()
 
       _(pt.problems_arr)
@@ -1334,7 +1337,6 @@ SMART.ready(function(){
             e[4] = f.length;
             return e;
         })
-        .uniq(true, function(e){ return e[1]; })
         .each(function(e){
           var resolved_n = e[3];
           var active_n = e[4];
@@ -1342,25 +1344,23 @@ SMART.ready(function(){
           if (resolved_n && !active_n) { c = 'resolved'; }
           var text = e[1];
 
-          if (resolved_n > 0 && active_n > 0) {
-            text = text + ' <span class="smaller grayer"> (' + active_n + ', ' +
-              '<span class="resolved_number">'+resolved_n+'</span>)</span>';
+          // spec is:
+          // if only current and multiple show (n)
+          // if only resolved and multiple show (n)
+          // if both _duplicate_ in both lists and show both (n)'s
+          var _append_n = function(n){
+            text = text + ' <span class="smaller grayer"> (' + n + ')</span>';
           }
 
-          // // don't show unnecessary 1's... old algo.. remove me later
-          // if (resolved_n + active_n > 1) {
-          //   text = text + ' <span class="smaller grayer"> (';
-          //   if (active_n > 0) { text = text + active_n; }
-          //   if (active_n > 0 && resolved_n) { text = text + ', '; }
-          //   if (resolved_n) { text = text + '<span class="resolved_number">'+resolved_n+'</span>'; }
-          //   text = text + ')</span>';
-          // }
+          if (active_n > 1 && !resolved_n) { _append_n(active_n); }
+          if (!active_n && resolved_n > 1) { _append_n(resolved_n); }
+          if (active_n && resolved_n) {
+            // show one active n
+            // show one resolved n
+            console.log('here')
+          }
 
-          $('<div></div>'
-           , { 'class': c
-             , 'html': text
-             }
-           )
+          $('<div></div>', { 'class': c, 'html': text })
             .addClass('problem')
             .data(e)
             .appendTo('#other_problems')
@@ -1372,8 +1372,31 @@ SMART.ready(function(){
       if (d.length > 0) {
         d.css('color', 'red');
         $('#diabetic_info').text('Diabetic');
-        // fixme
+        // active diabetic?
+        var date_of_oldest_active_diabetes = _(pt.problems_arr)
+          .chain()
+          .filter(function(e) {
+            if (e[1].match(/diabetes/i) && !e[2]) return true;
+            else return false;
+          })
+          .map(function(e){ return e[0]; })
+          .sortBy(function(e){ return e; })
+          .first()
+          .value()
+
+          if (date_of_oldest_active_diabetes) {
+            var today = new XDate();
+            var d = new XDate(date_of_oldest_active_diabetes)
+            var years_ago = Math.round(d.diffYears(today));
+            var date = d.toString('MM/dd/yy')
+            $('#diabetic_dates').text('diagnosed '+date+' (>'+years_ago+' years)')
+          }
       }
+
+      // add "as of" date of problems section header
+      var el = _(pt.problems_arr).max(function(e){ return e[2] || e[0]; })
+      var d = new XDate(el[2] || el[0]);
+      $('#as_of').html('<span class="smaller">'+d.toString('MM/dd/yy')+'</span>')
 
       // do resolved first
       partition_resolved();
