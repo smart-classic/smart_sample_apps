@@ -137,22 +137,7 @@ pt.ur_tp_flot_opts = {};
 pt.weight = null;
 pt.weight_arr = [];
 
-//
-// Utils
-//
-var error_cb = function(e){
-  alert('error '+e.status+' see console.')
-  console.log(e.status);
-  console.log(e.message.contentType);
-  console.log(e.message.data);
-  dfd.reject(e.message);
-};
-
-var _round = function(val, dec){
-  // console.log(val, dec);
-  return Math.round(val*Math.pow(10,dec))/Math.pow(10,dec);
-}
-
+var _round = function(val, dec){ return Math.round(val*Math.pow(10,dec))/Math.pow(10,dec); }
 
 //
 // Data Queries
@@ -161,139 +146,41 @@ var _round = function(val, dec){
 // pt's with allergies: J Diaz, K Lewis, K Kelly, R Robinson
 var ALLERGIES_get = function(){
   return $.Deferred(function(dfd){
-    SMART.ALLERGIES_get()
-      .success(function(r){
-        r.graph
-         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',  'http://smartplatforms.org/terms#')
-         .prefix('dc',  'http://purl.org/dc/terms/')
-         .where('?id    rdf:type             sp:Allergy')
-         .where('?id    sp:drugClassAllergen ?bn')
-         .where('?bn    dc:title             ?title')
-         .where('?id    sp:allergicReaction  ?bn2')
-         .where('?bn2   dc:title             ?reaction')
-         .each(function(){
-           pt.allergies_arr.push([
-             this.title.value.toString(),
-             this.reaction.value.toString()
-           ])
-         })
-
-        r.graph
-         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',  'http://smartplatforms.org/terms#')
-         .prefix('dc',  'http://purl.org/dc/terms/')
-         .where('?id    rdf:type            sp:Allergy')
-         .where('?id    sp:foodAllergen     ?bn')
-         .where('?bn    dc:title            ?title')
-         .where('?id    sp:allergicReaction ?bn2')
-         .where('?bn2   dc:title            ?reaction')
-         .each(function(){
-           pt.allergies_arr.push([
-             this.title.value.toString(),
-             this.reaction.value.toString()
-           ])
-         })
-        dfd.resolve();
+    SMART.ALLERGIES_get().then(function(r){
+      _(r.objects.of_type.Allergy).each(function(a){
+        var allergen = a.drugClassAllergen || a.foodAllergen;
+        pt.allergies_arr.push([allergen.dcterms__title
+                            , a.allergicReaction.dcterms__title])
       })
-      .error(error_cb);
+      dfd.resolve();
+    })
   }).promise();
 };
 
 var MEDICATIONS_get = function(){
   return $.Deferred(function(dfd){
-    SMART.MEDICATIONS_get()
-      .success(function(r){
-        r.graph
-         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',  'http://smartplatforms.org/terms#')
-         .prefix('dc',  'http://purl.org/dc/terms/')
-         .where('?id    rdf:type        sp:Medication')
-         .where('?id    sp:startDate    ?date')
-         .where('?id    sp:drugName     ?bn')
-         .where('?bn    dc:title        ?title')
-         .where('?id    sp:instructions ?instruction')
-         .each(function(){
-           pt.meds_arr.push([
-             new XDate(this.date.value).valueOf(),
-             this.title.value.toString(),
-             this.instruction.value.toString()
-           ])
-         })
-        dfd.resolve();
+    SMART.MEDICATIONS_get().then(function(r){
+      _(r.objects.of_type.Medication).each(function(m){
+        pt.meds_arr.push([new XDate(m.startDate)
+                        , m.drugName.dcterms__title
+                        , m.instructions])
       })
-      .error(error_cb);
+      dfd.resolve();
+    })
   }).promise();
 };
 
 var DEMOGRAPHICS_get = function(){
   return $.Deferred(function(dfd){
-    SMART.DEMOGRAPHICS_get()
-      .success(function(demos){
-        var debug = false;
-        var jld_data = { '@graph': [] };
-        var jld_frame = {
-          "@context": {
-            "dc": "http://purl.org/dc/terms/",
-            "sp": "http://smartplatforms.org/terms#",
-            "foaf": "http://xmlns.com/foaf/0.1/",
-            "v": "http://www.w3.org/2006/vcard/ns#",
-            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-          },
-          "@type": ["sp:Demographics"]
-        }
-        var jld_out = {};
-
-        demos.graph
-          .where('?s ?p ?o')
-          .each(function(){
-            if (debug) {
-             console.log(this.s.dump().value
-                       , '('
-                       , this.s.dump().type
-                       , ')'
-                       , this.p.dump().value
-                       , '('
-                       , this.p.dump().type
-                       , ')'
-                       , this.o.dump().value
-                       , '('
-                       , this.o.dump().type
-                       , ')'
-                       , '\n');
-            }
-
-            jstriple = { '@id': this.s.dump().value };
-            if (this.o.dump().type === 'literal') {
-              jstriple[this.p.dump().value] = [this.o.dump().value]
-            }
-            else if (this.p.dump().value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-              jstriple['@type'] = this.o.dump().value
-            }
-            else if (this.o.dump().type === 'uri' || 'bnode') {
-              jstriple[this.p.dump().value] = [{
-                '@id': this.o.dump().value
-              }]
-            }
-            jld_data['@graph'].push(jstriple);
-          })
-
-        // if (debug) console.log(JSON.stringify(jld_data));
-
-        // get data from the framed jld output
-        jsonld.frame(jld_data['@graph'], jld_frame, {}, function(err, framed) {
-          jld_out = framed;
-        });
-
-        var o = jld_out['@graph'][0]
-        pt.family_name = o['v:n']['v:family-name']
-        pt.given_name = o['v:n']['v:given-name']
-        pt.gender = o['foaf:gender']
-        pt.bday = o['v:bday']
-
-        dfd.resolve();
-      })
-      .error(error_cb);
+    SMART.DEMOGRAPHICS_get().then(function(r){
+      var demos = r.objects.of_type.Demographics[0];
+      var name = r.objects.of_type.v__Name[0];
+      pt.family_name = name.v__family_name;
+      pt.given_name  = name.v__given_name;
+      pt.gender = demos.foaf__gender;
+      pt.bday = demos.v__bday;
+      dfd.resolve();
+    })
   }).promise();
 };
 
@@ -415,7 +302,6 @@ var VITAL_SIGNS_get = function(){
 
         dfd.resolve();
       })
-      .error(error_cb);
   }).promise();
 };
 
@@ -1053,37 +939,23 @@ var LAB_RESULTS_get = function(){
 
          dfd.resolve();
       })
-      .error(error_cb);
   }).promise();
 };
 
 
 var PROBLEMS_get = function(){
   return $.Deferred(function(dfd){
-    SMART.PROBLEMS_get()
-      .success(function(r){
-        r.graph
-         .prefix('rdf',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',   'http://smartplatforms.org/terms#')
-         .prefix('dc',   'http://purl.org/dc/terms/')
-         .where('?id     rdf:type       sp:Problem')
-         .where('?id     sp:startDate   ?date')
-         .where('?id     sp:problemName ?bn')
-         .where('?bn     rdf:type       sp:CodedValue')
-         .where('?bn     dc:title       ?title')
-         .optional('?id  sp:endDate     ?end_date')
-         .each(function(){
-           pt.problems_arr.push([
-             new XDate(this.date.value).valueOf(),
-             this.title.value,
-             this.end_date ? new XDate(this.end_date.value).valueOf() : null
-           ])
-         })
-
-        pt.problems_arr = _(pt.problems_arr).sortBy(function(item){ return item[0]; })
-        dfd.resolve();
+    SMART.PROBLEMS_get().then(function(r){
+      _(r.objects.of_type.Problem).each(function(p){
+        pt.problems_arr.push([
+          new XDate(p.startDate)
+        , p.problemName.dcterms__title
+        , p.endDate ? new XDate(p.endDate) : null
+        ])
       })
-      .error(error_cb);
+      pt.problems_arr = _(pt.problems_arr).sortBy(function(p){ return p[0]; })
+      dfd.resolve();
+    })
   }).promise();
 };
 
