@@ -200,9 +200,9 @@ var ALLERGIES_get = function(){
   }).promise();
 };
 
-var MEDS_get = function(){
+var MEDICATIONS_get = function(){
   return $.Deferred(function(dfd){
-    SMART.MEDS_get()
+    SMART.MEDICATIONS_get()
       .success(function(r){
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
@@ -971,7 +971,7 @@ var LAB_RESULTS_get = function(){
             {
               yaxis: {
                 min: 0,
-                max: 150,
+                max: 300,
                 ticks: [0, 50, 100, 150, 200, 250, 300],
                 tickLength: 0
               },
@@ -996,7 +996,7 @@ var LAB_RESULTS_get = function(){
             'target_min':             0,
             'target_max':             7,
             'target_unit':            '%',
-            'target_range_text_html': 'less than 7%',
+            'target_range_text_html': '&lt; 7%',
             'overdue_in_months':      6,
             'extra_info_html':        null
           },
@@ -1008,7 +1008,7 @@ var LAB_RESULTS_get = function(){
             'target_min':             0,
             'target_max':             100,
             'target_unit':            'mg/dl',
-            'target_range_text_html': 'less than 100mg/dl',
+            'target_range_text_html': '&lt; 100mg/dl',
             'overdue_in_months':      6,
             'extra_info_html':        'Consider more aggressive target of &lt; 70 (established CAD).'
           },
@@ -1020,7 +1020,7 @@ var LAB_RESULTS_get = function(){
             'target_min':             0,
             'target_max':             30,
             'target_unit':            'mg/g',
-            'target_range_text_html': 'less than 30', // FIXME: we don't really know this
+            'target_range_text_html': '&lt; 30', // FIXME: we don't really know this
             'overdue_in_months':      6, // FIXME: we don't really know this
             'extra_info_html':        '&micro;alb/cre ratio test preferred over non-ratio &micro;alp screening tests.'
           }]
@@ -1096,7 +1096,7 @@ SMART.ready(function(){
        , VITAL_SIGNS_get()
        , LAB_RESULTS_get()
        , PROBLEMS_get()
-       , MEDS_get()
+       , MEDICATIONS_get()
   )
   .then(function(){
 
@@ -1210,22 +1210,22 @@ SMART.ready(function(){
     $('#weight_val_lb').text(weight_val_lb || 'Unk')
     $('#weight_val_kg').text(weight_val_kg || 'Unk')
 
-    var redify = function(lab_variable, id_strings){
+    var highlight = function(lab_variable, id_strings){
       var today = new XDate();
       var d = new XDate(lab_variable[0]);
       var overdue_p = false;
       if (Math.round(d.diffMonths(today)) > 12) {
-        _(id_strings).each(function(idstr){ $(idstr).css('color', 'red'); })
+        _(id_strings).each(function(idstr){ $(idstr).addClass('highlight'); })
       }
     }
-    redify(pt.weight, ['#weight_date']);
+    highlight(pt.weight, ['#weight_date']);
 
     var height_val_in = pt.height[2] === 'm' ? _round(pt.height[1]  / .0254, 0) : null
     var height_val_cm = _round(pt.height[1] * 100, 0) || null
     $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
     $('#height_val_in').text(height_val_in || 'Unknown')
     $('#height_val_cm').text(height_val_cm || 'Unknown')
-    redify(pt.height, ['#height_date']);
+    highlight(pt.height, ['#height_date']);
 
     // Fixme: NO pneumovax or flu codes in the current pts...
     if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }
@@ -1400,7 +1400,7 @@ SMART.ready(function(){
       // show diabetic info in demos line
       var d = $('.problem:contains("Diabetes")');
       if (d.length > 0) {
-        d.css('color', 'red');
+        d.addClass('highlight');
         $('#diabetic_info').text('Diabetic');
         // active diabetic?
         var date_of_oldest_active_diabetes = _(pt.problems_arr)
@@ -1437,7 +1437,7 @@ SMART.ready(function(){
           var a = e[1].split(' ')
           $('<div></div>', {
             'class': 'medication',
-            html: '<span class=\'bold\'>' + a[0] + '</span> ' + _(a).rest().join(' ') + ' ' + e[2]
+            html: '<span>' + a[0] + '</span> <span style="color: gray">&middot; ' + _(a).rest().join(' ') + ' &middot; ' + e[2] + '</span>'
           })
           .data(e)
           .appendTo('#medications')
@@ -1490,7 +1490,7 @@ SMART.ready(function(){
       // put in other_problems, then partition to other lists
       _(p2).each(function(e){ $(e).appendTo('#other_problems'); })
 
-      $('.problem:contains("Diabetes")').css('color', 'red');
+      $('.problem:contains("Diabetes")').addClass('highlight');
 
       // do resolved first
       partition_resolved()
@@ -1522,24 +1522,35 @@ SMART.ready(function(){
       // todo: use templating here
       var html = '<span class=\'bold\'>' + e.title_html + '</span> ';
       if (e.overdue_p) {
-        html = html + '<span class=\'red\'>'  + e.reminder_html + '</span> <br />';
+        html = html + '<span class=\'highlight\'>&bull; '  + e.reminder_html + ' &bull;</span> <br />';
       }
 
       var d = new XDate(e.lab_variable[0])
-      html = html + 'Last ' + e.lab_name_html +
-        ' ('+ e.lab_variable[1] + e.lab_variable[2] + ') ' +
-        ' done on ' + d.toString('MM/dd/yy') + ' (' + e.months_ago + ' months ago)' ;
+      html = html + e.lab_name_html + ' last tested ' + d.toString('MM/dd/yy') +
+             ' (' + e.months_ago + ' months ago) '
 
-      if (e.in_range_p) {
-        html = html + ' within target range (' + e.target_range_text_html + ')'
-      } else {
-        html = html + ' <span class=\'bold\'>out of target range</span> (' + e.target_range_text_html + ')'
+       if (e.overdue_p) {
+         html = html + '<span class=\'highlight\'>&bull; dated &bull;</span> <br />';
+       }
+
+       // faked table alignment
+       html = html + '<span style="color: #fff" class="hidden">' + e.lab_name_html + '</span> last result ' + e.lab_variable[1] + e.lab_variable[2] 
+                   + ' (goal ' + e.target_range_text_html + ')'
+
+      if (!e.in_range_p) {
+        html = html + ' <span class=\'highlight\'>&bull; out of target range &bull; </span>'
       }
 
       $('<div></div>', {
         class: 'reminder',
         html: html
       }).appendTo('#reminders')
+    })
+
+    // hide lab name for nicer alignment by setting to background
+    _($('.hidden')).each(function(e){
+      var parent = $(e).parent();
+      $(e).css('color', $(parent).css('background-color'));
     })
 
     sort_by_alpha();
@@ -1587,6 +1598,9 @@ SMART.ready(function(){
     };
 
     draw_plots();
+
+    // clone demo line into lkv popup
+    $('#lkv_top_line').html($('#top_line').html())
 
     // events
     $('#sort_by_date').on('click',  function(){

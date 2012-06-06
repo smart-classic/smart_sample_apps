@@ -49,7 +49,7 @@
         &nbsp;
         <span id='gender'></span>
         &nbsp;
-        <span id='diabetic_info' style='font-weight: bold; color: red;'></span>
+        <span id='diabetic_info' style='font-weight: bold;' class='highlight'></span>
         <span id='diabetic_dates' style='text-transform: lowercase;'></span>
       </div>
 
@@ -329,14 +329,14 @@
 
           <div>
             <div style='width: 49%; float: left'><span class='bold'>last foot exam</span></div>
-            <!-- hack: just make red since we don't have this data yet -->
-            <div style='width: 49%; float: left; text-align: right' id='foot_exam_date' class='red'>Unknown</div>
+            <!-- hack: just make highlight since we don't have this data yet -->
+            <div style='width: 49%; float: left; text-align: right' id='foot_exam_date' class='highlight'>Unknown</div>
             <div class='clear'></div>
           </div>
 
           <div class='gray'>
             <div style='width: 49%; float: left'><span class='bold'>last eye exam</span></div>
-            <div style='width: 49%; float: left; text-align: right' id='eye_exam_date' class='red'>Unknown</div>
+            <div style='width: 49%; float: left; text-align: right' id='eye_exam_date' class='highlight'>Unknown</div>
             <div class='clear'></div>
           </div>
 
@@ -360,13 +360,13 @@
 
           <div class='gray'>
             <div style='width: 68%; float: left'><span class='bold'>last pneumovax</span></div>
-            <div style='width: 30%; float: left; text-align: right' id='pneumovax_date' class='red'></div>
+            <div style='width: 30%; float: left; text-align: right' id='pneumovax_date' class='highlight'></div>
             <div class='clear'></div>
           </div>
 
           <div>
             <div style='width: 68%; float: left'><span class='bold'>last flu shot</span></div>
-            <div style='width: 30%; float: left; text-align: right' id='flu_shot_date' class='red'></div>
+            <div style='width: 30%; float: left; text-align: right' id='flu_shot_date' class='highlight'></div>
             <div class='clear'></div>
           </div>
         </div>
@@ -443,20 +443,16 @@
       </div>
     </div>
 
-    <div class="overlay" id="lkv_overlay">
+    <div class="lkv_overlay" id="lkv_overlay">
       <div style='text-align: right'>
-        <a class='close' href='#'>Close</a>
+        <a class='close' href='#'>[Close]</a>
       </div>
+
+      <div id='lkv_top_line'></div>
 
       <div class="section_header">Last Known Values
         <span style='font-weight: normal'>Graphed and Detailed</span>
       </div>
-
-      <div class="section_header">LDL</div>
-      <div class='lkv_graph' id='ldl_graph_lkv'></div>
-
-      <div class="section_header">A1C</div>
-      <div class='lkv_graph' id='a1c_graph_lkv'></div>
 
       <div class="section_header">Urine Total Protien</div>
       <div class='lkv_graph' id='ur_tp_graph'></div>
@@ -476,6 +472,9 @@
       <div class="section_header">HDL</div>
       <div class='lkv_graph' id='hdl_graph'></div>
 
+      <div class="section_header">LDL</div>
+      <div class='lkv_graph' id='ldl_graph_lkv'></div>
+
       <div class="section_header">BUN</div>
       <div class='lkv_graph' id='bun_graph'></div>
 
@@ -484,6 +483,9 @@
 
       <div class="section_header">Glucose</div>
       <div class='lkv_graph' id='glucose_graph'></div>
+
+      <div class="section_header">A1C</div>
+      <div class='lkv_graph' id='a1c_graph_lkv'></div>
     </div>
   </body>
 </html>
