@@ -45,6 +45,10 @@
 // telmisartan (Micardis)
 // valsartan (Diovan)
 
+// global options
+DM_DEBUG = false;
+DM_PUSH_DATES = true;
+
 // default flot options
 var _flot_opts = {
   xaxis: {
@@ -149,8 +153,10 @@ var ALLERGIES_get = function(){
     SMART.ALLERGIES_get().then(function(r){
       _(r.objects.of_type.Allergy).each(function(a){
         var allergen = a.drugClassAllergen || a.foodAllergen;
-        pt.allergies_arr.push([allergen.dcterms__title
-                            , a.allergicReaction.dcterms__title])
+        pt.allergies_arr.push([
+          allergen.dcterms__title,
+          a.allergicReaction.dcterms__title
+        ])
       })
       dfd.resolve();
     })
@@ -161,9 +167,11 @@ var MEDICATIONS_get = function(){
   return $.Deferred(function(dfd){
     SMART.MEDICATIONS_get().then(function(r){
       _(r.objects.of_type.Medication).each(function(m){
-        pt.meds_arr.push([new XDate(m.startDate)
-                        , m.drugName.dcterms__title
-                        , m.instructions])
+        pt.meds_arr.push([
+          new XDate(m.startDate).valueOf(),
+          m.drugName.dcterms__title,
+          m.instructions
+        ])
       })
       dfd.resolve();
     })
@@ -173,8 +181,8 @@ var MEDICATIONS_get = function(){
 var DEMOGRAPHICS_get = function(){
   return $.Deferred(function(dfd){
     SMART.DEMOGRAPHICS_get().then(function(r){
-      var demos = r.objects.of_type.Demographics[0];
       var name = r.objects.of_type.v__Name[0];
+      var demos = r.objects.of_type.Demographics[0];
       pt.family_name = name.v__family_name;
       pt.given_name  = name.v__given_name;
       pt.gender = demos.foaf__gender;
@@ -186,771 +194,477 @@ var DEMOGRAPHICS_get = function(){
 
 var VITAL_SIGNS_get = function(){
   return $.Deferred(function(dfd){
-    SMART.VITAL_SIGNS_get()
-      .success(function(r){
-        var _get_bps = function(type) {
-          var code = '';
-          var bp_arr = [];
-          var bp, bp_next = {};
+    SMART.VITAL_SIGNS_get().then(function(r){
 
-          if (type === 'systolic') code = '<http://purl.bioontology.org/ontology/LNC/8480-6>';
-          else if (type === 'diastolic') code = '<http://purl.bioontology.org/ontology/LNC/8462-4>';
-          else alert('error: bp type not systolic or diastolic!');
+      (function bps(){
+        _(r.objects.of_type.VitalSigns).chain()
+          .filter(function(v){ return v.bloodPressure; })
+          .each(function(v){
+            pt.sbp_arr.push([
+              new XDate(v.dcterms__date).valueOf(),
+              Number(v.bloodPressure.systolic.value),
+              v.bloodPressure.systolic.unit
+            ])
 
-          r.graph
-           .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-           .prefix('sp',       'http://smartplatforms.org/terms#')
-           .prefix('dc',       'http://purl.org/dc/terms/')
-           .where('?bn         rdf:type         sp:VitalSign')
-           .where('?bn         sp:vitalName     ?vital_name')
-           .where('?bn         sp:value         ?value')
-           .where('?bn         sp:unit          ?unit')
-           .where('?vital_name sp:code          ' + code)
-           .where('?bn2        sp:'+ type +'    ?bn')
-           .where('?bn2        rdf:type         sp:BloodPressure')
-           .where('?vital_id   sp:bloodPressure ?bn2')
-           .where('?vital_id   dc:date          ?date')
-           .each(function(){
-             if (type === 'systolic') {
-               bp_arr = pt.sbp_arr;
-               bp = pt.sbp;
-               bp_next = pt.sbp_next;
-             }
-             else {
-               bp_arr = pt.dbp_arr;
-               bp = pt.dbp;
-               bp_next = pt.dbp_next;
-             }
+            pt.dbp_arr.push([
+              new XDate(v.dcterms__date).valueOf(),
+              Number(v.bloodPressure.diastolic.value),
+              v.bloodPressure.diastolic.unit
+            ])
+          })
+          .value()
 
-             bp_arr.push([
-               new XDate(this.date.value).valueOf(),
-               Number(this.value.value),
-               this.unit.value
-             ])
-           })
+        _(pt.sbp_arr).sortBy(function(bp){ return bp[0]; })
+        _(pt.dbp_arr).sortBy(function(bp){ return bp[0]; })
+        pt.sbp = _(pt.sbp_arr).last() || null;
+        pt.dbp = _(pt.dbp_arr).last() || null;
+        pt.sbp_next = _(pt.sbp_arr).last(2)[0] || null;
+        pt.dbp_next = _(pt.dbp_arr).last(2)[0] || null;
 
-           bp_arr = _(bp_arr).sortBy(function(item){ return item[0]; })
-           bp = _(bp_arr).last() || null
-           bp_next = _(bp_arr).last(2)[0] || null
-        }
+        $.extend(true, pt.bp_flot_opts, _flot_opts, {
+          yaxis: { min: 50, max: 200, ticks: [50, 100, 150, 200], tickLength: 0 },
+          grid: { markings: [
+            { yaxis: { from: 0, to: 80 }, color: "#eee" },
+            { yaxis: { from: 200, to: 130 }, color: "#eee" }
+          ]}
+        });
+      })();
 
-        _get_bps('systolic');
-        _get_bps('diastolic')
+      (function weights(){
+        pt.weight_arr = _(r.objects.of_type.VitalSigns).chain()
+          .filter(function(v){ return v.weight; })
+          .map(function(v){
+            return [
+              new XDate(v.dcterms__date).valueOf(),
+              Number(v.weight.value),
+              v.weight.unit
+            ];
+          })
+          .value();
 
-        $.extend(true,
-          pt.bp_flot_opts,
-          _flot_opts,
-          {
-            yaxis: {
-              min: 50,
-              max: 200,
-              ticks: [50, 100, 150, 200],
-              tickLength: 0
-            },
-            grid: {
-              markings: [
-                { yaxis: { from: 0, to: 80 }, color: "#eee" },
-                { yaxis: { from: 200, to: 130 }, color: "#eee" }
-              ]
-            }
-          }
-        );
+        pt.weight = _(pt.weight_arr).last() || null;
+      })();
 
-        r.graph
-         .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',       'http://smartplatforms.org/terms#')
-         .prefix('dc',       'http://purl.org/dc/terms/')
-         .where('?vital_id   sp:weight        ?bn')
-         .where('?vital_id   dc:date          ?date')
-         .where('?bn         sp:vitalName     ?bn2')
-         .where('?bn2        sp:code          <http://purl.bioontology.org/ontology/LNC/3141-9>')
-         .where('?bn         rdf:type         sp:VitalSign')
-         .where('?bn         sp:value         ?value')
-         .where('?bn         sp:unit          ?unit')
-         .each(function(){
-           pt.weight_arr.push([
-             new XDate(this.date.value).valueOf(),
-             Number(this.value.value),
-             this.unit.value
-           ])
-         })
+      (function heights(){
+        pt.height_arr = _(r.objects.of_type.VitalSigns).chain()
+          .filter(function(v){ return v.height; })
+          .map(function(v){
+            return [
+              new XDate(v.dcterms__date).valueOf(),
+              Number(v.height.value),
+              v.height.unit
+            ];
+          })
+          .sortBy(function(v){ return v[0]; })
+          .value();
 
-        pt.weight_arr = _(pt.weight_arr).sortBy(function(item){ return item[0]; })
-        pt.weight = _(pt.weight_arr).last() || null
+        pt.height = _(pt.height_arr).last() || null;
+      })()
 
-        r.graph
-         .prefix('rdf',      'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',       'http://smartplatforms.org/terms#')
-         .prefix('dc',       'http://purl.org/dc/terms/')
-         .where('?vital_id   sp:height        ?bn')
-         .where('?vital_id   dc:date          ?date')
-         .where('?bn         sp:vitalName     ?bn2')
-         .where('?bn2        sp:code          <http://purl.bioontology.org/ontology/LNC/8302-2>')
-         .where('?bn         rdf:type         sp:VitalSign')
-         .where('?bn         sp:value         ?value')
-         .where('?bn         sp:unit          ?unit')
-         .each(function(){
-           pt.height_arr.push([
-             new XDate(this.date.value).valueOf(),
-             Number(this.value.value),
-             this.unit.value
-           ])
-         })
-
-        pt.height_arr = _(pt.height_arr).sortBy(function(item){ return item[0]; })
-        pt.height = _(pt.height_arr).last() || null
-
-        dfd.resolve();
-      })
+      dfd.resolve();
+    });
   }).promise();
 };
 
 var LAB_RESULTS_get = function(){
   return $.Deferred(function(dfd){
-    SMART.LAB_RESULTS_get()
-      .success(function(r){
-        // LDL Codes
-        //
+    SMART.LAB_RESULTS_get().then(function(r){
+      var results = r.objects.of_type.LabResult;
+
+      (function ldl(){
         // LOINC Code, Long name, Short Name, class, rank # of 2000
-        // 13457-7	Cholesterol in LDL [Mass/volume] in Serum or Plasma by calculation	LDLc SerPl Calc-mCnc	CHEM	63
-        // 2089-1	Cholesterol in LDL [Mass/volume] in Serum or Plasma	LDLc SerPl-mCnc	CHEM	92
-        // 18262-6	Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay	LDLc SerPl Direct Assay-mCnc	CHEM	249
-        // FIXME: ONLY top LDL code!!
-        r.graph
-         .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-         .prefix('sp',  'http://smartplatforms.org/terms#')
-         .where('?lr    rdf:type              sp:LabResult')
-         .where('?lr    sp:labName            ?bn1')
-         .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/13457-7>')
-         .where('?lr    sp:quantitativeResult ?bn2')
-         .where('?bn2   rdf:type              sp:QuantitativeResult')
-         .where('?bn2   sp:valueAndUnit       ?bn3')
-         .where('?bn3   rdf:type              sp:ValueAndUnit')
-         .where('?bn3   sp:value              ?value')
-         .where('?bn3   sp:unit               ?unit')
-         .where('?lr    sp:specimenCollected  ?bn4')
-         .where('?bn4   sp:startDate          ?date')
-         .each(function(){
-           // FIXME: hack push all dates + 3 years
-           var d = new XDate(this.date.value)
-           d.addYears(3, true);
-
-           // array is [js timestamp, value as number, unit as string]
-           // flot uses js timestamps on the x axis, we convert them to human-readable strings later
-           pt.ldl_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-           ])
-         })
-
-         pt.ldl_arr = _(pt.ldl_arr).sortBy(function(item){ return item[0]; })
-         pt.ldl = _(pt.ldl_arr).last() || null
-         pt.ldl_next = _(pt.ldl_arr).last(2)[0] || null
-         $.extend(true,
-           pt.ldl_flot_opts,
-           _flot_opts,
-           {
-             yaxis: {
-               min: 0,
-               max: 200,
-               ticks: [0, 50, 100, 150, 200],
-               tickLength: 0
-             },
-             grid: {
-               markings: [ { yaxis: { from: 200, to: 100 }, color: "#eee" } ]
-             }
-           }
-         );
-
-         // A1C Codes
-         //
-         // LOINC Code, Long name, Short Name, class, rank # of 2000
-         // 4548-4,Hemoglobin A1c/Hemoglobin.total in Blood,Hgb A1c MFr Bld,HEM/BC,81
-         // 17856-6,Hemoglobin A1c/Hemoglobin.total in Blood by HPLC,Hgb A1c MFr Bld HPLC,HEM/BC,215
-         // FIXME: ONLY top A1c code!!
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-
-            // fixme: hack pushing date 2 yrs
-            var d = new XDate(this.date.value)
-            d.addYears(2, true);
-
-            pt.a1c_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+        // 13457-7  Cholesterol in LDL [Mass/volume] in Serum or Plasma by calculation  LDLc SerPl Calc-mCnc  CHEM  63
+        // 2089-1   Cholesterol in LDL [Mass/volume] in Serum or Plasma LDLc SerPl-mCnc CHEM  92
+        // 18262-6  Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay LDLc SerPl Direct Assay-mCnc  CHEM  249
+        pt.ldl_arr = _(results).chain()
+          .filter(function(r){
+            return _(['13457-7', '2089-1', '18262-6'])
+              .include(r.labName.code.dcterms__identifier);
           })
-
-          pt.a1c_arr = _(pt.a1c_arr).sortBy(function(item){ return item[0]; })
-          pt.a1c = _(pt.a1c_arr).last() || null
-          pt.a1c_next = _(pt.a1c_arr).last(2)[0] || null
-          $.extend(true,
-            pt.a1c_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 20,
-                ticks: [0, 5, 10, 15, 20],
-                tickLength: 0
-              },
-              grid: {
-                markings: [ { yaxis: { from: 20, to: 7 }, color: "#eee" } ]
-              }
-            }
-          );
-
-          // Ur Tp
-          //
-          // 5804-0,Protein [Mass/volume] in Urine by Test strip,Prot Ur Strip-mCnc,UA,74
-          // 2888-6,Protein [Mass/volume] in Urine,Prot Ur-mCnc,UA,292
-          // 35663-4,Protein [Mass/volume] in unspecified time Urine,Prot ?Tm Ur-mCnc,UA,635
-          // 21482-5,Protein [Mass/volume] in 24 hour Urine,Prot 24H Ur-mCnc,CHEM,1696
-          // FIXME: ONLY top code!!
-          r.graph
-           .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-           .prefix('sp',  'http://smartplatforms.org/terms#')
-           .where('?lr    rdf:type              sp:LabResult')
-           .where('?lr    sp:labName            ?bn1')
-           .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/5804-0>')
-           .where('?lr    sp:quantitativeResult ?bn2')
-           .where('?bn2   rdf:type              sp:QuantitativeResult')
-           .where('?bn2   sp:valueAndUnit       ?bn3')
-           .where('?bn3   rdf:type              sp:ValueAndUnit')
-           .where('?bn3   sp:value              ?value')
-           .where('?bn3   sp:unit               ?unit')
-           .where('?lr    sp:specimenCollected  ?bn4')
-           .where('?bn4   sp:startDate          ?date')
-           .each(function(){
-             pt.ur_tp_arr.push([
-                new XDate(this.date.value).valueOf(),
-                Number(this.value.value),
-                this.unit.value
-             ])
-           })
-
-           pt.ur_tp_arr = _(pt.ur_tp_arr).sortBy(function(item){ return item[0]; })
-           pt.ur_tp = _(pt.ur_tp_arr).last() || null
-           pt.ur_tp_next = _(pt.ur_tp_arr).last(2)[0] || null
-           $.extend(true,
-             pt.ur_tp_flot_opts,
-             _flot_opts,
-             {
-               yaxis: {
-                 min: 0,
-                 max: 200,
-                 ticks: [0, 50, 100, 150, 200],
-                 tickLength: 0
-               },
-               grid: {
-                 markings: [ { yaxis: { from: 200, to: 135 }, color: "#eee" } ]
-               }
-             }
-           );
-
-         // Microalbumin/Creatinine [Mass ratio] in Urine
-         //
-         // 14959-1,Microalbumin/Creatinine [Mass ratio] in Urine,Microalbumin/Creat Ur-mRto,CHEM,212
-         // 14958-3,Microalbumin/Creatinine [Mass ratio] in 24 hour Urine,Microalbumin/Creat 24H Ur-mRto,CHEM,1979
-         // FIXME: ONLY top code!!
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/14959-1>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
-
-            pt.m_alb_cre_ratio_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
           })
+          .sortBy(function(r){ return r[0]; })
+          .value()
 
-          pt.m_alb_cre_ratio_arr = _(pt.m_alb_cre_ratio_arr).sortBy(function(item){ return item[0]; })
-          pt.m_alb_cre_ratio = _(pt.m_alb_cre_ratio_arr).last() || null
-          pt.m_alb_cre_ratio_next = _(pt.m_alb_cre_ratio_arr).last(2)[0] || null
-          $.extend(true,
-            pt.m_alb_cre_ratio_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 50,
-                ticks: [0, 10, 20, 30, 40, 50],
-                tickLength: 0
-              },
-              grid: {
-                markings: [ { yaxis: { from: 50, to: 30 }, color: "#eee" } ]
-              }
-            }
-          );
+        pt.ldl = _(pt.ldl_arr).last() || null
+        pt.ldl_next = _(pt.ldl_arr).last(2)[0] || null
 
-         // Aspartate aminotransferase / SGOT / AST
-         //
-         // only 1 code!! #20!!
-         //
-         // LOINC Code, Long name, Short Name, class, rank # of 2000
-         // 1920-8,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,AST SerPl-cCnc,CHEM,19
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/1920-8>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
+        $.extend(true, pt.ldl_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 200, ticks: [0, 50, 100, 150, 200], tickLength: 0 },
+          grid: { markings: [ { yaxis: { from: 200, to: 100 }, color: "#eee" } ] }
+        });
+      })();
 
-            pt.sgot_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+      (function a1c(){
+        // 4548-4,Hemoglobin A1c/Hemoglobin.total in Blood,Hgb A1c MFr Bld,HEM/BC,81
+        // 17856-6,Hemoglobin A1c/Hemoglobin.total in Blood by HPLC,Hgb A1c MFr Bld HPLC,HEM/BC,215
+        pt.a1c_arr = _(results).chain()
+          .filter(function(r){
+            return _(['4548-4', '17856-6']).include(r.labName.code.dcterms__identifier);
           })
-
-          pt.sgot_arr = _(pt.sgot_arr).sortBy(function(item){ return item[0]; })
-          pt.sgot = _(pt.sgot_arr).last() || null
-          pt.sgot_next = _(pt.sgot_arr).last(2)[0] || null
-          $.extend(true,
-            pt.sgot_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 50,
-                ticks: [0, 10, 20, 30, 40, 50],
-                tickLength: 0
-              },
-              grid: {
-                markings: [
-                  { yaxis: { from: 0, to: 10 }, color: "#eee" },
-                  { yaxis: { from: 50, to: 40 }, color: "#eee" }
-                ]
-              }
-            }
-          );
-
-         // Cholesterol (total): only 1 code!! Yay!
-         //
-         // 2093-3,Cholesterol [Mass/volume] in Serum or Plasma,Cholest SerPl-mCnc,CHEM,32
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2093-3>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
-
-            pt.chol_total_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(2, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
           })
+          .sortBy(function(r){ return r[0]; })
+          .value()
 
-          pt.chol_total_arr = _(pt.chol_total_arr).sortBy(function(item){ return item[0]; })
-          pt.chol_total = _(pt.chol_total_arr).last() || null
-          pt.chol_total_next = _(pt.chol_total_arr).last(2)[0] || null
-          $.extend(true,
-            pt.chol_total_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 300,
-                ticks: [0, 50, 100, 150, 200, 250, 300, 350],
-                tickLength: 0
-              },
-              grid: {
-                markings: [ { yaxis: { from: 350, to: 200 }, color: "#eee" } ]
-              }
-            }
-          );
+        pt.a1c = _(pt.a1c_arr).last() || null
+        pt.a1c_next = _(pt.a1c_arr).last(2)[0] || null
 
-         // Tri
-         //
-         // 2571-8,Triglyceride [Mass/volume] in Serum or Plasma,Trigl SerPl-mCnc,CHEM,36
-         // 3043-7,Triglyceride [Mass/volume] in Blood,Trigl Bld-mCnc,CHEM,1592
-         // fixme only 1 code!
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2571-8>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
+        $.extend(true, pt.a1c_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 20, ticks: [0, 5, 10, 15, 20], tickLength: 0 },
+          grid: { markings: [ { yaxis: { from: 20, to: 7 }, color: "#eee" } ] }
+        });
+      })();
 
-            pt.triglyceride_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+      (function ur_tp(){
+        // 5804-0,Protein [Mass/volume] in Urine by Test strip,Prot Ur Strip-mCnc,UA,74
+        // 2888-6,Protein [Mass/volume] in Urine,Prot Ur-mCnc,UA,292
+        // 35663-4,Protein [Mass/volume] in unspecified time Urine,Prot ?Tm Ur-mCnc,UA,635
+        // 21482-5,Protein [Mass/volume] in 24 hour Urine,Prot 24H Ur-mCnc,CHEM,1696
+        pt.ur_tp_arr = _(results).chain()
+          .filter(function(r){
+            return _(['5804-0', '2888-6', '35663-4', '21482-4'])
+              .include(r.labName.code.dcterms__identifier);
           })
-
-          pt.triglyceride_arr = _(pt.triglyceride_arr).sortBy(function(item){ return item[0]; })
-          pt.triglyceride = _(pt.triglyceride_arr).last() || null
-          pt.triglyceride_next = _(pt.triglyceride_arr).last(2)[0] || null
-          $.extend(true,
-            pt.triglyceride_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 250,
-                ticks: [0, 50, 100, 150, 200, 250, 300],
-                tickLength: 0
-              },
-              grid: {
-                markings: [ { yaxis: { from: 300, to: 150 }, color: "#eee" } ]
-              }
-            }
-          );
-
-         // HDL
-         // 2085-9,Cholesterol in HDL [Mass/volume] in Serum or Plasma,HDLc SerPl-mCnc,CHEM,38
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2085-9>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
-
-            pt.hdl_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+          .map(function(r){
+            return [
+              new XDate(r.specimenCollected.startDate).valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
           })
+          .sortBy(function(r){ return r[0]; })
+          .value()
 
-          pt.hdl_arr = _(pt.hdl_arr).sortBy(function(item){ return item[0]; })
-          pt.hdl = _(pt.hdl_arr).last() || null
-          pt.hdl_next = _(pt.hdl_arr).last(2)[0] || null
-          $.extend(true,
-            pt.hdl_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 150,
-                ticks: [0, 50, 100, 150],
-                tickLength: 0
-              },
-              grid: {
-                markings: [ { yaxis: { from: 0, to: 40 }, color: "#eee" } ]
-              }
-            }
-          );
+         $.extend(true, pt.ur_tp_flot_opts, _flot_opts, {
+           yaxis: { min: 0, max: 200, ticks: [0, 50, 100, 150, 200], tickLength: 0 },
+           grid: { markings: [ { yaxis: { from: 200, to: 135 }, color: "#eee" } ] }
+         });
+      })();
 
-         // BUN
-         //
-         // 3094-0,Urea nitrogen [Mass/volume] in Serum or Plasma,BUN SerPl-mCnc,CHEM,6
-         // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
-         // fixme only top code
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/4548-4>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
-
-            pt.bun_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+      (function m_alb_cre_ratio(){
+        // 14959-1,Microalbumin/Creatinine [Mass ratio] in Urine,Microalbumin/Creat Ur-mRto,CHEM,212
+        // 14958-3,Microalbumin/Creatinine [Mass ratio] in 24 hour Urine,Microalbumin/Creat 24H Ur-mRto,CHEM,1979
+        pt.m_alb_cre_ratio_arr = _(results).chain()
+          .filter(function(r){
+            return _(['14959-1', '14958-3'])
+              .include(r.labName.code.dcterms__identifier);
           })
-
-          pt.bun_arr = _(pt.bun_arr).sortBy(function(item){ return item[0]; })
-          pt.bun = _(pt.bun_arr).last() || null
-          pt.bun_next = _(pt.bun_arr).last(2)[0] || null
-          $.extend(true,
-            pt.bun_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 35,
-                ticks: [0, 5, 10, 15, 20, 25, 30, 35],
-                tickLength: 0
-              },
-              grid: {
-                markings: [
-                  { yaxis: { from: 0, to: 8 }, color: "#eee" },
-                  { yaxis: { from: 35, to: 25 }, color: "#eee" }
-                ]
-              }
-            }
-          );
-
-         // Cre
-         //
-         // 2160-0,Creatinine [Mass/volume] in Serum or Plasma,Creat SerPl-mCnc,CHEM,1
-         // 38483-4,Creatinine [Mass/volume] in Blood,Creat Bld-mCnc,CHEM,283
-         // fixme only top code
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2160-0>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
-
-            pt.creatinine_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
           })
+          .sortBy(function(r){ return r[0]; })
+          .value()
 
-          pt.creatinine_arr = _(pt.creatinine_arr).sortBy(function(item){ return item[0]; })
-          pt.creatinine = _(pt.creatinine_arr).last() || null
-          pt.creatinine_next = _(pt.creatinine_arr).last(2)[0] || null
-          $.extend(true,
-            pt.creatinine_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 2,
-                ticks: [0, 0.5, 1, 1.5, 2],
-                tickLength: 0
-              },
-              grid: {
-                markings: [
-                  { yaxis: { from: 0, to: 0.6 }, color: "#eee" },
-                  { yaxis: { from: 2, to: 1.5 }, color: "#eee" }
-                ]
-              }
-            }
-          );
+        pt.m_alb_cre_ratio = _(pt.m_alb_cre_ratio_arr).last() || null
+        pt.m_alb_cre_ratio_next = _(pt.m_alb_cre_ratio_arr).last(2)[0] || null
 
-         // Glu
-         // 2345-7,Glucose [Mass/volume] in Serum or Plasma,Glucose SerPl-mCnc,CHEM,4
-         // 2339-0,Glucose [Mass/volume] in Blood,Glucose Bld-mCnc,CHEM,13
-         // fixme only top code
-         r.graph
-          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-          .prefix('sp',  'http://smartplatforms.org/terms#')
-          .where('?lr    rdf:type              sp:LabResult')
-          .where('?lr    sp:labName            ?bn1')
-          .where('?bn1   sp:code               <http://purl.bioontology.org/ontology/LNC/2345-7>')
-          .where('?lr    sp:quantitativeResult ?bn2')
-          .where('?bn2   rdf:type              sp:QuantitativeResult')
-          .where('?bn2   sp:valueAndUnit       ?bn3')
-          .where('?bn3   rdf:type              sp:ValueAndUnit')
-          .where('?bn3   sp:value              ?value')
-          .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
-          .each(function(){
-            // FIXME: hack push all dates + 3 years
-            var d = new XDate(this.date.value)
-            d.addYears(3, true);
+        $.extend(true, pt.m_alb_cre_ratio_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 50, ticks: [0, 10, 20, 30, 40, 50], tickLength: 0 },
+          grid: { markings: [ { yaxis: { from: 50, to: 30 }, color: "#eee" } ] }
+        });
+      })();
 
-            pt.glucose_arr.push([
-              d.valueOf(),
-              Number(this.value.value),
-              this.unit.value
-            ])
+      (function sgot(){
+        // 1920-8,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,AST SerPl-cCnc,CHEM,19
+        pt.sgot_arr = _(results).chain()
+          .filter(function(r){ return '1920-8' === r.labName.code.dcterms__identifier; })
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
           })
+          .sortBy(function(r){ return r[0]; })
+          .value()
 
-          pt.glucose_arr = _(pt.glucose_arr).sortBy(function(item){ return item[0]; })
-          pt.glucose = _(pt.glucose_arr).last() || null
-          pt.glucose_next = _(pt.glucose_arr).last(2)[0] || null
-          $.extend(true,
-            pt.glucose_flot_opts,
-            _flot_opts,
-            {
-              yaxis: {
-                min: 0,
-                max: 300,
-                ticks: [0, 50, 100, 150, 200, 250, 300],
-                tickLength: 0
-              },
-              grid: {
-                markings: [
-                  { yaxis: { from: 0, to: 70 }, color: "#eee" },
-                  { yaxis: { from: 300, to: 110 }, color: "#eee" }
-                ]
-              }
-            }
-          );
+        pt.sgot = _(pt.sgot_arr).last() || null
+        pt.sgot_next = _(pt.sgot_arr).last(2)[0] || null
 
-          //
-          // Reminders
-          //
-          var reminder_data = [
-          {
-            'title_html':             'glycemia',
-            'reminder_html':          'Consider checking A1C today',
-            'lab_variable':           pt.a1c,
-            'lab_name_html':          'A1C',
-            'target_min':             0,
-            'target_max':             7,
-            'target_unit':            '%',
-            'target_range_text_html': '&lt; 7%',
-            'overdue_in_months':      6,
-            'extra_info_html':        null
-          },
-          {
-            'title_html':             'lipids',
-            'reminder_html':          'Consider checking lipids today',
-            'lab_variable':           pt.ldl,
-            'lab_name_html':          'LDL',
-            'target_min':             0,
-            'target_max':             100,
-            'target_unit':            'mg/dl',
-            'target_range_text_html': '&lt; 100mg/dl',
-            'overdue_in_months':      6,
-            'extra_info_html':        'Consider more aggressive target of &lt; 70 (established CAD).'
-          },
-          {
-            'title_html':             'albuminuria',
-            'reminder_html':          'Consider checking urine &micro;alb/cre ratio today',
-            'lab_variable':           pt.m_alb_cre_ratio,
-            'lab_name_html':          'urine &alb/cre ratio',
-            'target_min':             0,
-            'target_max':             30,
-            'target_unit':            'mg/g',
-            'target_range_text_html': '&lt; 30', // FIXME: we don't really know this
-            'overdue_in_months':      6, // FIXME: we don't really know this
-            'extra_info_html':        '&micro;alb/cre ratio test preferred over non-ratio &micro;alp screening tests.'
-          }]
-
-          var process_reminders = function(reminder_data){
-            _(reminder_data).each(function(r){
-              if (r.lab_variable) {
-                // is the latest date within the given range?
-                var today = new XDate();
-                var d = new XDate(r.lab_variable[0])
-                r.overdue_p = false;
-                r.months_ago = Math.round(d.diffMonths(today));
-                if (r.months_ago > r.overdue_in_months) { r.overdue_p = true; }
-
-                // is the latest value within the given range?
-                r.in_range_p = false;
-                if (r.target_min < r.lab_variable[1] &&
-                    r.lab_variable[1] < r.target_max) {
-                  r.in_range_p = true;
-                }
-
-                pt.reminders_arr.push(r);
-              } else {
-                return;
-              }
-            })
+        $.extend(true, pt.sgot_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 50, ticks: [0, 10, 20, 30, 40, 50], tickLength: 0 },
+          grid: {
+            markings: [
+              { yaxis: { from: 0, to: 10 }, color: "#eee" },
+              { yaxis: { from: 50, to: 40 }, color: "#eee" }
+            ]
           }
+        });
+      })();
 
-          process_reminders(reminder_data);
+      (function chol(){
+        // 2093-3,Cholesterol [Mass/volume] in Serum or Plasma,Cholest SerPl-mCnc,CHEM,32
+        pt.chol_arr = _(results).chain()
+          .filter(function(r){ return '2093-3' === r.labName.code.dcterms__identifier; })
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
+          })
+          .sortBy(function(r){ return r[0]; })
+          .value()
 
-         dfd.resolve();
-      })
+        pt.chol = _(pt.chol_arr).last() || null
+        pt.chol_next = _(pt.chol_arr).last(2)[0] || null
+
+        $.extend(true, pt.chol_total_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 300, ticks: [0, 50, 100, 150, 200, 250, 300, 350], tickLength: 0 },
+          grid: { markings: [ { yaxis: { from: 350, to: 200 }, color: "#eee" } ] }
+        });
+      })();
+
+      (function triglyceride(){
+        // 2571-8,Triglyceride [Mass/volume] in Serum or Plasma,Trigl SerPl-mCnc,CHEM,36
+        // 3043-7,Triglyceride [Mass/volume] in Blood,Trigl Bld-mCnc,CHEM,1592
+        pt.triglyceride_arr = _(results).chain()
+          .filter(function(r){
+            return _(['2571-8', '3043-7']).include(r.labName.code.dcterms__identifier);
+          })
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
+          })
+          .sortBy(function(r){ return r[0]; })
+          .value()
+
+        pt.triglyceride = _(pt.triglyceride_arr).last() || null
+        pt.triglyceride_next = _(pt.triglyceride_arr).last(2)[0] || null
+
+        $.extend(true, pt.triglyceride_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 250, ticks: [0, 50, 100, 150, 200, 250, 300], tickLength: 0 },
+          grid: { markings: [ { yaxis: { from: 300, to: 150 }, color: "#eee" } ] }
+        });
+      })();
+
+      (function hdl(){
+        // 2085-9,Cholesterol in HDL [Mass/volume] in Serum or Plasma,HDLc SerPl-mCnc,CHEM,38
+        pt.hdl_arr = _(results).chain()
+          .filter(function(r){
+            return _(['2085-9']).include(r.labName.code.dcterms__identifier);
+          })
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
+          })
+          .sortBy(function(r){ return r[0]; })
+          .value()
+
+        pt.hdl = _(pt.hdl_arr).last() || null
+        pt.hdl_next = _(pt.hdl_arr).last(2)[0] || null
+
+        $.extend(true, pt.hdl_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 150, ticks: [0, 50, 100, 150], tickLength: 0 },
+          grid: { markings: [ { yaxis: { from: 0, to: 40 }, color: "#eee" } ] }
+        });
+      })();
+
+      (function bun(){
+        // 3094-0,Urea nitrogen [Mass/volume] in Serum or Plasma,BUN SerPl-mCnc,CHEM,6
+        // 6299-2,Urea nitrogen [Mass/volume] in Blood,BUN Bld-mCnc,CHEM,288
+        pt.bun_arr = _(results).chain()
+          .filter(function(r){
+            return _(['3094-0', '6299-2']).include(r.labName.code.dcterms__identifier);
+          })
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
+          })
+          .sortBy(function(r){ return r[0]; })
+          .value()
+
+        pt.bun = _(pt.bun_arr).last() || null
+        pt.bun_next = _(pt.bun_arr).last(2)[0] || null
+
+        $.extend(true, pt.bun_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 35, ticks: [0, 5, 10, 15, 20, 25, 30, 35], tickLength: 0 },
+          grid: {
+            markings: [
+              { yaxis: { from: 0, to: 8 }, color: "#eee" },
+              { yaxis: { from: 35, to: 25 }, color: "#eee" }
+            ]
+          }
+        });
+      })();
+
+      (function creatinine(){
+        // 2160-0,Creatinine [Mass/volume] in Serum or Plasma,Creat SerPl-mCnc,CHEM,1
+        // 38483-4,Creatinine [Mass/volume] in Blood,Creat Bld-mCnc,CHEM,283
+        pt.creatinine_arr = _(results).chain()
+          .filter(function(r){
+            return _(['2160-0', '38483-4']).include(r.labName.code.dcterms__identifier);
+          })
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
+          })
+          .sortBy(function(r){ return r[0]; })
+          .value()
+
+        pt.creatinine = _(pt.creatinine_arr).last() || null
+        pt.creatinine_next = _(pt.creatinine_arr).last(2)[0] || null
+
+        $.extend(true, pt.creatinine_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 2, ticks: [0, 0.5, 1, 1.5, 2], tickLength: 0 },
+          grid: {
+            markings: [
+              { yaxis: { from: 0, to: 0.6 }, color: "#eee" },
+              { yaxis: { from: 2, to: 1.5 }, color: "#eee" }
+            ]
+          }
+        });
+      })();
+
+      (function glucose(){
+        // 2345-7,Glucose [Mass/volume] in Serum or Plasma,Glucose SerPl-mCnc,CHEM,4
+        // 2339-0,Glucose [Mass/volume] in Blood,Glucose Bld-mCnc,CHEM,13
+        pt.glucose_arr = _(results).chain()
+          .filter(function(r){
+            return _(['2345-7', '2339-0']).include(r.labName.code.dcterms__identifier);
+          })
+          .map(function(r){
+            var d = new XDate(r.specimenCollected.startDate)
+            return [
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
+              r.quantitativeResult.valueAndUnit[0].value,
+              r.quantitativeResult.valueAndUnit[0].unit
+            ]
+          })
+          .sortBy(function(r){ return r[0]; })
+          .value()
+
+        pt.glucose = _(pt.glucose_arr).last() || null
+        pt.glucose_next = _(pt.glucose_arr).last(2)[0] || null
+
+        $.extend(true, pt.glucose_flot_opts, _flot_opts, {
+          yaxis: { min: 0, max: 300, ticks: [0, 50, 100, 150, 200, 250, 300], tickLength: 0 },
+          grid: {
+            markings: [
+              { yaxis: { from: 0, to: 70 }, color: "#eee" },
+              { yaxis: { from: 300, to: 110 }, color: "#eee" }
+            ]
+          }
+        });
+      })();
+
+      //
+      // Reminders
+      //
+      var reminder_data = [
+      {
+        'title_html':             'glycemia',
+        'reminder_html':          'Consider checking A1C today',
+        'lab_variable':           pt.a1c,
+        'lab_name_html':          'A1C',
+        'target_min':             0,
+        'target_max':             7,
+        'target_unit':            '%',
+        'target_range_text_html': '&lt; 7%',
+        'overdue_in_months':      6,
+        'extra_info_html':        null
+      },
+      {
+        'title_html':             'lipids',
+        'reminder_html':          'Consider checking lipids today',
+        'lab_variable':           pt.ldl,
+        'lab_name_html':          'LDL',
+        'target_min':             0,
+        'target_max':             100,
+        'target_unit':            'mg/dl',
+        'target_range_text_html': '&lt; 100mg/dl',
+        'overdue_in_months':      6,
+        'extra_info_html':        'Consider more aggressive target of &lt; 70 (established CAD).'
+      },
+      {
+        'title_html':             'albuminuria',
+        'reminder_html':          'Consider checking urine &micro;alb/cre ratio today',
+        'lab_variable':           pt.m_alb_cre_ratio,
+        'lab_name_html':          'urine &alb/cre ratio',
+        'target_min':             0,
+        'target_max':             30,
+        'target_unit':            'mg/g',
+        'target_range_text_html': '&lt; 30', // FIXME: we don't really know this
+        'overdue_in_months':      6, // FIXME: we don't really know this
+        'extra_info_html':        '&micro;alb/cre ratio test preferred over non-ratio &micro;alp screening tests.'
+      }]
+
+      var process_reminders = function(reminder_data){
+        _(reminder_data).each(function(r){
+          if (r.lab_variable) {
+            // is the latest date within the given range?
+            var today = new XDate();
+            var d = new XDate(r.lab_variable[0])
+            r.overdue_p = false;
+            r.months_ago = Math.round(d.diffMonths(today));
+            if (r.months_ago > r.overdue_in_months) { r.overdue_p = true; }
+
+            // is the latest value within the given range?
+            r.in_range_p = false;
+            if (r.target_min < r.lab_variable[1] &&
+                r.lab_variable[1] < r.target_max) {
+              r.in_range_p = true;
+            }
+
+            pt.reminders_arr.push(r);
+          } else {
+            return;
+          }
+        })
+      }
+
+      process_reminders(reminder_data);
+
+      // resolve me!
+      dfd.resolve();
+    }) // then
   }).promise();
 };
-
 
 var PROBLEMS_get = function(){
   return $.Deferred(function(dfd){
     SMART.PROBLEMS_get().then(function(r){
       _(r.objects.of_type.Problem).each(function(p){
         pt.problems_arr.push([
-          new XDate(p.startDate)
-        , p.problemName.dcterms__title
-        , p.endDate ? new XDate(p.endDate) : null
+          new XDate(p.startDate),
+          p.problemName.dcterms__title,
+          p.endDate ? new XDate(p.endDate) : null
         ])
       })
       pt.problems_arr = _(pt.problems_arr).sortBy(function(p){ return p[0]; })
@@ -963,12 +677,12 @@ var PROBLEMS_get = function(){
 // when they are all complete.
 SMART.ready(function(){
   $.when(
-         ALLERGIES_get()
-       , DEMOGRAPHICS_get()
-       , VITAL_SIGNS_get()
-       , LAB_RESULTS_get()
-       , PROBLEMS_get()
-       , MEDICATIONS_get()
+     ALLERGIES_get()
+   , DEMOGRAPHICS_get()
+   , VITAL_SIGNS_get()
+   , LAB_RESULTS_get()
+   , PROBLEMS_get()
+   , MEDICATIONS_get()
   )
   .then(function(){
 
@@ -979,7 +693,6 @@ SMART.ready(function(){
     var b = new XDate(pt.bday)
     $('#age').text(Math.round(b.diffYears(new XDate())));
     $('#gender').text(pt.gender[0])
-
 
     // insert data into html
     // last known values (all arrays sorted by ascending dates)
