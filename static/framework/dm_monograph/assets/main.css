@@ -1,8 +1,28 @@
-#errors {
-  font-size: 16px;
-  font-family: Calibri, "Helvetica Neue", Helvetica, Verdana, sans-serif;
-  color: #555;
-}
+/*
+
+  colors
+  ------
+
+  blue       #bed0e8
+  light_blue #d9e1ed
+  dark_blue  #739acd
+  orange     #E46C0A
+
+*/
+
+.bold { font-weight: bold; }
+.normal { font-weight: normal; }
+.smaller { font-size: smaller;}
+.grayer { color: #666; }
+.x-grayer { color: #999; }
+.medium { font-size: 12px;}
+.gray { background-color: #ebebeb; }
+.highlight { color: #E46C0A; }
+.caps { text-transform: uppercase; }
+
+a { color: #08c; text-decoration: none;}
+a:hover { border-bottom: 1px solid #08c; }
+a.nohover:hover { border-bottom: none; }
 
 body {
   background-color: white;
@@ -20,33 +40,55 @@ body {
 }
 
 .section_header {
-  background-color: #CFC9FE;
-  border-top: 1px solid #7665FC;
+  background-color: #bed0e8;
+  border-bottom: 1px solid #739acd;
   margin-bottom: 6px;
   margin-top: 12px;
   font-weight: bold;
+  padding-left: 3px;
 }
 
 .section_subheader {
-  background-color: #E3E0FE;
+  background-color: #d9e1ed;
   margin-bottom: 3px;
   margin-top: 6px;
   font-weight: bold;
+  padding-left: 3px;
 }
 
-/*.problem { padding-left: 12px; }
-.cv_comorbidity { padding-left: 12px; }
-.resolved_problem { padding-left: 12px; }
-*/
-.bold { font-weight: bold; }
-.normal { font-weight: normal; }
-.smaller { font-size: smaller;}
-.grayer { color: #666; }
-.x-grayer { color: #999; }
-.medium { font-size: 12px;}
+#app_title_line {
+  font-size: 18px;
+  margin-bottom: 12px;
+  background-color: #d9e1ed;
+  border-bottom: 2px solid #739acd;
+  text-align: center;
+  padding: 5px 0;
+}
 
-#top_line {  text-transform: uppercase; font-size: 18px; margin-top: 12px; margin-bottom: 2px; }
-.name { font-weight: bold; font-size: 18px; }
+#smart_bug { width: 21px; height: 18px; }
+
+#demo_line {
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.name { font-size: 20px; font-weight: bold; }
+
+.demo_line_label {
+  font-weight: normal;
+  font-size: small;
+  font-variant: small-caps;
+  color: #999;
+}
+
+#errors {
+  font-size: 16px;
+  font-family: Calibri, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+  color: #555;
+}
 
 #show_overlay { font-weight: bold; color: black; font-size: smaller;}
 #show_overlay:hover { border-bottom: none !important;}
@@ -56,15 +98,9 @@ body {
 .test_name { font-weight: bold; font-size: 13px; }
 .test_value { font-weight: bold; font-size: 13px; }
 .test_next_value { font-weight: bold; font-size: 13px; }
-.gray { background-color: #ebebeb; }
-.highlight { color: #E46C0A; }
 
 /*.active { font-weight: bold; }*/
 /*.resolved_number { text-decoration: line-through;}*/
-
-a { color: #08c; text-decoration: none;}
-a:hover { border-bottom: 1px solid #08c; }
-a.nohover:hover { border-bottom: none; }
 
 .controls { font-size: 14px; }
 

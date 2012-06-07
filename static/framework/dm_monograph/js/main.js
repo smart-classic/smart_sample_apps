@@ -607,8 +607,8 @@ var LAB_RESULTS_get = function(){
         'lab_name_html':          'LDL',
         'target_min':             0,
         'target_max':             100,
-        'target_unit':            'mg/dl',
-        'target_range_text_html': '&lt; 100mg/dl',
+        'target_unit':            'mg/dL',
+        'target_range_text_html': '&lt; 100mg/dL',
         'overdue_in_months':      6,
         'extra_info_html':        'Consider more aggressive target of &lt; 70 (established CAD).'
       },

@@ -34,23 +34,30 @@
       <script src='./js/main.js'></script>
   </head>
   <body>
+    <div id='app_title_line'>
+      <img id='smart_bug' src='./assets/smart_bug.png' />
+      SMART Diabetes Monograph
+    </div>
+
     <div id='content' class="container_12">
-      <div id='top_line'>
-        <span class='name'>
-          <span id='family_name'></span>,
-          <span id='given_name'></span>
-        </span>
-        &nbsp;
-        <span id='record_id'></span>
-        &nbsp;
-        <span id='birthday'></span>
-        &nbsp;
-        (<span id='age'></span> <span style='text-transform: lowercase'>YRS</span>)
-        &nbsp;
-        <span id='gender'></span>
-        &nbsp;
-        <span id='diabetic_info' style='font-weight: bold;' class='highlight'></span>
-        <span id='diabetic_dates' style='text-transform: lowercase;'></span>
+
+      <div id='demo_line'>
+        <div style='width: 32%; float: left' class='name'>
+          <span id='family_name'></span>, <span id='given_name'></span>
+        </div>
+        <div style='width: 42%; float: left; text-align: center;'>
+          <span class='demo_line_label'>ID</span> <span id='record_id'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>DOB</span> <span id='birthday'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>AGE</span> <span id='age'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>SEX</span> <span id='gender'></span>&nbsp;&nbsp;
+        </div>
+        <div style='width: 22%; float: left; text-align: right; font-size: 20px'
+          <span id='diabetic_info' class='bold highlight'></span>
+          <!-- <span id='diabetic_dates' style='text-transform: lowercase;'></span> -->
+        </div>
+        <div class='clear'></div>
+      </div>
+
       </div>
 
 
@@ -66,7 +73,7 @@
 
         <div class='section_header'>
           <div style='width: 60%; float: left'>Last Known Values</div>
-          <div style='width: 40%; float: left; text-align: right'>
+          <div style='width: 38%; float: left; text-align: right'>
             <a href='' id='show_overlay' rel="#lkv_overlay"/>[Graph]</a>
           </div>
           <div class='clear'></div>
@@ -410,11 +417,6 @@
           <div id='a1c_graph'></div>
         </div>
 
-        <div style='height: 100px; width: 20%; float: left; margin-left: 1%;'>
-          <img style='height: 90px; width: 90px;'
-               src='./assets/glass_logo.png' />
-        </div>
-
         <div id='controls' class='controls' style='width: 30%; float: left; text-align: right; padding-top: 38px;'>
           <div>
             <input type='button' id='sort_by_date' value='Chronologic' />
@@ -450,11 +452,9 @@
 
       <div id='lkv_top_line'></div>
 
-      <div class="section_header">Last Known Values
-        <span style='font-weight: normal'>Graphed and Detailed</span>
-      </div>
+      <div class="section_header">Last Known Values</div>
 
-      <div class="section_header">Urine Total Protien</div>
+      <div class="section_header">Urine Total Protein</div>
       <div class='lkv_graph' id='ur_tp_graph'></div>
 
       <div class="section_header">&micro;alb/cre</div>
