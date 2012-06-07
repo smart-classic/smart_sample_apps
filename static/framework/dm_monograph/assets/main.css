@@ -57,6 +57,7 @@ body {
 }
 
 #app_title_line {
+  width: 100%;
   font-size: 18px;
   margin-bottom: 12px;
   background-color: #d9e1ed;
