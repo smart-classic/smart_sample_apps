@@ -686,6 +686,7 @@ SMART.ready(function(){
   )
   .then(function(){
 
+    // main demo info
     $('#family_name').text(pt.family_name)
     $('#given_name').text(pt.given_name)
     $('#record_id').text(SMART.record.id)
@@ -694,9 +695,15 @@ SMART.ready(function(){
     $('#age').text(Math.round(b.diffYears(new XDate())));
     $('#gender').text(pt.gender[0])
 
-    // insert data into html
-    // last known values (all arrays sorted by ascending dates)
-    // FIXME: DRY
+    // demo info for patient summary
+    $('#family_name_ps').text(pt.family_name)
+    $('#given_name_ps').text(pt.given_name)
+    $('#birthday_ps').text(pt.bday)
+    var b = new XDate(pt.bday)
+    $('#age_ps').text(Math.round(b.diffYears(new XDate())));
+    $('#gender_ps').text(pt.gender[0])
+
+    // labs
     $('#ur_tp_date').text(pt.ur_tp ? new XDate(pt.ur_tp[0]).toString('MM/dd/yy') : '-')
     $('#ur_tp_val') .text(pt.ur_tp ? pt.ur_tp[1] : null)
     $('#ur_tp_unit').text(pt.ur_tp ? pt.ur_tp[2] : null)
@@ -987,6 +994,7 @@ SMART.ready(function(){
       if (d.length > 0) {
         d.addClass('highlight');
         $('#diabetic_info').text('Diabetic');
+        $('#diabetic_info_ps').text('Diabetic');
         // active diabetic?
         var date_of_oldest_active_diabetes = _(pt.problems_arr)
           .chain()
