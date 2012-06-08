@@ -403,8 +403,8 @@
         <div>
           <div class='section_header' style='width: 48%; float: left'> A1C <span class='normal smaller'>goal <span class='medium'>&lt; 7%</span></span></div>
           <div style='width: 48%; float: left; text-align: right; margin: 12px 0px 6px 0px'>
-            <a target="_blank" href='./assets/patient_summary_mockup.png' id='print_page_link' rel="#print_page_overlay"/>Patient Summary</a>
-            |
+            <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
+            &middot;
             <a target="_blank" href='./assets/app_explainer_mockup.png' id='help_page_link' rel="#help_page_overlay"/>App Explainer</a>
           </div>
           <div class='clear'></div>
@@ -494,22 +494,23 @@
       </div>
 
       <div class='demo_line'>
-        <div style='width: 48%; float: left' class='name'>
+        <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
           <span id='family_name_ps'></span>, <span id='given_name_ps'></span>
         </div>
-        <div style='width: 48%; float: left; text-align: right;'>
-          <span class='demo_line_label'>current diagnosis:</span><span id='diabetic_info_ps' class='bold highlight'></span>
+        <div style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
+          <span class='demo_line_label' id='diabetic_info_label_ps' style='display: none'>current diagnosis:</span>&nbsp;<span id='diabetic_info_ps' class='bold highlight'></span>
         </div>
       </div>
 
-      <div class='demo_line'>
+      <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
         <div style='width: 48%; float: left'>
           <span class='demo_line_label'>DOB</span> <span id='birthday_ps'></span>&nbsp;&nbsp;
           <span class='demo_line_label'>AGE</span> <span id='age_ps'></span>&nbsp;&nbsp;
           <span class='demo_line_label'>GENDER</span> <span id='gender_ps'></span>&nbsp;&nbsp;
         </div>
         <div style='width: 48%; float: left; text-align: right;'>
-          <span class='demo_line_label'>smoking status:</span>Unknown
+          &nbsp;
+          <!-- <span class='demo_line_label'>smoking status:</span>Unknown -->
         </div>
       </div>
 
@@ -517,49 +518,73 @@
 
       <div class="section_header"><span class='section_header_number'>&#10122;</span> About This Summary</div>
 
-      <div>This report summarizes information about your diagnosis of diabetes type 2.</div>
+      <div style='margin-left: 10px'>
+        This report summarizes information about your diagnosis of diabetes type 2.
+      </div>
 
       <div class="section_header"><span class='section_header_number'>&#10123;</span> Your Test Results</div>
 
-      <div class='ps_test'>
-        <div style='width: 48%; float: left'>
-          bp with graph
+      <div class='test_ps'>
+        <div style='width: 42%; float: left'>
+          <div class='header'>Blood Pressure</div>
+          <div id='bp_graph_ps'></div>
         </div>
-        <div style='width: 48%; float: left; text-align: right;'>
-          explanation
-        </div>
-      </div>
-
-      <div class='clear'></div>
-
-      <div class='ps_test'>
-        <div style='width: 48%; float: left'>
-          ldl with graph
-        </div>
-        <div style='width: 48%; float: left; text-align: right;'>
-          explanation
+        <div style='width: 56%; float: left; margin-top: 16px;'>
+          <div id='bp_explanation_ps'>Higher/blue value = systolic, lower/yellow = diastolic</div>
+          <div><span class='label'>LAST TEST</span> <span id='bp_date_ps'></span></div>
+          <br />
+          <div><span class='label'>SYSTOLIC</span> <span id='bp_systolic_ps'></span></div>
+          <div><span class='label'>DIASTOLIC</span> <span id='bp_diastolic_ps'></span></div>
         </div>
       </div>
 
       <div class='clear'></div>
 
-      <div class='ps_test'>
-        <div style='width: 48%; float: left'>
-          a1c with graph
+      <div class='test_ps'>
+        <div style='width: 42%; float: left'>
+          <div class='header'>LDL</div>
+          <div id='ldl_graph_ps'></div>
         </div>
-        <div style='width: 48%; float: left; text-align: right;'>
-          explanation
+        <div style='width: 56%; float: left; margin-top: 16px;'>
+          <div id='ldl_explanation_ps' style='gray smaller'>LDL measures low density lipoproteins (the "bad cholesterol")</div>
+          <div><span class='label'>LAST TEST</span> <span id='ldl_date_ps'></span></div>
+          <br />
+          <div><span id='ldl_ps'></span></div>
         </div>
       </div>
 
       <div class='clear'></div>
+
+      <div class='test_ps'>
+        <div style='width: 42%; float: left'>
+          <div class='header'>A1C</div>
+          <div id='a1c_graph_ps'></div>
+        </div>
+        <div style='width: 56%; float: left; margin-top: 16px;'>
+          <div id='a1c_explanation_ps' style='gray smaller'>The A1C test measures average blood sugar concentration</div>
+          <div><span class='label'>LAST TEST</span> <span id='a1c_date_ps'></span></div>
+          <br />
+          <div><span id='a1c_ps'></span></div>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
 
       <div class=''>
         <div style='width: 48%; float: left'>
-          <div class="section_header"><span class='section_header_number'>&#10124;</span> Your Allergies</div>
+          <div class="section_header">
+            <span class='section_header_number'>&#10124;</span>
+            Your Allergies
+          </div>
+          <div id='allergies_ps'></div>
         </div>
         <div style='width: 48%; float: left;'>
-          <div class="section_header"><span class='section_header_number'>&#10125;</span> Your Medications</div>
+          <div class="section_header">
+            <span class='section_header_number'>&#10125;</span>
+            Your Medications
+          </div>
+          <div id='medications_ps'></div>
         </div>
       </div>
 
@@ -569,8 +594,8 @@
 
       <div>
         <ol>
-          <li>You are due for a new ldl test</li>
-          <li>Find out how to lower your a1c... </li>
+          <li>fixme: You are due for a new ldl test</li>
+          <li>fixme: Find out how to lower your a1c... </li>
         </ol>
       </div>
 

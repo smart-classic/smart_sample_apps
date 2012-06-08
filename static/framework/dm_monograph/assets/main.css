@@ -13,10 +13,11 @@
 .bold { font-weight: bold; }
 .normal { font-weight: normal; }
 .smaller { font-size: smaller;}
+.larger { font-size: larger;}
 .grayer { color: #666; }
 .x-grayer { color: #999; }
 .medium { font-size: 12px;}
-.gray { background-color: #ebebeb; }
+.gray { background-color: #f0f0f0; }
 .highlight { color: #E46C0A; }
 .caps { text-transform: uppercase; }
 
@@ -107,7 +108,7 @@ body {
 /* overlay stuff */
 .lkv_overlay {
   padding: 10px;
-  display:none;
+/*  display:none;*/
   z-index:10000;
   background-color:#fff;
   width:675px;
@@ -172,7 +173,7 @@ body {
 /*  display:none;*/
   z-index:10000;
   background-color:#fff;
-  width:675px;
+  width:700px;
   min-height:200px;
   height: 90%;
   overflow-y: scroll;
@@ -194,7 +195,7 @@ body {
   text-transform: uppercase;
   font-size: 16px;
   margin-top: 16px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   font-weight: bold;
 }
 
@@ -216,4 +217,12 @@ body {
   font-size: 14px;
 }
 
-.section_header_number { font-size: 22px; color: #E46C0A; vertical-align: text-bottom; }
+.section_header_number { font-size: 22px; color: #E46C0A; vertical-align: text-bottom; font-weight: normal; }
+
+.test_ps { margin: 10px 0 0 10px; }
+.test_ps .header { font-size: 14px; font-weight: bold; padding-left: 43px; margin-bottom: 3px; }
+.test_ps .label { font-weight: normal;
+font-size: small;
+font-variant: small-caps;
+color: #999;
+}
