@@ -994,6 +994,7 @@ SMART.ready(function(){
 
       // show diabetic info in demos line
       var d = $('.problem:contains("Diabetes")');
+
       if (d.length > 0) {
         d.addClass('highlight');
         $('#diabetic_info').text('Diabetic');
@@ -1018,7 +1019,7 @@ SMART.ready(function(){
             var date = d.toString('MM/dd/yy')
             $('#diabetic_dates').text('diagnosed '+date+' (>'+years_ago+' years)')
           }
-      }
+      } // d.length
 
       // add "as of" date of problems section header
       var el = _(pt.problems_arr).max(function(e){ return e[2] || e[0]; })
@@ -1027,7 +1028,11 @@ SMART.ready(function(){
 
       // medications
       $('#medications').empty()
-      if (pt.meds_arr.length == 0) { $('<div/>', {text: 'No known medications'}).appendTo('#medications'); }
+      if (pt.meds_arr.length == 0) {
+        $('<div/>', {text: 'No known medications'}).appendTo('#medications');
+        $('<div/>', {text: 'No known medications'}).appendTo('#medications_ps');
+      }
+
       _(pt.meds_arr).chain()
         .sortBy(function(e){ return e[1].toLowerCase(); })
         .each(function(e){
@@ -1039,20 +1044,38 @@ SMART.ready(function(){
           .data(e)
           .appendTo('#medications')
         })
-        .value()
+
+        _(pt.meds_arr).chain()
+          .sortBy(function(e){ return e[1].toLowerCase(); })
+          .map(function(e){ return e[1].split(' ')[0]; })
+          .uniq(true)
+          .each(function(e){
+            $('<div></div>', {
+              'class': 'medication',
+              html: '<span>' + e + '</span>'
+            })
+            .appendTo('#medications_ps')
+          })
+
         do_stripes()
-    };
+    }; // sort_by_alpha?
     
-    // allergies
-    if (pt.allergies_arr.length == 0) { $('<div/>', {text: 'No known allergies'}).appendTo('#allergies'); }
-    _(pt.allergies_arr).each(function(e){
-      $('<div></div>', {
-        'class': 'allergy',
-        html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1]
+    // allergies (todo: refactor)
+    if (pt.allergies_arr.length == 0) {
+      $('<div/>', {text: 'No known allergies'}).appendTo('#allergies');
+      $('<div/>', {text: 'No known allergies'}).appendTo('#allergies_ps');
+    } else {
+      _(pt.allergies_arr).each(function(e){
+        var a = $('<div></div>', {
+          'class': 'allergy',
+          html: '<span class=\'bold\'>' + e[0] + '</span> ' + e[1]
+        })
+        .data(e);
+
+        $(a).appendTo('#allergies');
+        $(a).clone(true).appendTo('#allergies_ps')
       })
-      .data(e)
-      .appendTo('#allergies')
-    })
+    }
 
     //
     // display by date
@@ -1110,7 +1133,6 @@ SMART.ready(function(){
       do_stripes();
     };
 
-    
     //
     // reminders
     //
@@ -1234,5 +1256,65 @@ SMART.ready(function(){
     })
 
     $("#show_overlay[rel]").overlay();
+
+    $("#show_pt_summary_overlay[rel]").overlay();
+
+    // reminders in the pt summary (todo: refactor dry!!)
+
+    // look into the processed reminders array, see if there are reminders for
+    // bps
+    $('#bp_systolic_ps').html('<span class="bold larger">'+pt.sbp[1]+'</span>');
+    $('#bp_diastolic_ps').html('<span class="bold larger">'+pt.dbp[1]+'</span>');
+
+    // ldl or a1c
+    var last_test_html = '';
+    var value = null;
+    var unit = '';
+    var value_line_html = '';
+
+    var r = _(pt.reminders_arr).find(function(r){
+      return (r.lab_name_html === 'LDL' && (!r.in_range_p || r.overdue_p))
+    }) || false;
+
+    if (r) {
+      last_test_html = new XDate(r.lab_variable[0]).toString('MM/dd/yy');
+      if (r.overdue_p) {
+        last_test_html = '<span class="highlight larger bold">' + last_test_html + ' is &gt; ' +
+          r.overdue_in_months + ' months ago <br /> You are due for a new LDL test.</span>';
+      }
+      value = r.lab_variable[1];
+      unit = r.lab_variable[2];
+      if (r.in_range_p) {
+        value_line_html = '<span style="large">' + value + '</span>' + unit + ' is in the goal range of '+r.target_range_text_html;
+      } else {
+        value_line_html = '<span class="highlight larger bold">' + '<span style="large">' + value + '</span>' + unit + ' is out of the goal range of '+r.target_range_text_html + '</span>';
+      }
+
+      if (r.overdue_p) { $('#ldl_date_ps').html(last_test_html); }
+      $('#ldl_ps').html(value_line_html);
+    }
+
+    r = _(pt.reminders_arr).find(function(r){
+      return (r.lab_name_html === 'A1C' && (!r.in_range_p || r.overdue_p))
+    }) || false;
+
+   if (r) {
+      last_test_html = new XDate(r.lab_variable[0]).toString('MM/dd/yy')
+      if (r.overdue_p) {
+        last_test_html = '<span class="highlight larger bold">' + last_test_html + ' is &gt; ' +
+          r.overdue_in_months + ' months ago <br /> You are due for a new A1C test.</span>';
+      }
+      value = r.lab_variable[1];
+      unit = r.lab_variable[2];
+      if (r.in_range_p) {
+        value_line_html = '<span style="large">' + value + '</span>'  + unit + ' is in the goal range of '+r.target_range_text_html;
+      } else {
+        value_line_html = '<span class="highlight larger bold">' + '<span style="large">' + value + '</span>'  + unit + ' is out of the goal range of '+r.target_range_text_html + '</span>';
+      }
+
+      if (r.overdue_p) { $('#a1c_date_ps').html(last_test_html); }
+      $('#a1c_ps').html(value_line_html);
+    }
+
   });
 });
