@@ -702,6 +702,9 @@ SMART.ready(function(){
     var b = new XDate(pt.bday)
     $('#age_ps').text(Math.round(b.diffYears(new XDate())));
     $('#gender_ps').text(pt.gender[0])
+    $('#bp_date_ps').text(pt.sbp ? new XDate(pt.sbp[0]).toString('MM/dd/yy') : '')
+    $('#ldl_date_ps').text(pt.sbp ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '')
+    $('#a1c_date_ps').text(pt.sbp ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '')
 
     // labs
     $('#ur_tp_date').text(pt.ur_tp ? new XDate(pt.ur_tp[0]).toString('MM/dd/yy') : '-')
@@ -819,7 +822,7 @@ SMART.ready(function(){
     $('#height_val_cm').text(height_val_cm || 'Unknown')
     highlight(pt.height, ['#height_date']);
 
-    // Fixme: NO pneumovax or flu codes in the current pts...
+    // todo: NO pneumovax or flu codes in the current pts...
     if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }
     if (!pt.flu_shot_date) { $('#flu_shot_date').text('Unknown'); }
 
@@ -837,16 +840,16 @@ SMART.ready(function(){
 
     var do_stripes = function(){
       $('.cv_comorbidity, .allergy, .problem, .medication, .reminder').each(function(i,e){ $(e).css({'background-color': ''}); })
-      $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
-      $('.allergy').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
-      $('.problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
-      $('.resolved_problem').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
-      $('.medication').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
-      $('.reminder').filter(':odd').each(function(i,e){ $(e).css({'background-color': '#ebebeb'}); })
+      $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
+      $('.allergy').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
+      $('.problem').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
+      $('.resolved_problem').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
+      $('.medication').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
+      $('.reminder').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
     }
 
     // (some) cv comorbidities
-    // fixme: I'm sure there are many more...
+    // todo: I'm sure there are many more...
     // http://www.ncbi.nlm.nih.gov/pmc/articles/PMC550650/
     var partition_comorbidities = function(){
       $('#cv_comorbidities').empty();
@@ -994,6 +997,7 @@ SMART.ready(function(){
       if (d.length > 0) {
         d.addClass('highlight');
         $('#diabetic_info').text('Diabetic');
+        $('#diabetic_info_label_ps').show();
         $('#diabetic_info_ps').text('Diabetic');
         // active diabetic?
         var date_of_oldest_active_diabetes = _(pt.problems_arr)
@@ -1169,6 +1173,11 @@ SMART.ready(function(){
           e[1] = e[1] + 30;
           return e;
         })
+
+        pt.sbp = _(pt.sbp_arr).last() || null;
+        pt.dbp = _(pt.dbp_arr).last() || null;
+        pt.sbp_next = _(pt.sbp_arr).last(2)[0] || null;
+        pt.dbp_next = _(pt.dbp_arr).last(2)[0] || null;
       }
 
       // plot'em!
@@ -1176,7 +1185,7 @@ SMART.ready(function(){
       $.plot($("#ldl_graph"), [pt.ldl_arr],             pt.ldl_flot_opts);
       $.plot($("#a1c_graph"), [pt.a1c_arr],             pt.a1c_flot_opts);
 
-      // fixme: dry
+      // todo: dry
       $.plot($("#ur_tp_graph"),           [pt.ur_tp_arr],           pt.ur_tp_flot_opts);
       $.plot($("#m_alb_cre_ratio_graph"), [pt.m_alb_cre_ratio_arr], pt.m_alb_cre_ratio_flot_opts);
       $.plot($("#sgot_graph"),            [pt.sgot_arr],            pt.sgot_flot_opts);
@@ -1188,6 +1197,16 @@ SMART.ready(function(){
       $.plot($("#creatinine_graph"),      [pt.creatinine_arr],      pt.creatinine_flot_opts);
       $.plot($("#glucose_graph"),         [pt.glucose_arr],         pt.glucose_flot_opts);
       $.plot($("#a1c_graph_lkv"),         [pt.a1c_arr],             pt.a1c_flot_opts);
+
+      // in pt summary
+      var w = $('#bp_graph').width();
+      $('#bp_graph_ps') .height(h).width(w);
+      $('#ldl_graph_ps').height(h).width(w);
+      $('#a1c_graph_ps').height(h).width(w);
+
+      $.plot($("#bp_graph_ps"),  [pt.dbp_arr, pt.sbp_arr], pt.bp_flot_opts);
+      $.plot($("#ldl_graph_ps"), [pt.ldl_arr],             pt.ldl_flot_opts);
+      $.plot($("#a1c_graph_ps"), [pt.a1c_arr],             pt.a1c_flot_opts);
     };
 
     draw_plots();
