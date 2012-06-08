@@ -66,7 +66,7 @@ body {
   padding: 6px 0;
 }
 
-#smart_bug { width: 21px; height: 18px; }
+.smart_bug { width: 21px; height: 18px; }
 
 #demo_line {
   text-transform: uppercase;
@@ -108,7 +108,7 @@ body {
 /* overlay stuff */
 .lkv_overlay {
   padding: 10px;
-/*  display:none;*/
+  display:none;
   z-index:10000;
   background-color:#fff;
   width:675px;
@@ -170,10 +170,10 @@ body {
 
 .pt_summary {
   padding: 10px;
-/*  display:none;*/
+  display:none;
   z-index:10000;
   background-color:#fff;
-  width:700px;
+  width:900px;
   min-height:200px;
   height: 90%;
   overflow-y: scroll;
@@ -182,13 +182,22 @@ body {
   -webkit-box-shadow: 0 0 90px #000;
 }
 
-.pt_summary #top_line {
-    width: 100%;
-    font-size: 18px;
-    margin-bottom: 12px;
-    background-color: #d9e1ed;
-    text-align: center;
-    padding: 6px 3px;
+#lkv_overlay_title_line {
+  width: 100%;
+  height: 22px;
+  font-size: 18px;
+  background-color: #d9e1ed;
+  text-align: center;
+  padding: 6px 0;
+}
+
+#pt_summary_title_line {
+  width: 100%;
+  height: 22px;
+  font-size: 18px;
+  background-color: #d9e1ed;
+  text-align: center;
+  padding: 6px 0;
 }
 
 .pt_summary .demo_line {
@@ -226,3 +235,5 @@ font-size: small;
 font-variant: small-caps;
 color: #999;
 }
+
+.reminder_for_pt { font-weight: bold; font-size: larger; color: #E46C0A; }

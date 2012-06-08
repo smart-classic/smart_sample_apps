@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <!--
-    Diabetes Mellitus Monograph SMART App
-    =====================================
+    SMART Diabetes Monograph
+    ========================
 
     From the SMART Project <http://www.smartplatforms.org/>
     Arjun Sanyal <arjun.sanyal@childrens.harvard.edu> - Design and Implementation
@@ -16,7 +16,7 @@
     - fill in requires in manifest file
   -->
   <head>
-    <title>Diabetes Mellitus Monograph</title>
+    <title>SMART Diabetes Monograph</title>
       <link rel='stylesheet' href='./assets/fluid_grid_60_12_0.css'>
       <link rel='stylesheet' href='./assets/main.css'>
 
@@ -36,7 +36,7 @@
   <body>
 
     <div id='app_title_line'>
-      <img id='smart_bug' src='./assets/smart_bug.png' />
+      <img class='smart_bug' src='./assets/smart_bug.png' />
       SMART Diabetes Monograph
     </div>
 
@@ -66,7 +66,6 @@
         </div>
 
         <div id='bp_graph'></div>
-
 
         <div class='section_header'>
           <div style='width: 60%; float: left'>Last Known Values</div>
@@ -402,10 +401,12 @@
       <div id='column_3' class='grid_6'>
         <div>
           <div class='section_header' style='width: 48%; float: left'> A1C <span class='normal smaller'>goal <span class='medium'>&lt; 7%</span></span></div>
-          <div style='width: 48%; float: left; text-align: right; margin: 12px 0px 6px 0px'>
+          <div style='width: 48%; float: left; text-align: center; margin: 12px 0px 6px 16px'>
             <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
             &middot;
-            <a target="_blank" href='./assets/app_explainer_mockup.png' id='help_page_link' rel="#help_page_overlay"/>App Explainer</a>
+            <a target="_blank" href='./app_explainer.html'/>App Explainer</a>
+            <br />
+            <a target="_blank" href='./timeline.html'/>Timeline View</a>
           </div>
           <div class='clear'></div>
         </div>
@@ -443,13 +444,17 @@
     </div>
 
     <div class="lkv_overlay" id="lkv_overlay">
-      <div style='text-align: right'>
-        <a class='close' href='#'>[Close]</a>
+      <div id='lkv_overlay_title_line'>
+        <div style='width: 78%; float: left; margin-left: 10%'>
+          <img class='smart_bug' src='./assets/smart_bug.png' />
+          SMART Diabetes Monograph Labs
+        </div>
+        <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
+          <a class='close' href='#'>[Close]</a>
+        </div>
       </div>
 
-      <div id='lkv_top_line'></div>
-
-      <div class="section_header">Last Known Values</div>
+      <div class='clear'></div>
 
       <div class="section_header">Urine Total Protein</div>
       <div class='lkv_graph' id='ur_tp_graph'></div>
@@ -487,11 +492,17 @@
 
 
     <div id="pt_summary" class="pt_summary">
-      <div id='top_line'>
-        <div style='text-align: right; font-size: 12px; font-weight: bold'>
+      <div id='pt_summary_title_line'>
+        <div style='width: 78%; float: left; margin-left: 10%'>
+          <img class='smart_bug' src='./assets/smart_bug.png' />
+          SMART Diabetes Patient Summary
+        </div>
+        <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
           <a class='close' href='#'>[Close]</a>
         </div>
       </div>
+
+      <div class='clear'></div>
 
       <div class='demo_line'>
         <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
@@ -514,38 +525,39 @@
         </div>
       </div>
 
+      <br />
+
       <div class='clear'></div>
 
       <div class="section_header"><span class='section_header_number'>&#10122;</span> About This Summary</div>
 
       <div style='margin-left: 10px'>
-        This report summarizes information about your diagnosis of diabetes type 2.
+        This report summarizes information about your diagnosis of diabetes type 2
       </div>
 
       <div class="section_header"><span class='section_header_number'>&#10123;</span> Your Test Results</div>
 
       <div class='test_ps'>
-        <div style='width: 42%; float: left'>
+        <div style='width: 33%; float: left'>
           <div class='header'>Blood Pressure</div>
           <div id='bp_graph_ps'></div>
         </div>
-        <div style='width: 56%; float: left; margin-top: 16px;'>
-          <div id='bp_explanation_ps'>Higher/blue value = systolic, lower/yellow = diastolic</div>
+        <div style='width: 63%; float: left; margin-top: 16px;'>
           <div><span class='label'>LAST TEST</span> <span id='bp_date_ps'></span></div>
           <br />
-          <div><span class='label'>SYSTOLIC</span> <span id='bp_systolic_ps'></span></div>
-          <div><span class='label'>DIASTOLIC</span> <span id='bp_diastolic_ps'></span></div>
+          <div><span class='label'>SYSTOLIC</span> <span style='color: #afd8f8; font-weight: bold'>O</span> <span id='bp_systolic_ps'></span></div>
+          <div><span class='label'>DIASTOLIC</span> <span style='color: #EDC240; font-weight: bold'>O</span> <span id='bp_diastolic_ps'></span></div>
         </div>
       </div>
 
       <div class='clear'></div>
 
       <div class='test_ps'>
-        <div style='width: 42%; float: left'>
+        <div style='width: 33%; float: left'>
           <div class='header'>LDL</div>
           <div id='ldl_graph_ps'></div>
         </div>
-        <div style='width: 56%; float: left; margin-top: 16px;'>
+        <div style='width: 63%; float: left; margin-top: 16px;'>
           <div id='ldl_explanation_ps' style='gray smaller'>LDL measures low density lipoproteins (the "bad cholesterol")</div>
           <div><span class='label'>LAST TEST</span> <span id='ldl_date_ps'></span></div>
           <br />
@@ -556,11 +568,11 @@
       <div class='clear'></div>
 
       <div class='test_ps'>
-        <div style='width: 42%; float: left'>
+        <div style='width: 33%; float: left'>
           <div class='header'>A1C</div>
           <div id='a1c_graph_ps'></div>
         </div>
-        <div style='width: 56%; float: left; margin-top: 16px;'>
+        <div style='width: 63%; float: left; margin-top: 16px;'>
           <div id='a1c_explanation_ps' style='gray smaller'>The A1C test measures average blood sugar concentration</div>
           <div><span class='label'>LAST TEST</span> <span id='a1c_date_ps'></span></div>
           <br />
@@ -570,33 +582,34 @@
 
       <div class='clear'></div>
 
+      <br />
 
-      <div class=''>
-        <div style='width: 48%; float: left'>
+      <div>
+        <div style='width: 33%; float: left'>
           <div class="section_header">
             <span class='section_header_number'>&#10124;</span>
             Your Allergies
           </div>
-          <div id='allergies_ps'></div>
+          <div id='allergies_ps' style="margin-left: 10px;"></div>
         </div>
-        <div style='width: 48%; float: left;'>
+        <div style='width: 63%; float: left;'>
           <div class="section_header">
             <span class='section_header_number'>&#10125;</span>
             Your Medications
           </div>
-          <div id='medications_ps'></div>
+          <div id='medications_ps' style="margin-left: 10px; width: 50%; float: left;"></div>
+          <div id='medications_2_ps' style="margin-left: 10px; width: 50%; float; left;"></div>
         </div>
       </div>
 
       <div class='clear'></div>
 
+      <br />
+
       <div class="section_header"><span class='section_header_number'>&#10126;</span> What Should You Do Now?</div>
 
       <div>
-        <ol>
-          <li>fixme: You are due for a new ldl test</li>
-          <li>fixme: Find out how to lower your a1c... </li>
-        </ol>
+        <ol id='reminders_for_pt'></ol>
       </div>
 
     </div>

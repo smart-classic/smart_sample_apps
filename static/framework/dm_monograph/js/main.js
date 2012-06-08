@@ -591,6 +591,7 @@ var LAB_RESULTS_get = function(){
       {
         'title_html':             'glycemia',
         'reminder_html':          'Consider checking A1C today',
+        'reminder_for_pt_html':   'Find out how to lower your A1C to control your blood sugar today',
         'lab_variable':           pt.a1c,
         'lab_name_html':          'A1C',
         'target_min':             0,
@@ -603,6 +604,7 @@ var LAB_RESULTS_get = function(){
       {
         'title_html':             'lipids',
         'reminder_html':          'Consider checking lipids today',
+        'reminder_for_pt_html':   'Find out how to lower your LDL levels today',
         'lab_variable':           pt.ldl,
         'lab_name_html':          'LDL',
         'target_min':             0,
@@ -1051,7 +1053,7 @@ SMART.ready(function(){
           .uniq(true)
           .each(function(e){
             $('<div></div>', {
-              'class': 'medication',
+              // 'class': 'medication', // strip class so no stripes
               html: '<span>' + e + '</span>'
             })
             .appendTo('#medications_ps')
@@ -1278,9 +1280,10 @@ SMART.ready(function(){
 
     if (r) {
       last_test_html = new XDate(r.lab_variable[0]).toString('MM/dd/yy');
+      var overdue_text = 'You are due for a new LDL test';
       if (r.overdue_p) {
         last_test_html = '<span class="highlight larger bold">' + last_test_html + ' is &gt; ' +
-          r.overdue_in_months + ' months ago <br /> You are due for a new LDL test.</span>';
+          r.overdue_in_months + ' months ago <br /> '+ overdue_text +'</span>';
       }
       value = r.lab_variable[1];
       unit = r.lab_variable[2];
@@ -1288,9 +1291,13 @@ SMART.ready(function(){
         value_line_html = '<span style="large">' + value + '</span>' + unit + ' is in the goal range of '+r.target_range_text_html;
       } else {
         value_line_html = '<span class="highlight larger bold">' + '<span style="large">' + value + '</span>' + unit + ' is out of the goal range of '+r.target_range_text_html + '</span>';
+        $('<li></li>', { 'class': 'reminder_for_pt', html: r.reminder_for_pt_html }).appendTo('#reminders_for_pt')
       }
 
-      if (r.overdue_p) { $('#ldl_date_ps').html(last_test_html); }
+      if (r.overdue_p) {
+        $('#ldl_date_ps').html(last_test_html);
+        $('<li></li>', { 'class': 'reminder_for_pt', html: overdue_text }).appendTo('#reminders_for_pt')
+      }
       $('#ldl_ps').html(value_line_html);
     }
 
@@ -1300,9 +1307,11 @@ SMART.ready(function(){
 
    if (r) {
       last_test_html = new XDate(r.lab_variable[0]).toString('MM/dd/yy')
+      var overdue_text = 'You are due for a new A1C test';
+
       if (r.overdue_p) {
         last_test_html = '<span class="highlight larger bold">' + last_test_html + ' is &gt; ' +
-          r.overdue_in_months + ' months ago <br /> You are due for a new A1C test.</span>';
+          r.overdue_in_months + ' months ago <br />'+ overdue_text +'</span>';
       }
       value = r.lab_variable[1];
       unit = r.lab_variable[2];
@@ -1310,11 +1319,14 @@ SMART.ready(function(){
         value_line_html = '<span style="large">' + value + '</span>'  + unit + ' is in the goal range of '+r.target_range_text_html;
       } else {
         value_line_html = '<span class="highlight larger bold">' + '<span style="large">' + value + '</span>'  + unit + ' is out of the goal range of '+r.target_range_text_html + '</span>';
+        $('<li></li>', { 'class': 'reminder_for_pt', html: r.reminder_for_pt_html }).appendTo('#reminders_for_pt')
       }
 
-      if (r.overdue_p) { $('#a1c_date_ps').html(last_test_html); }
+      if (r.overdue_p) {
+        $('#a1c_date_ps').html(last_test_html);
+        $('<li></li>', { 'class': 'reminder_for_pt', html: overdue_text }).appendTo('#reminders_for_pt')
+      }
       $('#a1c_ps').html(value_line_html);
     }
-
   });
 });
