@@ -111,15 +111,15 @@ body {
   display:none;
   z-index:10000;
   background-color:#fff;
-  width:675px;
+  width:900px;
   min-height:200px;
   height: 90%;
   overflow-y: scroll;
   overflow-x: hidden;
 /*  border:1px solid #666;*/
   /* CSS3 styling for latest browsers */
-  -moz-box-shadow:0 0 90px 5px #000;
-  -webkit-box-shadow: 0 0 90px #000;
+  -moz-box-shadow:    0 0 45px 5px #666;
+  -webkit-box-shadow: 0 0 45px #666;
   
 }
 
@@ -129,7 +129,6 @@ body {
   background-image:url(./close.png);
   position:absolute;
   right:0px;
-  top:0px;
   right:-15px;
   top:-15px;
   cursor:pointer;
@@ -178,8 +177,8 @@ body {
   height: 90%;
   overflow-y: scroll;
   overflow-x: hidden;
-  -moz-box-shadow:0 0 90px 5px #000;
-  -webkit-box-shadow: 0 0 90px #000;
+  -moz-box-shadow:    0 0 45px 5px #666;
+  -webkit-box-shadow: 0 0 45px #666;
 }
 
 #lkv_overlay_title_line {
@@ -202,7 +201,6 @@ body {
 
 .pt_summary .demo_line {
   text-transform: uppercase;
-  font-size: 16px;
   margin-top: 16px;
   margin-bottom: 16px;
   font-weight: bold;
@@ -237,3 +235,5 @@ color: #999;
 }
 
 .reminder_for_pt { font-weight: bold; font-size: larger; color: #E46C0A; }
+
+.diabetic_info { font-size: large; }

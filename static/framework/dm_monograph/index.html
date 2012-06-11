@@ -42,19 +42,23 @@
 
     <div id='content' class="container_12">
 
-      <div id='demo_line'>
-        <div style='width: 32%; float: left' class='name'>
-          <span id='family_name'></span>, <span id='given_name'></span>
+      <div class='demo_line'>
+        <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
+          <span class='family_name'></span>, <span class='given_name'></span>
         </div>
-        <div style='width: 45%; float: left; text-align: center;'>
-          <span class='demo_line_label'>ID</span> <span id='record_id'></span>&nbsp;&nbsp;
-          <span class='demo_line_label'>DOB</span> <span id='birthday'></span>&nbsp;&nbsp;
-          <span class='demo_line_label'>AGE</span> <span id='age'></span>&nbsp;&nbsp;
-          <span class='demo_line_label'>SEX</span> <span id='gender'></span>&nbsp;&nbsp;
+        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px; display: none'>
+          <span class='demo_line_label' class='diabetic_info_label'>DIAGNOSIS</span>
+          <span class='diabetic_info bold highlight'></span>
+          <span class='diabetic_how_long_text bold highlight'></span>
         </div>
-        <div style='width: 22%; float: left; text-align: right; font-size: 20px'>
-          <span id='diabetic_info' class='bold highlight'></span>
-          <!-- <span id='diabetic_dates' style='text-transform: lowercase;'></span> -->
+      </div>
+
+      <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
+        <div style='width: 48%; float: left'>
+          <span class='demo_line_label'>ID</span> <span class='record_id'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>DOB</span> <span class='birthday'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>AGE</span> <span class='age'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
         </div>
       </div>
 
@@ -456,8 +460,29 @@
 
       <div class='clear'></div>
 
+      <div class='demo_line'>
+        <div style='width: 48%; float: left; margin: 10px 0px;' class='name'>
+          <span class='family_name'></span>, <span class='given_name'></span>
+        </div>
+        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin: 10px 0px; display: none'>
+          <span class='demo_line_label diabetic_info_label'>DIAGNOSIS</span>
+          <span class='diabetic_info bold highlight'></span>
+          <span class='diabetic_how_long_text bold highlight'></span>
+        </div>
+      </div>
+
+      <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
+        <div style='width: 48%; float: left'>
+          <span class='demo_line_label'>DOB</span> <span class='birthday'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>AGE</span> <span class='age'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
       <div class="section_header">Urine Total Protein</div>
-      <div class='lkv_graph' id='ur_tp_graph'></div>
+      <div class='lkv_graph' id='ur_tp_graph' style='width: 200px; height: 75px;'></div>
 
       <div class="section_header">&micro;alb/cre</div>
       <div class='lkv_graph' id='m_alb_cre_ratio_graph'></div>
@@ -506,22 +531,20 @@
 
       <div class='demo_line'>
         <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
-          <span id='family_name_ps'></span>, <span id='given_name_ps'></span>
+          <span class='family_name'></span>, <span class='given_name'></span>
         </div>
-        <div style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
-          <span class='demo_line_label' id='diabetic_info_label_ps' style='display: none'>current diagnosis:</span>&nbsp;<span id='diabetic_info_ps' class='bold highlight'></span>
+        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px; display: none'>
+          <span class='demo_line_label diabetic_info_label'>DIAGNOSIS</span>
+          <span class='diabetic_info bold highlight'></span>
+          <span class='diabetic_how_long_text bold highlight'></span>
         </div>
       </div>
 
       <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
         <div style='width: 48%; float: left'>
-          <span class='demo_line_label'>DOB</span> <span id='birthday_ps'></span>&nbsp;&nbsp;
-          <span class='demo_line_label'>AGE</span> <span id='age_ps'></span>&nbsp;&nbsp;
-          <span class='demo_line_label'>GENDER</span> <span id='gender_ps'></span>&nbsp;&nbsp;
-        </div>
-        <div style='width: 48%; float: left; text-align: right;'>
-          &nbsp;
-          <!-- <span class='demo_line_label'>smoking status:</span>Unknown -->
+          <span class='demo_line_label'>DOB</span> <span class='birthday'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>AGE</span> <span class='age'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
         </div>
       </div>
 

@@ -689,21 +689,14 @@ SMART.ready(function(){
   .then(function(){
 
     // main demo info
-    $('#family_name').text(pt.family_name)
-    $('#given_name').text(pt.given_name)
-    $('#record_id').text(SMART.record.id)
-    $('#birthday').text(pt.bday)
+    $('.family_name').text(pt.family_name)
+    $('.given_name').text(pt.given_name)
+    $('.record_id').text(SMART.record.id)
+    $('.birthday').text(pt.bday)
     var b = new XDate(pt.bday)
-    $('#age').text(Math.round(b.diffYears(new XDate())));
-    $('#gender').text(pt.gender[0])
+    $('.age').text(Math.round(b.diffYears(new XDate())));
+    $('.gender').text(pt.gender[0])
 
-    // demo info for patient summary
-    $('#family_name_ps').text(pt.family_name)
-    $('#given_name_ps').text(pt.given_name)
-    $('#birthday_ps').text(pt.bday)
-    var b = new XDate(pt.bday)
-    $('#age_ps').text(Math.round(b.diffYears(new XDate())));
-    $('#gender_ps').text(pt.gender[0])
     $('#bp_date_ps').text(pt.sbp ? new XDate(pt.sbp[0]).toString('MM/dd/yy') : '')
     $('#ldl_date_ps').text(pt.sbp ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '')
     $('#a1c_date_ps').text(pt.sbp ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '')
@@ -841,11 +834,10 @@ SMART.ready(function(){
     }
 
     var do_stripes = function(){
-      $('.cv_comorbidity, .allergy, .problem, .medication, .reminder').each(function(i,e){ $(e).css({'background-color': ''}); })
+      $('.cv_comorbidity, .allergy, .problem, .medication, .reminder').removeClass('gray');
       $('.cv_comorbidity').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
       $('.allergy').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
       $('.problem').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
-      $('.resolved_problem').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
       $('.medication').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
       $('.reminder').filter(':odd').each(function(i,e){ $(e).addClass('gray'); })
     }
@@ -999,10 +991,9 @@ SMART.ready(function(){
 
       if (d.length > 0) {
         d.addClass('highlight');
-        $('#diabetic_info').text('Diabetic');
-        $('#diabetic_info_label_ps').show();
-        $('#diabetic_info_ps').text('Diabetic');
-        // active diabetic?
+        $('.diabetic_diagnosis_p').show();
+        $('.diabetic_info').text('Diabetic');
+
         var date_of_oldest_active_diabetes = _(pt.problems_arr)
           .chain()
           .filter(function(e) {
@@ -1018,8 +1009,10 @@ SMART.ready(function(){
             var today = new XDate();
             var d = new XDate(date_of_oldest_active_diabetes)
             var years_ago = Math.round(d.diffYears(today));
-            var date = d.toString('MM/dd/yy')
-            $('#diabetic_dates').text('diagnosed '+date+' (>'+years_ago+' years)')
+            var months_ago = Math.round(d.diffMonths(today));
+            var t = months_ago < 23 ? months_ago + ' months ago' : years_ago + ' years ago';
+
+            $('.diabetic_how_long_text').text('('+t+')')
           }
       } // d.length
 
@@ -1257,9 +1250,10 @@ SMART.ready(function(){
       return false;
     })
 
-    $("#show_overlay[rel]").overlay();
-
-    $("#show_pt_summary_overlay[rel]").overlay();
+    // can't use px for top here, estimating in %
+    var o_opts = {'top': '7%', 'mask': {'color': '#fff', 'opacity': '0.85'}};
+    $("#show_overlay[rel]").overlay(o_opts);
+    $("#show_pt_summary_overlay[rel]").overlay(o_opts);
 
     // reminders in the pt summary (todo: refactor dry!!)
 
