@@ -1202,31 +1202,13 @@ SMART.ready(function(){
       $.plot($("#ldl_graph"), [pt.ldl_arr],             pt.ldl_flot_opts);
       $.plot($("#a1c_graph"), [pt.a1c_arr],             pt.a1c_flot_opts);
 
-      // todo: dry
-      $.plot($("#ur_tp_graph"),           [pt.ur_tp_arr],           pt.ur_tp_flot_opts);
-      $.plot($("#m_alb_cre_ratio_graph"), [pt.m_alb_cre_ratio_arr], pt.m_alb_cre_ratio_flot_opts);
-      $.plot($("#sgot_graph"),            [pt.sgot_arr],            pt.sgot_flot_opts);
-      $.plot($("#chol_total_graph"),      [pt.chol_total_arr],      pt.chol_total_flot_opts);
-      $.plot($("#triglyceride_graph"),    [pt.triglyceride_arr],    pt.triglyceride_flot_opts);
-      $.plot($("#hdl_graph"),             [pt.hdl_arr],             pt.hdl_flot_opts);
-      $.plot($("#ldl_graph_lkv"),         [pt.ldl_arr],             pt.ldl_flot_opts);
-      $.plot($("#bun_graph"),             [pt.bun_arr],             pt.bun_flot_opts);
-      $.plot($("#creatinine_graph"),      [pt.creatinine_arr],      pt.creatinine_flot_opts);
-      $.plot($("#glucose_graph"),         [pt.glucose_arr],         pt.glucose_flot_opts);
-      $.plot($("#a1c_graph_lkv"),         [pt.a1c_arr],             pt.a1c_flot_opts);
-
-      // in pt summary
-      var w = $('#bp_graph').width();
-      $('#bp_graph_ps') .height(h).width(w);
-      $('#ldl_graph_ps').height(h).width(w);
-      $('#a1c_graph_ps').height(h).width(w);
-
-      $.plot($("#bp_graph_ps"),  [pt.dbp_arr, pt.sbp_arr], pt.bp_flot_opts);
-      $.plot($("#ldl_graph_ps"), [pt.ldl_arr],             pt.ldl_flot_opts);
-      $.plot($("#a1c_graph_ps"), [pt.a1c_arr],             pt.a1c_flot_opts);
+      // note: we plot the graphs for the labs and pt summary overlays
+      // in a callback attached to the onLoad event below because of
+      // a rendering bug with the plot's y-axis labels
     };
 
     draw_plots();
+
 
     // clone demo line into lkv popup
     $('#lkv_top_line').html($('#top_line').html())
@@ -1250,10 +1232,36 @@ SMART.ready(function(){
       return false;
     })
 
-    // can't use px for top here, estimating in %
-    var o_opts = {'top': '7%', 'mask': {'color': '#fff', 'opacity': '0.85'}};
-    $("#show_overlay[rel]").overlay(o_opts);
-    $("#show_pt_summary_overlay[rel]").overlay(o_opts);
+    var l_opts = {
+      onLoad: function(e){
+        $.plot($("#ur_tp_graph"),           [pt.ur_tp_arr],           pt.ur_tp_flot_opts);
+        $.plot($("#m_alb_cre_ratio_graph"), [pt.m_alb_cre_ratio_arr], pt.m_alb_cre_ratio_flot_opts);
+        $.plot($("#sgot_graph"),            [pt.sgot_arr],            pt.sgot_flot_opts);
+        $.plot($("#chol_total_graph"),      [pt.chol_total_arr],      pt.chol_total_flot_opts);
+        $.plot($("#triglyceride_graph"),    [pt.triglyceride_arr],    pt.triglyceride_flot_opts);
+        $.plot($("#hdl_graph"),             [pt.hdl_arr],             pt.hdl_flot_opts);
+        $.plot($("#ldl_graph_lkv"),         [pt.ldl_arr],             pt.ldl_flot_opts);
+        $.plot($("#bun_graph"),             [pt.bun_arr],             pt.bun_flot_opts);
+        $.plot($("#creatinine_graph"),      [pt.creatinine_arr],      pt.creatinine_flot_opts);
+        $.plot($("#glucose_graph"),         [pt.glucose_arr],         pt.glucose_flot_opts);
+        $.plot($("#a1c_graph_lkv"),         [pt.a1c_arr],             pt.a1c_flot_opts);
+      },
+      'color': '#fff',
+      'opacity': '0.85'
+    };
+
+    var pts_opts = {
+      onLoad: function(e){
+        $.plot($("#bp_graph_ps"),  [pt.dbp_arr, pt.sbp_arr], pt.bp_flot_opts);
+        $.plot($("#ldl_graph_ps"), [pt.ldl_arr],             pt.ldl_flot_opts);
+        $.plot($("#a1c_graph_ps"), [pt.a1c_arr],             pt.a1c_flot_opts);
+      },
+      'color': '#fff',
+      'opacity': '0.85'
+    };
+
+    $("#show_overlay[rel]").overlay(l_opts);
+    $("#show_pt_summary_overlay[rel]").overlay(pts_opts);
 
     // reminders in the pt summary (todo: refactor dry!!)
 

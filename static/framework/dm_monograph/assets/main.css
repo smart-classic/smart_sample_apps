@@ -237,3 +237,5 @@ color: #999;
 .reminder_for_pt { font-weight: bold; font-size: larger; color: #E46C0A; }
 
 .diabetic_info { font-size: large; }
+
+.ps_graph { width: 240px; height: 100px; }

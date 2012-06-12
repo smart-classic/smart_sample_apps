@@ -30,7 +30,7 @@
       <!--[if lte IE 8]><script src="./js/flot/excanvas.min.js"></script><![endif]-->
       <script src='./js/underscore.min.js'></script>
       <script src='./js/json2.js'></script>
-      <script src='./js/jquery.tools.min.js'></script>
+      <script src='./js/jquery.tools.overlay.js'></script>
       <script src='./js/main.js'></script>
   </head>
   <body>
@@ -415,7 +415,7 @@
           <div class='clear'></div>
         </div>
 
-        <div style='height: 100px; width:48%; float: left'>
+        <div style='height: 100px; width:48%; float: left; margin-top: -17px;'>
           <div id='a1c_graph'></div>
         </div>
 
@@ -482,7 +482,7 @@
       <div class='clear'></div>
 
       <div class="section_header">Urine Total Protein</div>
-      <div class='lkv_graph' id='ur_tp_graph' style='width: 200px; height: 75px;'></div>
+      <div class='lkv_graph' id='ur_tp_graph'></div>
 
       <div class="section_header">&micro;alb/cre</div>
       <div class='lkv_graph' id='m_alb_cre_ratio_graph'></div>
@@ -563,7 +563,7 @@
       <div class='test_ps'>
         <div style='width: 33%; float: left'>
           <div class='header'>Blood Pressure</div>
-          <div id='bp_graph_ps'></div>
+          <div class='ps_graph' id='bp_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
           <div><span class='label'>LAST TEST</span> <span id='bp_date_ps'></span></div>
@@ -578,7 +578,7 @@
       <div class='test_ps'>
         <div style='width: 33%; float: left'>
           <div class='header'>LDL</div>
-          <div id='ldl_graph_ps'></div>
+          <div class='ps_graph' id='ldl_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
           <div id='ldl_explanation_ps' style='gray smaller'>LDL measures low density lipoproteins (the "bad cholesterol")</div>
@@ -593,7 +593,7 @@
       <div class='test_ps'>
         <div style='width: 33%; float: left'>
           <div class='header'>A1C</div>
-          <div id='a1c_graph_ps'></div>
+          <div class='ps_graph' id='a1c_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
           <div id='a1c_explanation_ps' style='gray smaller'>The A1C test measures average blood sugar concentration</div>
