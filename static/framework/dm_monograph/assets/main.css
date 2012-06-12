@@ -166,6 +166,12 @@ body {
 /*  text-align: center;*/
 }
 
+.lkv_graph_div { width: 50%; float: left; }
+.lkv_table_div { width: 50%; float: left; }
+.lkv_lab_result { }
+.lkv_lab_date { }
+.lkv_value { font-weight: bold; font-size: 13px; }
+
 /*** pt summary ***/
 
 .pt_summary {

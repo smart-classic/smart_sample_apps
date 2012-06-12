@@ -1269,6 +1269,36 @@ SMART.ready(function(){
     $("#show_overlay[rel]").overlay(l_opts);
     $("#show_pt_summary_overlay[rel]").overlay(pts_opts);
 
+    // do data tables the labs overlay
+    var labnames = [
+      'ur_tp',
+      'm_alb_cre_ratio',
+      'sgot',
+      'chol_total',
+      'triglyceride',
+      'hdl',
+      'ldl',
+      'bun',
+      'creatinine',
+      'a1c'
+    ];
+
+    function do_tables(){
+      _(labnames).each(function(labname){
+        _(pt[labname+'_arr'].reverse())
+          .each(function(e){
+          var a = $('<div></div>', {
+            'class': 'lkv_lab_result',
+            html: '<span class=\'lkv_lab_date\'>' + new XDate(e[0]).toString('MM/dd/yy') + '</span> <span class="lkv_value">' + e[1] + '</span> ' + e[2]
+          })
+          .data(e);
+          $(a).appendTo('#'+labname+'_table_div');
+        })
+      })
+    };
+
+    do_tables();
+
     // reminders in the pt summary (todo: refactor dry!!)
 
     // look into the processed reminders array, see if there are reminders for
