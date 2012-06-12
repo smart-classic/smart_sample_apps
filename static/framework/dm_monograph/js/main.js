@@ -700,8 +700,8 @@ SMART.ready(function(){
     $('.gender').text(pt.gender[0])
 
     $('#bp_date_ps').text(pt.sbp ? new XDate(pt.sbp[0]).toString('MM/dd/yy') : '')
-    $('#ldl_date_ps').text(pt.sbp ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '')
-    $('#a1c_date_ps').text(pt.sbp ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '')
+    $('#ldl_date_ps').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '')
+    $('#a1c_date_ps').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '')
 
     // labs
     $('#ur_tp_date').text(pt.ur_tp ? new XDate(pt.ur_tp[0]).toString('MM/dd/yy') : '-')
@@ -994,6 +994,7 @@ SMART.ready(function(){
       if (d.length > 0) {
         d.addClass('highlight');
         $('.diabetic_diagnosis_p').show();
+        $('.diabetic_info_label').show();
         $('.diabetic_info').text('Diabetic');
 
         var date_of_oldest_active_diabetes = _(pt.problems_arr)
@@ -1014,7 +1015,7 @@ SMART.ready(function(){
             var months_ago = Math.round(d.diffMonths(today));
             var t = 'for ' + (months_ago < 23 ? months_ago + ' months' : years_ago + ' years');
 
-            $('.diabetic_how_long_text').text('('+t+')')
+            $('.diabetic_how_long_text').text(t)
           }
       } // d.length
 
