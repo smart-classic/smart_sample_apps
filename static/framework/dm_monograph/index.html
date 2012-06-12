@@ -46,7 +46,7 @@
         </div>
         <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
           &nbsp;
-          <span class='demo_line_label' style='display: none;' class='diabetic_info_label'>DIAGNOSIS</span>
+          <!-- <span class='demo_line_label' style='display: none;' class='diabetic_info_label'>DIAGNOSIS</span> -->
           <span class='diabetic_info highlight'></span>
           <span class='diabetic_how_long_text highlight'></span>
         </div>
@@ -462,9 +462,9 @@
         <div style='width: 48%; float: left; margin: 10px 0px;' class='name'>
           <span class='family_name'></span>, <span class='given_name'></span>
         </div>
-        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin: 10px 0px;'>
+        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin: 10px 0px; display: none'>
           &nbsp;
-          <span class='demo_line_label diabetic_info_label'>DIAGNOSIS</span>
+          <!-- <span class='demo_line_label diabetic_info_label'>DIAGNOSIS</span> -->
           <span class='diabetic_info highlight'></span>
           <span class='diabetic_how_long_text highlight'></span>
         </div>
@@ -534,7 +534,7 @@
         </div>
         <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
           &nbsp;
-          <span class='demo_line_label diabetic_info_label' style='display: none;'>DIAGNOSIS</span>
+          <!-- <span class='demo_line_label diabetic_info_label' style='display: none;'>DIAGNOSIS</span> -->
           <span class='diabetic_info highlight'></span>
           <span class='diabetic_how_long_text highlight'></span>
         </div>
@@ -566,10 +566,21 @@
           <div class='ps_graph' id='bp_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
-          <div><span class='label'>LAST TEST</span> <span id='bp_date_ps'></span></div>
-          <br />
-          <div><span class='label'>SYSTOLIC</span> <span style='color: #afd8f8; font-weight: bold'>O</span> <span id='bp_systolic_ps'></span></div>
-          <div><span class='label'>DIASTOLIC</span> <span style='color: #EDC240; font-weight: bold'>O</span> <span id='bp_diastolic_ps'></span></div>
+          <div style='width: 45%; float: left;  margin-right: 10px;'>
+            <div><span class='label'>LAST TEST</span> <span id='bp_date_ps'></span></div>
+          </div>
+          <div style='width: 50%; float: left'>
+            <div>
+              <span style='color: #afd8f8; font-weight: bold'>O</span>
+              <span class='label'>SYSTOLIC VALUE</span>
+              <span id='bp_systolic_ps'></span>
+            </div>
+            <div>
+              <span style='color: #EDC240; font-weight: bold'>O</span>
+              <span class='label'>DIASTOLIC VALUE</span>
+              <span id='bp_diastolic_ps'></span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -581,9 +592,15 @@
           <div class='ps_graph' id='ldl_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
-          <div id='ldl_explanation_ps' style='gray smaller'>LDL measures low density lipoproteins (the "bad cholesterol")</div>
-          <div><span class='label'>LAST TEST</span> <span id='ldl_date_ps'></span></div>
-          <br />
+
+          <div id='ldl_explanation_ps' class='' style="margin-bottom: 8px;">
+            LDL measures low density lipoproteins (the "bad cholesterol")
+          </div>
+
+          <div style='margin-bottom: 8px;'>
+            <span class='label'>LAST TEST</span> <span id='ldl_date_ps'></span>
+          </div>
+
           <div><span id='ldl_ps'></span></div>
         </div>
       </div>
@@ -596,9 +613,12 @@
           <div class='ps_graph' id='a1c_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
-          <div id='a1c_explanation_ps' style='gray smaller'>The A1C test measures average blood sugar concentration</div>
-          <div><span class='label'>LAST TEST</span> <span id='a1c_date_ps'></span></div>
-          <br />
+          <div id='a1c_explanation_ps' style='margin-bottom: 8px;'>
+            The A1C test measures average blood sugar concentration
+          </div>
+          <div style='margin-bottom: 8px;'>
+            <span class='label'>LAST TEST</span> <span id='a1c_date_ps'></span>
+          </div>
           <div><span id='a1c_ps'></span></div>
         </div>
       </div>
