@@ -1233,6 +1233,7 @@ SMART.ready(function(){
     })
 
     var l_opts = {
+      top: '5%',
       onLoad: function(e){
         $.plot($("#ur_tp_graph"),           [pt.ur_tp_arr],           pt.ur_tp_flot_opts);
         $.plot($("#m_alb_cre_ratio_graph"), [pt.m_alb_cre_ratio_arr], pt.m_alb_cre_ratio_flot_opts);
@@ -1245,19 +1246,16 @@ SMART.ready(function(){
         $.plot($("#creatinine_graph"),      [pt.creatinine_arr],      pt.creatinine_flot_opts);
         $.plot($("#glucose_graph"),         [pt.glucose_arr],         pt.glucose_flot_opts);
         $.plot($("#a1c_graph_lkv"),         [pt.a1c_arr],             pt.a1c_flot_opts);
-      },
-      'color': '#fff',
-      'opacity': '0.85'
+      }
     };
 
     var pts_opts = {
+      top: '5%',
       onLoad: function(e){
         $.plot($("#bp_graph_ps"),  [pt.dbp_arr, pt.sbp_arr], pt.bp_flot_opts);
         $.plot($("#ldl_graph_ps"), [pt.ldl_arr],             pt.ldl_flot_opts);
         $.plot($("#a1c_graph_ps"), [pt.a1c_arr],             pt.a1c_flot_opts);
-      },
-      'color': '#fff',
-      'opacity': '0.85'
+      }
     };
 
     $("#show_overlay[rel]").overlay(l_opts);
