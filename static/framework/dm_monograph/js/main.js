@@ -99,6 +99,7 @@ pt.dbp_arr = [];
 pt.dbp_next = null;
 pt.family_name = null;
 pt.flu_shot_date = null;
+pt.fulfillment = null;
 pt.gender = null;
 pt.given_name = null;
 pt.glucose = null;
@@ -167,6 +168,7 @@ var MEDICATIONS_get = function(){
   return $.Deferred(function(dfd){
     SMART.MEDICATIONS_get().then(function(r){
       _(r.objects.of_type.Medication).each(function(m){
+
         pt.meds_arr.push([
           new XDate(m.startDate).valueOf(),
           m.drugName.dcterms__title,
@@ -1010,7 +1012,7 @@ SMART.ready(function(){
             var d = new XDate(date_of_oldest_active_diabetes)
             var years_ago = Math.round(d.diffYears(today));
             var months_ago = Math.round(d.diffMonths(today));
-            var t = months_ago < 23 ? months_ago + ' months ago' : years_ago + ' years ago';
+            var t = 'for ' + (months_ago < 23 ? months_ago + ' months' : years_ago + ' years');
 
             $('.diabetic_how_long_text').text('('+t+')')
           }
@@ -1019,10 +1021,14 @@ SMART.ready(function(){
       // add "as of" date of problems section header
       var el = _(pt.problems_arr).max(function(e){ return e[2] || e[0]; })
       var d = new XDate(el[2] || el[0]);
-      $('#as_of').html('<span class="smaller">'+d.toString('MM/dd/yy')+'</span>')
+      $('#as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
 
       // medications
-      $('#medications').empty()
+      // var el = _(pt.meds_arr).max(function(e){ return e[2] || e[0]; })
+      // var d = new XDate(el[2] || el[0]);
+      // $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+
+      $('#medications, #medications_ps').empty()
       if (pt.meds_arr.length == 0) {
         $('<div/>', {text: 'No known medications'}).appendTo('#medications');
         $('<div/>', {text: 'No known medications'}).appendTo('#medications_ps');
@@ -1124,6 +1130,7 @@ SMART.ready(function(){
         .value()
 
       $('#medications').empty();
+      // don't empty the #medications_ps div here, it's always alpha sorted
       _(m2).each(function(e){ $(e).appendTo('#medications'); })
       do_stripes();
     };
@@ -1265,8 +1272,8 @@ SMART.ready(function(){
 
     // look into the processed reminders array, see if there are reminders for
     // bps
-    $('#bp_systolic_ps').html('<span class="bold larger">'+pt.sbp[1]+'</span>');
-    $('#bp_diastolic_ps').html('<span class="bold larger">'+pt.dbp[1]+'</span>');
+    $('#bp_systolic_ps').html('<span class="bold larger">'+_round(pt.sbp[1], 0)+'</span>');
+    $('#bp_diastolic_ps').html('<span class="bold larger">'+_round(pt.dbp[1], 0)+'</span>');
 
     // ldl or a1c
     var last_test_html = '';

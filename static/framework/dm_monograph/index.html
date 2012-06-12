@@ -9,8 +9,6 @@
 
     Notes:
     - Designed for a 1280x1024 window size
-    - Using a 960.gs fluid grid with col width = 60, no col = 9,
-      and gutter width = 0 for 720px
 
     TODO:
     - fill in requires in manifest file
@@ -49,13 +47,12 @@
         <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px; display: none'>
           <span class='demo_line_label' class='diabetic_info_label'>DIAGNOSIS</span>
           <span class='diabetic_info bold highlight'></span>
-          <span class='diabetic_how_long_text bold highlight'></span>
+          <span class='diabetic_how_long_text highlight'></span>
         </div>
       </div>
 
       <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
         <div style='width: 48%; float: left'>
-          <span class='demo_line_label'>ID</span> <span class='record_id'></span>&nbsp;&nbsp;
           <span class='demo_line_label'>DOB</span> <span class='birthday'></span>&nbsp;&nbsp;
           <span class='demo_line_label'>AGE</span> <span class='age'></span>&nbsp;&nbsp;
           <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
@@ -380,7 +377,7 @@
 
         <div id='problems_header'>
           <!-- hidden problems div for sorting. todo: clean this up in the js-->
-          <div class='section_header'>Problems as of <span id='as_of'></span></div>
+          <div class='section_header'>Problems <span id='as_of'></span></div>
 
           <div id='problems' style='display: none'></div>
 
@@ -390,12 +387,12 @@
           </div>
 
           <div>
-            <div class='section_subheader'>Problems Other</div>
+            <div class='section_subheader'>Others</div>
             <div id='other_problems'></div>
           </div>
 
           <div>
-            <div class='section_subheader'>Previous Problems</div>
+            <div class='section_subheader'>Closed <span style='font-size: smaller; font-weight: normal;'>(on date)</span></div>
             <div id='resolved_problems'></div>
           </div>
 
@@ -410,7 +407,7 @@
             &middot;
             <a target="_blank" href='./app_explainer.html'/>App Explainer</a>
             <br />
-            <a target="_blank" href='./timeline.html'/>Timeline View</a>
+            <a target="_blank" href='./timeline.html'/>Time Line</a>
           </div>
           <div class='clear'></div>
         </div>
@@ -441,7 +438,7 @@
         </div>
 
         <div id='medications_outer'>
-          <div class='section_header'>Medications</div>
+          <div class='section_header'>Medications <span id='meds_as_of'></span></div>
           <div id='medications'></div>
         </div>
       </div>
@@ -467,7 +464,7 @@
         <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin: 10px 0px; display: none'>
           <span class='demo_line_label diabetic_info_label'>DIAGNOSIS</span>
           <span class='diabetic_info bold highlight'></span>
-          <span class='diabetic_how_long_text bold highlight'></span>
+          <span class='diabetic_how_long_text highlight'></span>
         </div>
       </div>
 
@@ -536,7 +533,7 @@
         <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px; display: none'>
           <span class='demo_line_label diabetic_info_label'>DIAGNOSIS</span>
           <span class='diabetic_info bold highlight'></span>
-          <span class='diabetic_how_long_text bold highlight'></span>
+          <span class='diabetic_how_long_text highlight'></span>
         </div>
       </div>
 
