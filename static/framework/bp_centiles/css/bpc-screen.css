@@ -62,7 +62,7 @@ input[type='number'] {border: 1px solid #555;}
 
 #help-content {
     width: 400px; 
-    height: 300px;
+    height: 350px;
     padding: .4em;
     position: relative;
     display: none;
@@ -102,7 +102,7 @@ input[type='number'] {border: 1px solid #555;}
     font-size:12px;
 }
 
-#dialog-message {
+#dialog-message, #dialog-demo {
     display: none;
 }
 

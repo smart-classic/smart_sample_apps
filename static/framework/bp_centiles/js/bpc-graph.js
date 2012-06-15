@@ -37,9 +37,9 @@ if (!BPC) {
     *
     * @param {Object} newPatient The new patient object
     */
-    BPC.initApp = function (patient) {
+    BPC.initApp = function (patient, demo_mode) {
         
-        var i;
+        var i, age;
 
         if (patient) {
             // Update the global patient handle
@@ -48,12 +48,41 @@ if (!BPC) {
             // Initialize the patient object
             BPC.initPatient (patient);
             
-            // Draw the views
-            $("#tabs").show();
-            BPC.drawViews (patient,BPC.zones);
+            // Clear the error message
+            $("#info").text("").hide();
             
             // Initialize the UI
             BPC.initUI ();
+            
+            // Initialize the default filter buttons state
+            $('#chkFilterInpatient').attr("checked", false);
+            $('#chkFilterInpatient').button("refresh");
+            $('#chkFilterAmbulatory').attr("checked", true);
+            $('#chkFilterAmbulatory').button("refresh");
+            $('#chkFilterArm').attr("checked", true);
+            $('#chkFilterArm').button("refresh");
+            $('#chkFilterLeg').attr("checked", false);
+            $('#chkFilterLeg').button("refresh");
+            $('#chkFilterSitting').attr("checked", true);
+            $('#chkFilterSitting').button("refresh");
+            $('#chkFilterStanding').attr("checked", false);
+            $('#chkFilterStanding').button("refresh");
+            $('#chkFilterAuscultation').attr("checked", true);
+            $('#chkFilterAuscultation').button("refresh");
+            $('#chkFilterMachine').attr("checked", false);
+            $('#chkFilterMachine').button("refresh");
+            
+            // Initialize the default filter buttons state
+            // Note: this is a workaround for a jQuery/jQueryUI issue where the state of the underlying object
+            // is not updated by jQuery UI clicks and overrides the state of the jQuery ui button element
+            //$('[for=chkFilterAmbulatory]').click();
+            //$('[for=chkFilterArm]').click();
+            //$('[for=chkFilterSitting]').click();
+            //$('[for=chkFilterAuscultation]').click();
+            
+            // Draw the views
+            $("#tabs").show();
+            BPC.drawViews (patient,BPC.zones);
             
             // Find the last pre-adult data record available
             for (i = patient.data.length - 1; i >= 0; i--) {
@@ -70,6 +99,40 @@ if (!BPC) {
                            height: patient.data[i].height, 
                            systolic: patient.data[i].systolic, 
                            diastolic: patient.data[i].diastolic});
+            }
+            
+            // Display the demo dialog, if needed
+            if (demo_mode) {
+                $( "#dialog-demo" ).dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    resizable: false,
+                    modal: true,
+                    buttons: {
+                        Ok: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
+            }
+            
+            // Caculate the current age of the patient
+            age = years_apart(new XDate().toISOString(), patient.birthdate);
+            
+            // Display warning dialog if the patient has reached adult age
+            if (age >= BPC.ADULT_AGE) {
+                $("#alert-message").text(patient.name + " is " + BPC.getYears(age) + " years old!");
+                $( "#dialog-message" ).dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    resizable: false,
+                    modal: true,
+                    buttons: {
+                        Ok: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
             }
         }
     }
@@ -199,7 +262,7 @@ if (!BPC) {
             i,
             ii,
             patientType = patient.getDataType(),
-            transitionX = getTransitionX(patient, s);
+            transitionX;
             
         //console.log ("Type: " + patient.getDataType() + " " + getTransitionX(patient, s));
 
@@ -238,6 +301,9 @@ if (!BPC) {
         }
         
         s.Y = (s.height - s.bottomgutter - s.topgutter) / s.max;  // The Y distance per percentile
+        
+        // Calculate the age transition line coordinate
+        transitionX = getTransitionX(patient, s);
         
         // Update the local canvas handle
         if (shortTerm) {
@@ -487,21 +553,26 @@ if (!BPC) {
             helpBlanket.click(function () {
             
                 // The state of the help panel
-                var displayed = false;
+                var displayed = false,
+                    animating = false;
             
                 return function () {
                 
                     // get effect type 
                     var selectedEffect = $( "#effectType" ).val();
                     
-                    if (!displayed) {
-                        $( "#help-content" ).stop().show( selectedEffect, {}, 1000 );
-                        helpL.attr({text:"Help <<"});
-                        displayed = true;
-                    } else {
-                        helpL.attr({text:"Help >>"});
-                        $( "#help-content" ).stop().hide( selectedEffect, {}, 1000 );
-                        displayed = false;
+                    if (!animating) {
+                        if (!displayed) {
+                            animating=true;
+                            $( "#help-content" ).stop().show( selectedEffect, {}, 1000, function () {animating=false;} );
+                            helpL.attr({text:"Help <<"});
+                            displayed = true;
+                        } else {
+                            animating=true;
+                            helpL.attr({text:"Help >>"});
+                            $( "#help-content" ).stop().hide( selectedEffect, {}, 1000, function () {animating=false;} );
+                            displayed = false;
+                        }
                     }
                 };
             } ());

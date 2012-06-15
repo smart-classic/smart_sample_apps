@@ -19,11 +19,11 @@ sys.path.append(abspath)
 # Import the local smart client modules and components
 from smart_client import oauth
 from smart_client.smart import SmartClient
-from smart_client.common import rdf_ontology
+from smart_client.common.rdf_tools import rdf_ontology
 from smart_client.generate_api import call_name
 
 # Import the application settings
-from settings import APP_PATH
+from settings import APP_PATH, ONTOLOGY
 
 # Import the testing framework utilities
 from tests import runTest, getMessages, describeQueries
@@ -69,12 +69,12 @@ class get_calls:
         
         # Load the local copy of the ontology via the SMART client
         try:
-            sc = get_smart_client(APP_PATH + '/data/smart.owl')
+            sc = get_smart_client(ONTOLOGY)
         except:
             # When the oauth credentials are bad or another execption occurs,
             # perform a manual ontology parsing routine which blocks any
             # consequent SMART client instantiations
-            rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+            rdf_ontology.parse_ontology(open(ONTOLOGY).read())
 
         # Initialize the output dictionary
         out = {}
@@ -109,7 +109,7 @@ class api_call:
         call_name = web.input().call_name
         
         # Load the local ontology into the SMART client
-        smart_client = get_smart_client(APP_PATH + '/data/smart.owl')
+        smart_client = get_smart_client(ONTOLOGY)
         
         # Figure out the SMART model corresponding to the API call
         model = get_model(call_name)
@@ -187,7 +187,7 @@ def get_model(call):
 
     # We may have to load the ontology if it is not available yet
     if not rdf_ontology.api_types:
-        rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+        rdf_ontology.parse_ontology(open(ONTOLOGY).read())
             
     # Get all the API calls from the ontology
     r = rdf_ontology.get_api_calls()

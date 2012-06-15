@@ -9,4 +9,4 @@
 	url = https://github.com/jupiterjs/jquerymx
 [submodule "smart_client"]
 	path = smart_client
-	url = ../smart_client_python
+	url = https://github.com/chb/smart_client_python.git

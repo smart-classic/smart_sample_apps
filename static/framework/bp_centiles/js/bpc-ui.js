@@ -17,26 +17,32 @@ if (!BPC) {
     "use strict";
 
     /**
-    * Document onLoad event handler (jQuery style)
+    * Document ready event handler (jQuery style)
     */
-    SMART.ready(function() {
+    $(document).ready(function() {
+        SMART.ready(function() {
+            
+            if ( typeof SMART === "undefined" ) {
+                $("#info").text("Error: SMART Connect interface not found");
+            } else {
+                // Fire up the SMART API calls and initialize the application asynchronously
+                $.when(BPC.get_demographics(), BPC.get_vitals())
+                 .then( function (patient, vitals) {
+                            BPC.initApp ( BPC.processData(patient, vitals) ); 
+                        },
+                        function (message) {
+                            BPC.displayError (message.data);
+                        });
+            }
+            
+            // Add other things to do upon document loading here...
+            
+        }); // end document.ready handler
         
-        if ( typeof SMART === "undefined" ) {
-            $("#info").text("Error: SMART Connect interface not found");
-        } else {
-            // Fire up the SMART API calls and initialize the application asynchronously
-            $.when(BPC.get_demographics(), BPC.get_vitals())
-             .then( function (patient, vitals) {
-                        BPC.initApp ( BPC.processData(patient, vitals) ); 
-                    },
-                    function (message) {
-                        BPC.displayError (message.data);
-                    });
-        }
-        
-        // Add other things to do upon document loading here...
-        
-    }); // end document.ready handler
+        SMART.fail (function () {
+            BPC.initApp ( BPC.getSamplePatient(), true );
+        });
+    });
     
     /**
     * Displays an error message on the screen

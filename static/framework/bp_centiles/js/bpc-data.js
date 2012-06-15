@@ -180,25 +180,6 @@ if (!BPC) {
         // Initialize the patient information area
         patient = new BPC.Patient(demographics.name, demographics.birthday, demographics.gender);
         $("#patient-info").text(String(patient));
-
-        // Caculate the current age of the patient
-        age = years_apart(new XDate().toISOString(), demographics.birthday);
-
-        // Display warning dialog if the patient has reached adult age
-        if (age >= BPC.ADULT_AGE) {
-            $("#alert-message").text(demographics.name + " is " + BPC.getYears(age) + " years old!");
-            $( "#dialog-message" ).dialog({
-                closeOnEscape: false,
-                draggable: false,
-                resizable: false,
-                modal: true,
-                buttons: {
-                    Ok: function() {
-                        $( this ).dialog( "close" );
-                    }
-                }
-            });
-        }
         
         // Display appropriate error message
         if (vitals_height.length === 0 || vitals_bp.length === 0) {
@@ -206,9 +187,6 @@ if (!BPC) {
         } else {
             
             // No errors detected -> proceed with full data processing
-
-            // Clear the error message
-            $("#info").text("").hide();
 
             //height_data = [{date: demographics.birthday, height:50}]; //(Assume average height at birth of 50cm)
 
