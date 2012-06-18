@@ -100,6 +100,7 @@ pt.dbp_next = null;
 pt.family_name = null;
 pt.flu_shot_date = null;
 pt.fulfillment = null;
+pt.fulfillments_arr = [];
 pt.gender = null;
 pt.given_name = null;
 pt.glucose = null;
@@ -168,13 +169,21 @@ var MEDICATIONS_get = function(){
   return $.Deferred(function(dfd){
     SMART.MEDICATIONS_get().then(function(r){
       _(r.objects.of_type.Medication).each(function(m){
-
+        pt.fulfillments_arr = pt.fulfillments_arr.concat(m.fulfillment)
         pt.meds_arr.push([
           new XDate(m.startDate).valueOf(),
           m.drugName.dcterms__title,
           m.instructions
         ])
       })
+
+      // get the latest fulfillment
+      pt.fulfillment = _(pt.fulfillments_arr).chain()
+        .sortBy(function(f){ return f.dcterms__date; })
+        .reverse()
+        .first()
+        .value()
+
       dfd.resolve();
     })
   }).promise();
@@ -1025,9 +1034,8 @@ SMART.ready(function(){
       $('#as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
 
       // medications
-      // var el = _(pt.meds_arr).max(function(e){ return e[2] || e[0]; })
-      // var d = new XDate(el[2] || el[0]);
-      // $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+      d = new XDate(pt.fulfillment.dcterms__date);
+      $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
 
       $('#medications, #medications_ps').empty()
       if (pt.meds_arr.length == 0) {
@@ -1058,6 +1066,15 @@ SMART.ready(function(){
             })
             .appendTo('#medications_ps')
           })
+
+        // slight ui hack: if medications_ps is longer than 10 items, split into two lists
+        var c = $('#medications_ps').children();
+        if (c.length > 10) {
+          for (var i=9; i < c.length; i++) {
+            $(c[i]).clone(true).appendTo('#medications_2_ps');
+            $(c[i]).remove();
+          }
+        }
 
         do_stripes()
     }; // sort_by_alpha?
