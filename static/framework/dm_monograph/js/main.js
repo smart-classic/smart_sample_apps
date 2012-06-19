@@ -1252,11 +1252,6 @@ SMART.ready(function(){
       return false;
     });
 
-    $('#color_controls_link').on('click', function(){
-      alert('Work in progress... Coming soon.');
-      return false;
-    })
-
     var l_opts = {
       top: '5%',
       onLoad: function(e){
@@ -1283,8 +1278,11 @@ SMART.ready(function(){
       }
     };
 
+    // setup overlays
     $("#show_overlay[rel]").overlay(l_opts);
     $("#show_pt_summary_overlay[rel]").overlay(pts_opts);
+    $("#show_explainer_overlay[rel]").overlay();
+    $("#show_timeline_overlay[rel]").overlay();
 
     // do data tables the labs overlay
     var labnames = [

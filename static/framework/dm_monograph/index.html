@@ -6,6 +6,7 @@
 
     From the SMART Project <http://www.smartplatforms.org/>
     Arjun Sanyal <arjun.sanyal@childrens.harvard.edu> - Design and Implementation
+    Rachel Eastwood - Explainer page
 
     Notes:
     - Designed for a 1280x1024 window size
@@ -57,6 +58,13 @@
           <span class='demo_line_label'>DOB</span> <span class='birthday'></span>&nbsp;&nbsp;
           <span class='demo_line_label'>AGE</span> <span class='age'></span>&nbsp;&nbsp;
           <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
+        </div>
+        <div style='float: left; width: 48%; text-align: right; font-size: small;'>
+          <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
+          &middot;
+          <a rel='#explainer' id='show_explainer_overlay'/>App Explainer</a>
+          &middot;
+          <a rel='#timeline' id='show_timeline_overlay'/>Time Line</a>
         </div>
       </div>
 
@@ -404,13 +412,11 @@
         <div>
           <div class='section_header' style='width: 48%; float: left'> A1C <span class='normal smaller'>goal <span class='medium'>&lt; 7%</span></span></div>
           <div style='width: 48%; float: left; text-align: center; margin: 12px 0px 6px 16px'>
-            <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
-            &middot;
-            <a target="_blank" href='./app_explainer.html'/>App Explainer</a>
-            <br />
-            <a target="_blank" href='./timeline.html'/>Time Line</a>
+            <div>
+              <img style='width: 125px; margin: none' id='sort_by_date' src='./assets/show_chrono_view.png' />
+              <img style='width: 125px; margin: none; display: none' id='sort_by_alpha' style='display: none' src='./assets/show_alpha_view.png' />
+            </div>
           </div>
-          <div class='clear'></div>
         </div>
 
         <div style='height: 100px; width:48%; float: left; margin-top: -17px;'>
@@ -418,10 +424,6 @@
         </div>
 
         <div id='controls' class='controls' style='width: 30%; float: left; text-align: right; padding-top: 38px;'>
-          <div>
-            <img style='width: 125px; margin: -37px 0 0 85px;' id='sort_by_date' src='./assets/show_chrono_view.png' />
-            <img style='width: 125px; margin: -37px 0 0 85px; display: none' id='sort_by_alpha' style='display: none' src='./assets/show_alpha_view.png' />
-          </div>
         </div>
 
         <div class='clear'></div>
@@ -722,5 +724,163 @@
       </div>
 
     </div>
+
+    <!-- app "explainer" -->
+    <div id="explainer" class="explainer">
+      <div id='explainer_title_line'>
+        <div style='width: 78%; float: left; margin-left: 10%'>
+          <img class='smart_bug' src='./assets/smart_bug.png' />
+          App Explainer
+        </div>
+        <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
+          <a class='close' href='#'>[Close]</a>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <div class="container container_12">
+        <div class='grid_3'>
+          <img src="./assets/explainer/explainer-controls.png" width="220" height="110">
+        </div>
+        <div class='grid_8 prefix_1'>
+          <p class="first"><span style="color:#0088CC;">Patient Summary</span>. Link to <strong>Diabetes Monograph Patient Summary</strong> panel</p>
+          <p><span style="color:#0088CC;">App Explainer</span>. Link to <strong>Diabetes Monograph App Explainer</strong> panel</p>
+          <p><span style="color:#0088CC;">Time Line</span>. Link to <strong>Diabetes Monograph Time Line</strong> Problems/Medications panel</p>
+          <div class="button_text_align">
+            <p><img src="./assets/explainer/explainer-button-chrono-75px.png" width="75" height="40" style="margin-right:5px;vertical-align:middle;border:0;padding:0;"> Click button to see Problems, Allergies, and Medications chronologically</p></div>
+          <div class="button_text_align"><p><img src="./assets/explainer/explainer-button-alpha-75px.png" width="75" height="40" style="margin-right:5px;vertical-align:middle;border:0;padding:0;"> Click button to see Problems, Allergies, and Medications alphabetically</p></div>
+        </div>
+
+        <div class='clear'></div>
+
+        <div class='grid_12 row-border'></div>
+
+        <div class='grid_3' style=""><img src="./assets/explainer/explainer-charts.png" width="220" height="350"></div>
+        <div class='grid_8 prefix_1'>
+          <p class="first">The graphs depict a vital sign and two tests for tracking diabetes health:</p>
+          <ul>
+            <li>Available values are shown for the current and two prior years</li>
+            <li>Values in range of a goal are in the unshaded area</li>
+            <li>Values out-of-range of a goal are in the gray-shaded area</li>
+          </ul>
+        </div>
+        <div class='clear'></div>
+        <div class='grid_12 row-border'></div>
+
+
+        <div class='grid_3' style="">
+        <img src="./assets/explainer/explainer-LKV-nocircle.png" width="220" height="391"></div>
+        <div class='grid_8 prefix_1'>
+          <p class="first"><strong>Last Known Values</strong> presents  laboratory tests used to track diabetes health:</p>
+          <ul>
+            <li>Test types are listed, &ldquo;SGOT&rdquo;, followed by units of measurement, &ldquo;U/L&rdquo;, with the normal range below the type name, &ldquo;10-40&rdquo;</li>
+            <li>First and second most recent test results appear <em>left-to-right</em>, &ldquo;27&rdquo; and &ldquo;33&rdquo;</li>
+            <li>MM/DD/YY dates for a test result appears below it, &ldquo;10/24/11&rdquo;</li>
+            <li>Unavailable results are presented with a dash, &ldquo;&ndash;&rdquo;</li>
+            <li><em>Out-of-range</em> results are highlighted, &ldquo;<strong style="color:#E46C0A">232</strong>&rdquo;</li></ul>
+              <p><strong>[Graph]</strong> Click link to see <strong>Diabetes Monograph Labs</strong> panel  to view lab results for the current and two prior years</p>
+
+      </div>
+          <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+          <div class='grid_3' style="">
+          <img src="./assets/explainer/explainer-other.png" width="220" height="169"></div>
+          <div class='grid_8 prefix_1'>
+            <p class="first"><strong>Other Info</strong> presents heterogeneous data elements used to track diabetes health:</p>
+            <ul>
+              <li><strong>weight</strong> and <strong>height</strong> show their most recent value in English and metric units (grayed out) and the date of measurement</li>
+              <li><strong>last foot exam</strong>, <strong>last eye exam</strong>, <strong>last pneumovax</strong>, and <strong>last flu shot</strong> show their date of last examination</li>
+              <li><strong>smoking</strong>, <strong>aspirin</strong>, and <strong>ACE/ARB</strong> show their respective status</li>
+              <li>Information MM/DD/YY dates which are <em>stale</em> are highlighted, &ldquo;<span style="color:#E46C0A">09/28/07</span>&rdquo;</li>
+              <li>Unavailable results are presented as &ldquo;Unknown&rdquo;</li>
+            </ul>
+      </div>
+          <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+      <div class='grid_6'>
+             <div class="probs" style="margin-right:10px;">
+          <img src="./assets/explainer/explainer-problems-alpha-label-t2.png" width="220" height="319"><br>
+          </div>
+             <div class="probs">
+          <img src="./assets/explainer/explainer-problems-chrono-label-t2.png" width="220" height="319"><br>
+          </div>
+              <div class='clear'></div>
+          </div>
+          <div class='grid_5 prefix_1'>
+            <p class="first"><strong>Problems </strong>presents a list of current and past medical problems. The MM/DD/YY date of the most recent problem change is shown in the banner.</p>
+            <p>Problems are organized into <em>exclusive</em> categories:</p>
+            <ul>
+              <li><strong>Major CV Comorbidities</strong> &ndash; any current problem known to be a major cardiovascular (CV) comorbidity of diabetes mellitus type 2</li>
+              <li><strong>Other</strong> &ndash; any remaining <u>current</u> problem, including highlighting a current case of <span style="color:#E46C0A">Diabetes mellitus type 2</span></li>
+              <li><strong>Closed </strong>(on date) &ndash; any instance of a problem that has been closed with end MM/DD/YY date shown to the right in smaller text, &ldquo;08/29/08&rdquo;</li>
+            </ul>
+            <p>Problems are listed <em>within category</em> in two views:</p>
+            <ul>
+              <li><strong>Alpha</strong> &ndash; problems are listed alphabetically with an instance count to the right of the problem if it occurs more than once, &ldquo;Coronary arteriosclerosis (2)&rdquo;</li>
+              <li><strong>Chrono</strong> &ndash; problems are listed chronologically  by most recent inception MM/DD/YY date, &ldquo;01/04/08 Coronary arteriosclerosis (2)&rdquo;</li>
+          </ul></div>
+            <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+          <div class='grid_5'>
+          <img src="./assets/explainer/explainer-reminders.png" width="310" height="139"></div>
+          <div class='grid_6 prefix_1'>
+            <p class="first"><strong>Reminders </strong>presents suggested tests to order for diabetes management.</p>
+            <p>Suggestions are made  <em>if and only if</em>:</p>
+            <ul>
+              <li>No test values are found</li>
+              <li>A  test value is too old relative to current guidelines</li>
+              <li>A  test result is out of range relative to its goals</li>
+            </ul>
+      </div>
+          <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+          <div class='grid_5'>
+          <img src="./assets/explainer/explainer-allergies.png" width="310" height="42"></div>
+          <div class='grid_6 prefix_1'>
+            <p class="first"><strong>Allergies </strong>presents a list of current and past allergies.</p>
+            <ul>
+              <li>Allergies are listed alphabetically with an instance count shown next to the allergy name</li>
+              <li>Reactions are listed after each allergy name if available      </li>
+              <li>Unavailable results are presented as &quot;No known allergies&quot;    </li>
+            </ul>
+          </div>
+          <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+      <div class='grid_6'>
+             <div style="width:418px;padding-bottom:5px;margin-bottom:10px;border-bottom:1px dotted #666;"><img src="./assets/explainer/explainer-meds-alpha-t2.png" width="418" height="104"></div>
+             <div><img src="./assets/explainer/explainer-meds-chrono-label-t2.png" width="418" height="71"></div>
+          </div>
+          <div class='grid_5 prefix_1'>
+            <p class="first"><strong>Medications </strong>presents a list of current and past medications. The MM/DD/YY date of the most recent medication date is shown in the banner.</p>
+      <p>Medications are listed in two views:</p>
+            <ul>
+              <li><strong>Alpha</strong> &ndash; medications are listed alphabetically with an instance count  to the right of the medication if it occurs more than once in the same dose and frequency </li>
+              <li><strong>Chrono</strong> &ndash; medications are  listed chronologically by most recent inception MM/DD/YY date, &ldquo;04/25/09 Nitroglycerin&rdquo;</li>
+            </ul>
+          </div>
+      </div>
+    </div> <!-- explainer -->
+
+    <div id="timeline" class="timeline">
+      <div id='timeline_title_line'>
+        <div style='width: 78%; float: left; margin-left: 10%'>
+          <img class='smart_bug' src='./assets/smart_bug.png' />
+          Time Line View
+        </div>
+        <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
+          <a class='close' href='#'>[Close]</a>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+      <img style='width: 1000px' src="./assets/timeline_mockup.png">
+    </div>
+
   </body>
 </html>
