@@ -714,15 +714,39 @@ SMART.ready(function(){
     $('#a1c_date_ps').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '')
 
     // todo: move me
+    var labs = [
+      { 'name': 'ur_tp',            'min': null,  'max': 135  },
+      { 'name': 'm_alb_cre_ratio',  'min': null,  'max': 30   },
+      { 'name': 'sgot',             'min': 10,    'max': 40   },
+      { 'name': 'chol_total',       'min': null,  'max': 200  },
+      { 'name': 'triglyceride',     'min': null,  'max': 150  },
+      { 'name': 'hdl',              'min': 40,    'max': null },
+      { 'name': 'ldl',              'min': null,  'max': 100  },
+      { 'name': 'bun',              'min': 8,     'max': 25   },
+      { 'name': 'creatinine',       'min': 0.6,   'max': 1.5  },
+      { 'name': 'glucose',          'min': 70,    'max': 110  },
+      { 'name': 'a1c',              'min': null,  'max': 7    }
+    ];
+
+    function tag_in_range(){
+      _(labs).each(function(lab){
+        _(pt[lab.name+'_arr']).each(function(e){
+          var in_range_p = true;
+          var value = Number(e[1])
+          if (lab.min && value < lab.min) in_range_p = false;
+          if (lab.max && value > lab.max) in_range_p = false;
+          e[3] = in_range_p;
+        })
+      })
+    };
+
+    tag_in_range();
+
     // cast value_obj[1] to Number but max and min are numbers to start with
     var highlight_out_of_range = function(value_obj, min, max, id_string){
       if (!value_obj || !id_string) return;
-      var in_range_p = true;
-      var value = Number(value_obj[1])
-      if (min && value < min) in_range_p = false;
-      if (max && value > max) in_range_p = false;
-      if (!in_range_p) $(id_string).html('<span class="highlight">'+value+'</span>');
-      else $(id_string).text(value);
+      if (!value_obj[3]) $(id_string).html('<span class="highlight">'+value_obj[1]+'</span>');
+      else $(id_string).text(value_obj[1]);
     }
 
     // labs
@@ -1334,12 +1358,18 @@ SMART.ready(function(){
       _(labnames).each(function(labname){
         _(pt[labname+'_arr'].reverse())
           .each(function(e){
-          var a = $('<div></div>', {
-            'class': 'lkv_lab_result',
-            html: '<span class=\'lkv_lab_date\'>' + new XDate(e[0]).toString('MM/dd/yy') + '</span> <span class="lkv_value">' + e[1] + '</span> ' + e[2]
-          })
-          .data(e);
-          $(a).appendTo('#'+labname+'_table_div');
+            var date_html = '<span class=\'lkv_lab_date\'>' + new XDate(e[0]).toString('MM/dd/yy') + '</span>';
+            var value_html = '<span class="lkv_value">' +  e[1] + '</span> ';
+            if (!e[3]) value_html = '<span class="highlight">' + value_html + '</span>';
+            var unit_html = e[2];
+
+            var a = $('<div></div>', {
+              'class': 'lkv_lab_result',
+              'html' : date_html + ' ' + value_html + ' ' + unit_html
+            })
+            .data(e);
+
+            $(a).appendTo('#'+labname+'_table_div');
         })
       })
     };
