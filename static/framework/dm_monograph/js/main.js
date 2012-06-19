@@ -1166,6 +1166,10 @@ SMART.ready(function(){
       $('#medications').empty();
       // don't empty the #medications_ps div here, it's always alpha sorted
       _(m2).each(function(e){ $(e).appendTo('#medications'); })
+      if (m2.length == 0) {
+        $('<div/>', {text: 'No known medications'}).appendTo('#medications');
+      }
+
       do_stripes();
     };
 
