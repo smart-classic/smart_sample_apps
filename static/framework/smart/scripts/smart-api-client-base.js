@@ -461,8 +461,9 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
             try {
                 json = JSON.parse(r.body);
                 times.push(["json parsed", new Date().getTime()]);
-            } catch(err) {
                 dfd.resolve({body: r.body, contentType: r.contentType, json: json});
+            } catch(err) {
+                dfd.reject({status: r.status, message: err});
             }
         }   
         if (SMART.debug) {
