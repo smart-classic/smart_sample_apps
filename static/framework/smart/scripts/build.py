@@ -11,6 +11,7 @@ FORMATS = {"Alert": None,
            "UserPreferences": None,
            "AppManifest": "JSON",
            "Container": "JSON",
+           "Capabilities": "JSON",
            "default": "RDF"}
            
 CONTENT_TYPES = {"RDF": "application/rdf+xml",
@@ -93,8 +94,12 @@ def buildJS (call, path, vars, format, method, target, category):
 
     contentType = "undefined"
     data = "undefined"
-    
+    responseFormat="undefined"
+ 
     if method.upper() in ("PUT", "POST"):
+        if format:
+            responseFormat = format
+
         if format and CONTENT_TYPES[format]: 
             contentType = '"%s"'%CONTENT_TYPES[format]
         else:

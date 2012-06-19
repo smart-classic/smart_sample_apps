@@ -443,6 +443,7 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
         url: o.path
     }, function(r) {
         times.push(["SmartResponse received", new Date().getTime()]);
+	var ret = {status: r.status, body: r.body, contentType: r.contentType};
 
         if (o.responseFormat === "RDF") {
             var rdf, objects;
@@ -452,20 +453,22 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
 
                 objects = _this.objectify(rdf);
                 times.push(["objectified", new Date().getTime()]);
-
-                dfd.resolve({body: r.body, contentType: r.contentType, graph: rdf, objects: objects});
-
+		ret.graph = rdf;
+                ret.object = objects;
             } catch(err) { dfd.reject({status: r.status, message: err}); }
 
         } else if (o.responseFormat === "JSON") {
             try {
                 json = JSON.parse(r.body);
                 times.push(["json parsed", new Date().getTime()]);
-                dfd.resolve({body: r.body, contentType: r.contentType, json: json});
+                ret.json = json;
             } catch(err) {
                 dfd.reject({status: r.status, message: err});
             }
-        }   
+        } 
+
+        dfd.resolve(ret);
+
         if (SMART.debug) {
             for (var i = 0; i < times.length; i++) {
                 console.log(times[i][0] + ": " + (times[i][1] - times[0][1] + " ms elapsed."));
