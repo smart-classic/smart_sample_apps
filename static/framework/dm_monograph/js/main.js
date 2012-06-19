@@ -100,6 +100,7 @@ pt.dbp_next = null;
 pt.family_name = null;
 pt.flu_shot_date = null;
 pt.fulfillment = null;
+pt.fulfillments_arr = [];
 pt.gender = null;
 pt.given_name = null;
 pt.glucose = null;
@@ -152,7 +153,7 @@ var _round = function(val, dec){ return Math.round(val*Math.pow(10,dec))/Math.po
 var ALLERGIES_get = function(){
   return $.Deferred(function(dfd){
     SMART.ALLERGIES_get().then(function(r){
-      _(r.objects.of_type.Allergy).each(function(a){
+      _(r.object.of_type.Allergy).each(function(a){
         var allergen = a.drugClassAllergen || a.foodAllergen;
         pt.allergies_arr.push([
           allergen.dcterms__title,
@@ -167,14 +168,23 @@ var ALLERGIES_get = function(){
 var MEDICATIONS_get = function(){
   return $.Deferred(function(dfd){
     SMART.MEDICATIONS_get().then(function(r){
-      _(r.objects.of_type.Medication).each(function(m){
-
+      _(r.object.of_type.Medication).each(function(m){
+        // caution: fulfillments are optional
+        pt.fulfillments_arr = m.fulfillment ? pt.fulfillments_arr.concat(m.fulfillment) : pt.fulfillments_arr
         pt.meds_arr.push([
           new XDate(m.startDate).valueOf(),
           m.drugName.dcterms__title,
           m.instructions
         ])
       })
+
+      // get the latest fulfillment
+      pt.fulfillment = _(pt.fulfillments_arr).chain()
+        .sortBy(function(f){ return f.dcterms__date; })
+        .reverse()
+        .first()
+        .value()
+
       dfd.resolve();
     })
   }).promise();
@@ -183,8 +193,8 @@ var MEDICATIONS_get = function(){
 var DEMOGRAPHICS_get = function(){
   return $.Deferred(function(dfd){
     SMART.DEMOGRAPHICS_get().then(function(r){
-      var name = r.objects.of_type.v__Name[0];
-      var demos = r.objects.of_type.Demographics[0];
+      var name = r.object.of_type.v__Name[0];
+      var demos = r.object.of_type.Demographics[0];
       pt.family_name = name.v__family_name;
       pt.given_name  = name.v__given_name;
       pt.gender = demos.foaf__gender;
@@ -199,7 +209,7 @@ var VITAL_SIGNS_get = function(){
     SMART.VITAL_SIGNS_get().then(function(r){
 
       (function bps(){
-        _(r.objects.of_type.VitalSigns).chain()
+        _(r.object.of_type.VitalSigns).chain()
           .filter(function(v){ return v.bloodPressure; })
           .each(function(v){
             pt.sbp_arr.push([
@@ -233,7 +243,7 @@ var VITAL_SIGNS_get = function(){
       })();
 
       (function weights(){
-        pt.weight_arr = _(r.objects.of_type.VitalSigns).chain()
+        pt.weight_arr = _(r.object.of_type.VitalSigns).chain()
           .filter(function(v){ return v.weight; })
           .map(function(v){
             return [
@@ -248,7 +258,7 @@ var VITAL_SIGNS_get = function(){
       })();
 
       (function heights(){
-        pt.height_arr = _(r.objects.of_type.VitalSigns).chain()
+        pt.height_arr = _(r.object.of_type.VitalSigns).chain()
           .filter(function(v){ return v.height; })
           .map(function(v){
             return [
@@ -271,7 +281,7 @@ var VITAL_SIGNS_get = function(){
 var LAB_RESULTS_get = function(){
   return $.Deferred(function(dfd){
     SMART.LAB_RESULTS_get().then(function(r){
-      var results = r.objects.of_type.LabResult;
+      var results = r.object.of_type.LabResult;
 
       (function ldl(){
         // LOINC Code, Long name, Short Name, class, rank # of 2000
@@ -664,7 +674,7 @@ var LAB_RESULTS_get = function(){
 var PROBLEMS_get = function(){
   return $.Deferred(function(dfd){
     SMART.PROBLEMS_get().then(function(r){
-      _(r.objects.of_type.Problem).each(function(p){
+      _(r.object.of_type.Problem).each(function(p){
         pt.problems_arr.push([
           new XDate(p.startDate),
           p.problemName.dcterms__title,
@@ -703,106 +713,146 @@ SMART.ready(function(){
     $('#ldl_date_ps').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '')
     $('#a1c_date_ps').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '')
 
+    // todo: move me
+    var labs = [
+      { 'name': 'ur_tp',            'min': null,  'max': 135  },
+      { 'name': 'm_alb_cre_ratio',  'min': null,  'max': 30   },
+      { 'name': 'sgot',             'min': 10,    'max': 40   },
+      { 'name': 'chol_total',       'min': null,  'max': 200  },
+      { 'name': 'triglyceride',     'min': null,  'max': 150  },
+      { 'name': 'hdl',              'min': 40,    'max': null },
+      { 'name': 'ldl',              'min': null,  'max': 100  },
+      { 'name': 'bun',              'min': 8,     'max': 25   },
+      { 'name': 'creatinine',       'min': 0.6,   'max': 1.5  },
+      { 'name': 'glucose',          'min': 70,    'max': 110  },
+      { 'name': 'a1c',              'min': null,  'max': 7    }
+    ];
+
+    function tag_in_range(){
+      _(labs).each(function(lab){
+        _(pt[lab.name+'_arr']).each(function(e){
+          var in_range_p = true;
+          var value = Number(e[1])
+          if (lab.min && value < lab.min) in_range_p = false;
+          if (lab.max && value > lab.max) in_range_p = false;
+          e[3] = in_range_p;
+        })
+      })
+    };
+
+    tag_in_range();
+
+    // cast value_obj[1] to Number but max and min are numbers to start with
+    var highlight_out_of_range = function(value_obj, min, max, id_string){
+      if (!value_obj || !id_string) return;
+      if (!value_obj[3]) $(id_string).html('<span class="highlight">'+value_obj[1]+'</span>');
+      else $(id_string).text(value_obj[1]);
+    }
+
     // labs
     $('#ur_tp_date').text(pt.ur_tp ? new XDate(pt.ur_tp[0]).toString('MM/dd/yy') : '-')
-    $('#ur_tp_val') .text(pt.ur_tp ? pt.ur_tp[1] : null)
+    highlight_out_of_range(pt.ur_tp, 0, 135, '#ur_tp_val')
     $('#ur_tp_unit').text(pt.ur_tp ? pt.ur_tp[2] : null)
 
     $('#ur_tp_next_date').text(pt.ur_tp_next ? new XDate(pt.ur_tp_next[0]).toString('MM/dd/yy') : '-')
-    $('#ur_tp_next_val') .text(pt.ur_tp_next ? pt.ur_tp_next[1] : null)
+    highlight_out_of_range(pt.ur_tp_next, 0, 135, '#ur_tp_next_val')
     $('#ur_tp_next_unit').text(pt.ur_tp_next ? pt.ur_tp_next[2] : null)
 
     $('#m_alb_cre_ratio_date').text(pt.m_alb_cre_ratio ? new XDate(pt.m_alb_cre_ratio[0]).toString('MM/dd/yy') : '-')
-    $('#m_alb_cre_ratio_val') .text(pt.m_alb_cre_ratio ? pt.m_alb_cre_ratio[1] : null)
+    highlight_out_of_range(pt.m_alb_cre_ratio, null, 30, '#m_alb_cre_ratio_val')
     $('#m_alb_cre_ratio_unit').text(pt.m_alb_cre_ratio ? pt.m_alb_cre_ratio[2] : null)
 
     $('#m_alb_cre_ratio_next_date').text(pt.m_alb_cre_ratio_next ? new XDate(pt.m_alb_cre_ratio_next[0]).toString('MM/dd/yy') : '-')
-    $('#m_alb_cre_ratio_next_val') .text(pt.m_alb_cre_ratio_next ? pt.m_alb_cre_ratio_next[1] : null)
+    highlight_out_of_range(pt.m_alb_cre_ratio_next, null, 30, '#m_alb_cre_ratio_next_val')
     $('#m_alb_cre_ratio_next_unit').text(pt.m_alb_cre_ratio_next ? pt.m_alb_cre_ratio_next[2] : null)
 
     $('#sgot_date').text(pt.sgot ? new XDate(pt.sgot[0]).toString('MM/dd/yy') : '-')
-    $('#sgot_val') .text(pt.sgot ? pt.sgot[1] : null)
+    highlight_out_of_range(pt.sgot, 10, 40, '#sgot_val')
     $('#sgot_unit').text(pt.sgot ? pt.sgot[2] : null)
 
     $('#sgot_next_date').text(pt.sgot_next ? new XDate(pt.sgot_next[0]).toString('MM/dd/yy') : '-')
-    $('#sgot_next_val') .text(pt.sgot_next ? pt.sgot_next[1] : null)
+    highlight_out_of_range(pt.sgot_next, 10, 40, '#sgot_next_val')
     $('#sgot_next_unit').text(pt.sgot_next ? pt.sgot_next[2] : null)
 
     $('#chol_total_date').text(pt.chol_total ? new XDate(pt.chol_total[0]).toString('MM/dd/yy') : '-')
-    $('#chol_total_val') .text(pt.chol_total ? pt.chol_total[1] : null)
+    highlight_out_of_range(pt.chol_total, null, 200, '#chol_total_val')
     $('#chol_total_unit').text(pt.chol_total ? pt.chol_total[2] : null)
 
     $('#chol_total_next_date').text(pt.chol_total_next ? new XDate(pt.chol_total_next[0]).toString('MM/dd/yy') : '-')
-    $('#chol_total_next_val') .text(pt.chol_total_next ? pt.chol_total_next[1] : null)
+    highlight_out_of_range(pt.chol_total_next, null, 200, '#chol_total_next_val')
     $('#chol_total_next_unit').text(pt.chol_total_next ? pt.chol_total_next[2] : null)
 
     $('#triglyceride_date').text(pt.triglyceride ? new XDate(pt.triglyceride[0]).toString('MM/dd/yy') : '-')
-    $('#triglyceride_val') .text(pt.triglyceride ? pt.triglyceride[1] : null)
+    highlight_out_of_range(pt.triglyceride, null, 150, '#triglyceride_val')
     $('#triglyceride_unit').text(pt.triglyceride ? pt.triglyceride[2] : null)
 
     $('#triglyceride_next_date').text(pt.triglyceride_next ? new XDate(pt.triglyceride_next[0]).toString('MM/dd/yy') : '-')
-    $('#triglyceride_next_val') .text(pt.triglyceride_next ? pt.triglyceride_next[1] : null)
+    highlight_out_of_range(pt.triglyceride_next, null, 150, '#triglyceride_next_val')
     $('#triglyceride_next_unit').text(pt.triglyceride_next ? pt.triglyceride_next[2] : null)
 
     $('#hdl_date').text(pt.hdl ? new XDate(pt.hdl[0]).toString('MM/dd/yy') : '-')
-    $('#hdl_val') .text(pt.hdl ? pt.hdl[1] : null)
+    highlight_out_of_range(pt.hdl, 40, null, '#hdl_val')
     $('#hdl_unit').text(pt.hdl ? pt.hdl[2] : null)
 
     $('#hdl_next_date').text(pt.hdl_next ? new XDate(pt.hdl_next[0]).toString('MM/dd/yy') : '-')
-    $('#hdl_next_val') .text(pt.hdl_next ? pt.hdl_next[1] : null)
+    highlight_out_of_range(pt.hdl_next, 40, null, '#hdl_next_val')
     $('#hdl_next_unit').text(pt.hdl_next ? pt.hdl_next[2] : null)
 
     $('#ldl_date').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '-')
-    $('#ldl_val') .text(pt.ldl ? pt.ldl[1] : null)
+    highlight_out_of_range(pt.ldl, null, 100, '#ldl_val')
     $('#ldl_unit').text(pt.ldl ? pt.ldl[2] : null)
 
     $('#ldl_next_date').text(pt.ldl_next ? new XDate(pt.ldl_next[0]).toString('MM/dd/yy') : '-')
-    $('#ldl_next_val') .text(pt.ldl_next ? pt.ldl_next[1] : null)
+    highlight_out_of_range(pt.ldl_next, null, 100, '#ldl_next_val')
     $('#ldl_next_unit').text(pt.ldl_next ? pt.ldl_next[2] : null)
 
     $('#bun_date').text(pt.bun ? new XDate(pt.bun[0]).toString('MM/dd/yy') : '-')
-    $('#bun_val') .text(pt.bun ? pt.bun[1] : null)
+    highlight_out_of_range(pt.bun, 8, 25, '#bun_val')
     $('#bun_unit').text(pt.bun ? pt.bun[2] : null)
 
     $('#bun_next_date').text(pt.bun_next ? new XDate(pt.bun_next[0]).toString('MM/dd/yy') : '-')
-    $('#bun_next_val') .text(pt.bun_next ? pt.bun_next[1] : null)
+    highlight_out_of_range(pt.bun_next, 8, 25, '#bun_next_val')
     $('#bun_next_unit').text(pt.bun_next ? pt.bun_next[2] : null)
 
     $('#creatinine_date').text(pt.creatinine ? new XDate(pt.creatinine[0]).toString('MM/dd/yy') : '-')
-    $('#creatinine_val') .text(pt.creatinine ? pt.creatinine[1] : null)
+    highlight_out_of_range(pt.creatinine, 0.6, 1.5, '#creatinine_val')
     $('#creatinine_unit').text(pt.creatinine ? pt.creatinine[2] : null)
 
     $('#creatinine_next_date').text(pt.creatinine_next ? new XDate(pt.creatinine_next[0]).toString('MM/dd/yy') : '-')
-    $('#creatinine_next_val') .text(pt.creatinine_next ? pt.creatinine_next[1] : null)
+    highlight_out_of_range(pt.creatinine_next, 0.6, 1.5, '#creatinine_next_val')
     $('#creatinine_next_unit').text(pt.creatinine_next ? pt.creatinine_next[2] : null)
 
     $('#glucose_date').text(pt.glucose ? new XDate(pt.glucose[0]).toString('MM/dd/yy') : '-')
-    $('#glucose_val') .text(pt.glucose ? pt.glucose[1] : null)
+    highlight_out_of_range(pt.glucose, 70, 110, '#glucose_val')
     $('#glucose_unit').text(pt.glucose ? pt.glucose[2] : null)
 
     $('#glucose_next_date').text(pt.glucose_next ? new XDate(pt.glucose_next[0]).toString('MM/dd/yy') : '-')
-    $('#glucose_next_val') .text(pt.glucose_next ? pt.glucose_next[1] : null)
+    highlight_out_of_range(pt.glucose_next, 70, 110, '#glucose_next_val')
     $('#glucose_next_unit').text(pt.glucose_next ? pt.glucose_next[2] : null)
 
     $('#a1c_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '-')
-    $('#a1c_val') .text(pt.a1c ? pt.a1c[1] : null)
+    highlight_out_of_range(pt.a1c, null, 7, '#a1c_val')
     $('#a1c_unit').text(pt.a1c ? pt.a1c[2] : null)
 
     $('#a1c_next_date').text(pt.a1c_next ? new XDate(pt.a1c_next[0]).toString('MM/dd/yy') : '-')
-    $('#a1c_next_val') .text(pt.a1c_next ? pt.a1c_next[1] : null)
+    highlight_out_of_range(pt.a1c_next, null, 7, '#a1c_next_val')
     $('#a1c_next_unit').text(pt.a1c_next ? pt.a1c_next[2] : null)
 
     // other info
-    $('#weight_date').text(pt.weight ? new XDate(pt.weight[0]).toString('MM/dd/yy') : null)
+    if (pt.weight) {
+      $('#weight_date').text(pt.weight ? new XDate(pt.weight[0]).toString('MM/dd/yy') : null)
+      var weight_val_lb = pt.weight[2] === 'kg' ? pt.weight[1] * 2.2 : null
+      weight_val_lb = weight_val_lb < 22 ? _round(weight_val_lb, 1) : _round(weight_val_lb, 0)
+      var weight_val_kg = pt.weight[1] || null
+      weight_val_kg = weight_val_kg < 10 ? _round(weight_val_kg, 1) : _round(weight_val_kg, 0)
+      $('#weight_val_lb').text(weight_val_lb || 'Unk')
+      $('#weight_val_kg').text(weight_val_kg || 'Unk')
+    } else {
+      $('#weight_date').text('Unknown')
+    }
 
-    var weight_val_lb = pt.weight[2] === 'kg' ? pt.weight[1] * 2.2 : null
-    weight_val_lb = weight_val_lb < 22 ? _round(weight_val_lb, 1) : _round(weight_val_lb, 0)
-    var weight_val_kg = pt.weight[1] || null
-    weight_val_kg = weight_val_kg < 10 ? _round(weight_val_kg, 1) : _round(weight_val_kg, 0)
-    $('#weight_val_lb').text(weight_val_lb || 'Unk')
-    $('#weight_val_kg').text(weight_val_kg || 'Unk')
-
-    var highlight = function(lab_variable, id_strings){
+    var highlight_overdue = function(lab_variable, id_strings){
+      if (!lab_variable) return;
       var today = new XDate();
       var d = new XDate(lab_variable[0]);
       var overdue_p = false;
@@ -810,14 +860,18 @@ SMART.ready(function(){
         _(id_strings).each(function(idstr){ $(idstr).addClass('highlight'); })
       }
     }
-    highlight(pt.weight, ['#weight_date']);
+    highlight_overdue(pt.weight, ['#weight_date']);
 
-    var height_val_in = pt.height[2] === 'm' ? _round(pt.height[1]  / .0254, 0) : null
-    var height_val_cm = _round(pt.height[1] * 100, 0) || null
-    $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
-    $('#height_val_in').text(height_val_in || 'Unknown')
-    $('#height_val_cm').text(height_val_cm || 'Unknown')
-    highlight(pt.height, ['#height_date']);
+    if (pt.height) {
+      var height_val_in = pt.height[2] === 'm' ? _round(pt.height[1]  / .0254, 0) : null
+      var height_val_cm = _round(pt.height[1] * 100, 0) || null
+      $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
+      $('#height_val_in').text(height_val_in || 'Unk')
+      $('#height_val_cm').text(height_val_cm || 'Unk')
+      highlight_overdue(pt.height, ['#height_date']);
+    } else {
+      $('#height_date').text('Unknown')
+    }
 
     // todo: NO pneumovax or flu codes in the current pts...
     if (!pt.pneumovax_date) { $('#pneumovax_date').text('Unknown'); }
@@ -1025,9 +1079,10 @@ SMART.ready(function(){
       $('#as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
 
       // medications
-      // var el = _(pt.meds_arr).max(function(e){ return e[2] || e[0]; })
-      // var d = new XDate(el[2] || el[0]);
-      // $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+      if (pt.fulfillment) {
+        d = new XDate(pt.fulfillment.dcterms__date);
+        $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+      }
 
       $('#medications, #medications_ps').empty()
       if (pt.meds_arr.length == 0) {
@@ -1058,6 +1113,15 @@ SMART.ready(function(){
             })
             .appendTo('#medications_ps')
           })
+
+        // slight ui hack: if medications_ps is longer than 10 items, split into two lists
+        var c = $('#medications_ps').children();
+        if (c.length > 10) {
+          for (var i=9; i < c.length; i++) {
+            $(c[i]).clone(true).appendTo('#medications_2_ps');
+            $(c[i]).remove();
+          }
+        }
 
         do_stripes()
     }; // sort_by_alpha?
@@ -1092,6 +1156,11 @@ SMART.ready(function(){
       // move all the partitioned problems back to the hidden #problems div
       _($('#resolved_problems, #cv_comorbidities, #other_problems').children())
         .each(function(e){
+          // rm any pseudo-problems
+          if (_(['None known', 'No current CV comorbidities']).include($(e).text())) {
+            $(e).remove();
+            return;
+          }
           var p = $(e).clone(true); // with data
           $(p).appendTo('#problems');
           $(e).remove();
@@ -1133,6 +1202,10 @@ SMART.ready(function(){
       $('#medications').empty();
       // don't empty the #medications_ps div here, it's always alpha sorted
       _(m2).each(function(e){ $(e).appendTo('#medications'); })
+      if (m2.length == 0) {
+        $('<div/>', {text: 'No known medications'}).appendTo('#medications');
+      }
+
       do_stripes();
     };
 
@@ -1235,11 +1308,6 @@ SMART.ready(function(){
       return false;
     });
 
-    $('#color_controls_link').on('click', function(){
-      alert('Work in progress... Coming soon.');
-      return false;
-    })
-
     var l_opts = {
       top: '5%',
       onLoad: function(e){
@@ -1266,8 +1334,11 @@ SMART.ready(function(){
       }
     };
 
+    // setup overlays
     $("#show_overlay[rel]").overlay(l_opts);
     $("#show_pt_summary_overlay[rel]").overlay(pts_opts);
+    $("#show_explainer_overlay[rel]").overlay({top: '5%'});
+    $("#show_timeline_overlay[rel]").overlay({top: '5%'});
 
     // do data tables the labs overlay
     var labnames = [
@@ -1287,12 +1358,18 @@ SMART.ready(function(){
       _(labnames).each(function(labname){
         _(pt[labname+'_arr'].reverse())
           .each(function(e){
-          var a = $('<div></div>', {
-            'class': 'lkv_lab_result',
-            html: '<span class=\'lkv_lab_date\'>' + new XDate(e[0]).toString('MM/dd/yy') + '</span> <span class="lkv_value">' + e[1] + '</span> ' + e[2]
-          })
-          .data(e);
-          $(a).appendTo('#'+labname+'_table_div');
+            var date_html = '<span class=\'lkv_lab_date\'>' + new XDate(e[0]).toString('MM/dd/yy') + '</span>';
+            var value_html = '<span class="lkv_value">' +  e[1] + '</span> ';
+            if (!e[3]) value_html = '<span class="highlight">' + value_html + '</span>';
+            var unit_html = e[2];
+
+            var a = $('<div></div>', {
+              'class': 'lkv_lab_result',
+              'html' : date_html + ' ' + value_html + ' ' + unit_html
+            })
+            .data(e);
+
+            $(a).appendTo('#'+labname+'_table_div');
         })
       })
     };
