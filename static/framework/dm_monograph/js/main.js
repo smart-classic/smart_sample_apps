@@ -1337,8 +1337,8 @@ SMART.ready(function(){
     // setup overlays
     $("#show_overlay[rel]").overlay(l_opts);
     $("#show_pt_summary_overlay[rel]").overlay(pts_opts);
-    $("#show_explainer_overlay[rel]").overlay();
-    $("#show_timeline_overlay[rel]").overlay();
+    $("#show_explainer_overlay[rel]").overlay({top: '5%'});
+    $("#show_timeline_overlay[rel]").overlay({top: '5%'});
 
     // do data tables the labs overlay
     var labnames = [
