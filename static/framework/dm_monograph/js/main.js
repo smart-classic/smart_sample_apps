@@ -1043,8 +1043,10 @@ SMART.ready(function(){
       $('#as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
 
       // medications
-      d = new XDate(pt.fulfillment.dcterms__date);
-      $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+      if (pt.fulfillment) {
+        d = new XDate(pt.fulfillment.dcterms__date);
+        $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+      }
 
       $('#medications, #medications_ps').empty()
       if (pt.meds_arr.length == 0) {
@@ -1118,6 +1120,11 @@ SMART.ready(function(){
       // move all the partitioned problems back to the hidden #problems div
       _($('#resolved_problems, #cv_comorbidities, #other_problems').children())
         .each(function(e){
+          // rm any pseudo-problems
+          if (_(['None known', 'No current CV comorbidities']).include($(e).text())) {
+            $(e).remove();
+            return;
+          }
           var p = $(e).clone(true); // with data
           $(p).appendTo('#problems');
           $(e).remove();
