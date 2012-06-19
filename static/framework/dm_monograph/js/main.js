@@ -713,93 +713,105 @@ SMART.ready(function(){
     $('#ldl_date_ps').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '')
     $('#a1c_date_ps').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '')
 
+    // todo: move me
+    // cast value_obj[1] to Number but max and min are numbers to start with
+    var highlight_out_of_range = function(value_obj, min, max, id_string){
+      if (!value_obj || !id_string) return;
+      var in_range_p = true;
+      var value = Number(value_obj[1])
+      if (min && value < min) in_range_p = false;
+      if (max && value > max) in_range_p = false;
+      if (!in_range_p) $(id_string).html('<span class="highlight">'+value+'</span>');
+      else $(id_string).text(value);
+    }
+
     // labs
     $('#ur_tp_date').text(pt.ur_tp ? new XDate(pt.ur_tp[0]).toString('MM/dd/yy') : '-')
-    $('#ur_tp_val') .text(pt.ur_tp ? pt.ur_tp[1] : null)
+    highlight_out_of_range(pt.ur_tp, 0, 135, '#ur_tp_val')
     $('#ur_tp_unit').text(pt.ur_tp ? pt.ur_tp[2] : null)
 
     $('#ur_tp_next_date').text(pt.ur_tp_next ? new XDate(pt.ur_tp_next[0]).toString('MM/dd/yy') : '-')
-    $('#ur_tp_next_val') .text(pt.ur_tp_next ? pt.ur_tp_next[1] : null)
+    highlight_out_of_range(pt.ur_tp_next, 0, 135, '#ur_tp_next_val')
     $('#ur_tp_next_unit').text(pt.ur_tp_next ? pt.ur_tp_next[2] : null)
 
     $('#m_alb_cre_ratio_date').text(pt.m_alb_cre_ratio ? new XDate(pt.m_alb_cre_ratio[0]).toString('MM/dd/yy') : '-')
-    $('#m_alb_cre_ratio_val') .text(pt.m_alb_cre_ratio ? pt.m_alb_cre_ratio[1] : null)
+    highlight_out_of_range(pt.m_alb_cre_ratio, null, 30, '#m_alb_cre_ratio_val')
     $('#m_alb_cre_ratio_unit').text(pt.m_alb_cre_ratio ? pt.m_alb_cre_ratio[2] : null)
 
     $('#m_alb_cre_ratio_next_date').text(pt.m_alb_cre_ratio_next ? new XDate(pt.m_alb_cre_ratio_next[0]).toString('MM/dd/yy') : '-')
-    $('#m_alb_cre_ratio_next_val') .text(pt.m_alb_cre_ratio_next ? pt.m_alb_cre_ratio_next[1] : null)
+    highlight_out_of_range(pt.m_alb_cre_ratio_next, null, 30, '#m_alb_cre_ratio_next_val')
     $('#m_alb_cre_ratio_next_unit').text(pt.m_alb_cre_ratio_next ? pt.m_alb_cre_ratio_next[2] : null)
 
     $('#sgot_date').text(pt.sgot ? new XDate(pt.sgot[0]).toString('MM/dd/yy') : '-')
-    $('#sgot_val') .text(pt.sgot ? pt.sgot[1] : null)
+    highlight_out_of_range(pt.sgot, 10, 40, '#sgot_val')
     $('#sgot_unit').text(pt.sgot ? pt.sgot[2] : null)
 
     $('#sgot_next_date').text(pt.sgot_next ? new XDate(pt.sgot_next[0]).toString('MM/dd/yy') : '-')
-    $('#sgot_next_val') .text(pt.sgot_next ? pt.sgot_next[1] : null)
+    highlight_out_of_range(pt.sgot_next, 10, 40, '#sgot_next_val')
     $('#sgot_next_unit').text(pt.sgot_next ? pt.sgot_next[2] : null)
 
     $('#chol_total_date').text(pt.chol_total ? new XDate(pt.chol_total[0]).toString('MM/dd/yy') : '-')
-    $('#chol_total_val') .text(pt.chol_total ? pt.chol_total[1] : null)
+    highlight_out_of_range(pt.chol_total, null, 200, '#chol_total_val')
     $('#chol_total_unit').text(pt.chol_total ? pt.chol_total[2] : null)
 
     $('#chol_total_next_date').text(pt.chol_total_next ? new XDate(pt.chol_total_next[0]).toString('MM/dd/yy') : '-')
-    $('#chol_total_next_val') .text(pt.chol_total_next ? pt.chol_total_next[1] : null)
+    highlight_out_of_range(pt.chol_total_next, null, 200, '#chol_total_next_val')
     $('#chol_total_next_unit').text(pt.chol_total_next ? pt.chol_total_next[2] : null)
 
     $('#triglyceride_date').text(pt.triglyceride ? new XDate(pt.triglyceride[0]).toString('MM/dd/yy') : '-')
-    $('#triglyceride_val') .text(pt.triglyceride ? pt.triglyceride[1] : null)
+    highlight_out_of_range(pt.triglyceride, null, 150, '#triglyceride_val')
     $('#triglyceride_unit').text(pt.triglyceride ? pt.triglyceride[2] : null)
 
     $('#triglyceride_next_date').text(pt.triglyceride_next ? new XDate(pt.triglyceride_next[0]).toString('MM/dd/yy') : '-')
-    $('#triglyceride_next_val') .text(pt.triglyceride_next ? pt.triglyceride_next[1] : null)
+    highlight_out_of_range(pt.triglyceride_next, null, 150, '#triglyceride_next_val')
     $('#triglyceride_next_unit').text(pt.triglyceride_next ? pt.triglyceride_next[2] : null)
 
     $('#hdl_date').text(pt.hdl ? new XDate(pt.hdl[0]).toString('MM/dd/yy') : '-')
-    $('#hdl_val') .text(pt.hdl ? pt.hdl[1] : null)
+    highlight_out_of_range(pt.hdl, 40, null, '#hdl_val')
     $('#hdl_unit').text(pt.hdl ? pt.hdl[2] : null)
 
     $('#hdl_next_date').text(pt.hdl_next ? new XDate(pt.hdl_next[0]).toString('MM/dd/yy') : '-')
-    $('#hdl_next_val') .text(pt.hdl_next ? pt.hdl_next[1] : null)
+    highlight_out_of_range(pt.hdl_next, 40, null, '#hdl_next_val')
     $('#hdl_next_unit').text(pt.hdl_next ? pt.hdl_next[2] : null)
 
     $('#ldl_date').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '-')
-    $('#ldl_val') .text(pt.ldl ? pt.ldl[1] : null)
+    highlight_out_of_range(pt.ldl, null, 100, '#ldl_val')
     $('#ldl_unit').text(pt.ldl ? pt.ldl[2] : null)
 
     $('#ldl_next_date').text(pt.ldl_next ? new XDate(pt.ldl_next[0]).toString('MM/dd/yy') : '-')
-    $('#ldl_next_val') .text(pt.ldl_next ? pt.ldl_next[1] : null)
+    highlight_out_of_range(pt.ldl_next, null, 100, '#ldl_next_val')
     $('#ldl_next_unit').text(pt.ldl_next ? pt.ldl_next[2] : null)
 
     $('#bun_date').text(pt.bun ? new XDate(pt.bun[0]).toString('MM/dd/yy') : '-')
-    $('#bun_val') .text(pt.bun ? pt.bun[1] : null)
+    highlight_out_of_range(pt.bun, 8, 25, '#bun_val')
     $('#bun_unit').text(pt.bun ? pt.bun[2] : null)
 
     $('#bun_next_date').text(pt.bun_next ? new XDate(pt.bun_next[0]).toString('MM/dd/yy') : '-')
-    $('#bun_next_val') .text(pt.bun_next ? pt.bun_next[1] : null)
+    highlight_out_of_range(pt.bun_next, 8, 25, '#bun_next_val')
     $('#bun_next_unit').text(pt.bun_next ? pt.bun_next[2] : null)
 
     $('#creatinine_date').text(pt.creatinine ? new XDate(pt.creatinine[0]).toString('MM/dd/yy') : '-')
-    $('#creatinine_val') .text(pt.creatinine ? pt.creatinine[1] : null)
+    highlight_out_of_range(pt.creatinine, 0.6, 1.5, '#creatinine_val')
     $('#creatinine_unit').text(pt.creatinine ? pt.creatinine[2] : null)
 
     $('#creatinine_next_date').text(pt.creatinine_next ? new XDate(pt.creatinine_next[0]).toString('MM/dd/yy') : '-')
-    $('#creatinine_next_val') .text(pt.creatinine_next ? pt.creatinine_next[1] : null)
+    highlight_out_of_range(pt.creatinine_next, 0.6, 1.5, '#creatinine_next_val')
     $('#creatinine_next_unit').text(pt.creatinine_next ? pt.creatinine_next[2] : null)
 
     $('#glucose_date').text(pt.glucose ? new XDate(pt.glucose[0]).toString('MM/dd/yy') : '-')
-    $('#glucose_val') .text(pt.glucose ? pt.glucose[1] : null)
+    highlight_out_of_range(pt.glucose, 70, 110, '#glucose_val')
     $('#glucose_unit').text(pt.glucose ? pt.glucose[2] : null)
 
     $('#glucose_next_date').text(pt.glucose_next ? new XDate(pt.glucose_next[0]).toString('MM/dd/yy') : '-')
-    $('#glucose_next_val') .text(pt.glucose_next ? pt.glucose_next[1] : null)
+    highlight_out_of_range(pt.glucose_next, 70, 110, '#glucose_next_val')
     $('#glucose_next_unit').text(pt.glucose_next ? pt.glucose_next[2] : null)
 
     $('#a1c_date').text(pt.a1c ? new XDate(pt.a1c[0]).toString('MM/dd/yy') : '-')
-    $('#a1c_val') .text(pt.a1c ? pt.a1c[1] : null)
+    highlight_out_of_range(pt.a1c, null, 7, '#a1c_val')
     $('#a1c_unit').text(pt.a1c ? pt.a1c[2] : null)
 
     $('#a1c_next_date').text(pt.a1c_next ? new XDate(pt.a1c_next[0]).toString('MM/dd/yy') : '-')
-    $('#a1c_next_val') .text(pt.a1c_next ? pt.a1c_next[1] : null)
+    highlight_out_of_range(pt.a1c_next, null, 7, '#a1c_next_val')
     $('#a1c_next_unit').text(pt.a1c_next ? pt.a1c_next[2] : null)
 
     // other info
@@ -815,7 +827,7 @@ SMART.ready(function(){
       $('#weight_date').text('Unknown')
     }
 
-    var highlight = function(lab_variable, id_strings){
+    var highlight_overdue = function(lab_variable, id_strings){
       if (!lab_variable) return;
       var today = new XDate();
       var d = new XDate(lab_variable[0]);
@@ -824,7 +836,7 @@ SMART.ready(function(){
         _(id_strings).each(function(idstr){ $(idstr).addClass('highlight'); })
       }
     }
-    highlight(pt.weight, ['#weight_date']);
+    highlight_overdue(pt.weight, ['#weight_date']);
 
     if (pt.height) {
       var height_val_in = pt.height[2] === 'm' ? _round(pt.height[1]  / .0254, 0) : null
@@ -832,7 +844,7 @@ SMART.ready(function(){
       $('#height_date').text(pt.height ? new XDate(pt.height[0]).toString('MM/dd/yy') : null)
       $('#height_val_in').text(height_val_in || 'Unk')
       $('#height_val_cm').text(height_val_cm || 'Unk')
-      highlight(pt.height, ['#height_date']);
+      highlight_overdue(pt.height, ['#height_date']);
     } else {
       $('#height_date').text('Unknown')
     }
