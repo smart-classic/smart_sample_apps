@@ -80,7 +80,7 @@
         <div class='section_header'>
           <div style='width: 60%; float: left'>Last Known Values</div>
           <div style='width: 38%; float: left; text-align: right'>
-            <a href='' id='show_overlay' rel="#lkv_overlay"/>[Graph]</a>
+            <a id='show_overlay' rel="#lkv_overlay"/>[Graph]</a>
           </div>
           <div class='clear'></div>
         </div>
@@ -420,8 +420,8 @@
 
           <div style='width: 48%; float: left; text-align: center; margin: -24px 0px 0px 16px'>
             <div>
-              <img style='width: 125px; margin: none' id='sort_by_date' src='./assets/alpha_mode.png' />
-              <img style='width: 125px; margin: none; display: none' id='sort_by_alpha' style='display: none' src='./assets/chrono_mode.png' />
+              <img class='mode_button' style='width: 125px; margin: none' id='sort_by_date' src='./assets/alpha_mode.png' />
+              <img class='mode_button' style='width: 125px; margin: none; display: none' id='sort_by_alpha' style='display: none' src='./assets/chrono_mode.png' />
             </div>
           </div>
         </div>
@@ -715,7 +715,9 @@
 
       <br />
 
-      <div class="section_header"><span class='section_header_number'>&#10126;</span> What Should You Do Now?</div>
+      <div class="section_header">
+        <span class='section_header_number'>&#10126;</span> What Should You Do Now?
+      </div>
 
       <div>
         <ol id='reminders_for_pt'></ol>
@@ -739,15 +741,27 @@
 
       <div class="container container_12">
         <div class='grid_3'>
-          <img src="./assets/explainer/explainer-controls.png" width="220" height="110">
+          <p class="first"><span style="color:#0088CC;">Patient Summary</span></p>
+          <p><span style="color:#0088CC;">App Explainer</span></p>
+          <p><span style="color:#0088CC;">Time Line</span></p>
         </div>
         <div class='grid_8 prefix_1'>
-          <p class="first"><span style="color:#0088CC;">Patient Summary</span>. Link to <strong>Diabetes Monograph Patient Summary</strong> panel</p>
-          <p><span style="color:#0088CC;">App Explainer</span>. Link to <strong>Diabetes Monograph App Explainer</strong> panel</p>
-          <p><span style="color:#0088CC;">Time Line</span>. Link to <strong>Diabetes Monograph Time Line</strong> Problems/Medications panel</p>
+          <p class="first">Link to <strong>Diabetes Monograph Patient Summary</strong> panel</p>
+          <p>Link to <strong>Diabetes Monograph App Explainer</strong> panel</p>
+          <p>Link to <strong>Diabetes Monograph Time Line</strong> Problems/Medications panel</p>
+        </div>
+
+        <div class='clear'></div>
+
+        <div class='grid_12 row-border'></div>
+
+        <div class='grid_3'>
+          <img src="./assets/alpha_mode.png">
+        </div>
+        <div class='grid_8 prefix_1'>
           <div class="button_text_align">
-            <p><img src="./assets/explainer/explainer-button-chrono-75px.png" width="75" height="40" style="margin-right:5px;vertical-align:middle;border:0;padding:0;"> Click button to see Problems, Allergies, and Medications chronologically</p></div>
-          <div class="button_text_align"><p><img src="./assets/explainer/explainer-button-alpha-75px.png" width="75" height="40" style="margin-right:5px;vertical-align:middle;border:0;padding:0;"> Click button to see Problems, Allergies, and Medications alphabetically</p></div>
+            <p>Click CHRONO to see Problems, Allergies, and Medications chronologically</p></div>
+          <div class="button_text_align"><p>Click ALPHA to see Problems, Allergies, and Medications alphabetically</p></div>
         </div>
 
         <div class='clear'></div>
@@ -842,7 +856,7 @@
           <div class='grid_6 prefix_1'>
             <p class="first"><strong>Allergies </strong>presents a list of current and past allergies.</p>
             <ul>
-              <li>Allergies are listed alphabetically with an instance count shown next to the allergy name</li>
+              <li>Allergies are listed alphabetically</li>
               <li>Reactions are listed after each allergy name if available      </li>
               <li>Unavailable results are presented as &quot;No known allergies&quot;    </li>
             </ul>
@@ -869,7 +883,7 @@
       <div id='timeline_title_line'>
         <div style='width: 78%; float: left; margin-left: 10%'>
           <img class='smart_bug' src='./assets/smart_bug.png' />
-          Time Line View
+          Time Line View (MOCKUP)
         </div>
         <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
           <a class='close' href='#'>[Close]</a>

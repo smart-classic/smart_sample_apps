@@ -23,7 +23,7 @@
 .caps { text-transform: uppercase; }
 
 a { color: #08c; text-decoration: none;}
-a:hover { border-bottom: 1px solid #08c; }
+a:hover { border-bottom: 1px solid #08c; cursor: pointer; }
 a.nohover:hover { border-bottom: none; }
 
 body {
@@ -33,6 +33,8 @@ body {
   line-height: 1.5em;
   margin: 0px;
 }
+
+.mode_button:hover { cursor: pointer }
 
 .container_12 {
   /* usually width: 92% and both margins at 4% each */
