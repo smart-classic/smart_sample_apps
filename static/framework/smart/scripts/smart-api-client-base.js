@@ -262,6 +262,19 @@ SMART_CONNECT_CLIENT.prototype.node_name = function(node) {
     return node;
 };
 
+SMART_CONNECT_CLIENT.prototype.merge_graphs = function() {
+    //add all graphs in arguments to new rdfquery object
+    var rq = $.rdf();
+
+    $.each(arguments, function() {
+            rq.databank = rq.databank.add(
+                this.databank, 
+                { namespaces: this.prefix() });
+            });
+
+    return rq;
+};
+
 
 SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
     try {
