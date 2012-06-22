@@ -1074,9 +1074,11 @@ SMART.ready(function(){
       } // d.length
 
       // add "as of" date of problems section header
-      var el = _(pt.problems_arr).max(function(e){ return e[2] || e[0]; })
-      var d = new XDate(el[2] || el[0]);
-      $('#as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+      if (pt.problems_arr.length > 0) {
+        var el = _(pt.problems_arr).max(function(e){ return e[2] || e[0]; })
+        var d = new XDate(el[2] || el[0]);
+        $('#as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+      }
 
       // medications
       if (pt.fulfillment) {
