@@ -24,7 +24,7 @@
 
         SMART.MEDS_get().then(function(r) {
           sparql
-          .query(statin_query(r.objects.of_type.Medication))
+          .query(statin_query(r.object.of_type.Medication))
           .done(function(j){
             var answer = j.results.bindings;
             if (answer.length > 0) {
