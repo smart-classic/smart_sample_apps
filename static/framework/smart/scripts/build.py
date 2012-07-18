@@ -11,7 +11,7 @@ FORMATS = {"Alert": None,
            "UserPreferences": None,
            "AppManifest": "JSON",
            "Container": "JSON",
-           "Capabilities": "JSON",
+           "ContainerManifest": "JSON",
            "default": "RDF"}
            
 CONTENT_TYPES = {"RDF": "application/rdf+xml",

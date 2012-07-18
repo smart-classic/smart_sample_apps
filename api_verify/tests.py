@@ -20,7 +20,7 @@ import dateutil.parser
 import query_builder
 
 # Import the manifest validator function
-from smart_client.common.utils.manifest_tests import manifest_structure_validator
+from smart_client.common.utils.manifest_tests import app_manifest_structure_validator, container_manifest_structure_validator
 
 # RDF parsing wrapper from the SMART python client
 from smart_client.common.rdf_tools.util import parse_rdf
