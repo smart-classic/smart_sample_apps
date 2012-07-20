@@ -8,7 +8,7 @@
 import copy
 
 # Import the app settings
-from settings import APP_PATH, DOC_BASE
+from settings import APP_PATH, DOC_BASE, ONTOLOGY
 
 # Imports from the SMART client
 from smart_client.common.rdf_tools import rdf_ontology
@@ -456,7 +456,7 @@ for ns in NS.keys():
     
 # Parse the ontology when necessary
 if not rdf_ontology.api_types:
-    rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+    rdf_ontology.parse_ontology(open(ONTOLOGY).read())
 
 # Build a list of data types that need to be added to the data definitions
 for t in rdf_ontology.api_types:

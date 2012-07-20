@@ -1,0 +1,22 @@
+{
+  "name": "DM Clone",
+  "description": "A single page, specialized view for Diabetes Mellitus. Cloned from LMR/On Call",
+  "author": "Implimentation: Arjun Sanyal <arjun.sanyal@childrens.harvard.edu>",
+  "id": "dm_monograph_clone@apps.smartplatforms.org",
+  "version": ".1a",
+  "optimalBrowserEnvironments": ["desktop"],
+  "supportedBrowserEnvironments": ["desktop", "tablet"],
+
+  "mode": "ui",
+  "scope": "record",
+
+  "index": "http://localhost:8001/framework/dm_monograph_clone/index.html",
+  "icon": "http://localhost:8001/framework/dm_monograph_clone/assets/icon.png",
+
+  "smart_version": "0.4",
+  "requires": {
+    "http://smartplatforms.org/terms#Demographics": {
+        "methods": ["GET"]
+    }
+  }
+}

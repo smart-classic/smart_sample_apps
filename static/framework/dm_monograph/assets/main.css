@@ -1,0 +1,313 @@
+/*
+  TODO: clean up
+
+  colors
+  ------
+
+  blue       #bed0e8
+  light_blue #d9e1ed
+  dark_blue  #739acd
+  orange     #E46C0A
+
+*/
+
+.bold { font-weight: bold; }
+.normal { font-weight: normal; }
+.smaller { font-size: smaller;}
+.larger { font-size: larger;}
+.grayer { color: #666; }
+.x-grayer { color: #999; }
+.medium { font-size: 12px;}
+.gray { background-color: #f0f0f0; }
+.highlight { color: #E46C0A; }
+.caps { text-transform: uppercase; }
+
+a { color: #08c; text-decoration: none;}
+a:hover { border-bottom: 1px solid #08c; cursor: pointer; }
+a.nohover:hover { border-bottom: none; }
+
+body {
+  background-color: white;
+  font-family: Verdana, "Lucida Grande", "Helvetica Neue", Helvetica, Calibri, sans-serif;
+  font-size: 12px !important;
+  line-height: 1.5em;
+  margin: 0px;
+}
+
+.mode_button:hover { cursor: pointer }
+
+.container_12 {
+  /* usually width: 92% and both margins at 4% each */
+  width: 99%;
+  margin-left: 1% !important;
+  margin-right: 0 !important;
+}
+
+.section_header {
+  background-color: #bed0e8;
+  border-bottom: 1px solid #739acd;
+  margin-bottom: 6px;
+  margin-top: 12px;
+  font-weight: bold;
+  padding-left: 3px;
+}
+
+.section_subheader {
+  background-color: #d9e1ed;
+  margin-bottom: 3px;
+  margin-top: 6px;
+  font-weight: bold;
+  padding-left: 3px;
+}
+
+#app_title_line {
+  width: 100%;
+  font-size: 18px;
+  margin-bottom: 12px;
+  background-color: #d9e1ed;
+  text-align: center;
+  padding: 6px 0;
+}
+
+.smart_bug { width: 21px; height: 18px; }
+
+#demo_line {
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.name { font-size: 20px; font-weight: bold; }
+
+.demo_line_label {
+  font-weight: normal;
+  font-size: small;
+  font-variant: small-caps;
+  color: #999;
+}
+
+#errors {
+  font-size: 16px;
+  font-family: Calibri, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+  color: #555;
+}
+
+#show_overlay { font-weight: bold; color: black; font-size: smaller;}
+#show_overlay:hover { border-bottom: none !important;}
+
+.reminder { padding-bottom: 10px; }
+
+.test_name { font-weight: bold; font-size: 13px; }
+.test_value { font-weight: bold; font-size: 13px; }
+.test_next_value { font-weight: bold; font-size: 13px; }
+
+/*.active { font-weight: bold; }*/
+/*.resolved_number { text-decoration: line-through;}*/
+
+.controls { font-size: 14px; }
+
+/* overlay stuff */
+.lkv_overlay {
+  padding: 10px;
+  display:none;
+  z-index:10000;
+  background-color:#fff;
+  width:900px;
+  min-height:200px;
+  height: 90%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+/*  border:1px solid #666;*/
+  /* CSS3 styling for latest browsers */
+  -moz-box-shadow:    0 0 45px 5px #666;
+  -webkit-box-shadow: 0 0 45px #666;
+  
+}
+
+/* close button positioned on upper right corner */
+/*.overlay .close {
+  z-index: 15000;
+  background-image:url(./close.png);
+  position:absolute;
+  right:0px;
+  right:-15px;
+  top:-15px;
+  cursor:pointer;
+  height:35px;
+  width:35px;
+}
+*/
+.lkv_overlay .section_header {
+  background-color: #bed0e8;
+  margin-bottom: 6px;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+/*
+.overlay .details {
+  position:absolute;
+  top:15px;
+  right:15px;
+  font-size:11px;
+  color:#fff;
+  width:150px;
+}
+
+.overlay .details h3 {
+  color:#aba;
+  font-size:15px;
+}
+*/
+.lkv_graph {
+  width: 240px;
+  height: 100px;
+/*  margin: 15px 0px 30px 15px;*/
+/*  text-align: center;*/
+}
+
+.lkv_graph_div { width: 50%; float: left; }
+.lkv_table_div { width: 50%; float: left; }
+.lkv_lab_result { }
+.lkv_lab_date { }
+.lkv_value { font-weight: bold; font-size: 13px; }
+
+/*** pt summary ***/
+
+.pt_summary {
+  padding: 10px;
+  display:none;
+  z-index:10000;
+  background-color:#fff;
+  width:900px;
+  min-height:200px;
+  height: 90%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -moz-box-shadow:    0 0 45px 5px #666;
+  -webkit-box-shadow: 0 0 45px #666;
+}
+
+#lkv_overlay_title_line {
+  width: 100%;
+  height: 22px;
+  font-size: 18px;
+  background-color: #d9e1ed;
+  text-align: center;
+  padding: 6px 0;
+}
+
+#pt_summary_title_line {
+  width: 100%;
+  height: 22px;
+  font-size: 18px;
+  background-color: #d9e1ed;
+  text-align: center;
+  padding: 6px 0;
+}
+
+.pt_summary .demo_line {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.pt_summary .name { font-size: 20px; font-weight: bold; }
+
+.pt_summary .demo_line_label {
+  font-weight: normal;
+  font-size: small;
+  font-variant: small-caps;
+  color: #999;
+}
+
+.pt_summary .section_header {
+  background-color: #fff;
+  border-bottom: none !important;
+  margin-bottom: 6px;
+  margin-top: 12px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.section_header_number { font-size: 22px; color: #E46C0A; vertical-align: text-bottom; font-weight: normal; }
+
+.test_ps { margin: 10px 0 0 10px; }
+.test_ps .header { font-size: 14px; font-weight: bold; padding-left: 43px; margin-bottom: 3px; }
+.test_ps .label { font-weight: normal;
+font-size: small;
+font-variant: small-caps;
+color: #999;
+}
+
+.reminder_for_pt { font-size: larger; color: #E46C0A; }
+
+.diabetic_info { font-size: large; }
+
+.ps_graph { width: 240px; height: 100px; }
+
+.gender { text-transform: uppercase;}
+
+.diabetic_how_long_text { color:#999; font-weight: normal; }
+
+
+/* explainer */
+.explainer {
+  padding: 10px;
+  display:none;
+  z-index:10000;
+  background-color:#fff;
+  width:900px;
+  min-height:200px;
+  height: 90%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -moz-box-shadow:    0 0 45px 5px #666;
+  -webkit-box-shadow: 0 0 45px #666;
+}
+
+
+.row-border { border-top:1px solid #971; padding-top:5px; margin-bottom:10px; margin-top:10px; }
+
+#explainer_title_line {
+  width: 100%;
+  height: 22px;
+  font-size: 18px;
+  background-color: #d9e1ed;
+  text-align: center;
+  padding: 6px 0;
+  margin-bottom: 16px;
+}
+
+.button_text_align { vertical-align:middle; }
+
+p.first { margin-top:0 }
+
+.probs {
+  width:220 px;
+  text-align:center;
+  float:left;
+}
+
+.timeline {
+  padding: 10px;
+  display:none;
+  z-index:10000;
+  background-color:#fff;
+  width:1000px;
+  min-height:200px;
+  height: 550px;
+  -moz-box-shadow:    0 0 45px 5px #666;
+  -webkit-box-shadow: 0 0 45px #666;
+}
+
+#timeline_title_line {
+  width: 100%;
+  height: 22px;
+  font-size: 18px;
+  background-color: #d9e1ed;
+  text-align: center;
+  padding: 6px 0;
+  margin-bottom: 16px;
+}

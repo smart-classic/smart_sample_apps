@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <!--
+    Diabetes Mellitus Monograph SMART App
+    =====================================
+
+    From the SMART Project <http://www.smartplatforms.org/>
+    Arjun Sanyal <arjun.sanyal@childrens.harvard.edu> - Design and Implementation
+
+    Notes:
+    - Designed for a 1280x1024 window size
+    - Using a 960.gs fluid grid with col width = 60, no col = 9,
+      and gutter width = 0 for 720px total
+
+    TODO:
+    - fill in requires in manifest file
+  -->
+  <head>
+    <title>Diabetes Mellitus Monograph</title>
+      <link rel='stylesheet' href='./assets/fluid_grid_60_12_0.css'>
+      <link rel='stylesheet' href='./assets/main.css'>
+
+      <script src='../smart/scripts/smart-api-client.js'></script>
+      <!-- note: we take the SMART jQuery object and make it global -->
+      <script> $ = jQuery = SMART.$; </script>
+      <script src='./js/xdate.js'></script>
+      <script src='./js/jsonld.js'></script>
+      <script src='./js/flot/jquery.flot.min.js'></script>
+      <script src='./js/flot/jquery.flot.resize.min.js'></script>
+      <!--[if lte IE 8]><script src="./js/flot/excanvas.min.js"></script><![endif]-->
+      <script src='./js/underscore.min.js'></script>
+      <script src='./js/json2.js'></script>
+      <script src='./js/main.js'></script>
+  </head>
+  <body>
+    <div id='content' class="container_12">
+      <div id='top_line' class='grid_12'>
+        <span id='family_name'></span>,
+        <span id='given_name'></span>
+        &nbsp;
+        <span id='record_id'></span>
+        &nbsp;
+        <span id='birthday'></span>
+        &nbsp;
+        (<span id='age'></span> <span style='text-transform: lowercase'>YRS.</span>)
+        &nbsp;
+        <span id='gender'></span>
+      </div>
+
+      <div class='clear'></div>
+
+      <div id='column_1' class='grid_3'>
+        <div class='section_header'>
+          BP <span class='normal'>goal &lt; 130/80</span>
+        </div>
+
+        <div id='bp_graph'></div>
+
+        <div class='section_header'>Last Known Values</div>
+
+        <div class="grid_1 alpha" style='width: 30%; margin-right: 0px;'>
+          <div class='bold'>Ur tp</div>
+          <div class='smaller'>0-135</div>
+
+          <div class='gray bold'>&micro;alb/cre</div>
+          <div class='gray smaller'>&lt; 30.0</div>
+
+          <div class='bold'>SGOT</div>
+          <div class='smaller'>10-40</div>
+
+          <div class='gray bold'>Chol</div>
+          <div class='gray smaller'>&lt; 200</div>
+
+          <div class='bold'>Tri</div>
+          <div class='smaller'>&lt; 150</div>
+
+          <div class='gray bold'>HDL</div>
+          <div class='gray smaller'>&gt; 40</div>
+
+          <div class='bold'>LDL</div>
+          <div class='smaller'>&lt; 100</div>
+
+          <div class='gray bold'>BUN</div>
+          <div class='gray smaller'>8-25</div>
+
+          <div class='bold'>Cre</div>
+          <div class='smaller'>0.60-1.50</div>
+
+          <div class='gray bold'>Glu</div>
+          <div class='gray smaller'>70-110</div>
+
+          <div class='bold'>A1C</div>
+          <div class='smaller'>&lt; 7%</div>
+        </div>
+
+        <div class="grid_1" style='width: 35%; margin-left: 0px; margin-right: 0px;'>
+          <div>
+            <span id='ur_tp_val' class='bold'>&nbsp;</span>
+            <span id='ur_tp_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='ur_tp_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='m_alb_cre_ratio_val' class='bold'>&nbsp;</span>
+            <span id='m_alb_cre_ratio_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='m_alb_cre_ratio_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='sgot_val' class='bold'>&nbsp;</span>
+            <span id='sgot_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='sgot_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='chol_total_val' class='bold'>&nbsp;</span>
+            <span id='chol_total_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='chol_total_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='triglyceride_val' class='bold'>&nbsp;</span>
+            <span id='triglyceride_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='triglyceride_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='hdl_val' class='bold'>&nbsp;</span>
+            <span id='hdl_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='hdl_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='ldl_val' class='bold'>&nbsp;</span>
+            <span id='ldl_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='ldl_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='bun_val' class='bold'>&nbsp;</span>
+            <span id='bun_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='bun_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='creatinine_val' class='bold'>&nbsp;</span>
+            <span id='creatinine_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='creatinine_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='glucose_val' class='bold'>&nbsp;</span>
+            <span id='glucose_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='glucose_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='a1c_val' class='bold'>&nbsp;</span>
+            <span id='a1c_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='a1c_date'>&nbsp;</span>
+          </div>
+        </div>
+
+        <!-- fixme: a bit long, wraps under 1280px -->
+        <div class="grid_1 omega" style='width: 30%; margin-left: 0px;'>
+          <div>
+            <span id='ur_tp_next_val' class='bold'>&nbsp;</span>
+            <span id='ur_tp_next_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='ur_tp_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='m_alb_cre_ratio_next_val' class='bold'>&nbsp;</span>
+            <span id='m_alb_cre_ratio_next_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='m_alb_cre_ratio_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='sgot_next_val' class='bold'>&nbsp;</span>
+            <span id='sgot_next_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='sgot_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='chol_total_next_val' class='bold'>&nbsp;</span>
+            <span id='chol_total_next_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='chol_total_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='triglyceride_next_val' class='bold'>&nbsp;</span>
+            <span id='triglyceride_next_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='triglyceride_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='hdl_next_val' class='bold'>&nbsp;</span>
+            <span id='hdl_next_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='hdl_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='ldl_next_val' class='bold'>&nbsp;</span>
+            <span id='ldl_next_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='ldl_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='bun_next_val' class='bold'>&nbsp;</span>
+            <span id='bun_next_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='bun_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='creatinine_next_val' class='bold'>&nbsp;</span>
+            <span id='creatinine_next_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='creatinine_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='glucose_next_val' class='bold'>&nbsp;</span>
+            <span id='glucose_next_unit'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='glucose_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='a1c_next_val' class='bold'>&nbsp;</span>
+            <span id='a1c_next_unit'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='a1c_next_date'>&nbsp;</span>
+          </div>
+        </div>
+      </div>
+
+      <div id='column_2' class='grid_3'>
+        <div class='section_header'>
+          LDL <span class='normal'>goal &lt; 100</span>
+        </div>
+
+        <div id='ldl_graph'></div>
+
+        <div id='other_info'>
+          <div class='section_header'>Other Info</div>
+
+          <div>
+            <span class='bold'>weight</span>
+            &nbsp;
+            <span id='weight_val'>&nbsp;</span>
+            <!-- <span id='weight_unit'>&nbsp;</span> -->
+            <span id='weight_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span class='bold'>height</span>
+            &nbsp;
+            <span id='height_val'>&nbsp;</span>
+            <!-- <span id='height_unit'>&nbsp;</span> -->
+            <span id='height_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span class='bold'>smoking</span>
+            &nbsp;
+            <span id='smoking_status'>not available</span>
+          </div>
+
+          <div class='gray'>
+            <span class='bold'>aspirin</span>
+            &nbsp;
+            <span id='flu_shot_date'>not available</span>
+          </div>
+
+          <div>
+            <span class='bold'>ACE/ARB</span>
+            &nbsp;
+            <span id='smoking_status'>not available</span>
+          </div>
+
+          <div class='gray'>
+            <span class='bold'>last pneumovax</span>
+            &nbsp;
+            <span id='pneumovax_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span class='bold'>last flu shot</span>
+            &nbsp;
+            <span id='flu_shot_date'>&nbsp;</span>
+          </div>
+        </div>
+
+        <div id='major_cv_comorbidities'>
+          <div class='section_header'>Major CV Comorbidities</div>
+          <div id='cv_comorbidities'></div>
+        </div>
+
+        <div id='other_problems'>
+          <div class='section_header'>Other Problems</div>
+          <div id='problems'></div>
+        </div>
+      </div>
+
+      <div id='column_3' class='grid_6'>
+        <div class='section_header'>
+          A1C <span class='normal'>goal &lt; 7</span>
+        </div>
+
+        <div id='a1c_graph'></div>
+
+        <div id='reminders_outer'>
+          <div class='section_header'>Reminders</div>
+          <div id='reminders'></div>
+        </div>
+
+        <div id='allergies_outer'>
+          <div class='section_header'>Allergies</div>
+          <div id='allergies'></div>
+        </div>
+
+        <div id='medications_outer'>
+          <div class='section_header'>Medications</div>
+          <div id='medications'></div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

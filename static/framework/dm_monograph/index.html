@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+  <!--
+    SMART Diabetes Monograph
+    ========================
+
+    From the SMART Project <http://www.smartplatforms.org/>
+    Arjun Sanyal <arjun.sanyal@childrens.harvard.edu> - Design and Implementation
+    Rachel Eastwood - Explainer page
+
+    Notes:
+    - Designed for a 1280x1024 window size
+
+    TODO:
+    - fill in requires in manifest file
+  -->
+  <head>
+    <title>SMART Diabetes Monograph</title>
+      <link rel='stylesheet' href='./assets/fluid_grid_60_12_0.css'>
+      <link rel='stylesheet' href='./assets/main.css'>
+
+      <script src='../smart/scripts/smart-api-client.js'></script>
+      <!-- note: we take the SMART jQuery object and make it global -->
+      <script> $ = jQuery = SMART.$; </script>
+      <script src='./js/xdate.js'></script>
+      <script src='./js/jsonld.js'></script>
+      <script src='./js/flot/jquery.flot.min.js'></script>
+      <script src='./js/flot/jquery.flot.resize.min.js'></script>
+      <!--[if lte IE 8]><script src="./js/flot/excanvas.min.js"></script><![endif]-->
+      <script src='./js/underscore.min.js'></script>
+      <script src='./js/json2.js'></script>
+      <script src='./js/jquery.tools.overlay.js'></script>
+      <script src='./js/main.js'></script>
+  </head>
+  <body>
+
+    <div id='app_title_line'>
+      <img class='smart_bug' src='./assets/smart_bug.png' />
+      SMART Diabetes Monograph
+    </div>
+
+    <div id='content' class="container_12">
+
+      <div class='demo_line'>
+        <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
+          <span class='family_name'></span>, <span class='given_name'></span>
+        </div>
+        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
+          &nbsp;
+          <!-- <span class='demo_line_label' style='display: none;' class='diabetic_info_label'>DIAGNOSIS</span> -->
+          <span class='diabetic_info highlight'></span>
+          <span class='diabetic_how_long_text highlight'></span>
+        </div>
+      </div>
+
+      <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
+        <div style='width: 48%; float: left'>
+          <span class='demo_line_label'>DOB</span> <span class='birthday'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>AGE</span> <span class='age'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
+        </div>
+        <div style='float: left; width: 48%; text-align: right; font-size: small;'>
+          <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
+          &middot;
+          <a rel='#explainer' id='show_explainer_overlay'/>App Explainer</a>
+          &middot;
+          <a rel='#timeline' id='show_timeline_overlay'/>Time Line</a>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <div id='column_1' class='grid_3'>
+        <div class='section_header'>
+          BP <span class='normal smaller'>goal <span class='medium'>&lt; 130/80</span>&thinsp;mm/hg</span>
+        </div>
+
+        <div id='bp_graph'></div>
+
+        <div class='section_header'>
+          <div style='width: 60%; float: left'>Last Known Values</div>
+          <div style='width: 38%; float: left; text-align: right'>
+            <a id='show_overlay' rel="#lkv_overlay"/>[Graph]</a>
+          </div>
+          <div class='clear'></div>
+        </div>
+
+        <div class="grid_1 alpha" style='width: 37%; margin-right: 0px;'>
+          <div>
+            <span class='test_name'>Ur tp</span>
+            <span class='smaller' id='ur_tp_unit'></span>
+          </div>
+          <div class='smaller'>0-135</div>
+
+          <div class='gray'>
+            <span class='test_name'>&micro;alb/cre</span>
+            <span class='smaller' id='m_alb_cre_ratio_unit'></span>
+          </div>
+          <div class='gray smaller'>&lt; 30.0</div>
+
+          <div>
+            <span class='test_name'>SGOT</span>
+            <span class='smaller' id='sgot_unit'></span>
+          </div>
+          <div class='smaller'>10-40</div>
+
+          <div class='gray'>
+            <span class='test_name'>Chol</span>
+            <span class='smaller' id='chol_total_unit'></span>
+          </div>
+          <div class='gray smaller'>&lt;&thinsp;200</div>
+
+          <div>
+            <span class='test_name'>Tri</span>
+            <span class='smaller' id='triglyceride_unit'></span>
+          </div>
+          <div class='smaller'>&lt;&thinsp;150</div>
+
+          <div class='gray'>
+            <span class='test_name'>HDL</span>
+            <span class='smaller' id='hdl_unit'></span>
+          </div>
+          <div class='gray smaller'>&gt;&thinsp;40</div>
+
+          <div>
+            <span class='test_name'>LDL</span>
+            <span class='smaller' id='ldl_unit'></span>
+          </div>
+          <div class='smaller'>&lt;&thinsp;100</div>
+
+          <div class='gray'>
+            <span class='test_name'>BUN</span>
+            <span class='smaller' id='bun_unit'></span>
+          </div>
+          <div class='gray smaller'>8%-25%</div>
+
+          <div>
+            <span class='test_name'>Cre</span>
+            <span class='smaller' id='creatinine_unit'></span>
+          </div>
+          <div class='smaller'>0.6-1.5</div>
+
+          <div class='gray'>
+            <span class='test_name'>Glu</span>
+            <span class='smaller' id='glucose_unit'></span>
+          </div>
+          <div class='gray smaller'>70-110</div>
+
+          <div>
+            <span class='test_name'>A1C</span>
+            <span class='smaller' id='a1c_unit'></span>
+          </div>
+          <div class='smaller'>&lt;&thinsp;7%</div>
+        </div>
+
+        <div class="grid_1" style='width: 31%; margin-left: 0px; margin-right: 0px;'>
+          <div>
+            <span id='ur_tp_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='ur_tp_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='m_alb_cre_ratio_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='m_alb_cre_ratio_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='sgot_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='sgot_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='chol_total_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='chol_total_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='triglyceride_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='triglyceride_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='hdl_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='hdl_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='ldl_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='ldl_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='bun_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='bun_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='creatinine_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='creatinine_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='glucose_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='glucose_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='a1c_val' class='test_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='a1c_date'>&nbsp;</span>
+          </div>
+        </div>
+
+        <div class="grid_1 omega" style='width: 31%; margin-left: 0px;'>
+          <div>
+            <span id='ur_tp_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='ur_tp_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='m_alb_cre_ratio_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='m_alb_cre_ratio_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='sgot_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='sgot_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='chol_total_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='chol_total_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='triglyceride_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='triglyceride_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='hdl_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='hdl_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='ldl_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='ldl_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='bun_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='bun_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='creatinine_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='creatinine_next_date'>&nbsp;</span>
+          </div>
+
+          <div class='gray'>
+            <span id='glucose_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div class='gray'>
+            <span id='glucose_next_date'>&nbsp;</span>
+          </div>
+
+          <div>
+            <span id='a1c_next_val' class='test_next_value'>&nbsp;</span>
+          </div>
+          <div>
+            <span id='a1c_next_date'>&nbsp;</span>
+          </div>
+        </div>
+      </div>
+
+      <div id='column_2' class='grid_3'>
+        <div class='section_header'>
+          LDL <span class='normal smaller'>goal <span class='medium'>&lt; 100</span>&thinsp;mg/dL</span>
+        </div>
+
+        <div id='ldl_graph'></div>
+
+        <div id='other_info'>
+          <div class='section_header'>Other Info</div>
+
+          <div>
+            <div style='width: 28%; float: left'><span class='bold'>weight</span></div>
+            <div style='width: 40%; float: left'>lbs <span id='weight_val_lb'></span>
+              &nbsp;<span class='x-grayer'>kg <span id='weight_val_kg'></span></span>
+            </div>
+            <div style='width: 31%; float: left; text-align: right' id='weight_date'></div>
+            <div class='clear'></div>
+          </div>
+
+          <div class='gray'>
+            <div style='width: 28%; float: left'><span class='bold'>height</span></div>
+            <div style='width: 40%; float: left'>in <span id='height_val_in'></span>
+              &nbsp;<span class='x-grayer'>cm <span id='height_val_cm'></span></span>
+            </div>
+            <div style='width: 31%; float: left; text-align: right' id='height_date'></div>
+            <div class='clear'></div>
+          </div>
+
+          <div>
+            <div style='width: 49%; float: left'><span class='bold'>last foot exam</span></div>
+            <!-- hack: just make highlight since we don't have this data yet -->
+            <div style='width: 49%; float: left; text-align: right' id='foot_exam_date' class=''>Unknown</div>
+            <div class='clear'></div>
+          </div>
+
+          <div class='gray'>
+            <div style='width: 49%; float: left'><span class='bold'>last eye exam</span></div>
+            <div style='width: 49%; float: left; text-align: right' id='eye_exam_date' class=''>Unknown</div>
+            <div class='clear'></div>
+          </div>
+
+          <div>
+            <div style='width: 30%; float: left'><span class='bold'>smoking</span></div>
+            <div style='width: 68%; float: left; text-align: right' id='smoking_status'>Unknown</div>
+            <div class='clear'></div>
+          </div>
+
+          <div class='gray'>
+            <div style='width: 30%; float: left'><span class='bold'>aspirin</span></div>
+            <div style='width: 68%; float: left; text-align: right' id='aspirin_tolerance'>Unknown</div>
+            <div class='clear'></div>
+          </div>
+
+          <div>
+            <div style='width: 30%; float: left'><span class='bold'>ACE/ARB</span></div>
+            <div style='width: 68%; float: left; text-align: right' id='ace_arb_status'>Unknown</div>
+            <div class='clear'></div>
+          </div>
+
+          <div class='gray'>
+            <div style='width: 68%; float: left'><span class='bold'>last pneumovax</span></div>
+            <div style='width: 30%; float: left; text-align: right' id='pneumovax_date' class=''></div>
+            <div class='clear'></div>
+          </div>
+
+          <div>
+            <div style='width: 68%; float: left'><span class='bold'>last flu shot</span></div>
+            <div style='width: 30%; float: left; text-align: right' id='flu_shot_date' class=''></div>
+            <div class='clear'></div>
+          </div>
+        </div>
+
+        <div id='problems_header'>
+          <!-- hidden problems div for sorting. todo: clean this up in the js-->
+          <div class='section_header'>Problems <span id='as_of'></span></div>
+
+          <div id='problems' style='display: none'></div>
+
+          <div id='major_cv_comorbidities'>
+            <div class='section_subheader'>Major CV Comorbidities</div>
+            <div id='cv_comorbidities'></div>
+          </div>
+
+          <div>
+            <div class='section_subheader'>Others</div>
+            <div id='other_problems'></div>
+          </div>
+
+          <div>
+            <div class='section_subheader'>Closed <span style='font-size: smaller; font-weight: normal;'>(on date)</span></div>
+            <div id='resolved_problems'></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div id='column_3' class='grid_6'>
+        <div>
+          <div class='section_header' style='width: 48%; float: left'> A1C <span class='normal smaller'>goal <span class='medium'>&lt; 7%</span></span></div>
+
+          <div class='clear'></div>
+
+        <div style='height: 100px; width:49%; float: left;'>
+          <div id='a1c_graph'></div>
+        </div>
+
+          <div style='width: 48%; float: left; text-align: center; margin-top: -8px; margin-left: auto; margin-right: auto;'>
+            <div>
+              <img class='mode_button' style='width: 80px; margin: none' id='sort_by_date' src='./assets/alpha_mode.png' />
+              <img class='mode_button' style='width: 80px; margin: none; display: none' id='sort_by_alpha' style='display: none' src='./assets/chrono_mode.png' />
+            </div>
+          </div>
+        </div>
+
+        <div class='clear'></div>
+
+        <div id='reminders_outer'>
+          <div class='section_header'>Reminders</div>
+          <div id='reminders'></div>
+        </div>
+
+        <div id='allergies_outer'>
+          <div class='section_header'>Allergies</div>
+          <div id='allergies'></div>
+        </div>
+
+        <div id='medications_outer'>
+          <div class='section_header'>Medications <span id='meds_as_of'></span></div>
+          <div id='medications'></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lkv_overlay" id="lkv_overlay">
+      <div id='lkv_overlay_title_line'>
+        <div style='width: 78%; float: left; margin-left: 10%'>
+          <img class='smart_bug' src='./assets/smart_bug.png' />
+          SMART Diabetes Monograph Lab Graphs
+        </div>
+        <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
+          <a class='close' href='#'>[Close]</a>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <div class='demo_line'>
+        <div style='width: 48%; float: left; margin: 10px 0px;' class='name'>
+          <span class='family_name'></span>, <span class='given_name'></span>
+        </div>
+        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin: 10px 0px; display: none'>
+          &nbsp;
+          <!-- <span class='demo_line_label diabetic_info_label'>DIAGNOSIS</span> -->
+          <span class='diabetic_info highlight'></span>
+          <span class='diabetic_how_long_text highlight'></span>
+        </div>
+      </div>
+
+      <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
+        <div style='width: 48%; float: left'>
+          <span class='demo_line_label'>DOB</span> <span class='birthday'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>AGE</span> <span class='age'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <div class="section_header">Urine Total Protein</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='ur_tp_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='ur_tp_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">&micro;alb/cre</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='m_alb_cre_ratio_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='m_alb_cre_ratio_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">SGOT</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='sgot_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='sgot_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">Cholesterol</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='chol_total_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='chol_total_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">Tri</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='triglyceride_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='triglyceride_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">HDL</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='hdl_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='hdl_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">LDL</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='ldl_graph_lkv'></div>
+        </div>
+        <div class='lkv_table_div' id='ldl_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">BUN</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='bun_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='bun_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">Creatinine</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='creatinine_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='creatinine_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">Glucose</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='glucose_graph'></div>
+        </div>
+        <div class='lkv_table_div' id='glucose_table_div'></div>
+      </div>
+      <div class='clear'></div>
+
+      <div class="section_header">A1C</div>
+      <div>
+        <div class='lkv_graph_div'>
+          <div class='lkv_graph' id='a1c_graph_lkv'></div>
+        </div>
+        <div class='lkv_table_div' id='a1c_table_div'></div>
+      </div>
+      <div class='clear'></div>
+    </div>
+
+
+    <div id="pt_summary" class="pt_summary">
+      <div id='pt_summary_title_line'>
+        <div style='width: 78%; float: left; margin-left: 10%'>
+          <img class='smart_bug' src='./assets/smart_bug.png' />
+          SMART Diabetes Patient Summary
+        </div>
+        <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
+          <a class='close' href='#'>[Close]</a>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <div class='demo_line'>
+        <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
+          <span class='family_name'></span>, <span class='given_name'></span>
+        </div>
+        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
+          &nbsp;
+          <!-- <span class='demo_line_label diabetic_info_label' style='display: none;'>DIAGNOSIS</span> -->
+          <span class='diabetic_info highlight'></span>
+          <span class='diabetic_how_long_text highlight'></span>
+        </div>
+      </div>
+
+      <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
+        <div style='width: 48%; float: left'>
+          <span class='demo_line_label'>DOB</span> <span class='birthday'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>AGE</span> <span class='age'></span>&nbsp;&nbsp;
+          <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
+        </div>
+      </div>
+
+      <br />
+
+      <div class='clear'></div>
+
+      <div class="section_header"><span class='section_header_number'>&#10122;</span> About This Summary</div>
+
+      <div style='margin-left: 10px'>
+        This report summarizes information about your diagnosis of diabetes type 2
+      </div>
+
+      <div class="section_header"><span class='section_header_number'>&#10123;</span> Your Test Results</div>
+
+      <div class='test_ps'>
+        <div style='width: 33%; float: left'>
+          <div class='header'>Blood Pressure</div>
+          <div class='ps_graph' id='bp_graph_ps'></div>
+        </div>
+        <div style='width: 63%; float: left; margin-top: 16px;'>
+          <div style='width: 45%; float: left;  margin-right: 10px;'>
+            <div><span class='label'>LAST TEST</span> <span id='bp_date_ps'></span></div>
+          </div>
+          <div style='width: 50%; float: left'>
+            <div>
+              <span style='color: #afd8f8; font-weight: bold'>O</span>
+              <span class='label'>SYSTOLIC VALUE</span>
+              <span id='bp_systolic_ps'></span>
+            </div>
+            <div>
+              <span style='color: #EDC240; font-weight: bold'>O</span>
+              <span class='label'>DIASTOLIC VALUE</span>
+              <span id='bp_diastolic_ps'></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <div class='test_ps'>
+        <div style='width: 33%; float: left'>
+          <div class='header'>LDL</div>
+          <div class='ps_graph' id='ldl_graph_ps'></div>
+        </div>
+        <div style='width: 63%; float: left; margin-top: 16px;'>
+
+          <div id='ldl_explanation_ps' class='' style="margin-bottom: 8px;">
+            LDL measures low density lipoproteins (the "bad cholesterol")
+          </div>
+
+          <div style='margin-bottom: 8px;'>
+            <span class='label'>LAST TEST</span> <span id='ldl_date_ps'></span>
+          </div>
+
+          <div><span id='ldl_ps'></span></div>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <div class='test_ps'>
+        <div style='width: 33%; float: left'>
+          <div class='header'>A1C</div>
+          <div class='ps_graph' id='a1c_graph_ps'></div>
+        </div>
+        <div style='width: 63%; float: left; margin-top: 16px;'>
+          <div id='a1c_explanation_ps' style='margin-bottom: 8px;'>
+            The A1C test measures average blood sugar concentration
+          </div>
+          <div style='margin-bottom: 8px;'>
+            <span class='label'>LAST TEST</span> <span id='a1c_date_ps'></span>
+          </div>
+          <div><span id='a1c_ps'></span></div>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <br />
+
+      <div>
+        <div style='width: 33%; float: left'>
+          <div class="section_header">
+            <span class='section_header_number'>&#10124;</span>
+            Your Allergies
+          </div>
+          <div id='allergies_ps' style="margin-left: 10px;"></div>
+        </div>
+        <div style='width: 63%; float: left;'>
+          <div class="section_header">
+            <span class='section_header_number'>&#10125;</span>
+            Your Medications
+          </div>
+          <div id='medications_ps' style="margin-left: 10px; width: 50%; float: left;"></div>
+          <div id='medications_2_ps' style="margin-left: 0px; width: 45%; float: left;"></div>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <br />
+
+      <div class="section_header">
+        <span class='section_header_number'>&#10126;</span> What Should You Do Now?
+      </div>
+
+      <div>
+        <ol id='reminders_for_pt'></ol>
+      </div>
+
+    </div>
+
+    <!-- app "explainer" -->
+    <div id="explainer" class="explainer">
+      <div id='explainer_title_line'>
+        <div style='width: 78%; float: left; margin-left: 10%'>
+          <img class='smart_bug' src='./assets/smart_bug.png' />
+          SMART Diabetes Monograph App Explainer
+        </div>
+        <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
+          <a class='close' href='#'>[Close]</a>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+
+      <div class="container container_12">
+        <div class='grid_3'>
+          <p class="first"><span style="color:#0088CC;">Patient Summary</span></p>
+          <p><span style="color:#0088CC;">App Explainer</span></p>
+          <p><span style="color:#0088CC;">Time Line</span></p>
+        </div>
+        <div class='grid_8 prefix_1'>
+          <p class="first">Link to <strong>Diabetes Monograph Patient Summary</strong> panel</p>
+          <p>Link to <strong>Diabetes Monograph App Explainer</strong> panel</p>
+          <p>Link to <strong>Diabetes Monograph Time Line</strong> Problems/Medications panel</p>
+        </div>
+
+        <div class='clear'></div>
+
+        <div class='grid_12 row-border'></div>
+
+        <div class='grid_3'>
+          <img style='width: 80px' src="./assets/alpha_mode.png">
+        </div>
+        <div class='grid_8 prefix_1'>
+          <div class="button_text_align">
+            <p>Click CHRONO to see Problems, Allergies, and Medications chronologically</p></div>
+          <div class="button_text_align"><p>Click ALPHA to see Problems, Allergies, and Medications alphabetically</p></div>
+        </div>
+
+        <div class='clear'></div>
+
+        <div class='grid_12 row-border'></div>
+
+        <div class='grid_3' style=""><img src="./assets/explainer/explainer-charts.png" width="220" height="350"></div>
+        <div class='grid_8 prefix_1'>
+          <p class="first">The graphs depict a vital sign and two tests for tracking diabetes health:</p>
+          <ul>
+            <li>Available values are shown for the current and two prior years</li>
+            <li>Values in range of a goal are in the unshaded area</li>
+            <li>Values out-of-range of a goal are in the gray-shaded area</li>
+          </ul>
+        </div>
+        <div class='clear'></div>
+        <div class='grid_12 row-border'></div>
+
+
+        <div class='grid_3' style="">
+        <img src="./assets/explainer/explainer-LKV-nocircle.png" width="220" height="391"></div>
+        <div class='grid_8 prefix_1'>
+          <p class="first"><strong>Last Known Values</strong> presents  laboratory tests used to track diabetes health:</p>
+          <ul>
+            <li>Test types are listed, &ldquo;SGOT&rdquo;, followed by units of measurement, &ldquo;U/L&rdquo;, with the normal range below the type name, &ldquo;10-40&rdquo;</li>
+            <li>First and second most recent test results appear <em>left-to-right</em>, &ldquo;27&rdquo; and &ldquo;33&rdquo;</li>
+            <li>MM/DD/YY dates for a test result appears below it, &ldquo;10/24/11&rdquo;</li>
+            <li>Unavailable results are presented with a dash, &ldquo;&ndash;&rdquo;</li>
+            <li><em>Out-of-range</em> results are highlighted, &ldquo;<strong style="color:#E46C0A">232</strong>&rdquo;</li></ul>
+              <p><strong>[Graph]</strong> Click link to see <strong>Diabetes Monograph Labs</strong> panel  to view lab results for the current and two prior years</p>
+
+      </div>
+          <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+          <div class='grid_3' style="">
+          <img src="./assets/explainer/explainer-other.png" width="220" height="169"></div>
+          <div class='grid_8 prefix_1'>
+            <p class="first"><strong>Other Info</strong> presents heterogeneous data elements used to track diabetes health:</p>
+            <ul>
+              <li><strong>weight</strong> and <strong>height</strong> show their most recent value in English and metric units (grayed out) and the date of measurement</li>
+              <li><strong>last foot exam</strong>, <strong>last eye exam</strong>, <strong>last pneumovax</strong>, and <strong>last flu shot</strong> show their date of last examination</li>
+              <li><strong>smoking</strong>, <strong>aspirin</strong>, and <strong>ACE/ARB</strong> show their respective status</li>
+              <li>Information MM/DD/YY dates which are <em>stale</em> are highlighted, &ldquo;<span style="color:#E46C0A">09/28/07</span>&rdquo;</li>
+              <li>Unavailable results are presented as &ldquo;Unknown&rdquo;</li>
+            </ul>
+      </div>
+          <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+      <div class='grid_7'>
+             <div class="probs" style="margin-right:10px;">
+          <img src="./assets/explainer/explainer-problems-alpha-label-t2.png" width="220" height="319"><br>
+          </div>
+             <div class="probs">
+          <img src="./assets/explainer/explainer-problems-chrono-label-t2.png" width="220" height="319"><br>
+          </div>
+              <div class='clear'></div>
+          </div>
+          <div class='grid_5'>
+            <p class="first"><strong>Problems </strong>presents a list of current and past medical problems. The MM/DD/YY date of the most recent problem change is shown in the banner.</p>
+            <p>Problems are organized into <em>exclusive</em> categories:</p>
+            <ul>
+              <li><strong>Major CV Comorbidities</strong> &ndash; any current problem known to be a major cardiovascular (CV) comorbidity of diabetes mellitus type 2</li>
+              <li><strong>Other</strong> &ndash; any remaining <u>current</u> problem, including highlighting a current case of <span style="color:#E46C0A">Diabetes mellitus type 2</span></li>
+              <li><strong>Closed </strong>(on date) &ndash; any instance of a problem that has been closed with end MM/DD/YY date shown to the right in smaller text, &ldquo;08/29/08&rdquo;</li>
+            </ul>
+            <p>Problems are listed <em>within category</em> in two views:</p>
+            <ul>
+              <li><strong>Alpha</strong> &ndash; problems are listed alphabetically with an instance count to the right of the problem if it occurs more than once, &ldquo;Coronary arteriosclerosis (2)&rdquo;</li>
+              <li><strong>Chrono</strong> &ndash; problems are listed chronologically  by most recent inception MM/DD/YY date, &ldquo;01/04/08 Coronary arteriosclerosis (2)&rdquo;</li>
+          </ul></div>
+            <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+          <div class='grid_5'>
+          <img src="./assets/explainer/explainer-reminders.png" width="310" height="139"></div>
+          <div class='grid_6 prefix_1'>
+            <p class="first"><strong>Reminders </strong>presents suggested tests to order for diabetes management.</p>
+            <p>Suggestions are made  <em>if and only if</em>:</p>
+            <ul>
+              <li>No test values are found</li>
+              <li>A  test value is too old relative to current guidelines</li>
+              <li>A  test result is out of range relative to its goals</li>
+            </ul>
+      </div>
+          <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+          <div class='grid_5'>
+          <img src="./assets/explainer/explainer-allergies.png" width="310" height="62"></div>
+          <div class='grid_6 prefix_1'>
+            <p class="first"><strong>Allergies </strong>presents a list of current and past allergies.</p>
+            <ul>
+              <li>Allergies are listed alphabetically</li>
+              <li>Reactions are listed after each allergy name if available      </li>
+              <li>Unavailable results are presented as &quot;No known allergies&quot;    </li>
+            </ul>
+          </div>
+          <div class='clear'></div>
+          <div class='grid_12 row-border'></div>
+
+      <div class='grid_6'>
+             <div style="width:418px;padding-bottom:5px;margin-bottom:10px;border-bottom:1px dotted #666;"><img src="./assets/explainer/explainer-meds-alpha-t2.png" width="418" height="104"></div>
+             <div><img src="./assets/explainer/explainer-meds-chrono-label-t2.png" width="418" height="71"></div>
+          </div>
+          <div class='grid_5 prefix_1'>
+            <p class="first"><strong>Medications </strong>presents a list of current and past medications. The MM/DD/YY date of the most recent medication date is shown in the banner.</p>
+      <p>Medications are listed in two views:</p>
+            <ul>
+              <li><strong>Alpha</strong> &ndash; medications are listed alphabetically with an instance count  to the right of the medication if it occurs more than once in the same dose and frequency </li>
+              <li><strong>Chrono</strong> &ndash; medications are  listed chronologically by most recent inception MM/DD/YY date, &ldquo;04/25/09 Nitroglycerin&rdquo;</li>
+            </ul>
+          </div>
+      </div>
+    </div> <!-- explainer -->
+
+    <div id="timeline" class="timeline">
+      <div id='timeline_title_line'>
+        <div style='width: 78%; float: left; margin-left: 10%'>
+          <img class='smart_bug' src='./assets/smart_bug.png' />
+          SMART Diabetes Monograph Time Line View (MOCKUP)
+        </div>
+        <div style='width: 20%; float: left; text-align: right; margin-left: -10%; font-size: smaller'>
+          <a class='close' href='#'>[Close]</a>
+        </div>
+      </div>
+
+      <div class='clear'></div>
+      <img style='width: 1000px' src="./assets/timeline_mockup.png">
+    </div>
+
+  </body>
+</html>
