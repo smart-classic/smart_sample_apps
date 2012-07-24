@@ -394,7 +394,7 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
                     <td>{BPC.getYears($T.age)}y {BPC.getMonths($T.age)}m</td>
                     <td>{#if $T.height}{$T.height} cm{#else}-{#/if}</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
-                    <td>{#if $T.label}{$T.label}{#elseif $T.sPercentile && $T.dPercentile}{$T.sPercentile}%/{$T.dPercentile}%{#else}-{#/if}</td>
+                    <td>{#if $T.plabel}{$T.plabel}{#else}-{#/if}</td>
                     <td>{#if $T.site}{$T.site}{#else}-{#/if}</td>
                     <td>{#if $T.position}{$T.position}{#else}-{#/if}</td>
                     <td>{#if $T.method}{$T.method}{#else}-{#/if}</td>

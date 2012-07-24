@@ -337,6 +337,17 @@ if (!BPC) {
                 //patient.data[i].sAbbreviation = res.sAbbreviation;
                 //patient.data[i].dAbbreviation = res.dAbbreviation;
                 //patient.data[i].label = res.label;
+            } else {
+                if (patient.data[i].sPercentile || patient.data[i].dPercentile) {
+                    patient.data[i].plabel = "";
+                    if (patient.data[i].sPercentile) patient.data[i].plabel += patient.data[i].sPercentile + "%";
+                    else patient.data[i].plabel += "x";
+                    patient.data[i].plabel += "/";
+                    if (patient.data[i].dPercentile) patient.data[i].plabel += patient.data[i].dPercentile + "%";
+                    else patient.data[i].plabel += "x";
+                } else {
+                    patient.data[i].plabel = "-";
+                }
             }
             
             // Convert the date into the output format and standard unix timestamp
@@ -541,7 +552,7 @@ if (!BPC) {
         dAbbreviation = findAbbreviationLabel(dPercentile).abbreviation;
         
         if (label && sAbbreviation && dAbbreviation) {
-            return {sAbbreviation: sAbbreviation, dAbbreviation: dAbbreviation, label: label};
+            return {sAbbreviation: sAbbreviation, dAbbreviation: dAbbreviation, label: label, plabel: label};
         }
         
         return defaultResult;  // never returned unless the zones don't sum up to 100%
