@@ -11,7 +11,7 @@ FORMATS = {"Alert": None,
            "UserPreferences": None,
            "AppManifest": "JSON",
            "Container": "JSON",
-           "Capabilities": "JSON",
+           "ContainerManifest": "JSON",
            "default": "RDF"}
            
 CONTENT_TYPES = {"RDF": "application/rdf+xml",
@@ -65,7 +65,7 @@ def call_name (path, method, category):
     c = category.split("_")
     c = c[-1]
     
-    if c.endswith("s"):
+    if c.endswith("s") and path != "/manifest":
         name = plural(item)
     else:
         name = singular(item)
