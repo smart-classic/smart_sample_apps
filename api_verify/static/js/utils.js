@@ -68,7 +68,7 @@ if (!VERIFY) {
                             (m[i].category === "record_items" ||
                              m[i].name === "MANIFESTS_get" ||
                              m[i].name === "ONTOLOGY_get" ||
-                             m[i].name === "CAPABILITIES_get")) {
+                             m[i].name === "MANIFEST_get")) {
                             if (data[m[i].target]) data[m[i].target].call_js = m[i].name;
                         }
                     }
@@ -188,7 +188,7 @@ if (!VERIFY) {
         $('#spinner').show();
         
         // Auto-select the content type based on the model
-        if (model === "AppManifest" || model === "Container" || model === "Manifest") {
+        if (model === "AppManifest" || model === "ContainerManifest" || model === "Manifest") {
             contentType = "application/json";
         } else if (model === "UserPreferences") {
             contentType = "text/plain";
