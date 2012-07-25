@@ -494,6 +494,8 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
 };
 
 /* Temporary static convenience method until we fix the ontology */
+/* NJS 2012-07-25: Disabled, because it conflicts with the new contaner manifest get method */
+/*
 SMART_CONNECT_CLIENT.prototype.MANIFEST_get = function(descriptor, callback_success, callback_error) {
     var _this = this,
         dfd = $.Deferred(),
@@ -518,3 +520,4 @@ SMART_CONNECT_CLIENT.prototype.MANIFEST_get = function(descriptor, callback_succ
     });
     return prm;
 };
+*/
