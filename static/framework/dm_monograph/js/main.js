@@ -710,6 +710,7 @@ SMART.ready(function(){
     var b = new XDate(pt.bday)
     $('.age').text(Math.round(b.diffYears(new XDate())));
     $('.gender').text(pt.gender[0])
+    $('#date_and_time').text(XDate().toString('MM/dd/yy hh:mmtt'))
 
     $('#bp_date_ps').text(pt.sbp ? new XDate(pt.sbp[0]).toString('MM/dd/yy') : '')
     $('#ldl_date_ps').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '')
@@ -1079,13 +1080,13 @@ SMART.ready(function(){
       if (pt.problems_arr.length > 0) {
         var el = _(pt.problems_arr).max(function(e){ return e[2] || e[0]; })
         var d = new XDate(el[2] || el[0]);
-        $('#as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+        $('#as_of').html('<span class="smaller normal">(updated '+d.toString('MM/dd/yy')+')</span>')
       }
 
       // medications
       if (pt.fulfillment) {
         d = new XDate(pt.fulfillment.dcterms__date);
-        $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+        $('#meds_as_of').html('<span class="smaller normal">(updated '+d.toString('MM/dd/yy')+')</span>')
       }
 
       $('#medications, #medications_ps').empty()
@@ -1219,25 +1220,21 @@ SMART.ready(function(){
     if (pt.reminders_arr.length == 0) { $('<div/>', {text: 'No current reminders'}).appendTo('#reminders'); }
     _(pt.reminders_arr).each(function(e){
       // todo: use templating here
-      var html = '<span class=\'bold\'>' + e.title_html + '</span> ';
-      if (e.overdue_p) {
-        html = html + '<span class=\'highlight\'>&bull; '  + e.reminder_html + ' &bull;</span> <br />';
-      }
-
+      // bold lab name first
+      var html = '<span class=\'bold\'>' + e.lab_name_html + '</span> ';
+      // on date
       var d = new XDate(e.lab_variable[0])
-      html = html + e.lab_name_html + ' last tested ' + d.toString('MM/dd/yy') +
-             ' (' + e.months_ago + ' months ago) '
-
-       if (e.overdue_p) {
-         html = html + '<span class=\'highlight\'>&bull; dated &bull;</span> <br />';
-       }
-
-       // faked table alignment
-       html = html + '<span style="color: #fff" class="hidden">' + e.lab_name_html + '</span> last result ' + e.lab_variable[1] + e.lab_variable[2] 
-                   + ' (goal ' + e.target_range_text_html + ')'
-
-      if (!e.in_range_p) {
-        html = html + ' <span class=\'highlight\'>&bull; out of target range &bull; </span>'
+      html = html + 'on ' + d.toString('MM/dd/yy') + ' was ';
+      // value
+      if (!e.in_range_p) { html = html + '<span class=\'highlight\'>'; }
+      html = html + e.lab_variable[1] + e.lab_variable[2]
+      if (!e.in_range_p) { html = html + '</span>'; }
+      // goal?
+      html = html + ' &middot; goal ' + e.target_range_text_html;
+      // overdue_p?
+      if (e.overdue_p) {
+        html = html + ' &middot; outdated by <span class=\'highlight\'>&gt; '
+                    + e.overdue_in_months + ' months</span>';
       }
 
       $('<div></div>', {
@@ -1311,6 +1308,22 @@ SMART.ready(function(){
       sort_by_alpha();
       return false;
     });
+
+    $('.header_sort_toggle').on('click', function(e){
+      if ($(this).text() == '[Chrono]') {
+        $('.header_sort_toggle').text('[Alpha]');
+        $('#sort_by_date').hide()
+        $('#sort_by_alpha').show()
+        sort_by_date();
+      } else {
+        $('.header_sort_toggle').text('[Chrono]');
+        $('#sort_by_alpha').hide()
+        $('#sort_by_date').show()
+        sort_by_alpha();
+      }
+
+      return false;
+    })
 
     var l_opts = {
       top: '5%',

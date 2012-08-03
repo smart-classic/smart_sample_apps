@@ -42,16 +42,28 @@
     <div id='content' class="container_12">
 
       <div class='demo_line'>
-        <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
-          <span class='family_name'></span>, <span class='given_name'></span>
-        </div>
-        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
+        <div class='left_inner_demo_line'>
+          <span class='name'>
+            <span class='family_name'></span>, <span class='given_name'></span>
+          </span>
           &nbsp;
-          <!-- <span class='demo_line_label' style='display: none;' class='diabetic_info_label'>DIAGNOSIS</span> -->
+          <span class='diabetic_diagnosis_p'></span>
           <span class='diabetic_info highlight'></span>
           <span class='diabetic_how_long_text highlight'></span>
         </div>
+        <div class='right_inner_demo_line'>
+          &nbsp;
+          <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
+          &middot;
+          <a rel='#explainer' id='show_explainer_overlay'/>App Explainer</a>
+          &middot;
+          <a rel='#timeline' id='show_timeline_overlay'/>Time Line</a>
+          &nbsp;
+          <span id="date_and_time"></span>
+        </div>
       </div>
+
+      <br class='clear'>
 
       <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
         <div style='width: 48%; float: left'>
@@ -60,11 +72,7 @@
           <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
         </div>
         <div style='float: left; width: 48%; text-align: right; font-size: small;'>
-          <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
-          &middot;
-          <a rel='#explainer' id='show_explainer_overlay'/>App Explainer</a>
-          &middot;
-          <a rel='#timeline' id='show_timeline_overlay'/>Time Line</a>
+          buttons here
         </div>
       </div>
 
@@ -386,7 +394,16 @@
 
         <div id='problems_header'>
           <!-- hidden problems div for sorting. todo: clean this up in the js-->
-          <div class='section_header'>Problems <span id='as_of'></span></div>
+          <div class='section_header'>
+            <div style='width: 75%; float:left;'>
+              Problems
+              <span id='as_of'></span>
+            </div>
+            <div style='width: 25%; float: left; text-align: right'>
+              <a class='header_sort_toggle'/>[Chrono]</a>&nbsp;
+            </div>
+            <div class='clear'></div>
+          </div>
 
           <div id='problems' style='display: none'></div>
 
@@ -429,7 +446,7 @@
         <div class='clear'></div>
 
         <div id='reminders_outer'>
-          <div class='section_header'>Reminders</div>
+          <div class='section_header'>Test Reminders</div>
           <div id='reminders'></div>
         </div>
 
@@ -439,7 +456,17 @@
         </div>
 
         <div id='medications_outer'>
-          <div class='section_header'>Medications <span id='meds_as_of'></span></div>
+          <div class='section_header'>
+            <div style='width: 75%; float: left;'>
+              Medications
+              <span id='meds_as_of'></span>
+            </div>
+            <div style='width: 25% float: left; text-align: right'>
+              <a class='header_sort_toggle'/>[Chrono]</a>&nbsp;
+            </div>
+            <div class='clear'></div>
+          </div>
+
           <div id='medications'></div>
         </div>
       </div>
