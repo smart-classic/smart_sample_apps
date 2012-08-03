@@ -93,7 +93,7 @@ class get_calls:
             if method == "GET" and (category == "record_items" or
                                     path == "/ontology" or
                                     path == "/apps/manifests/" or
-                                    path == "/capabilities/"):
+                                    path == "/manifest"):
 
                 # Build the generic python client call name and use it in the dictionary
                 out[target] = {"call_py": get_call(target)}

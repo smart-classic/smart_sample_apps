@@ -20,7 +20,7 @@ import dateutil.parser
 import query_builder
 
 # Import the manifest validator function
-from smart_client.common.utils.manifest_tests import manifest_structure_validator
+from smart_client.common.utils.manifest_tests import app_manifest_structure_validator, container_manifest_structure_validator
 
 # RDF parsing wrapper from the SMART python client
 from smart_client.common.rdf_tools.util import parse_rdf
@@ -379,26 +379,18 @@ class TestOntology(TestRDF):
     '''Tests for the ontology'''
     pass
     
-class TestCapabilities(TestJSON):
-    '''Tests for the capabilities API'''
+class TestContainerManifest(TestJSON):
+    '''Tests for the container manifest API'''
     
     def testStructure (self):
-        '''A simple structure test for the capabilities JSON output'''
+        '''A simple structure test for the container manifesst JSON output'''
         
-        if self.json:
+        if self.json: 
+            messages = container_manifest_structure_validator(self.json)
+            if len(messages) > 0 :
+                self.fail ("Container manifest structure test failed\n" + "\n".join(messages))
         
-            d = self.json
-            
-            if type(d) != dict:
-                self.fail ("The JSON payload should be a dictionary")
-            
-            for k in d.keys():
-                if "methods" not in d[k].keys():
-                    self.fail ("Missing methods for API '%s'" % k)
-                else:
-                    for m in d[k]["methods"]:
-                        if m not in ("GET", "POST", "PUT", "DELETE"):
-                            self.fail ("Improper method '%s' for API '%s'" % (m,k))
+
                     
 class TestManifest(TestJSON):
     '''Tests for a single manifest'''
@@ -407,9 +399,9 @@ class TestManifest(TestJSON):
         '''Test for the manifests JSON output'''
         
         if self.json: 
-            messages = manifest_structure_validator(self.json)
+            messages = app_manifest_structure_validator(self.json)
             if len(messages) > 0 :
-                self.fail ("Manifest structure test failed\n" + "\n".join(messages))
+                self.fail ("App manifest structure test failed\n" + "\n".join(messages))
     
 class TestManifests(TestJSON):
     '''Tests for the manifests'''
@@ -425,9 +417,9 @@ class TestManifests(TestJSON):
             # Because we have a list of manifests, we have to iterate over the items
             messages = []
             for manifest in self.json:
-                messages += manifest_structure_validator(manifest)
+                messages += app_manifest_structure_validator(manifest)
             if len(messages) > 0 :
-                self.fail ("Manifests structure test failed\n" + "\n".join(messages))
+                self.fail ("App manifests structure test failed\n" + "\n".join(messages))
     
 class TestPreferences(unittest.TestCase):
     '''Tests for the Preferences API'''
@@ -454,7 +446,7 @@ tests = {'Allergy': TestAllergies,
          'AppManifest': TestManifests,
          'Manifest': TestManifest,   # this is a custom model not present in the ontology
          'Demographics': TestDemographics,
-         'Capabilities': TestCapabilities,
+         'ContainerManifest': TestContainerManifest,
          'Encounter': TestEncounters,
          'Fulfillment': TestFulfillments,
          'Immunization': TestImmunizations,

@@ -20,6 +20,9 @@ if (!BPC) {
     * Event handler for the toggle filter buttons
     */
     BPC.updateFilters = function () {
+        // Hack to fix http://bugs.jqueryui.com/ticket/5604
+        $(".ui-button").removeClass("ui-state-focus");
+    
         //BPC.disableControls ();
         BPC.loadFilterSettings ();
         BPC.redrawViewLong (BPC.patient,BPC.zones);
