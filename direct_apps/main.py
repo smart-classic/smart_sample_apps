@@ -390,7 +390,7 @@ def get_recipients_json(smart_client):
     Expects a valid SMART client object
     '''
     # Load the address book from SMART
-    res = smart_client.accounts_X_apps_X_preferences_GET().body
+    res = smart_client.users_X_apps_X_preferences_GET().body
 
     # If there is no data, load the sample address book
     if len(res) == 0:
@@ -414,7 +414,7 @@ def add_recipient(smart_client, recipient):
     data.append ({"name": "User", "email": recipient})
     
     # Write the address book to SMART
-    smart_client.accounts_X_apps_X_preferences_PUT(data=json.dumps(data, sort_keys=True, indent=4), content_type="application/json")
+    smart_client.users_X_apps_X_preferences_PUT(data=json.dumps(data, sort_keys=True, indent=4), content_type="application/json")
 
 def get_call(target):
     '''Returns the name of the SMART python client convenience method
