@@ -3,6 +3,8 @@
 //
 // Arjun Sanyal <arjun.sanyal@childrens.harvard.edu>
 //
+// version 0.1.1
+//
 // Note: A good pt with a lot of data: p967332 William Robinson
 //
 // for tables: http://www.datatables.net/index
