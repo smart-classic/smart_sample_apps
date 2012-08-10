@@ -32,7 +32,7 @@ if (!BPC) {
     
     // A unicode checkmark character (doesn't work with some of the IE8 fonts): \u2713
     
-    // Filter settings defaults
+    // Filter value settings
     BPC.filterSettings = {
         encounter: ["Inpatient", "Ambulatory"],
         site: ["Arm", "Leg"],
@@ -41,6 +41,18 @@ if (!BPC) {
         dateFrom: "1980-01-01",
         dateTo: "2019-01-01"
     };
+    
+    // Settings for the filter buttons
+    BPC.filterButtonsSettings = [
+        {handle: 'chkFilterInpatient', onByDefault: false},
+        {handle: 'chkFilterAmbulatory', onByDefault: true},
+        {handle: 'chkFilterArm', onByDefault: true},
+        {handle: 'chkFilterLeg', onByDefault: false},
+        {handle: 'chkFilterSitting', onByDefault: true},
+        {handle: 'chkFilterStanding', onByDefault: false},
+        {handle: 'chkFilterAuscultation', onByDefault: true},
+        {handle: 'chkFilterMachine', onByDefault: false}
+    ];
     
     // The age at which we switch to adult calculations
     BPC.ADULT_AGE = 19;
