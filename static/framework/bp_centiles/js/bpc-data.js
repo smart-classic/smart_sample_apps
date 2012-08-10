@@ -303,8 +303,7 @@ if (!BPC) {
         var s = BPC.getViewSettings (),
             percentiles,
             i, ii, d,
-            res,
-            rounded_age;
+            res;
 
         // Load the sample patient when no data is provided
         if (!patient) {
@@ -325,15 +324,12 @@ if (!BPC) {
         
             // Calculate the patient's age at the time of the reading
             patient.data[i].age = years_apart( patient.data[i].timestamp , patient.birthdate );
-            
-            // Recalculate the age rounded to the months
-            rounded_age = BPC.getYears(patient.data[i].age) + BPC.getMonths(patient.data[i].age) / 12;
-            
+
             // Calculate the blood pressure percentiles according to the age rules
             if ( (patient.data[i].age >= 1 && patient.data[i].age < BPC.ADULT_AGE) && patient.data[i].height ) {
                 // For pediatric patients (1-18 year old) with height data
                 percentiles = bp_percentiles ({height: patient.data[i].height / 100,   // convert height to meters from centimeters
-                                               age: rounded_age, 
+                                               age: patient.data[i].age, 
                                                sex: patient.sex, 
                                                systolic: patient.data[i].systolic, 
                                                diastolic: patient.data[i].diastolic,
