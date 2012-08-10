@@ -189,6 +189,27 @@ if (!BPC) {
         // Initialize the slider range
         BPC.setDateRange($("#slider-timerange").slider("values", 0),$("#slider-timerange").slider("values", 1));
     };
+    
+    /**
+    * Initializes the default filter button states in the BP app
+    */
+    BPC.initFilterButtons = function () {
+        var i, button;
+    
+        for (i in BPC.filterButtonsSettings) {
+        
+            button = BPC.filterButtonsSettings[i];
+            
+            // Initialize the default filter buttons state
+            $('#' + button.handle).attr("checked", button.onByDefault);
+            $('#' + button.handle).button("refresh");
+            
+            // Note: this is a workaround for a jQuery/jQueryUI issue where the state of the underlying object
+            // is not updated by jQuery UI clicks and overrides the state of the jQuery ui button element
+            //$('[for=chkFilterAmbulatory]').click();
+        }
+
+    }
 
     /**
     * Sets the state for all filter UI components
