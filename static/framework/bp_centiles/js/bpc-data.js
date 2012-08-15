@@ -61,14 +61,14 @@ if (!BPC) {
     *
     * @returns {Object} jQuery deferred promise object
     */  
-    BPC.get_vitals = function() {
+    BPC.get_vitals = function(offset) {
         
         var dfd = $.Deferred(),
             // Template for the vitals object thrown by the callback
             vitals = {heightData: [],
                       bpData: []};
         
-        SMART.get_vital_sign_sets()
+        SMART.get_vital_sign_sets({limit:BPC.settings.vitals_limit,offset:offset})
              .success(function(vital_signs){
         
                 // Query the RDF for the height data
@@ -210,7 +210,7 @@ if (!BPC) {
             
             // Don't use Array.filter or IE8 will have a problem
             for (i = 0; i < height_data.length; i++) {
-                if (height_data[i].age >= BPC.ADULT_AGE) {
+                if (height_data[i].age >= BPC.settings.adult_age) {
                     height_data_adult.push (height_data[i]);
                 }
             }
@@ -218,7 +218,7 @@ if (!BPC) {
             // This fails in IE8 (apparently Array.filter is not implemented there)
             /*
             height_data_adult = height_data.filter(function (e) {
-                return e.age >= BPC.ADULT_AGE;
+                return e.age >= BPC.settings.adult_age;
             });
             */
 
@@ -246,7 +246,7 @@ if (!BPC) {
                 // Calculate the age of the patient at the ime of the vital encounter
                 age = years_apart( vitals_bp[i].vital_date, patient.birthdate );
                 
-                if (age < BPC.ADULT_AGE) {
+                if (age < BPC.settings.adult_age) {
                     // Add code to update the patient data records with extrapolated height
                     // ...
                     // ... For now, here is a *very* inefficient function which picks the closest height data point.
@@ -314,7 +314,7 @@ if (!BPC) {
             patient.data[i].age = years_apart( patient.data[i].timestamp , patient.birthdate );
 
             // Calculate the blood pressure percentiles according to the age rules
-            if ( (patient.data[i].age >= 1 && patient.data[i].age < BPC.ADULT_AGE) && patient.data[i].height ) {
+            if ( (patient.data[i].age >= 1 && patient.data[i].age < BPC.settings.adult_age) && patient.data[i].height ) {
                 // For pediatric patients (1-18 year old) with height data
                 percentiles = bp_percentiles ({height: patient.data[i].height / 100,   // convert height to meters from centimeters
                                                age: patient.data[i].age, 
@@ -324,15 +324,15 @@ if (!BPC) {
                                                round_results: true});
                 patient.data[i].sPercentile = percentiles.systolic;
                 patient.data[i].dPercentile = percentiles.diastolic;
-            } else if (patient.data[i].age >= BPC.ADULT_AGE) {
+            } else if (patient.data[i].age >= BPC.settings.adult_age) {
                 // For adult patients
                 patient.data[i].sPercentile = BPC.getAdultPercentile(patient.data[i].systolic,true);
                 patient.data[i].dPercentile = BPC.getAdultPercentile(patient.data[i].diastolic,false);
             }
             
             // Set the abbreviation for the adult percentiles
-            if (patient.data[i].age >= BPC.ADULT_AGE) {
-                res = getAbbreviationLabel (BPC.zones, patient.data[i].sPercentile, patient.data[i].dPercentile);
+            if (patient.data[i].age >= BPC.settings.adult_age) {
+                res = getAbbreviationLabel (BPC.settings.zones, patient.data[i].sPercentile, patient.data[i].dPercentile);
                 patient.data[i] = $.extend(patient.data[i], res);
                 //patient.data[i].sAbbreviation = res.sAbbreviation;
                 //patient.data[i].dAbbreviation = res.dAbbreviation;
@@ -476,8 +476,8 @@ if (!BPC) {
         // Default to pediatric when no data is available
         if (data.length === 0) return BPC.PEDIATRIC;
         
-        if (data[0].age < BPC.ADULT_AGE) {
-            if (data[data.length - 1].age < BPC.ADULT_AGE) return BPC.PEDIATRIC;
+        if (data[0].age < BPC.settings.adult_age) {
+            if (data[data.length - 1].age < BPC.settings.adult_age) return BPC.PEDIATRIC;
             else return BPC.MIXED;
         } else {
             return BPC.ADULT;

@@ -21,8 +21,13 @@ if (!BPC) {
 (function () {
     "use strict";
 
+    BPC.settings = {}
+    
+    // BPC Vitals Data Load Limit
+    BPC.settings.vitals_limit = 5
+    
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
-    BPC.zones = [
+    BPC.settings.zones = [
         {definition: "Hypotension (< 1%)",       abbreviation: "\\/", label: "Hypotensive", percent: 1, colorhue: 0.7,  opacity: 0.4, dashthrough: false},
         //{definition:"Prehypotension (< 5%)",  abbreviation: "-", label: "Prehypotensive", percent: 4, colorhue: 0.9, opacity: 0.3, dashthrough: false},
         {definition: "Normal",                   abbreviation: "OK", label: "Normal", percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
@@ -33,7 +38,7 @@ if (!BPC) {
     // A unicode checkmark character (doesn't work with some of the IE8 fonts): \u2713
     
     // Filter value settings
-    BPC.filterSettings = {
+    BPC.settings.filterSettings = {
         encounter: ["Inpatient", "Ambulatory"],
         site: ["Arm", "Leg"],
         position: ["Sitting", "Standing"],
@@ -43,7 +48,7 @@ if (!BPC) {
     };
     
     // Settings for the filter buttons
-    BPC.filterButtonsSettings = [
+    BPC.settings.filterButtonsSettings = [
         {handle: 'chkFilterInpatient', onByDefault: false},
         {handle: 'chkFilterAmbulatory', onByDefault: true},
         {handle: 'chkFilterArm', onByDefault: true},
@@ -55,7 +60,7 @@ if (!BPC) {
     ];
     
     // The age at which we switch to adult calculations
-    BPC.ADULT_AGE = 19;
+    BPC.settings.adult_age = 19;
     
     /**
     * Generates a settings object on request (Private)

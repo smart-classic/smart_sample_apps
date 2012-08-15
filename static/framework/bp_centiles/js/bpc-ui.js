@@ -26,7 +26,7 @@ if (!BPC) {
                 $("#info").text("Error: SMART Connect interface not found");
             } else {
                 // Fire up the SMART API calls and initialize the application asynchronously
-                $.when(BPC.get_demographics(), BPC.get_vitals())
+                $.when(BPC.get_demographics(), BPC.get_vitals(0))
                  .then( function (patient, vitals) {
                             BPC.initApp ( BPC.processData(patient, vitals) ); 
                         },
@@ -155,7 +155,7 @@ if (!BPC) {
             show: function(event, ui) {
                 // Redraw the long term view whenever the tab gets shown (workaround for Raphael label drawing in hidden canvas bug)
                 if (ui.tab.hash === "#tab_long") {
-                    BPC.redrawViewLong (BPC.patient,BPC.zones);
+                    BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
                 }
                 else if (ui.tab.hash === "#tab_short") {
                     // TO DO: consider redrawing the short term view
@@ -196,9 +196,9 @@ if (!BPC) {
     BPC.initFilterButtons = function () {
         var i, button;
     
-        for (i in BPC.filterButtonsSettings) {
+        for (i in BPC.settings.filterButtonsSettings) {
         
-            button = BPC.filterButtonsSettings[i];
+            button = BPC.settings.filterButtonsSettings[i];
             
             // Initialize the default filter buttons state
             $('#' + button.handle).attr("checked", button.onByDefault);

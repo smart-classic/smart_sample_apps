@@ -59,11 +59,11 @@ if (!BPC) {
             
             // Draw the views
             $("#tabs").show();
-            BPC.drawViews (patient,BPC.zones);
+            BPC.drawViews (patient,BPC.settings.zones);
             
             // Find the last pre-adult data record available
             for (i = patient.data.length - 1; i >= 0; i--) {
-                if (patient.data[i].age < BPC.ADULT_AGE) {
+                if (patient.data[i].age < BPC.settings.adult_age) {
                     break;
                 }
             }
@@ -97,7 +97,7 @@ if (!BPC) {
             age = years_apart(new XDate().toISOString(), patient.birthdate);
             
             // Display warning dialog if the patient has reached adult age
-            if (age >= BPC.ADULT_AGE) {
+            if (age >= BPC.settings.adult_age) {
                 $("#alert-message").text(patient.name + " is " + BPC.getYears(age) + " years old!");
                 $( "#dialog-message" ).dialog({
                     closeOnEscape: false,
@@ -384,7 +384,7 @@ if (!BPC) {
                     if (!otherInfo) otherInfo = "none";
                     
                     // Display the label box
-                    label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"") + ((data.age >= BPC.ADULT_AGE) ? " - ADULT" : "")});
+                    label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"") + ((data.age >= BPC.settings.adult_age) ? " - ADULT" : "")});
                     if (data.height) label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, " + data.height + " cm, " + gender});
                     else label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, ? cm, " + gender});
                     if (data.label) {
@@ -861,7 +861,7 @@ if (!BPC) {
             //console.log ("time before:" + d.getTime());
             //console.log (d.getFullYear());
             
-            d.setYear ( d.getFullYear() + BPC.ADULT_AGE );
+            d.setYear ( d.getFullYear() + BPC.settings.adult_age );
             
             //console.log ("time after:" + d.getTime());
 
