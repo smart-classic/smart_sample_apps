@@ -31,7 +31,7 @@ if (!BPC) {
     */  
     BPC.get_demographics = function() {
         var dfd = $.Deferred();
-        SMART.DEMOGRAPHICS_get()
+        SMART.get_demographics()
              .success(function(demos) {
                 // Query the RDF for the demographics
                 var demographics = demos.graph
@@ -68,7 +68,7 @@ if (!BPC) {
             vitals = {heightData: [],
                       bpData: []};
         
-        SMART.VITAL_SIGNS_get()
+        SMART.get_vital_sign_sets()
              .success(function(vital_signs){
         
                 // Query the RDF for the height data
