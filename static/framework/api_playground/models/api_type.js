@@ -17,7 +17,7 @@ $.Model.extend('ApiType',
 	},
 
 	find_all_types_and_calls: function() {
-		SMART.ONTOLOGY_get(function(r) {
+		SMART.get_ontology().then(function(r) {
             var ont = r.graph;
 			this.ontology = ont;
 			
@@ -31,13 +31,12 @@ $.Model.extend('ApiType',
 			}
 			
 			// Get all calls
-			var calls = ont.where("?call rdf:type api:call")				
+			var calls = ont.where("?call rdf:type api:Call")				
 			   .where("?call api:path ?call_path")
 			   .where("?call api:target ?call_target")
+			   .where("?call api:cardinality ?call_cardinality")
 			   .where("?call api:category ?call_category")
-			   .where("?call api:method ?call_method")
-			   .where("?call api:by_internal_id ?call_by_internal_id")
-			   .optional("?call api:above ?call_above")
+			   .where("?call api:httpMethod ?call_method")
 			   .optional("?call api:example ?call_example");
 			
 			for (var i = 0; i < calls.length; i++) {
@@ -172,22 +171,10 @@ $.Model.extend('ApiType',
 
    fetchParametersCall: function() {	   
 	   var uri = this.type;
-  	   var c = $.grep(ApiCall.calls, function(c) {return c.method=="GET" && c.target === uri && c.category==="record_items";})[0];
-  	   return this.oldest_ancestor_call(c);
-   },
-   
-   oldest_ancestor_call: function(c) {
-	//	   console.log("finding oldest ancestor for " + c)
-		var c = [c];  // prevent inner scope from creating a global variable.
-		
- 		$.each(ApiCall.calls, function(i, possible_parent) {
-			if (possible_parent.path == "/records/") return;
- 			if (possible_parent.path.length >= c[0].path.length) return;			
- 			if (c[0].path.match(possible_parent.path)) c[0] = possible_parent;  
- 		});
- 		return c[0];   
+  	   var c = $.grep(ApiCall.calls, function(c) {return c.method=="GET" && c.target === uri && c.category==="record" &&
+                      c.cardinality=="multiple";})[0];
+       return c;
    }
-
 });
 
 $.Model.extend('ApiCall',
@@ -205,9 +192,9 @@ $.Model.extend('ApiCall',
 						   target: t.call_target.value._string,
                   				   example: t.call_example?t.call_example.value : undefined,
 						   category: t.call_category.value,
+						   cardinality: t.call_cardinality.value,
 						   method: t.call_method.value,
-						   by_internal_id: !!(t.call_by_internal_id.value ==="true"),
-                                                   above:  t.call_above && t.call_above.value._string || ""});
+                          });
 		
 		this.calls.push(ret);
 		return ret;
@@ -289,19 +276,9 @@ $.Model.extend('ApiCallGroup',
 			by_path[call.path].push(call);
 		});
 		
-		var category_names = {"record_item": "Single Item ",
-							  "record_items": "All Items "};
-		
 		$.each(by_path, function(path, calls) {
-			var gn = category_names[calls[0].category];
-                        if (calls[0].above !== "") gn += " via " + calls[0].above.split("#")[1]+", "
+			var gn = calls[0].cardinality;
 			
-			if (calls[0].category === "record_item") {
-				if (calls[0].by_internal_id === false) 
-					gn += "by external key";
-				else gn += "by id";
-			}
-
 			var p = {
 					   group_name: gn,
 					   group_members: calls,
