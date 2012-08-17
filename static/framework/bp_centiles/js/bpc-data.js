@@ -194,7 +194,7 @@ if (!BPC) {
         $("#patient-info").text(String(patient));
         
         // Display appropriate error message
-        if (vitals_height.length === 0 || vitals_bp.length === 0) {
+        if (vitals_bp.length === 0) {
             BPC.displayError("No ambulatory blood pressure measurements were found in the patient chart.");
         } else {
             
@@ -237,9 +237,14 @@ if (!BPC) {
             // Inner function for looking up the closest height for a given date
             getClosestHeight = function (recordDate, height_data) { 
                 
-                var closestHeight = height_data[0].height,
-                    closestHeightDate = height_data[0].date,
+                var closestHeight,
+                    closestHeightDate,
                     j;
+                    
+                if (height_data.length === 0) return;
+                
+                closestHeight = height_data[0].height;
+                closestHeightDate = height_data[0].date;
                     
                 for (j = 0; j < height_data.length; j++) {
                     if ( Math.abs(years_apart(height_data[j].date, recordDate)) < Math.abs(years_apart(closestHeightDate, recordDate)) ) {
@@ -265,7 +270,7 @@ if (!BPC) {
                     myHeight = getClosestHeight (vitals_bp[i].vital_date, height_data);
 
                     // Set the height to undefined when there is no height data within the staleness horizon
-                    if (years_apart(myHeight.date, vitals_bp[i].vital_date) <= BPC.getHeightStaleness (demographics.gender,age)) {
+                    if (myHeight && years_apart(myHeight.date, vitals_bp[i].vital_date) <= BPC.getHeightStaleness (demographics.gender,age)) {
                         height = myHeight.value;
                     } else {
                         height = undefined;
@@ -273,7 +278,9 @@ if (!BPC) {
                 } else {                
                     // When the reading is for an adult, get the closest height from the adult readings
                     myHeight = getClosestHeight (vitals_bp[i].vital_date, height_data_adult);
-                    height = myHeight.value;
+                    if (myHeight) {
+                        height = myHeight.value;
+                    }
                     //height = undefined;
                 }
                 
