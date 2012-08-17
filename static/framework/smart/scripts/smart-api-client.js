@@ -5155,7 +5155,7 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
 
     $.extend(urlVars, o.parameters);
 
-    var requiredUrlParams = o.path.match(/{.*?}/g);
+    var requiredUrlParams = o.path.match(/{.*?}/g) || [];
     $.each(requiredUrlParams, function(i,v){
       o.path = o.path.replace(v, urlVars[v.slice(1,-1)]); 
     });

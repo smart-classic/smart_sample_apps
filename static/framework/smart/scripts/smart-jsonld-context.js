@@ -1,4 +1,10 @@
 SMART.jsonld_context = {
+    "<http__//purl.org/dc/terms/title#MediaTypeOrExtent>": {
+        "@id": "http://purl.org/dc/terms/title#MediaTypeOrExtent"
+    },
+    "<http__//purl.org/dc/terms/title#SmokingStatus>": {
+        "@id": "http://purl.org/dc/terms/title#SmokingStatus"
+    },
     "Alert": {
         "@id": "http://smartplatforms.org/terms#Alert"
     },
@@ -17,8 +23,8 @@ SMART.jsonld_context = {
     "BloodPressure": {
         "@id": "http://smartplatforms.org/terms#BloodPressure"
     },
-    "Capabilities": {
-        "@id": "http://smartplatforms.org/terms#Capabilities"
+    "ClinicalNote": {
+        "@id": "http://smartplatforms.org/terms#ClinicalNote"
     },
     "Code": {
         "@id": "http://smartplatforms.org/terms#Code"
@@ -32,11 +38,17 @@ SMART.jsonld_context = {
     "Component": {
         "@id": "http://smartplatforms.org/terms#Component"
     },
+    "ContainerManifest": {
+        "@id": "http://smartplatforms.org/terms#ContainerManifest"
+    },
     "DataType": {
         "@id": "http://smartplatforms.org/terms#DataType"
     },
     "Demographics": {
         "@id": "http://smartplatforms.org/terms#Demographics"
+    },
+    "DocumentWithFormat": {
+        "@id": "http://smartplatforms.org/terms#DocumentWithFormat"
     },
     "Encounter": {
         "@id": "http://smartplatforms.org/terms#Encounter"
@@ -47,11 +59,11 @@ SMART.jsonld_context = {
     "Immunization": {
         "@id": "http://smartplatforms.org/terms#Immunization"
     },
+    "LabPanel": {
+        "@id": "http://smartplatforms.org/terms#LabPanel"
+    },
     "LabResult": {
         "@id": "http://smartplatforms.org/terms#LabResult"
-    },
-    "LabResultPanel": {
-        "@id": "http://smartplatforms.org/terms#LabResultPanel"
     },
     "MedicalRecord": {
         "@id": "http://smartplatforms.org/terms#MedicalRecord"
@@ -89,11 +101,20 @@ SMART.jsonld_context = {
     "Problem": {
         "@id": "http://smartplatforms.org/terms#Problem"
     },
+    "Procedure": {
+        "@id": "http://smartplatforms.org/terms#Procedure"
+    },
     "Provider": {
         "@id": "http://smartplatforms.org/terms#Provider"
     },
     "QuantitativeResult": {
         "@id": "http://smartplatforms.org/terms#QuantitativeResult"
+    },
+    "SMARTAPI": {
+        "@id": "http://smartplatforms.org/terms#SMARTAPI"
+    },
+    "SocialHistory": {
+        "@id": "http://smartplatforms.org/terms#SocialHistory"
     },
     "Statement": {
         "@id": "http://smartplatforms.org/terms#Statement"
@@ -103,6 +124,9 @@ SMART.jsonld_context = {
     },
     "UserPreferences": {
         "@id": "http://smartplatforms.org/terms#UserPreferences"
+    },
+    "VCardLabels": {
+        "@id": "http://smartplatforms.org/terms#VCardLabels"
     },
     "ValueAndUnit": {
         "@id": "http://smartplatforms.org/terms#ValueAndUnit"
@@ -116,8 +140,8 @@ SMART.jsonld_context = {
     "VitalSign": {
         "@id": "http://smartplatforms.org/terms#VitalSign"
     },
-    "VitalSigns": {
-        "@id": "http://smartplatforms.org/terms#VitalSigns"
+    "VitalSignSet": {
+        "@id": "http://smartplatforms.org/terms#VitalSignSet"
     },
     "abnormalInterpretation": {
         "@id": "http://smartplatforms.org/terms#abnormalInterpretation"
@@ -137,8 +161,17 @@ SMART.jsonld_context = {
     "allergyExclusionName": {
         "@id": "http://smartplatforms.org/terms#allergyExclusionName"
     },
-    "api__call": {
-        "@id": "http://smartplatforms.org/terms/api#call"
+    "api__Call": {
+        "@id": "http://smartplatforms.org/terms/api#Call"
+    },
+    "api__Filter": {
+        "@id": "http://smartplatforms.org/terms/api#Filter"
+    },
+    "api__Parameter": {
+        "@id": "http://smartplatforms.org/terms/api#Parameter"
+    },
+    "api__ParameterSet": {
+        "@id": "http://smartplatforms.org/terms/api#ParameterSet"
     },
     "belongsTo": {
         "@id": "http://smartplatforms.org/terms#belongsTo"
@@ -164,6 +197,13 @@ SMART.jsonld_context = {
     "dcterms__date": {
         "@id": "http://purl.org/dc/terms/date"
     },
+    "dcterms__format": {
+        "@id": "http://purl.org/dc/terms/format"
+    },
+    "dcterms__hasFormat": {
+        "@container": "@set",
+        "@id": "http://purl.org/dc/terms/hasFormat"
+    },
     "dcterms__identifier": {
         "@id": "http://purl.org/dc/terms/identifier"
     },
@@ -174,7 +214,6 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#deaNumber"
     },
     "denominator": {
-        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#denominator"
     },
     "department": {
@@ -227,6 +266,9 @@ SMART.jsonld_context = {
         "@container": "@set",
         "@id": "http://smartplatforms.org/terms#hasStatement"
     },
+    "headCircumference": {
+        "@id": "http://smartplatforms.org/terms#headCircumference"
+    },
     "heartRate": {
         "@id": "http://smartplatforms.org/terms#heartRate"
     },
@@ -247,7 +289,6 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#labStatus"
     },
     "maximum": {
-        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#maximum"
     },
     "medicalRecordNumber": {
@@ -261,7 +302,6 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#method"
     },
     "minimum": {
-        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#minimum"
     },
     "narrativeResult": {
@@ -283,7 +323,6 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#npiNumber"
     },
     "numerator": {
-        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#numerator"
     },
     "organization": {
@@ -310,6 +349,9 @@ SMART.jsonld_context = {
     "problemName": {
         "@id": "http://smartplatforms.org/terms#problemName"
     },
+    "procedureName": {
+        "@id": "http://smartplatforms.org/terms#procedureName"
+    },
     "productClass": {
         "@container": "@set",
         "@id": "http://smartplatforms.org/terms#productClass"
@@ -318,6 +360,7 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#productName"
     },
     "provenance": {
+        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#provenance"
     },
     "provider": {
@@ -341,6 +384,9 @@ SMART.jsonld_context = {
     "rdfs__Literal": {
         "@id": "http://www.w3.org/2000/01/rdf-schema#Literal"
     },
+    "rdfs__label": {
+        "@id": "http://www.w3.org/2000/01/rdf-schema#label"
+    },
     "refusalReason": {
         "@id": "http://smartplatforms.org/terms#refusalReason"
     },
@@ -352,6 +398,9 @@ SMART.jsonld_context = {
     },
     "severity": {
         "@id": "http://smartplatforms.org/terms#severity"
+    },
+    "smokingStatus": {
+        "@id": "http://smartplatforms.org/terms#smokingStatus"
     },
     "sourceCode": {
         "@id": "http://smartplatforms.org/terms#sourceCode"
@@ -404,11 +453,11 @@ SMART.jsonld_context = {
     "spcode__MedicalRecordNumber": {
         "@id": "http://smartplatforms.org/terms/codes/MedicalRecordNumber"
     },
-    "spcode__MedicationProvenance": {
-        "@id": "http://smartplatforms.org/terms/codes/MedicationProvenance"
-    },
     "spcode__NDFRT": {
         "@id": "http://smartplatforms.org/terms/codes/NDFRT"
+    },
+    "spcode__Procedure": {
+        "@id": "http://smartplatforms.org/terms/codes/Procedure"
     },
     "spcode__RxNorm": {
         "@id": "http://smartplatforms.org/terms/codes/RxNorm"
@@ -481,7 +530,6 @@ SMART.jsonld_context = {
         "@id": "http://www.w3.org/2006/vcard/ns#additional-name"
     },
     "v__adr": {
-        "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#adr"
     },
     "v__bday": {
@@ -537,7 +585,6 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#value"
     },
     "valueAndUnit": {
-        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#valueAndUnit"
     },
     "vitalName": {
