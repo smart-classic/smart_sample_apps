@@ -61,12 +61,16 @@ if (!BPC) {
     *
     * @returns {Object} jQuery deferred promise object
     */  
-    BPC.get_vitals = function(offset) {
+    BPC.get_vitals = function(offset, vitals) {
         
         var dfd = $.Deferred(),
+            response;
+            
+        if (!vitals) {
             // Template for the vitals object thrown by the callback
             vitals = {heightData: [],
                       bpData: []};
+        }
         
         SMART.get_vital_sign_sets({limit:BPC.settings.vitals_limit,offset:offset})
              .success(function(vital_signs){
@@ -143,12 +147,47 @@ if (!BPC) {
                             methodCode: this.methodCode && this.methodCode.value.toString(),
                             encounterTypeCode: this.code && this.code.value.toString()});
                     });
+                    
+                // If this is the first page, grab the total number of results
+                if (offset === 0) {
+                    response = vital_signs.graph
+                        .prefix('rdf','http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                        .prefix('api','http://smartplatforms.org/terms/api#')
+                        .where('?rs rdf:type api:ResponseSummary')
+                        .where('?rs api:resultsReturned ?results')
+                        .where('?rs api:totalResultCount ?total')
+                        .get(0);
+
+                    vitals.total = Number(response.total.value.toString());
+                }
+                    
                 dfd.resolve(vitals);
             })
             .error(function(e) {
                 dfd.reject(e.message);
             });
         return dfd.promise();
+    };
+    
+    BPC.loadAdditionalVitals = function (demographics, vitals, offset, total) {
+        $('#title').text("loading " + Math.round((offset / total) * 100) + "%");
+        $.when(BPC.get_vitals(offset, vitals))
+         .then( function (vitals) {
+                    var patient = BPC.processData(demographics, vitals);
+                    BPC.initPatient (patient);
+                    BPC.patient = patient;
+                    BPC.setDateRange(0,100);
+                    BPC.drawViews (BPC.patient, BPC.settings.zones);
+                    var next_offset = offset + BPC.settings.vitals_limit;
+                    if (next_offset < total) {
+                        setTimeout(BPC.loadAdditionalVitals (demographics, vitals, next_offset, total), 4000);
+                    } else {
+                        $('#title').text("Blood Pressure Centiles");
+                    }
+                },
+                function (message) {
+                    BPC.displayError (message.data);
+                });
     };
 
     /**

@@ -27,8 +27,10 @@ if (!BPC) {
             } else {
                 // Fire up the SMART API calls and initialize the application asynchronously
                 $.when(BPC.get_demographics(), BPC.get_vitals(0))
-                 .then( function (patient, vitals) {
-                            BPC.initApp ( BPC.processData(patient, vitals) ); 
+                 .then( function (demographics, vitals) {
+                            var total = vitals.total;
+                            BPC.initApp ( BPC.processData(demographics, vitals) );
+                            BPC.loadAdditionalVitals (demographics, vitals, BPC.settings.vitals_limit, total);
                         },
                         function (message) {
                             BPC.displayError (message.data);
@@ -161,6 +163,11 @@ if (!BPC) {
                     // TO DO: consider redrawing the short term view
                 }
             }
+        });
+        
+        // Select the Long Term View tab
+        $('#tabs').tabs({
+            selected: 1
         });
         
         // Patch to enable filter band persistance by JCM
