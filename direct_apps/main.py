@@ -21,7 +21,7 @@ sys.path.append(abspath)
 # Import the local smart client modules and components
 from smart_client import oauth
 from smart_client.smart import SmartClient
-from smart_client.rdf_utils import anonymize_smart_rdf
+from smart_client.common.rdf_tools.util import anonymize_smart_rdf
 from smart_client.common.rdf_tools.rdf_ontology import get_api_calls
 from smart_client.generate_api import call_name
 
