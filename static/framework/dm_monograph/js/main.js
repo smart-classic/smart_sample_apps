@@ -294,7 +294,7 @@ var LAB_RESULTS_get = function(){
               .include(r.labName.code.dcterms__identifier);
           })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -321,7 +321,7 @@ var LAB_RESULTS_get = function(){
             return _(['4548-4', '17856-6']).include(r.labName.code.dcterms__identifier);
           })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(2, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -352,7 +352,7 @@ var LAB_RESULTS_get = function(){
           })
           .map(function(r){
             return [
-              new XDate(r.specimenCollected.startDate).valueOf(),
+              new XDate(r.dcterms__date).valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
               r.quantitativeResult.valueAndUnit[0].unit
             ]
@@ -375,7 +375,7 @@ var LAB_RESULTS_get = function(){
               .include(r.labName.code.dcterms__identifier);
           })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -399,7 +399,7 @@ var LAB_RESULTS_get = function(){
         pt.sgot_arr = _(results).chain()
           .filter(function(r){ return '1920-8' === r.labName.code.dcterms__identifier; })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -428,7 +428,7 @@ var LAB_RESULTS_get = function(){
         pt.chol_arr = _(results).chain()
           .filter(function(r){ return '2093-3' === r.labName.code.dcterms__identifier; })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -455,7 +455,7 @@ var LAB_RESULTS_get = function(){
             return _(['2571-8', '3043-7']).include(r.labName.code.dcterms__identifier);
           })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -481,7 +481,7 @@ var LAB_RESULTS_get = function(){
             return _(['2085-9']).include(r.labName.code.dcterms__identifier);
           })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -508,7 +508,7 @@ var LAB_RESULTS_get = function(){
             return _(['3094-0', '6299-2']).include(r.labName.code.dcterms__identifier);
           })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -540,7 +540,7 @@ var LAB_RESULTS_get = function(){
             return _(['2160-0', '38483-4']).include(r.labName.code.dcterms__identifier);
           })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,
@@ -572,7 +572,7 @@ var LAB_RESULTS_get = function(){
             return _(['2345-7', '2339-0']).include(r.labName.code.dcterms__identifier);
           })
           .map(function(r){
-            var d = new XDate(r.specimenCollected.startDate)
+            var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               r.quantitativeResult.valueAndUnit[0].value,

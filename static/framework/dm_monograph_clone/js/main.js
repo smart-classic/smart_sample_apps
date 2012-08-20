@@ -354,8 +354,7 @@ var LAB_RESULTS_get = function(){
          .where('?bn3   rdf:type              sp:ValueAndUnit')
          .where('?bn3   sp:value              ?value')
          .where('?bn3   sp:unit               ?unit')
-         .where('?lr    sp:specimenCollected  ?bn4')
-         .where('?bn4   sp:startDate          ?date')
+         .where('?lr    dcterms:date  ?date')
          .each(function(){
            // FIXME: hack push all dates + 3 years
            var d = new XDate(this.date.value)
@@ -392,8 +391,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
 
             // fixme: hack pushing date 2 yrs
@@ -430,8 +428,7 @@ var LAB_RESULTS_get = function(){
            .where('?bn3   rdf:type              sp:ValueAndUnit')
            .where('?bn3   sp:value              ?value')
            .where('?bn3   sp:unit               ?unit')
-           .where('?lr    sp:specimenCollected  ?bn4')
-           .where('?bn4   sp:startDate          ?date')
+           .where('?lr    dcterms:date  ?date')
            .each(function(){
              pt.ur_tp_arr.push([
                 new XDate(this.date.value).valueOf(),
@@ -461,8 +458,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
@@ -497,8 +493,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
@@ -530,8 +525,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
@@ -565,8 +559,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
@@ -597,8 +590,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
@@ -632,8 +624,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
@@ -667,8 +658,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
@@ -701,8 +691,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
             // FIXME: hack push all dates + 3 years
             var d = new XDate(this.date.value)
@@ -736,8 +725,7 @@ var LAB_RESULTS_get = function(){
           .where('?bn3   rdf:type              sp:ValueAndUnit')
           .where('?bn3   sp:value              ?value')
           .where('?bn3   sp:unit               ?unit')
-          .where('?lr    sp:specimenCollected  ?bn4')
-          .where('?bn4   sp:startDate          ?date')
+          .where('?lr    dcterms:date  ?date')
           .each(function(){
 
             // FIXME: hack push all dates + 3 years
