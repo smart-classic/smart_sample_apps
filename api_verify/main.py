@@ -20,7 +20,6 @@ sys.path.append(abspath)
 from smart_client import oauth
 from smart_client.smart import SmartClient
 from smart_client.common.rdf_tools import rdf_ontology
-from smart_client.generate_api import call_name
 
 # Import the application settings
 from settings import APP_PATH, ONTOLOGY
@@ -83,7 +82,7 @@ class get_calls:
             # When the oauth credentials are bad or another execption occurs,
             # perform a manual ontology parsing routine which blocks any
             # consequent SMART client instantiations
-            rdf_ontology.parse_ontology(open(ONTOLOGY).read())
+            pass #rdf_ontology.parse_ontology(open(ONTOLOGY).read())
 
         # Initialize the output dictionary
         out = {}
@@ -93,19 +92,20 @@ class get_calls:
         
             # Fetch the metadata of the api call
             path = str(t.path)
-            method = str(t.method)
+            method = str(t.http_method)
             target = str(t.target)
             category = str(t.category)
+            cardinality = str(t.cardinality)
             
             # Process only GET calls of "record_items" category plus a few specific
             # exceptions by adding them to the dictionary
-            if method == "GET" and (category == "record_items" or
+            if method == "GET" and ((category == "record" and cardinality == "multiple") or
                                     path == "/ontology" or
                                     path == "/apps/manifests/" or
                                     path == "/manifest"):
 
                 # Build the generic python client call name and use it in the dictionary
-                out[target] = {"call_py": get_call(target)}
+                out[target] = str(t.client_method_name)
 
         # Return the dictionary serialized as "pretty" JSON
         return json.dumps(out, sort_keys=True, indent=4)
@@ -158,28 +158,24 @@ class describe_queries:
         # Return description
         return describeQueries(model)
         
-        
-def get_call(target):
-    '''Returns the name of the SMART python client convenience method
-    corresponding to the target SMART data model
+def get_api_calls ():
+    calls = {}
     
-    Expects a valid SMART data model target
-    '''
-    
-    # Local class needed by the call_name method
-    class API_Call():
-        def __init__ (self, path, method):
-            self.path = path
-            self.method = method
+    for t in rdf_ontology.api_calls:
 
-    # Get all the API calls from the ontology
-    r = rdf_ontology.get_api_calls()
-    
-    # Construct an API_Call object
-    call = API_Call(r[target], "GET")
-    
-    # Obtain and return the call name
-    return call_name(call)
+        target = str(t.target)
+        method = str(t.http_method)
+        path = str(t.path)
+        category = str(t.category)
+
+        if method == "GET" and (category == "record_items" or
+                                    path == "/ontology" or
+                                    path == "/apps/manifests/" or
+                                    path == "/manifest"):
+            if target not in calls.keys():
+                calls[target] = path
+            
+    return calls
     
 def get_model(call):
     '''Returns the name of the target SMART data model
@@ -187,24 +183,15 @@ def get_model(call):
     
     Expects a valid SMART python client convenience method name
     '''
-    
-    # Local class needed by the call_name method
-    class API_Call():
-        def __init__ (self, path, method):
-            self.path = path
-            self.method = method
 
     # We may have to load the ontology if it is not available yet
     if not rdf_ontology.api_types:
         rdf_ontology.parse_ontology(open(ONTOLOGY).read())
-            
-    # Get all the API calls from the ontology
-    r = rdf_ontology.get_api_calls()
     
     # Look through the api calls array until a call with matching convenience method name is found
-    for target in r.keys():
-        if call == call_name(API_Call(r[target], "GET")):
-            return target.replace("http://smartplatforms.org/terms#","")
+    for c in rdf_ontology.api_calls:
+        if call == c.client_method_name:
+            return c.target.replace("http://smartplatforms.org/terms#","")
         
 def get_smart_client(ontology = None):
     '''Initializes and returns a new SMART Client
