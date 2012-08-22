@@ -468,7 +468,7 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
                 times.push(["objectified", new Date().getTime()]);
 		ret.graph = rdf;
                 ret.object = objects;
-            } catch(err) { dfd.reject({status: r.status, message: err}); }
+            } catch(err) { dfd.reject({status: r.status, message: {data: err, contentType:"application/rdf"}}); }
 
         } else if (o.responseFormat === "JSON") {
             try {
@@ -476,7 +476,7 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
                 times.push(["json parsed", new Date().getTime()]);
                 ret.json = json;
             } catch(err) {
-                dfd.reject({status: r.status, message: err});
+                dfd.reject({status: r.status, message: {data:err, contentType:"application/json"}});
             }
         } 
 
@@ -488,7 +488,7 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
             }
         }
     }, function(r) {
-        dfd.reject({status: r.status, message: r.message});
+        dfd.reject({status: r.status, message: {data:r.message}});
     });
     return prm;
 };
