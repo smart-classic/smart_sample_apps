@@ -442,7 +442,7 @@ def get_call(target):
     r = get_api_calls()
     
     for c in rdf_ontology.api_calls:
-        if str(c.method) == "GET" and str(c.path) == r[target]:
+        if str(c.http_method) == "GET" and str(c.path) == r[target]:
             return c.client_method_name
         
 def get_smart_client():
