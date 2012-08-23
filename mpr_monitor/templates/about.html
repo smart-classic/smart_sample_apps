@@ -16,68 +16,52 @@
  	</head>
  	 
  	<body>	
-        <h3> Overview </h3>
+        <h3> Early Identification of Poor Adherence to Prescribed Medications </h3>
+		
         <p>
-        Though medications may be the single most important healthcare 
-        intervention for chronic disease in the developed world (1,2), 
-        their impact is modulated by patient adherence. Even for conditions 
-        where using a single medication only once a day is known to improve 
-        outcomes, only about 50% of patients adhere to the correct regimen  
-        (3-5). Studies of patients taking antihypertensives, antidepressives, 
-        antidiabetics, antipsychotics and antihyperlipidemics show that poor 
-        adherence is predictive of poor outcomes and high costs, including 
-        future hospitalizations and treatment discontinuation (8-20). Conversely, 
-        consistent adherence to statins, antihypertensives, antidiabetic agents 
-        and antiviral therapies is associated with positive health outcomes  
-        (3,18,19,21). 
+
+		<font face="arial" size="2">
+		Jonikas, M.A., and Mandl, K.D. (2011). Surveillance of medication use: early 
+		identification of poor adherence. J Am Med Inform Assoc. 
+		(full text: <a href="http://jamia.bmj.com/content/early/2011/11/18/amiajnl-2011-000416.long"> here.</a>)
+		</font>
+
         </p>
-        <p>
-		Causes of non-adherence are multifactorial, including tolerability, side effects, 
-		complexity of prescribing and filling procedures, level of understanding of the 
-		importance of taking the medication, cultural norms, out of pocket cost of the 
-		medication and the possible lack of discernable effects of the medication (1,22-25). 
-		The effort to intervene effectively by healthcare providers is hampered by a tendency 
-		to overestimate medication adherence (26-31).  
-        </p>
+		        
+        <h4> Background </h4>
 	  	<p> 
-		Surveillance of adherence can be achieved monitoring records of dispensed 
-		prescription medications (6,7).  Prescription filling data provides an 
-		indirect measure of adherence to prescription medication. Although 
-		filled prescription medications are not always taken, it is generally true that 
-		patients who do not fill a prescription are non-adherent. We sought to develop a 
-		model of prescription fill data for early identification of patients prescribed 
-		antihyperlipidemics, antihypertensives and oral hypoglycemics who will likely be 
-		poor adherers one year after the start of a prescription.  		
-        </p>
-        
-        <h3> Introduction </h3>
-	  	<p> 
-        The large-gap detection system was set to flag drug eras that 
-        accumulated a continuous medication gap greater than 30 days, 
-        based on the assumption that a patient lacking a months worth
-        of medication supply could benefit from the attention of a clinician.
-        Of the remaining unflagged subjects who consistently filled 
-        prescriptions over the course of at least one year, we focused 
-        on identifying those at high risk of future poor adherence, 
-        so that an intervention could be made early in the course of
-        their drug therapy. Our two-phase detector identifies subjects 
-        at high risk of poor adherence to chronic medications as early 
-        as 60 days after the first prescription fill. 
+        We sought to measure population-level adherence to antihyperlipidemics, antihypertensives, 
+		and oral hypoglycemics, and to develop a model for early identification of subjects at high 
+		risk of long-term poor adherence. 
         </p> 
          		
-        <h3> Methods </h3>
+        <h4> Methods </h4>
 	  	<p> 
-        This study is a retrospectively constructed two-phase prediction model for 
-        early identification of patients at risk of poor adherence to chronic medications. 
-        The first phase is a straightforward approach to identifying prolonged gaps in 
-        prescription filling patterns. The second phase uses  a regression model to isolate 
-        more complex and subtly patterns predictive of future poor adherence.
-        </p> 
+        Prescription-filling data for 2 million subjects derived from a payor's insurance 
+		claims were used to evaluate adherence to three chronic drugs over 1 year. We relied 
+		on patterns of prescription fills, including the length of gaps in medication possession, 
+		to measure adherence among subjects and to build models for predicting poor long-term 
+		adherence.        
+		</p> 
         
-        <h3> References </h3>
-        <p>
-        
-        </p>
-         			  		  			
+        <h4> Results </h4>
+	  	<p> All prescription fills for a specific drug were sequenced chronologically into 
+		drug eras. 61.3% to 66.5% of the prescription patterns contained medication gaps >30 days 
+		during the first year of drug use. These interrupted drug eras include long-term discontinuations, 
+		where the subject never again filled a prescription for any drug in that category in the dataset, 
+		which represent 23.7% to 29.1% of all drug eras. Among the prescription-filling patterns without 
+		large medication gaps, 0.8% to 1.3% exhibited long-term poor adherence. Our models identified 
+		these subjects as early as 60 days after the first prescription fill, with an area under the 
+		curve (AUC) of 0.81. Model performance improved as the predictions were made at later time-points, 
+		with AUC values increasing to 0.93 at the 120-day time-point.		
+		</p> 
+		
+		<h4> Conclusions </h4>
+	  	<p> 
+		Dispensed medication histories (widely available in real time) are useful for alerting providers 
+		about poorly adherent patients and those who will be non-adherent several months later. Efforts to 
+		use these data in point of care and decision support facilitating patient are warranted.		
+		</p>
+
  	</body>
 </html>

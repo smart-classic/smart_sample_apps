@@ -51,39 +51,46 @@
 	      <h2 style="text-transform: uppercase"> Drug class: {{drug_class}} </h2>
 	  	  <HR SIZE="4" COLOR="#0000FF">
 	      {% for name, urlname, flag, first, last, class, nDays, mpr in meds_flags %}
-	      {% if drug_class == class %}
+	        {% if drug_class == class %}
 	      	      
-	        <HR>	    
-	  		{% if flag == 0 %}
-				<h3> <img src="{{MEDIA_ROOT}}redWarning.png" />  {{name}} </h3>				    				
-	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
-	    		<h3>Current Adherence: <font color="#dd0000">Poor</font> </h3>
-	  		{% else %} {% if flag == 3 %}
-				<h3> <img src="{{MEDIA_ROOT}}redWarning.png" /> {{name}} </h3>						    															  				
-	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
-	    		<h3>Current Adherence: <font color="#dd0000">Poor</font></h3>
-	  		{% else %} {% if flag == 2 %}
+	        <HR>	    	
+	  		{% ifequal flag "Good" %}
 				<h3> <img src="{{MEDIA_ROOT}}greenCheck.png" /> {{name}} </h3>				    				
 	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#ff9900"></div> 	    	    	    
-	    		<h3> Current Adherence: <font color="#00dd00">Good</font> </h3>
-	  		{% else %} {% if flag == 1 %}
+	    		<h3> Current Adherence is <font color="#00dd00">Good</font> </h3>
+				
+	  		{% else %} {% ifequal flag "Good_predictedMPR" %}
 				<h3> <img src="{{MEDIA_ROOT}}greenCheck.png" /> {{name}} </h3>				    				
-	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#00FF00"></div> 	    	    	    
-	    		<h3> Current Adherence: <font color="#00dd00">Good</font> </h3>
-	    		
-	  		{% else %} {% if flag == 4 %}
-				<h3> <img src="{{MEDIA_ROOT}}greenCheck.png" /> {{name}} </h3>				    				
-	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
-	    		<h3> <font color="#0000ff">Predicted</font> 1-year adherence level: <font color="#00ff00">Good</font> </h3>
-	  		{% else %} {% if flag == 5 %}
-				<h3> <img src="{{MEDIA_ROOT}}yellowWarning.png" /> {{name}} </h3>				    				
-	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
-	    		<h3> <font color="#0000ff">Predicted</font> 1-year adherence level: <font color="#ff9900">Acceptable</font> </h3>
-	  		{% else %} {% if flag == 6 %}
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#ff9900"></div> 	    	    	    
+	    		<h3> Predicted 1-year Adherence is: <font color="#00dd00">Good</font> </h3>
+				
+	  		{% else %} {% ifequal flag "Poor_gaps" %}
 				<h3> <img src="{{MEDIA_ROOT}}redWarning.png" /> {{name}} </h3>				    				
 	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
-	    		<h3> <font  color="#0000ff">Predicted</font> 1-year adherence level: <font color="#ff0000">Poor</font> </h3>
-	  		{% endif %} {% endif %} {% endif %} {% endif %} {% endif %} {% endif %}  {% endif %} 
+	    		<h3>Large gaps found - adherence is <font color="#dd0000">Poor</font></h3>
+				
+	  		{% else %} {% ifequal flag "Poor_lowMPR" %}
+				<h3> <img src="{{MEDIA_ROOT}}redWarning.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3>Current Adherence (for at least 1 year) is <font color="#dd0000">Poor</font></h3>
+				
+	  		{% else %} {% ifequal flag "Warning_predictedMPR" %}
+				<h3> <img src="{{MEDIA_ROOT}}yellowWarning.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3> <font color="#0000ff">Predicted</font> 1-year adherence level is <font color="#ff9900">poor</font> </h3>
+				
+	  		{% else %} {% ifequal flag "Warning_lowMPR" %}
+				<h3> <img src="{{MEDIA_ROOT}}yellowWarning.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3> Current MPR is <font color="#ff9900">below desired level.</font> </h3>
+				
+	  		{% else %}
+				<h3> <img src="{{MEDIA_ROOT}}yellowWarning.png" /> {{name}} </h3>				    				
+	    	    <div id="plot{{forloop.counter}}" style="width:{{width}}px;height:{{height}}px;color:"#FF0000"></div> 	    	    	    
+	    		<h3>Medication adherence is unknown. </h3>
+				
+	  		{% endifequal %}  {% endifequal %} {% endifequal %} {% endifequal %} {% endifequal %} {% endifequal %} 
+			
 	    	<h4> <i><b>Actual MPR on day of last pill (day {{nDays}}) is {{mpr}}</b></i> </h4>
 	    	<h4> First fill date: <i><b>{{first.date}}</b></i>;  last fill date: <i><b>{{last.date}}</b></i>  </h4>
 	    	    	     	 
@@ -91,7 +98,6 @@
 		                
 		        // The context data should be available. Access it here.
 		        var n = {{forloop.counter}};
-		        //var np = {{forloop.parentcounter.counter }}
 				var all_refill_days = {{refill_day|safe}};
 				var all_gaps = {{gaps|safe}};
 				var all_refills = {{refill|safe}};
