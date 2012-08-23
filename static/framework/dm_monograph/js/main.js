@@ -153,7 +153,7 @@ var _round = function(val, dec){ return Math.round(val*Math.pow(10,dec))/Math.po
 var get_allergies = function(){
   return $.Deferred(function(dfd){
     SMART.get_allergies().then(function(r){
-      _(r.object.of_type.Allergy).each(function(a){
+      _(r.objects.of_type.Allergy).each(function(a){
         var allergen = a.drugClassAllergen || a.foodAllergen;
         pt.allergies_arr.push([
           allergen.dcterms__title,
@@ -168,7 +168,7 @@ var get_allergies = function(){
 var get_medications = function(){
   return $.Deferred(function(dfd){
     SMART.get_medications().then(function(r){
-      _(r.object.of_type.Medication).each(function(m){
+      _(r.objects.of_type.Medication).each(function(m){
         // caution: fulfillments are optional
         pt.fulfillments_arr = m.fulfillment ? pt.fulfillments_arr.concat(m.fulfillment) : pt.fulfillments_arr
         pt.meds_arr.push([
@@ -193,8 +193,8 @@ var get_medications = function(){
 var get_demographics = function(){
   return $.Deferred(function(dfd){
     SMART.get_demographics().then(function(r){
-      var name = r.object.of_type.v__Name[0];
-      var demos = r.object.of_type.Demographics[0];
+      var name = r.objects.of_type.v__Name[0];
+      var demos = r.objects.of_type.Demographics[0];
       pt.family_name = name.v__family_name;
       pt.given_name  = name.v__given_name;
       pt.gender = demos.foaf__gender;
@@ -209,7 +209,7 @@ var get_vital_sign_sets = function(){
     SMART.get_vital_sign_sets().then(function(r){
 
       (function bps(){
-        _(r.object.of_type.VitalSignSet).each(function(v){
+        _(r.objects.of_type.VitalSignSet).each(function(v){
           if (v.bloodPressure) {
             d = new XDate(v.dcterms__date);
             pt.sbp_arr.push([
@@ -243,7 +243,7 @@ var get_vital_sign_sets = function(){
       })();
 
       (function weights(){
-        pt.weight_arr = _(r.object.of_type.VitalSignSet).chain()
+        pt.weight_arr = _(r.objects.of_type.VitalSignSet).chain()
           .filter(function(v){ return v.weight; })
           .map(function(v){
             return [
@@ -257,7 +257,7 @@ var get_vital_sign_sets = function(){
       })();
 
       (function heights(){
-        pt.height_arr = _(r.object.of_type.VitalSignSet).chain()
+        pt.height_arr = _(r.objects.of_type.VitalSignSet).chain()
           .filter(function(v){ return v.height; })
           .map(function(v){
             return [
@@ -280,7 +280,7 @@ var get_vital_sign_sets = function(){
 var get_lab_results = function(){
   return $.Deferred(function(dfd){
     SMART.get_lab_results().then(function(r){
-      var results = r.object.of_type.LabResult;
+      var results = r.objects.of_type.LabResult;
 
       (function ldl(){
         // LOINC Code, Long name, Short Name, class, rank # of 2000
@@ -673,7 +673,7 @@ var get_lab_results = function(){
 var get_problems = function(){
   return $.Deferred(function(dfd){
     SMART.get_problems().then(function(r){
-      _(r.object.of_type.Problem).each(function(p){
+      _(r.objects.of_type.Problem).each(function(p){
         pt.problems_arr.push([
           new XDate(p.startDate),
           p.problemName.dcterms__title,

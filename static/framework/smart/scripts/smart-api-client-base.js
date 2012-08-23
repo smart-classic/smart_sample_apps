@@ -474,13 +474,12 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
         var ret = {status: r.status, body: r.body, contentType: r.contentType};
 
         if (r.contentType === "application/rdf+xml") {
-            var rdf, objects;
+            var rdf;
             try {
                 rdf = _this.process_rdf(r.contentType, r.body);
-                objects = _this.objectify(rdf);
+                ret.objects = _this.objectify(rdf);
                 times.push(["objectified", new Date().getTime()]);
                 ret.graph = rdf;
-                ret.object = objects;
             } catch(err) { dfd.reject({status: r.status, message: err}); }
 
         } else if (r.contentType === "application/json") {
