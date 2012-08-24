@@ -207,7 +207,6 @@ var get_demographics = function(){
 var get_vital_sign_sets = function(){
   return $.Deferred(function(dfd){
     SMART.get_vital_sign_sets().then(function(r){
-
       (function bps(){
         _(r.objects.of_type.VitalSignSet).each(function(v){
           if (v.bloodPressure) {
@@ -1377,11 +1376,8 @@ SMART.ready(function(){
     do_tables();
 
     // reminders in the pt summary (todo: refactor dry!!)
-
-    // look into the processed reminders array, see if there are reminders for
-    // bps
-    $('#bp_systolic_ps').html('<span class="bold larger">'+_round(pt.sbp[1], 0)+'</span>');
-    $('#bp_diastolic_ps').html('<span class="bold larger">'+_round(pt.dbp[1], 0)+'</span>');
+    $('#bp_systolic_ps').html(pt.sbp ? '<span class="bold larger">'+_round(pt.sbp[1], 0)+'</span>' : '');
+    $('#bp_diastolic_ps').html(pt.sbp ? '<span class="bold larger">'+_round(pt.dbp[1], 0)+'</span>': '');
 
     // ldl or a1c
     var last_test_html = '';
