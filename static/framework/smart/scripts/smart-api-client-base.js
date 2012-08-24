@@ -396,6 +396,8 @@ SMART_CONNECT_CLIENT.prototype.objectify = function(rdf) {
                 } else if (v.type === 'literal') {
                     if (!(v.lang || v.datatype)) {
                         values[i] = v.value;
+                    } else if (v.datatype === "http://www.w3.org/2001/XMLSchema#integer") {
+                      values[i] = Number(v.value);
                     } else {
                         values[i] = {
                             "@value": v.value,

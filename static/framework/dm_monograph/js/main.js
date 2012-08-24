@@ -193,12 +193,12 @@ var get_medications = function(){
 var get_demographics = function(){
   return $.Deferred(function(dfd){
     SMART.get_demographics().then(function(r){
-      var name = r.objects.of_type.v__Name[0];
+      var name = r.objects.of_type.vcard__Name[0];
       var demos = r.objects.of_type.Demographics[0];
-      pt.family_name = name.v__family_name;
-      pt.given_name  = name.v__given_name;
+      pt.family_name = name.vcard__family_name;
+      pt.given_name  = name.vcard__given_name;
       pt.gender = demos.foaf__gender;
-      pt.bday = demos.v__bday;
+      pt.bday = demos.vcard__bday;
       dfd.resolve();
     })
   }).promise();
