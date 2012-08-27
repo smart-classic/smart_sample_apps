@@ -74,7 +74,7 @@ def index(request):
             
     # Get the medication list for this context
     # Note the general pattern: GET /records/{record_id}/medications/
-    medications = client.records_X_medications_GET().graph
+    medications = client.get_medications().graph
     query = """
         PREFIX dcterms:<http://purl.org/dc/terms/>
         PREFIX sp:<http://smartplatforms.org/terms#>
@@ -146,7 +146,7 @@ def risk(request):
     oa_params, client, smart_oauth_header = get_smart_client(request)
            
     # Get the medication list for this context
-    medications = client.records_X_medications_GET().graph
+    medications = client.get_medications().graph
     query = """
         PREFIX dcterms:<http://purl.org/dc/terms/>
         PREFIX sp:<http://smartplatforms.org/terms#>
@@ -291,7 +291,7 @@ def get_smart_client(request):
 def get_birthday_name(client):
     """Function to get birthday and patient name from the client records and return them."""
 	    
-    demographics = client.records_X_demographics_GET().graph
+    demographics = client.get_demographics().graph
         
     query_demo = """
         PREFIX foaf:<http://xmlns.com/foaf/0.1/>
