@@ -33,8 +33,17 @@ for c in rdf_ontology.SMART_Class.store.values():
 
 # add ResponseSummary to context
 context['ResponseSummary'] = {'@id': 'http://smartplatforms.org/terms/api#ResponseSummary'}
-context['resultsReturned'] = {'@id': 'http://smartplatforms.org/terms/api#resultsReturned'}
-context['totalResultCount'] = {'@id': 'http://smartplatforms.org/terms/api#totalResultCount'}
-context['processingTimeMs'] = {'@id': 'http://smartplatforms.org/terms/api#processingTimeMs'}
+context['resultsReturned'] = {
+    '@id':   'http://smartplatforms.org/terms/api#resultsReturned',
+    '@type': 'xsd:integer'
+}
+context['totalResultCount'] = {
+    '@id':   'http://smartplatforms.org/terms/api#totalResultCount',
+    '@type': 'xsd:integer'
+}
+context['processingTimeMs'] = {
+    '@id':   'http://smartplatforms.org/terms/api#processingTimeMs',
+    '@type': 'xsd:integer'
+}
 
 print "SMART.jsonld_context = " + simplejson.dumps(context, sort_keys=True, indent=4)

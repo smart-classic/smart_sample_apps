@@ -347,7 +347,8 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#procedureStatus"
     },
     "processingTimeMs": {
-        "@id": "http://smartplatforms.org/terms/api#processingTimeMs"
+        "@id": "http://smartplatforms.org/terms/api#processingTimeMs",
+        "@type": "xsd:integer"
     },
     "productClass": {
         "@container": "@set",
@@ -392,7 +393,8 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#respiratoryRate"
     },
     "resultsReturned": {
-        "@id": "http://smartplatforms.org/terms/api#resultsReturned"
+        "@id": "http://smartplatforms.org/terms/api#resultsReturned",
+        "@type": "xsd:integer"
     },
     "role": {
         "@id": "http://smartplatforms.org/terms#role"
@@ -494,7 +496,8 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#temperature"
     },
     "totalResultCount": {
-        "@id": "http://smartplatforms.org/terms/api#totalResultCount"
+        "@id": "http://smartplatforms.org/terms/api#totalResultCount",
+        "@type": "xsd:integer"
     },
     "translationFidelity": {
         "@id": "http://smartplatforms.org/terms#translationFidelity"
