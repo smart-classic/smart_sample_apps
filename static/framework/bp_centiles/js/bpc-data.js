@@ -64,7 +64,9 @@ if (!BPC) {
     BPC.get_vitals = function(offset, vitals) {
         
         var dfd = $.Deferred(),
-            response;
+            response,
+            filters,
+            d, y;
             
         if (!vitals) {
             // Template for the vitals object thrown by the callback
@@ -72,7 +74,21 @@ if (!BPC) {
                       bpData: []};
         }
         
-        SMART.get_vital_sign_sets({limit:BPC.settings.vitals_limit,offset:offset})
+        if (BPC.settings.progressive_loading) {
+            filters = {limit:BPC.settings.vitals_limit, offset:offset};
+            $('#loaded_through').hide();
+            $('#div_y').hide();
+        } else {
+            d = new Date();
+            y = d.getFullYear();
+            y -= offset;
+            $('#title').text("Blood Pressure Centiles");
+            $('#loaded_through').text("Data stream starting from " + y);
+            BPC.offset = offset;
+            filters = {date_from:(y+"-01-01"), date_to:(y+"-12-31")};
+        }
+        
+        SMART.get_vital_sign_sets(filters)
              .success(function(vital_signs){
         
                 // Query the RDF for the height data
@@ -177,13 +193,30 @@ if (!BPC) {
                     BPC.initPatient (patient);
                     BPC.patient = patient;
                     BPC.setDateRange(0,100);
-                    BPC.drawViews (BPC.patient, BPC.settings.zones);
+                    BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
+                    BPC.redrawViewTable (BPC.patient);
                     var next_offset = offset + BPC.settings.vitals_limit;
                     if (next_offset < total) {
-                        setTimeout(BPC.loadAdditionalVitals (demographics, vitals, next_offset, total), 4000);
+                        BPC.loadAdditionalVitals (demographics, vitals, next_offset, total);
                     } else {
                         $('#title').text("Blood Pressure Centiles");
                     }
+                },
+                function (message) {
+                    BPC.displayError (message.data);
+                });
+    };
+    
+    BPC.loadAnotherY = function () {
+        $.when(BPC.get_vitals(BPC.offset+1, BPC.vitals))
+         .then( function (vitals) {
+                    var patient = BPC.processData(BPC.demographics, vitals);
+                    BPC.initPatient (patient);
+                    BPC.patient = patient;
+                    BPC.setDateRange(0,100);
+                    BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
+                    BPC.redrawViewTable (BPC.patient);
+                    BPC.vitals = vitals;
                 },
                 function (message) {
                     BPC.displayError (message.data);

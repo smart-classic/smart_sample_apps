@@ -21,10 +21,14 @@ if (!BPC) {
 (function () {
     "use strict";
 
-    BPC.settings = {}
+    BPC.settings = {};
     
     // BPC Vitals Data Load Limit
-    BPC.settings.vitals_limit = 5
+    BPC.settings.vitals_limit = 5;
+    
+    // Use progressive loading (else break by year)
+    BPC.settings.progressive_loading = false;
+    BPC.settings.default_to_long_term_view = true;
     
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
     BPC.settings.zones = [
