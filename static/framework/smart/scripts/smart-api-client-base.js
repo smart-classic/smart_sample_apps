@@ -233,12 +233,6 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
     }
 };
 
-SMART_CONNECT_CLIENT.prototype.methods = [];
-
-SMART_CONNECT_CLIENT.prototype.register_method = function (name, method, target, category) {
-    this.methods.push({name: name, method: method, target: target, category: category});
-}
-
 SMART_CONNECT_CLIENT.prototype.createXMLDocument = function(string) {
     var parser, xmlDoc;
     if (window.DOMParser)
@@ -402,6 +396,8 @@ SMART_CONNECT_CLIENT.prototype.objectify = function(rdf) {
                 } else if (v.type === 'literal') {
                     if (!(v.lang || v.datatype)) {
                         values[i] = v.value;
+                    } else if (v.datatype === "http://www.w3.org/2001/XMLSchema#integer") {
+                      values[i] = Number(v.value);
                     } else {
                         values[i] = {
                             "@value": v.value,
@@ -440,43 +436,61 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
     prm.success = prm.done;
     prm.error = prm.fail;
 
-    if (o.success) {
-        prm.success(o.success);
-    }
+    var urlVars = {
+      record_id: this.record.id,
+      user_id: this.user.id,
+      smart_app_id: this.manifest.id
+    };
 
-    if (o.error) {
-        prm.error(o.error);
-    }
+    $.extend(urlVars, o.parameters);
+
+    var requiredUrlParams = o.path.match(/{.*?}/g) || [];
+    $.each(requiredUrlParams, function(i,v){
+      o.path = o.path.replace(v, urlVars[v.slice(1,-1)]); 
+    });
+
+    var unmetParams = [];
+    $.each(o.queryParams, function(k,v){
+      if (o.parameters[k] !== undefined) {
+        o.queryParams[k] = o.parameters[k];
+      } else {
+        unmetParams.push(k);
+      }
+    });
+
+    $.each(unmetParams, function(i,k){
+      delete o.queryParams[k];
+    });
 
     var times = [];
     times.push(["initial call", new Date().getTime()]);
 
     this.api_call({
         method: o.method,
-        url: o.path
-    }, function(r) {
+        url: o.path,
+        data: o.parameters.data || o.queryParams,
+        contentType: o.parameters.contentType
+        }, 
+        function(r) {
         times.push(["SmartResponse received", new Date().getTime()]);
-	var ret = {status: r.status, body: r.body, contentType: r.contentType};
+        var ret = {status: r.status, body: r.body, contentType: r.contentType};
 
-        if (o.responseFormat === "RDF") {
-            var rdf, objects;
+        if (r.contentType === "application/rdf+xml") {
+            var rdf;
             try {
                 rdf = _this.process_rdf(r.contentType, r.body);
-                times.push(["rdfquery parsed "+rdf.databank.tripleStore.length+" triples", new Date().getTime()]);
-
-                objects = _this.objectify(rdf);
+                ret.objects = _this.objectify(rdf);
                 times.push(["objectified", new Date().getTime()]);
-		ret.graph = rdf;
-                ret.object = objects;
-            } catch(err) { dfd.reject({status: r.status, message: {data: err, contentType:"application/rdf"}}); }
+                ret.graph = rdf;
+            } catch(err) { dfd.reject({status: r.status, message: err}); }
 
-        } else if (o.responseFormat === "JSON") {
+        } else if (r.contentType === "application/json") {
             try {
                 json = JSON.parse(r.body);
                 times.push(["json parsed", new Date().getTime()]);
                 ret.json = json;
             } catch(err) {
-                dfd.reject({status: r.status, message: {data:err, contentType:"application/json"}});
+                dfd.reject({status: r.status, message: err});
             }
         } 
 
@@ -488,7 +502,7 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
             }
         }
     }, function(r) {
-        dfd.reject({status: r.status, message: {data:r.message}});
+        dfd.reject({status: r.status, message: r.message});
     });
     return prm;
 };

@@ -17,7 +17,7 @@ $.Model.extend('ApiType',
 	},
 
 	find_all_types_and_calls: function() {
-		SMART.ONTOLOGY_get(function(r) {
+		SMART.get_ontology().then(function(r) {
             var ont = r.graph;
 			this.ontology = ont;
 			
@@ -31,18 +31,25 @@ $.Model.extend('ApiType',
 			}
 			
 			// Get all calls
-			var calls = ont.where("?call rdf:type api:call")				
+			var calls = ont.where("?call rdf:type api:Call")				
 			   .where("?call api:path ?call_path")
 			   .where("?call api:target ?call_target")
+			   .where("?call api:cardinality ?call_cardinality")
 			   .where("?call api:category ?call_category")
-			   .where("?call api:method ?call_method")
-			   .where("?call api:by_internal_id ?call_by_internal_id")
-			   .optional("?call api:above ?call_above")
+			   .where("?call api:httpMethod ?call_method")
 			   .optional("?call api:example ?call_example");
 			
 			for (var i = 0; i < calls.length; i++) {
-			    if (calls[i].call_category.value.match(/^record/))
-				ApiCall.create(calls[i]);
+			    if (calls[i].call_category.value.match(/^record/)) {
+                    var params = [];
+                    var filters = ont.where(calls[i].call.toString() + " rdf:type api:Call")
+                                     .where(calls[i].call.toString() + " api:hasFilter ?f")
+                                     .where("?f api:clientParameterName ?call_parameter");
+                    for (var j = 0; j < filters.length; j++) {
+                        params.push (filters[j].call_parameter.value.toString());
+                    }
+                    ApiCall.create(calls[i], params);
+                }
 			}
 
 			ApiCallGroup.make_groups();
@@ -78,6 +85,19 @@ $.Model.extend('ApiType',
 			url = url.replace(f, this.interpolations[fsans]);
 		}
 		return url;
+	},
+    
+    paramsArray: function(params) {	
+		var res = {},
+            val;
+		
+		for (var i = 0; i < params.length; i++) {
+			val = this.interpolations[params[i]];
+            if (val && val.length > 0) {
+                res[params[i]] = val;
+            }
+		}
+		return res;
 	},
 	
 	create: function(t) {	
@@ -172,22 +192,10 @@ $.Model.extend('ApiType',
 
    fetchParametersCall: function() {	   
 	   var uri = this.type;
-  	   var c = $.grep(ApiCall.calls, function(c) {return c.method=="GET" && c.target === uri && c.category==="record_items";})[0];
-  	   return this.oldest_ancestor_call(c);
-   },
-   
-   oldest_ancestor_call: function(c) {
-	//	   console.log("finding oldest ancestor for " + c)
-		var c = [c];  // prevent inner scope from creating a global variable.
-		
- 		$.each(ApiCall.calls, function(i, possible_parent) {
-			if (possible_parent.path == "/records/") return;
- 			if (possible_parent.path.length >= c[0].path.length) return;			
- 			if (c[0].path.match(possible_parent.path)) c[0] = possible_parent;  
- 		});
- 		return c[0];   
+  	   var c = $.grep(ApiCall.calls, function(c) {return c.method=="GET" && c.target === uri && c.category==="record" &&
+                      c.cardinality=="multiple";})[0];
+       return c;
    }
-
 });
 
 $.Model.extend('ApiCall',
@@ -199,15 +207,21 @@ $.Model.extend('ApiCall',
 		this.payload_methods = ['PUT', 'POST'];
 		},
 	
-	create: function(t) {
+	create: function(t, params) {
+    
+        if (t.call_cardinality.value === "multiple") {
+            params.push ("limit");
+            params.push ("offset");
+        }
 		
 		ret = new ApiCall({path: t.call_path.value,
 						   target: t.call_target.value._string,
                   				   example: t.call_example?t.call_example.value : undefined,
 						   category: t.call_category.value,
+						   cardinality: t.call_cardinality.value,
 						   method: t.call_method.value,
-						   by_internal_id: !!(t.call_by_internal_id.value ==="true"),
-                                                   above:  t.call_above && t.call_above.value._string || ""});
+                           parameters: params,
+                          });
 		
 		this.calls.push(ret);
 		return ret;
@@ -243,11 +257,13 @@ $.Model.extend('ApiCall',
 	
 	buildCallArgs: function(data, callback) {
         
+        var params = ApiType.paramsArray(this.parameters);
+        
 		var call_args = [{
 			method: this.method, 
 			url: ApiType.interpolatedPath(this.path), 
 			contentType: this.contentType(), 
-			data: data || {}
+			data: data || params
 		}, callback];
 	
 		return call_args;
@@ -289,19 +305,9 @@ $.Model.extend('ApiCallGroup',
 			by_path[call.path].push(call);
 		});
 		
-		var category_names = {"record_item": "Single Item ",
-							  "record_items": "All Items "};
-		
 		$.each(by_path, function(path, calls) {
-			var gn = category_names[calls[0].category];
-                        if (calls[0].above !== "") gn += " via " + calls[0].above.split("#")[1]+", "
+			var gn = calls[0].cardinality;
 			
-			if (calls[0].category === "record_item") {
-				if (calls[0].by_internal_id === false) 
-					gn += "by external key";
-				else gn += "by id";
-			}
-
 			var p = {
 					   group_name: gn,
 					   group_members: calls,

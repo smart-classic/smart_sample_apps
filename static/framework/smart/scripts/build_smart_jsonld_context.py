@@ -1,9 +1,8 @@
+import sys
+sys.path.append('../../../..')
 import simplejson
-from smart_client.common import rdf_ontology
+from smart_client.common.rdf_tools import rdf_ontology
 import rdflib
-
-f = open('../../../../../smart_server/smart/document_processing/schema/smart.owl').read()
-rdf_ontology.parse_ontology(f)
 
 seen = {}
 context = {}
@@ -31,5 +30,20 @@ for c in rdf_ontology.SMART_Class.store.values():
         added = add_term(p.uri)
         if p.multiple_cardinality:
             context[added]["@container"] = "@set"
+
+# add ResponseSummary to context
+context['ResponseSummary'] = {'@id': 'http://smartplatforms.org/terms/api#ResponseSummary'}
+context['resultsReturned'] = {
+    '@id':   'http://smartplatforms.org/terms/api#resultsReturned',
+    '@type': 'xsd:integer'
+}
+context['totalResultCount'] = {
+    '@id':   'http://smartplatforms.org/terms/api#totalResultCount',
+    '@type': 'xsd:integer'
+}
+context['processingTimeMs'] = {
+    '@id':   'http://smartplatforms.org/terms/api#processingTimeMs',
+    '@type': 'xsd:integer'
+}
 
 print "SMART.jsonld_context = " + simplejson.dumps(context, sort_keys=True, indent=4)

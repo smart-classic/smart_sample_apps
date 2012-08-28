@@ -59,59 +59,64 @@
 				</tr>
 	  			{% for name, urlname, flag, first, last, class in meds_flags %}
 	  			  {% if drug_class == class %}
-		  
-	  				{% if flag == 0 %}
-	  					<tr>
-						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }} </td>
-						  <td>{{first.date}}</td>
-						  <td>{{last.date}}</td>						  
-						  <td><center><img src="{{ MEDIA_URL}}redWarning.png" /></center></td>						  
-						</tr>	  				
-	  				{% else %} {% if flag == 1 %}
+				  		  
+	  				{% ifequal flag "Good" %}
 	  					<tr>
 						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
 						  <td>{{first.date}}</td>
 						  <td>{{last.date}}</td>						  
-						  <td><center><img src="{{ MEDIA_URL}}greenCheck.png" /></center></td>						  
+						  <td><center><img src={{ MEDIA_URL}}greenCheck.png /></center></td>						  
 						</tr>
 							 
-	  				{% else %} {% if flag == 2 %}
+	  				{% else %} {% ifequal flag "Good_predictedMPR" %}
 	  					<tr>
 						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
 						  <td>{{first.date}}</td>
 						  <td>{{last.date}}</td>						  
-						  <td><center><img src="{{MEDIA_ROOT}}greenCheck.png" /></center></td>						  
-						</tr>	 
-	  				{% else %} {% if flag == 3 %}
+						  <td><center><img src={{ MEDIA_URL}}greenCheck.png /></center></td>						  
+						</tr>
+							 
+	  				{% else %} {% ifequal flag "Poor_gaps" %}
 	  					<tr>
 						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
 						  <td>{{first.date}}</td>
 						  <td>{{last.date}}</td>						  
-						  <td><center><img src="{{ MEDIA_ROOT}}redWarning.png" /></center></td>						  
-						</tr>	 
-											  				
-	  				{% else %} {% if flag == 4 %}
-	  					<tr>
-						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
-						  <td>{{first.date}}</th>
-						  <td>{{last.date}}</th>
-						  <td><center><img src="{{ MEDIA_ROOT}}greenCheck.png" /></center></td>
-						</tr>	
-	  				{% else %} {% if flag == 5 %}
-	  					<tr>
-						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
-						  <td>{{first.date}}</th>
-						  <td>{{last.date}}</th>
-						  <td><center><img src="{{ MEDIA_URL}}yellowWarning.png" /></center></td>						  
-						</tr>	
-	  				{% else %} {% if flag == 6 %}
+						  <td><center><img src={{ MEDIA_URL}}redWarning.png /></center></td>						  
+						</tr>
+							 
+	  				{% else %} {% ifequal flag "Poor_lowMPR" %}
 	  					<tr>
 						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
 						  <td>{{first.date}}</td>
 						  <td>{{last.date}}</td>						  
-						  <td><center><img src="{{ MEDIA_ROOT}}redWarning.png" /></center></td>						  
-						</tr>						
-	  				{% endif %} {% endif %} {% endif %} {% endif %} {% endif %}{% endif %} {% endif %} {% endif %}
+						  <td><center><img src={{ MEDIA_URL}}redWarning.png /></center></td>						  
+						</tr>
+							 
+	  				{% else %} {% ifequal flag "Warning_predictedMPR" %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</td>
+						  <td>{{last.date}}</td>						  
+						  <td><center><img src={{ MEDIA_URL}}yellowWarning.png /></center></td>						  
+						</tr>
+						
+	  				{% else %} {% ifequal flag "Warning_lowMPR" %}
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</td>
+						  <td>{{last.date}}</td>						  
+						  <td><center><img src={{ MEDIA_URL}}yellowWarning.png /></center></td>						  
+						</tr>
+												
+	  				{% else %} 
+	  					<tr>
+						  <td> <a href=risk.html?oauth_header={{oauth_header}}&drug={{urlname}}> {{ name }}</td>
+						  <td>{{first.date}}</td>
+						  <td>{{last.date}}</td>						  
+						  <td><center><img src={{ MEDIA_URL}}yellowWarning.png /></center></td>						  
+						</tr>							 						
+	  				{% endifequal %} {% endifequal %} {% endifequal %} {% endifequal %} {% endifequal %} {% endifequal %}
+				  {% endif %} 
 	  			{%endfor %}
 	  		</table>
 	
@@ -121,7 +126,7 @@
 				<font color="#990000" > <b>Click any medication name above to see details</b> </font>
 				</p>
 								
-				<img src="greenCheck.png" /> Good adherence (Actual or predicted 1 year MPR)
+				<img src="greenCheck.png" /> Good adherence (Actual current MPR or predicted 1 year MPR > 0.80)
 				<br>
 				<img src="yellowWarning.png" /> Predicted non-adherence problem 
 				<br>

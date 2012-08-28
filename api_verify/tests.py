@@ -246,6 +246,10 @@ class TestAllergies(TestRDF):
 class TestDemographics(TestRDF, TestDataModelStructure):
     '''Tests for the Demographics data model'''
     pass
+    
+class TestClinicalNotes(TestRDF, TestDataModelStructure):
+    '''Tests for the Clinical Notes data model'''
+    pass
 
 class TestEncounters(TestRDF, TestDataModelStructure):
     '''Tests for the Encounters data model'''
@@ -257,6 +261,10 @@ class TestFulfillments(TestRDF, TestDataModelStructure):
     
 class TestImmunizations(TestRDF, TestDataModelStructure):
     '''Tests for the Immunizations data model'''
+    pass
+    
+class TestLabPanels(TestRDF, TestDataModelStructure):
+    '''Tests for the Lab Panels data model'''
     pass
     
 class TestLabResults(TestRDF, TestDataModelStructure):
@@ -271,7 +279,11 @@ class TestProblems(TestRDF, TestDataModelStructure):
     '''Tests for the Problems data model'''
     pass
     
-class TestVitalSigns(TestRDF, TestDataModelStructure):
+class TestProcedures(TestRDF, TestDataModelStructure):
+    '''Tests for the Procedures data model'''
+    pass
+    
+class TestVitalSignSets(TestRDF, TestDataModelStructure):
     '''Tests for the Vital Signs data model'''
     
     def testHeight(self):
@@ -446,16 +458,19 @@ tests = {'Allergy': TestAllergies,
          'AppManifest': TestManifests,
          'Manifest': TestManifest,   # this is a custom model not present in the ontology
          'Demographics': TestDemographics,
+         'ClinicalNote': TestClinicalNotes,
          'ContainerManifest': TestContainerManifest,
          'Encounter': TestEncounters,
          'Fulfillment': TestFulfillments,
          'Immunization': TestImmunizations,
+         'LabPanel': TestLabPanels,
          'LabResult': TestLabResults,
          'Medication': TestMedications,
          'Ontology': TestOntology,
          'Problem': TestProblems,
+         'Procedure': TestProcedures,
          'UserPreferences': TestPreferences,
-         'VitalSigns': TestVitalSigns}
+         'VitalSignSet': TestVitalSignSets}
 
 def runTest(model, testData, contentType=None):
     '''Runs the test suite applicable for a model'''

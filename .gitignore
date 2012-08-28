@@ -1,6 +1,7 @@
 *~
 *.pyc
 *#
+*.swp
 .project
 .settings
 settings.py

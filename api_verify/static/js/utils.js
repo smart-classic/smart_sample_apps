@@ -57,23 +57,6 @@ if (!VERIFY) {
                 // Update data to point at temp
                 data = temp;
                 
-                if (!standalone) {
-                    // Get the SMART connect client methods registry
-                    m = SMART.methods;
-                    
-                    // Match the methods from the SMART connect client against the
-                    // python library methods and update the data object as appropriate
-                    for (i = 0; i < m.length; i++) {
-                        if (m[i].method === "GET" && 
-                            (m[i].category === "record_items" ||
-                             m[i].name === "MANIFESTS_get" ||
-                             m[i].name === "ONTOLOGY_get" ||
-                             m[i].name === "MANIFEST_get")) {
-                            if (data[m[i].target]) data[m[i].target].call_js = m[i].name;
-                        }
-                    }
-                }
-                
                 // Update the global VERIFY object and resolve the differed object
                 VERIFY.calls = data;
                 dfd.resolve();
@@ -99,11 +82,11 @@ if (!VERIFY) {
                 var response = JSON.parse (responseText);
                 
                 // Process the response messages
-                VERIFY.processResults(call_name, response.messages);
+                VERIFY.processResults(call_name + "_py", response.messages);
             },
             "html"
         ).error(function () {
-            VERIFY.callbackError(call_name);
+            VERIFY.callbackError(call_name + "_py");
         });
     };
     
@@ -111,17 +94,22 @@ if (!VERIFY) {
     * Tests a SMART Connect API call
     */
     VERIFY.callJS = function (call_name, model) {
-        SMART[call_name](
-            function(response) {
-                // Run the tests on the server side over the call response data
-                VERIFY.testModel (call_name,
-                                  model,
-                                  response.body,
-                                  response.contentType,
-                                  VERIFY.processResults);
-            }, function () {
-                VERIFY.callbackError (call_name);
-            });
+        SMART[call_name]()
+            .success(
+                function(response) {
+                    // Run the tests on the server side over the call response data
+                    VERIFY.testModel (call_name + "_js",
+                                      model,
+                                      response.body,
+                                      response.contentType,
+                                      VERIFY.processResults);
+                }
+            )
+            .error(
+                function () {
+                    VERIFY.callbackError (call_name + "_js");
+                }
+            );
     };
     
     /**
@@ -405,9 +393,7 @@ if (!VERIFY) {
         // Local variables
         var table_str,
             smart_model,
-            call_py,
-            call_js,
-            call,
+            call_name,
             model,
             options_str = "",
             SP = "http://smartplatforms.org/terms#";
@@ -424,9 +410,8 @@ if (!VERIFY) {
         
         // Table body (and options string)
         for (model in VERIFY.calls) {
-            call_py = VERIFY.calls[model].call_py;
-            call_js = VERIFY.calls[model].call_js;
-            table_str += "<tr><td>"+model.replace(SP,"")+"</td><td align='center' id='"+call_js+"'><img src='/static/images/ajax-loader.gif'/></td><td align='center' id='"+call_py+"'><img src='/static/images/ajax-loader.gif'/></td></tr>";
+            call_name = VERIFY.calls[model];
+            table_str += "<tr><td>"+model.replace(SP,"")+"</td><td align='center' id='"+call_name+"_js'><img src='/static/images/ajax-loader.gif'/></td><td align='center' id='"+call_name+"_py'><img src='/static/images/ajax-loader.gif'/></td></tr>";
             options_str += "<option>" + model.replace(SP,"") + "</option>\n";
         }
         
@@ -447,12 +432,12 @@ if (!VERIFY) {
         for (model in VERIFY.calls) {
         
             // Fetch the call name and the data model name
-            call = VERIFY.calls[model];
+            call_name = VERIFY.calls[model];
             smart_model = model.replace(SP,"");
             
             // Run the api call tests on both the Python and JS interfaces
-            VERIFY.callREST(call.call_py);
-            VERIFY.callJS(call.call_js, smart_model);
+            VERIFY.callREST(call_name);
+            VERIFY.callJS(call_name, smart_model);
         }
             
     };

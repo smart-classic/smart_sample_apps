@@ -26,9 +26,16 @@ if (!BPC) {
                 $("#info").text("Error: SMART Connect interface not found");
             } else {
                 // Fire up the SMART API calls and initialize the application asynchronously
-                $.when(BPC.get_demographics(), BPC.get_vitals())
-                 .then( function (patient, vitals) {
-                            BPC.initApp ( BPC.processData(patient, vitals) ); 
+                $.when(BPC.get_demographics(), BPC.get_vitals(0))
+                 .then( function (demographics, vitals) {
+                            var total = vitals.total;
+                            BPC.initApp ( BPC.processData(demographics, vitals) );
+                            if (BPC.settings.progressive_loading) {
+                                BPC.loadAdditionalVitals (demographics, vitals, BPC.settings.vitals_limit, total);
+                            } else {
+                                BPC.vitals = vitals;
+                                BPC.demographics = demographics;
+                            }
                         },
                         function (message) {
                             BPC.displayError (message.data);
@@ -155,13 +162,20 @@ if (!BPC) {
             show: function(event, ui) {
                 // Redraw the long term view whenever the tab gets shown (workaround for Raphael label drawing in hidden canvas bug)
                 if (ui.tab.hash === "#tab_long") {
-                    BPC.redrawViewLong (BPC.patient,BPC.zones);
+                    BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
                 }
                 else if (ui.tab.hash === "#tab_short") {
                     // TO DO: consider redrawing the short term view
                 }
             }
         });
+        
+        // Select the Long Term View tab
+        if (BPC.settings.default_to_long_term_view) {
+            $('#tabs').tabs({
+                selected: 1
+            });
+        }
         
         // Patch to enable filter band persistance by JCM
         $('#tabs').bind('tabsshow', function(ev,ui){
@@ -196,9 +210,9 @@ if (!BPC) {
     BPC.initFilterButtons = function () {
         var i, button;
     
-        for (i in BPC.filterButtonsSettings) {
+        for (i in BPC.settings.filterButtonsSettings) {
         
-            button = BPC.filterButtonsSettings[i];
+            button = BPC.settings.filterButtonsSettings[i];
             
             // Initialize the default filter buttons state
             $('#' + button.handle).attr("checked", button.onByDefault);

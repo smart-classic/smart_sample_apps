@@ -33,17 +33,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/Users/bosl/Workspace/MedAdherePredict/MedAdherePredict/sqlite.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
-
 # Used to assign relative paths
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -74,23 +63,32 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'Media/')
 
-# Some global variables that i want to use in views.py
-PATIENT_ID = 0
-ADHERE_VARS = [0,0,0,0,0]
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = 'http://localhost:8000/static/'
 
-# The base URI for the NDF-RT drug information database web service
-NDF_RT = 'http://rxnav.nlm.nih.gov/REST/Ndfrt/version/'
+# The base URI for the NDF-RT drug information database web service. We don't use
+# this currently, but it may be useful for getting drug class information in the future.
+#NDF_RT = 'http://rxnav.nlm.nih.gov/REST/Ndfrt/version/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
+STATICFILES_DIRS = os.path.join(SITE_ROOT, 'static/')
+
+# Drug class information is contained here.
+DRUGCLASSFILE = os.path.join(STATICFILES_DIRS, 'drugClass.csv')
+
+# Drug class information is contained here.
+LOGREGFILE = os.path.join(STATICFILES_DIRS, 'genLinearModel.txt')
+
+# Parameters used by adherence tests. Since these are debated in research 
+# and practice, they're placed here to enable future changes.
+GOOD_MPR_THRESHOLD = 0.80
+GAP_THRESHOLD = 30
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -113,7 +111,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -123,7 +120,6 @@ SECRET_KEY = '_2%_03e2$%36(7%__wryy=fcppgh_wvgi0*)4c!i5uhh=nqvut'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
