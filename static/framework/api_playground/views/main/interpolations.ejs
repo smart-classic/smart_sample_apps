@@ -1,4 +1,15 @@
-<em><%= call.method%> <%= call.path.replace("http://smartplatforms.org","")%>
+<em><%= call.method%> 
+<% 
+var params = call.parameters;
+var call_path = call.path.replace("http://smartplatforms.org","");
+
+for (var i = 0; i < params.length; i++) {
+    if (i === 0) call_path += "?";
+    else call_path += "&";
+    call_path += params[i] + "={" + params[i] + "}";
+}
+%>
+<%= call_path%> 
 <table>
 <%
 var vs = ApiType.interpolationVars(call.path);
@@ -8,6 +19,12 @@ var fsans = f.substring(1, f.length-1);
 		
 %>
 <tr><td><%= vs[i]%></td><td><input class="interpolation-field" field_name="<%=fsans%>"/></td></tr>
+<% } %>
+<%
+for (var i = 0; i < params.length; i++) {
+    var p = params[i];
+%>
+<tr><td>{<%=p%>}</td><td><input field_name="<%=p%>"/></td></tr>
 <% } %>
 <tr><td><button class="complete-call">Complete <%= call.method%></button><button class="cancel-call">Cancel</button></td></tr>
 <tr><td>RDF Serialization:</td><td><select id="serialization"><option value="xml">RDF-XML</option><option value="ntriples">NTriples</option></select></td></tr>

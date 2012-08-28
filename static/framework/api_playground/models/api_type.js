@@ -40,8 +40,16 @@ $.Model.extend('ApiType',
 			   .optional("?call api:example ?call_example");
 			
 			for (var i = 0; i < calls.length; i++) {
-			    if (calls[i].call_category.value.match(/^record/))
-				ApiCall.create(calls[i]);
+			    if (calls[i].call_category.value.match(/^record/)) {
+                    var params = [];
+                    var filters = ont.where(calls[i].call.toString() + " rdf:type api:Call")
+                                     .where(calls[i].call.toString() + " api:hasFilter ?f")
+                                     .where("?f api:clientParameterName ?call_parameter");
+                    for (var j = 0; j < filters.length; j++) {
+                        params.push (filters[j].call_parameter.value.toString());
+                    }
+                    ApiCall.create(calls[i], params);
+                }
 			}
 
 			ApiCallGroup.make_groups();
@@ -77,6 +85,19 @@ $.Model.extend('ApiType',
 			url = url.replace(f, this.interpolations[fsans]);
 		}
 		return url;
+	},
+    
+    paramsArray: function(params) {	
+		var res = {},
+            val;
+		
+		for (var i = 0; i < params.length; i++) {
+			val = this.interpolations[params[i]];
+            if (val && val.length > 0) {
+                res[params[i]] = val;
+            }
+		}
+		return res;
 	},
 	
 	create: function(t) {	
@@ -186,7 +207,12 @@ $.Model.extend('ApiCall',
 		this.payload_methods = ['PUT', 'POST'];
 		},
 	
-	create: function(t) {
+	create: function(t, params) {
+    
+        if (t.call_cardinality.value === "multiple") {
+            params.push ("limit");
+            params.push ("offset");
+        }
 		
 		ret = new ApiCall({path: t.call_path.value,
 						   target: t.call_target.value._string,
@@ -194,6 +220,7 @@ $.Model.extend('ApiCall',
 						   category: t.call_category.value,
 						   cardinality: t.call_cardinality.value,
 						   method: t.call_method.value,
+                           parameters: params,
                           });
 		
 		this.calls.push(ret);
@@ -230,11 +257,13 @@ $.Model.extend('ApiCall',
 	
 	buildCallArgs: function(data, callback) {
         
+        var params = ApiType.paramsArray(this.parameters);
+        
 		var call_args = [{
 			method: this.method, 
 			url: ApiType.interpolatedPath(this.path), 
 			contentType: this.contentType(), 
-			data: data || {}
+			data: data || params
 		}, callback];
 	
 		return call_args;

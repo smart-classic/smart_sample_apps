@@ -112,7 +112,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 	
     	$("#interpolation-fields INPUT").each(function() {
 			$i = $(this);
-			var field_name = $i.attr("field_name");    		
+			var field_name = $i.attr("field_name");
     		ApiType.interpolations[field_name] = $i.val();
     		$i.attr("DISABLED", "true");
     	});
