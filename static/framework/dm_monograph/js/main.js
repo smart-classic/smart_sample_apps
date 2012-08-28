@@ -150,10 +150,10 @@ var _round = function(val, dec){ return Math.round(val*Math.pow(10,dec))/Math.po
 //
 
 // pt's with allergies: J Diaz, K Lewis, K Kelly, R Robinson
-var ALLERGIES_get = function(){
+var get_allergies = function(){
   return $.Deferred(function(dfd){
-    SMART.ALLERGIES_get().then(function(r){
-      _(r.object.of_type.Allergy).each(function(a){
+    SMART.get_allergies().then(function(r){
+      _(r.objects.of_type.Allergy).each(function(a){
         var allergen = a.drugClassAllergen || a.foodAllergen;
         pt.allergies_arr.push([
           allergen.dcterms__title,
@@ -165,10 +165,10 @@ var ALLERGIES_get = function(){
   }).promise();
 };
 
-var MEDICATIONS_get = function(){
+var get_medications = function(){
   return $.Deferred(function(dfd){
-    SMART.MEDICATIONS_get().then(function(r){
-      _(r.object.of_type.Medication).each(function(m){
+    SMART.get_medications().then(function(r){
+      _(r.objects.of_type.Medication).each(function(m){
         // caution: fulfillments are optional
         pt.fulfillments_arr = m.fulfillment ? pt.fulfillments_arr.concat(m.fulfillment) : pt.fulfillments_arr
         pt.meds_arr.push([
@@ -190,41 +190,40 @@ var MEDICATIONS_get = function(){
   }).promise();
 };
 
-var DEMOGRAPHICS_get = function(){
+var get_demographics = function(){
   return $.Deferred(function(dfd){
-    SMART.DEMOGRAPHICS_get().then(function(r){
-      var name = r.object.of_type.v__Name[0];
-      var demos = r.object.of_type.Demographics[0];
-      pt.family_name = name.v__family_name;
-      pt.given_name  = name.v__given_name;
+    SMART.get_demographics().then(function(r){
+      var name = r.objects.of_type.vcard__Name[0];
+      var demos = r.objects.of_type.Demographics[0];
+      pt.family_name = name.vcard__family_name;
+      pt.given_name  = name.vcard__given_name;
       pt.gender = demos.foaf__gender;
-      pt.bday = demos.v__bday;
+      pt.bday = demos.vcard__bday;
       dfd.resolve();
     })
   }).promise();
 };
 
-var VITAL_SIGNS_get = function(){
+var get_vital_sign_sets = function(){
   return $.Deferred(function(dfd){
-    SMART.VITAL_SIGNS_get().then(function(r){
-
+    SMART.get_vital_sign_sets().then(function(r){
       (function bps(){
-        _(r.object.of_type.VitalSigns).chain()
-          .filter(function(v){ return v.bloodPressure; })
-          .each(function(v){
+        _(r.objects.of_type.VitalSignSet).each(function(v){
+          if (v.bloodPressure) {
+            d = new XDate(v.dcterms__date);
             pt.sbp_arr.push([
-              new XDate(v.dcterms__date).valueOf(),
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               Number(v.bloodPressure.systolic.value),
               v.bloodPressure.systolic.unit
             ])
 
             pt.dbp_arr.push([
-              new XDate(v.dcterms__date).valueOf(),
+              DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
               Number(v.bloodPressure.diastolic.value),
               v.bloodPressure.diastolic.unit
             ])
-          })
-          .value()
+          }
+        })
 
         _(pt.sbp_arr).sortBy(function(bp){ return bp[0]; })
         _(pt.dbp_arr).sortBy(function(bp){ return bp[0]; })
@@ -243,7 +242,7 @@ var VITAL_SIGNS_get = function(){
       })();
 
       (function weights(){
-        pt.weight_arr = _(r.object.of_type.VitalSigns).chain()
+        pt.weight_arr = _(r.objects.of_type.VitalSignSet).chain()
           .filter(function(v){ return v.weight; })
           .map(function(v){
             return [
@@ -251,14 +250,13 @@ var VITAL_SIGNS_get = function(){
               Number(v.weight.value),
               v.weight.unit
             ];
-          })
-          .value();
+          }).value()
 
         pt.weight = _(pt.weight_arr).last() || null;
       })();
 
       (function heights(){
-        pt.height_arr = _(r.object.of_type.VitalSigns).chain()
+        pt.height_arr = _(r.objects.of_type.VitalSignSet).chain()
           .filter(function(v){ return v.height; })
           .map(function(v){
             return [
@@ -278,10 +276,10 @@ var VITAL_SIGNS_get = function(){
   }).promise();
 };
 
-var LAB_RESULTS_get = function(){
+var get_lab_results = function(){
   return $.Deferred(function(dfd){
-    SMART.LAB_RESULTS_get().then(function(r){
-      var results = r.object.of_type.LabResult;
+    SMART.get_lab_results().then(function(r){
+      var results = r.objects.of_type.LabResult;
 
       (function ldl(){
         // LOINC Code, Long name, Short Name, class, rank # of 2000
@@ -297,8 +295,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -324,8 +322,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(2, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -353,8 +351,8 @@ var LAB_RESULTS_get = function(){
           .map(function(r){
             return [
               new XDate(r.dcterms__date).valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -378,8 +376,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -402,8 +400,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -431,8 +429,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -458,8 +456,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -484,8 +482,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -511,8 +509,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -543,8 +541,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -575,8 +573,8 @@ var LAB_RESULTS_get = function(){
             var d = new XDate(r.dcterms__date)
             return [
               DM_PUSH_DATES ? d.addYears(3, true).valueOf() : d.valueOf(),
-              r.quantitativeResult.valueAndUnit[0].value,
-              r.quantitativeResult.valueAndUnit[0].unit
+              r.quantitativeResult.valueAndUnit.value,
+              r.quantitativeResult.valueAndUnit.unit
             ]
           })
           .sortBy(function(r){ return r[0]; })
@@ -671,10 +669,10 @@ var LAB_RESULTS_get = function(){
   }).promise();
 };
 
-var PROBLEMS_get = function(){
+var get_problems = function(){
   return $.Deferred(function(dfd){
-    SMART.PROBLEMS_get().then(function(r){
-      _(r.object.of_type.Problem).each(function(p){
+    SMART.get_problems().then(function(r){
+      _(r.objects.of_type.Problem).each(function(p){
         pt.problems_arr.push([
           new XDate(p.startDate),
           p.problemName.dcterms__title,
@@ -691,15 +689,14 @@ var PROBLEMS_get = function(){
 // when they are all complete.
 SMART.ready(function(){
   $.when(
-     ALLERGIES_get()
-   , DEMOGRAPHICS_get()
-   , VITAL_SIGNS_get()
-   , LAB_RESULTS_get()
-   , PROBLEMS_get()
-   , MEDICATIONS_get()
+     get_allergies()
+   , get_demographics()
+   , get_vital_sign_sets()
+   , get_lab_results()
+   , get_problems()
+   , get_medications()
   )
   .then(function(){
-
     // main demo info
     $('.family_name').text(pt.family_name)
     $('.given_name').text(pt.given_name)
@@ -1379,11 +1376,8 @@ SMART.ready(function(){
     do_tables();
 
     // reminders in the pt summary (todo: refactor dry!!)
-
-    // look into the processed reminders array, see if there are reminders for
-    // bps
-    $('#bp_systolic_ps').html('<span class="bold larger">'+_round(pt.sbp[1], 0)+'</span>');
-    $('#bp_diastolic_ps').html('<span class="bold larger">'+_round(pt.dbp[1], 0)+'</span>');
+    $('#bp_systolic_ps').html(pt.sbp ? '<span class="bold larger">'+_round(pt.sbp[1], 0)+'</span>' : '');
+    $('#bp_diastolic_ps').html(pt.sbp ? '<span class="bold larger">'+_round(pt.dbp[1], 0)+'</span>': '');
 
     // ldl or a1c
     var last_test_html = '';

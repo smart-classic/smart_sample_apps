@@ -26,7 +26,7 @@
         var fetch_segment = function(offset){
           SMART.get_medications({limit:LIMIT,offset:offset}).then(function(r) {
           sparql
-          .query(statin_query(r.object.of_type.Medication))
+          .query(statin_query(r.objects.of_type.Medication))
           .done(function(j){
             var answer = j.results.bindings;
             if (answer.length > 0) {
@@ -36,8 +36,8 @@
               answer = "No."
             }
             SMART.$("#answer").text(answer);
-            if (r.object.of_type.Medication && r.object.of_type.Medication.length == LIMIT) {
-              fetch_segment(offset + r.object.of_type.Medication.length);
+            if (r.objects.of_type.Medication && r.objects.of_type.Medication.length == LIMIT) {
+              fetch_segment(offset + r.objects.of_type.Medication.length);
             }
           });	
         })
