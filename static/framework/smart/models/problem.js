@@ -8,7 +8,7 @@ extend('Smart.Models.Problem',
 /* @Static */
 {
 	get: function(success, error){
-	SMART.PROBLEMS_get().success(	
+	SMART.get_problems().success(
 				this.callback([this.saveRDF, success])
 			);  
 	},

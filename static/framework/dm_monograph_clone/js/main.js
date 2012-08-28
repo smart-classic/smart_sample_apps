@@ -86,7 +86,7 @@ var _round = function(val, dec){
 // pt's with allergies: J Diaz, K Lewis, K Kelly, R Robinson
 var ALLERGIES_get = function(){
   return $.Deferred(function(dfd){
-    SMART.ALLERGIES_get()
+    SMART.get_allergies()
       .success(function(r){
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
@@ -127,7 +127,7 @@ var ALLERGIES_get = function(){
 
 var MEDS_get = function(){
   return $.Deferred(function(dfd){
-    SMART.MEDS_get()
+    SMART.get_medications()
       .success(function(r){
         r.graph
          .prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
