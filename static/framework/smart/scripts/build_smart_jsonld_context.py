@@ -31,8 +31,10 @@ for c in rdf_ontology.SMART_Class.store.values():
         if p.multiple_cardinality:
             context[added]["@container"] = "@set"
 
-# add ResponseSummary to context
-context['ResponseSummary'] = {'@id': 'http://smartplatforms.org/terms/api#ResponseSummary'}
+# add ResponseSummary metadata terms to context
+context['ResponseSummary'] = {
+    '@id': 'http://smartplatforms.org/terms/api#ResponseSummary'
+}
 context['resultsReturned'] = {
     '@id':   'http://smartplatforms.org/terms/api#resultsReturned',
     '@type': 'xsd:integer'
@@ -45,5 +47,10 @@ context['processingTimeMs'] = {
     '@id':   'http://smartplatforms.org/terms/api#processingTimeMs',
     '@type': 'xsd:integer'
 }
-
+context['nextPageURL'] = {
+    '@id': 'http://smartplatforms.org/terms/api#nextPageURL'
+}
+context['resultOrder'] = {
+    '@id': 'http://smartplatforms.org/terms/api#resultOrder'
+}
 print "SMART.jsonld_context = " + simplejson.dumps(context, sort_keys=True, indent=4)
