@@ -18,11 +18,14 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		_this.calls = {};
 		_this.payload_box = $("#payload");
 		_this.response_box = $("#response");
+        _this.response_tabs = $("#response_tabs");
+        _this.response_tabs.tabs();
 		window.jash = new Jash(_this.response_box.get(0));
 		window.jash.main();
 
 		_this.payload_box.hide();
 		_this.response_box.hide();
+        _this.response_tabs.hide();
 		ApiType.interpolations.record_id = SMART.record.id;
 		ApiType.addInterpolationValue("record_id", SMART.record.id);
 		ApiType.find_all_types_and_calls();
@@ -44,6 +47,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		$("#type-heading").html(this.view('calls', {group: g}));
 		this.payload_box.hide();
 		this.response_box.hide();
+        this.response_tabs.hide();
 		$("#interpolation-fields").html("");
 		g.group_type.fetchParameters();
 
@@ -69,6 +73,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		}
 
 		this.response_box.hide();
+        this.response_tabs.hide()
 		
 		$("#interpolation-fields").html(this.view('interpolations', {type: this.selected_top_group.group_type, 
 																	 call: this.selected_call}));
@@ -122,26 +127,25 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
     },
     
     receivedResult: function(res) {
-        var data = res.body,
-            contentType = res.contentType;
-    
-        if (contentType === "application/rdf+xml") {
-            r = SMART.process_rdf(contentType, data);
+
+        if (res.contentType === "application/rdf+xml") {
+            r = SMART.process_rdf(res.contentType, res.body);
             
-            if ($('#serialization').val() === "ntriples") {
-                data = "";
-                r.where('?s ?p ?o')
-                    .each(function(){
-                        data += this.s.toString() + " " + this.p.toString() + " " + this.o.toString() + " .\n";
-                    });
-            }
+            res.ntriples = "";
+            r.where('?s ?p ?o')
+                .each(function(){
+                    res.ntriples += this.s.toString() + " " + this.p.toString() + " " + this.o.toString() + " .\n";
+                });
             
-            //console.log("got data" + contentType + data);
+            $("#tab_rdf pre").text(res.body);
+            $("#tab_ntriples pre").text(res.ntriples);
+            $("#tab_jsonld pre").text(JSON.stringify(res.objects, null, "  "));
+            
+            this.response_tabs.show()
+            
             window.response = r;
             window.jash.clear();
-            window.jash.output.value = data;
-            window.jash.output.value += "\n\n------------\n";
-            window.jash.output.value += window.jash.defaultText;
+            window.jash.output.value = window.jash.defaultText;
             window.jash.output.value += "\n";
             window.jash.output.value += "Triples in RDF graph returned: " + response.where('?s ?p ?o.').length+"\n\n";
             window.jash.output.value += "To explore the graph, try:\n";
@@ -159,7 +163,7 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
                 });
         } else {
             window.jash.clear();
-            window.jash.output.value = data;
+            window.jash.output.value = res.body;
             window.jash.output.value += "\n\n------------\n";
             window.jash.output.value += window.jash.defaultText;
             window.jash.output.value += "\n";

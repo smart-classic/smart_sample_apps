@@ -95,7 +95,14 @@ table#calls {
 	font-family: monospace;
 }
 
+#response_tabs {
+   font-size: .5em;
+}
+
 LI {
 	list-style-type: none;
 }
 
+.mandatory-parameter {
+    font-weight: bold;
+}
