@@ -151,7 +151,7 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
                             if (r.contentType === "application/rdf+xml") {
                                 var rdf;
                                 try {
-                                    rdf = _this.process_rdf(r.contentType, r.body);
+                                    rdf = _this.process_rdf(r.contentType, ret.body);
                                     ret.objects = _this.objectify(rdf);
                                     times.push(["objectified", new Date().getTime()]);
                                     ret.graph = rdf;
@@ -159,7 +159,7 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
 
                             } else if (r.contentType === "application/json") {
                                 try {
-                                    json = JSON.parse(r.body);
+                                    json = JSON.parse(ret.body);
                                     times.push(["json parsed", new Date().getTime()]);
                                     ret.json = json;
                                 } catch(err) {
