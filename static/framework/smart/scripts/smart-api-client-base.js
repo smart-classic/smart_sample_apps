@@ -146,7 +146,7 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
                          success: function(r) {
                             times.push(["SmartResponse received", new Date().getTime()]);
                             
-                            var ret = {status: r.status, body: r.body, contentType: r.contentType};
+                            var ret = {status: r.status, body: r.data, contentType: r.contentType};
 
                             if (r.contentType === "application/rdf+xml") {
                                 var rdf;
