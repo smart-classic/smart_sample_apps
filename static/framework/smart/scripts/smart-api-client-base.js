@@ -124,7 +124,9 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
     this.assign_ui_handlers = function() {
         this.api_call = function(options, callback_success, callback_error) {
             var dfd = $.Deferred(),
-            prm = dfd.promise();
+                prm = dfd.promise(),
+                times = [];
+            times.push(["initial call", new Date().getTime()]);;
             prm.success = prm.done;
             prm.error = prm.fail;
             if (callback_success) {
@@ -141,7 +143,38 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
                              'params' : options.data,
                              'contentType' : options.contentType || "application/x-www-form-urlencoded"
                          },
-                         success: function(r) { dfd.resolve({body: r.data, contentType: r.contentType}); },
+                         success: function(r) {
+                            times.push(["SmartResponse received", new Date().getTime()]);
+                            
+                            var ret = {status: r.status, body: r.body, contentType: r.contentType};
+
+                            if (r.contentType === "application/rdf+xml") {
+                                var rdf;
+                                try {
+                                    rdf = _this.process_rdf(r.contentType, r.body);
+                                    ret.objects = _this.objectify(rdf);
+                                    times.push(["objectified", new Date().getTime()]);
+                                    ret.graph = rdf;
+                                } catch(err) { dfd.reject({status: r.status, message: err}); }
+
+                            } else if (r.contentType === "application/json") {
+                                try {
+                                    json = JSON.parse(r.body);
+                                    times.push(["json parsed", new Date().getTime()]);
+                                    ret.json = json;
+                                } catch(err) {
+                                    dfd.reject({status: r.status, message: err});
+                                }
+                            } 
+                            
+                            if (SMART.debug) {
+                                for (var i = 0; i < times.length; i++) {
+                                    console.log(times[i][0] + ": " + (times[i][1] - times[0][1] + " ms elapsed."));
+                                }
+                            }
+                            
+                            dfd.resolve(ret);
+                         },
                          error: function(e,m) { dfd.reject({status: e, message: m}); }
             });
             return prm;
@@ -462,9 +495,6 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
       delete o.queryParams[k];
     });
 
-    var times = [];
-    times.push(["initial call", new Date().getTime()]);
-
     this.api_call({
         method: o.method,
         url: o.path,
@@ -472,38 +502,10 @@ SMART_CONNECT_CLIENT.prototype.api_call_wrapper = function(o) {
         contentType: o.parameters.contentType
         }, 
         function(r) {
-        times.push(["SmartResponse received", new Date().getTime()]);
-        var ret = {status: r.status, body: r.body, contentType: r.contentType};
-
-        if (r.contentType === "application/rdf+xml") {
-            var rdf;
-            try {
-                rdf = _this.process_rdf(r.contentType, r.body);
-                ret.objects = _this.objectify(rdf);
-                times.push(["objectified", new Date().getTime()]);
-                ret.graph = rdf;
-            } catch(err) { dfd.reject({status: r.status, message: err}); }
-
-        } else if (r.contentType === "application/json") {
-            try {
-                json = JSON.parse(r.body);
-                times.push(["json parsed", new Date().getTime()]);
-                ret.json = json;
-            } catch(err) {
-                dfd.reject({status: r.status, message: err});
-            }
-        } 
-
-        dfd.resolve(ret);
-
-        if (SMART.debug) {
-            for (var i = 0; i < times.length; i++) {
-                console.log(times[i][0] + ": " + (times[i][1] - times[0][1] + " ms elapsed."));
-            }
-        }
-    }, function(r) {
-        dfd.reject({status: r.status, message: r.message});
-    });
+            dfd.resolve(r);
+        }, function(r) {
+            dfd.reject({status: r.status, message: r.message});
+        });
     return prm;
 };
 
