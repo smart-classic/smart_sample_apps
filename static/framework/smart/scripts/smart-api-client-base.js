@@ -341,12 +341,46 @@ SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
     }
 }
 
+SMART_CONNECT_CLIENT.prototype.break_json_cycles = function(json){
+    function prune(path) {
+           var node = path[path.length - 1];
+
+           if ($.isArray(node)){
+             return $.map(node, function(n){
+           	  var offpath = path.slice();
+           	  offpath.push(n);
+           	  return prune(offpath);
+             });
+           }
+
+           if (!$.isPlainObject(node)){
+             return node;
+           }
+
+           if (-1 !== $.inArray(node, path.slice(0,-1))){
+             return {"@id": node["@id"]};
+           }
+            
+           var ret = {};
+           $.each(node, function(k, v){
+           	var offpath = path.slice();
+           	offpath.push(v);
+           	var newv = prune(offpath);
+           	ret[k] = newv;
+           });
+           return ret;
+    };
+
+    return prune([json]);
+};
+ 
 SMART_CONNECT_CLIENT.prototype.objectify = function(rdf) {
 
     var ret = { };
     var graph = ret['@graph'] = rdf.databank.dump();    
     var context = ret['@context'] = this.jsonld_context;
     var of_type = ret['of_type'] = {};
+
 
     var get_jsonld_property = function(p) {
 

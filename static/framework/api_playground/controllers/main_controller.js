@@ -139,7 +139,9 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
             
             $("#tab_rdf pre").text(res.body);
             $("#tab_ntriples pre").text(res.ntriples);
-            $("#tab_jsonld pre").text(JSON.stringify(res.objects, null, "  "));
+
+            var o = SMART.break_json_cycles(res.objects.of_type);
+            $("#tab_jsonld pre").text(JSON.stringify(o, null, "  "));
             
             // Arbitrary limit on the code pretification (it's not very efficient and
             // hoses the browser up for large chunks of code)
