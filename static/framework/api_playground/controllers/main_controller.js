@@ -141,6 +141,16 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
             $("#tab_ntriples pre").text(res.ntriples);
             $("#tab_jsonld pre").text(JSON.stringify(res.objects, null, "  "));
             
+            // Arbitrary limit on the code pretification (it's not very efficient and
+            // hoses the browser up for large chunks of code)
+            if (res.body.length <= 4096) {
+                // Reset the pretty print processed flag
+                $('pre.prettyprint').removeClass('prettyprinted');
+                
+                // Now prettify
+                prettyPrint();
+            }
+            
             this.response_tabs.show()
             
             window.response = r;
