@@ -15,7 +15,7 @@ import datetime
 import smart_client
 from smart_client import oauth
 from smart_client.smart import SmartClient
-from smart_client.common.util import serialize_rdf
+from smart_client.common.rdf_tools.util import serialize_rdf
 
 # Basic configuration:  the consumer key and secret we'll use
 # to OAuth-sign requests.
@@ -70,7 +70,7 @@ class RxReminder:
         client = get_smart_client(smart_oauth_header)
 
         # Represent the list as an RDF graph
-        meds = client.records_X_medications_GET()
+        meds = client.get_medications()
 
         # Find a list of all fulfillments for each med.
         q = """
