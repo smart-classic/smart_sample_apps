@@ -295,6 +295,9 @@ SMART.jsonld_context = {
     "ncpdpId": {
         "@id": "http://smartplatforms.org/terms#ncpdpId"
     },
+    "nextPageURL": {
+        "@id": "http://smartplatforms.org/terms/api#nextPageURL"
+    },
     "nonCriticalRange": {
         "@id": "http://smartplatforms.org/terms#nonCriticalRange"
     },
@@ -373,6 +376,12 @@ SMART.jsonld_context = {
     "race": {
         "@id": "http://smartplatforms.org/terms#race"
     },
+    "rdf__first": {
+        "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first"
+    },
+    "rdf__rest": {
+        "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"
+    },
     "rdf__value": {
         "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value"
     },
@@ -387,6 +396,9 @@ SMART.jsonld_context = {
     },
     "respiratoryRate": {
         "@id": "http://smartplatforms.org/terms#respiratoryRate"
+    },
+    "resultOrder": {
+        "@id": "http://smartplatforms.org/terms/api#resultOrder"
     },
     "resultsReturned": {
         "@id": "http://smartplatforms.org/terms/api#resultsReturned",
@@ -539,7 +551,6 @@ SMART.jsonld_context = {
         "@id": "http://www.w3.org/2006/vcard/ns#additional-name"
     },
     "vcard__adr": {
-        "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#adr"
     },
     "vcard__bday": {

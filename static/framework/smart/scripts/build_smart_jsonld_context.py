@@ -53,4 +53,13 @@ context['nextPageURL'] = {
 context['resultOrder'] = {
     '@id': 'http://smartplatforms.org/terms/api#resultOrder'
 }
+context['rdf__first'] = {
+    '@id': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first'
+}
+context['rdf__rest'] = {
+    '@id': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest'
+}
+context['resultOrder'] = {
+    '@id': 'http://smartplatforms.org/terms/api#resultOrder'
+}
 print "SMART.jsonld_context = " + simplejson.dumps(context, sort_keys=True, indent=4)
