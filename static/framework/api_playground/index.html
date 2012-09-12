@@ -7,15 +7,26 @@
   </head>
 
   <body>
-	<div id='type-nav'>
-	</div>
+	<div id='type-nav'></div>
 	
 	<div id='wrap'>
-	<div id='type-heading'></div>
-	<div id='interpolation-fields'></div>
-	
-	<textarea id='payload'></textarea>
-	<div id='response'></div>
+        <div id='type-heading'></div>
+        <div id='interpolation-fields'></div>
+        
+        <textarea id='payload'></textarea>
+        
+        <div id="response_tabs">
+            <ul>
+                <li><a href="#tab_rdf">RDF-XML</a></li>
+                <li><a href="#tab_ntriples">N-Triples</a></li>
+                <li><a href="#tab_jsonld">JSON-LD</a></li>
+                <li><a href="#tab_interactive">Interactive</a></li>
+            </ul>
+            <div id="tab_rdf"><pre class="prettyprint"></pre></div>
+            <div id="tab_ntriples"><pre class="prettyprint"></pre></div>
+            <div id="tab_jsonld"><pre class="prettyprint"></pre></div>
+            <div id="tab_interactive"><div id='response'></div></div>
+        </div>
 	</div>
   </body>
 </html>

@@ -95,7 +95,24 @@ table#calls {
 	font-family: monospace;
 }
 
+#response_tabs {
+   font-size: .8em;
+}
+
+#response_tabs  ul{
+   font-size: .8em;
+}
+
 LI {
 	list-style-type: none;
 }
 
+.mandatory-parameter {
+    font-weight: bold;
+}
+
+pre.prettyprint {
+    height: 300px;
+    width: 600px;
+    overflow: scroll;
+}
