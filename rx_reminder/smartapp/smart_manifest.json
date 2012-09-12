@@ -1,0 +1,13 @@
+{
+  "name" : "Rx Reminder",
+  "description" : "Sample SMART REST app that determines whether a medication has run out.",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "rx-reminder@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "mode" : "ui",
+  "scope": "record",
+
+  "index" : "http://rxreminder.smartplatforms.org/smartapp/index.html",
+  "icon" : "http://rxreminder.smartplatforms.org/smartapp/icon.png"
+}
