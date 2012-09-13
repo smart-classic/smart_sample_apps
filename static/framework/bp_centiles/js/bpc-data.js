@@ -174,7 +174,11 @@ if (!BPC) {
                         .where('?rs api:totalResultCount ?total')
                         .get(0);
 
-                    vitals.total = Number(response.total.value.toString());
+                    try {
+                        vitals.total = Number(response.total.value.toString());
+                    } catch(err) {
+                        vitals.total = 0
+                    }
                 }
                     
                 dfd.resolve(vitals);
