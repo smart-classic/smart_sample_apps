@@ -198,6 +198,7 @@ if (!BPC) {
                     var patient = BPC.processData(demographics, vitals);
                     BPC.initPatient (patient);
                     BPC.patient = patient;
+                    BPC.redrawViewShort (BPC.patient,BPC.settings.zones);
                     BPC.setDateRange(0,100);
                     BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
                     BPC.redrawViewTable (BPC.patient);
