@@ -30,7 +30,7 @@ if (!BPC) {
                  .then( function (demographics, vitals) {
                             var total = vitals.total;
                             BPC.initApp ( BPC.processData(demographics, vitals) );
-                            if (BPC.settings.progressive_loading) {
+                            if (BPC.settings.loading_mode === "progressive") {
                                 BPC.loadAdditionalVitals (demographics, vitals, BPC.settings.vitals_limit, total);
                             } else {
                                 BPC.vitals = vitals;

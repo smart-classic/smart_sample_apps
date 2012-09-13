@@ -23,11 +23,13 @@ if (!BPC) {
 
     BPC.settings = {};
     
-    // BPC Vitals Data Load Limit
-    BPC.settings.vitals_limit = 5;
+    BPC.settings.app_title = "Blood Pressure Centiles";
     
-    // Use progressive loading (else break by year)
-    BPC.settings.progressive_loading = false;
+    // BPC Data Load settings
+    BPC.settings.loading_mode = "full";   // possible values: full = complete data load, 
+                                          //                  progressive = paginate automatically,
+                                          //                  manual = user loads year by year
+    BPC.settings.vitals_limit = 50; // step used by progressive loading
     BPC.settings.default_view = 0; // 0 = long term view, 1 = short term view, 2 = table view, 3 = calculator
     
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)

@@ -102,7 +102,7 @@ input[type='number'] {border: 1px solid #555;}
     font-size:12px;
 }
 
-#dialog-message, #dialog-demo {
+#dialog-message, #dialog-demo, #loaded_through, #div_y {
     display: none;
 }
 

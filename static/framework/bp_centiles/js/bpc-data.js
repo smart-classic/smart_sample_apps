@@ -74,18 +74,20 @@ if (!BPC) {
                       bpData: []};
         }
         
-        if (BPC.settings.progressive_loading) {
+        if (BPC.settings.loading_mode === "progressive") {
+            if (offset === 0) $('#title').text("loading 0%");
             filters = {limit:BPC.settings.vitals_limit, offset:offset};
-            $('#loaded_through').hide();
-            $('#div_y').hide();
-        } else {
+        } else if (BPC.settings.loading_mode === "manual") {
+            $('#loaded_through').show();
+            $('#div_y').show();
             d = new Date();
             y = d.getFullYear();
             y -= offset;
-            $('#title').text("Blood Pressure Centiles");
             $('#loaded_through').text("Data stream starting from " + y);
             BPC.offset = offset;
             filters = {date_from:(y+"-01-01"), date_to:(y+"-12-31")};
+        } else {   // full mode
+            filters = {};
         }
         
         SMART.get_vital_sign_sets(filters)
@@ -203,7 +205,7 @@ if (!BPC) {
                     if (next_offset < total) {
                         BPC.loadAdditionalVitals (demographics, vitals, next_offset, total);
                     } else {
-                        $('#title').text("Blood Pressure Centiles");
+                        $('#title').text(BPC.settings.app_title);
                     }
                 },
                 function (message) {
@@ -212,6 +214,7 @@ if (!BPC) {
     };
     
     BPC.loadAnotherY = function () {
+        $('#title').text("loading data...");
         $.when(BPC.get_vitals(BPC.offset+1, BPC.vitals))
          .then( function (vitals) {
                     var patient = BPC.processData(BPC.demographics, vitals);
@@ -222,6 +225,7 @@ if (!BPC) {
                     BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
                     BPC.redrawViewTable (BPC.patient);
                     BPC.vitals = vitals;
+                    $('#title').text(BPC.settings.app_title);
                 },
                 function (message) {
                     BPC.displayError (message.data);
