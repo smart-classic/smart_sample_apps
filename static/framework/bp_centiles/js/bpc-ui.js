@@ -165,17 +165,15 @@ if (!BPC) {
                     BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
                 }
                 else if (ui.tab.hash === "#tab_short") {
-                    // TO DO: consider redrawing the short term view
+                    BPC.redrawViewShort (BPC.patient,BPC.settings.zones);
                 }
             }
         });
         
-        // Select the Long Term View tab
-        if (BPC.settings.default_to_long_term_view) {
-            $('#tabs').tabs({
-                selected: 1
-            });
-        }
+        // Select the default tab
+        $('#tabs').tabs({
+            selected: BPC.settings.default_view
+        });
         
         // Patch to enable filter band persistance by JCM
         $('#tabs').bind('tabsshow', function(ev,ui){

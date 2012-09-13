@@ -28,7 +28,7 @@ if (!BPC) {
     
     // Use progressive loading (else break by year)
     BPC.settings.progressive_loading = false;
-    BPC.settings.default_to_long_term_view = true;
+    BPC.settings.default_view = 0; // 0 = long term view, 1 = short term view, 2 = table view, 3 = calculator
     
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
     BPC.settings.zones = [

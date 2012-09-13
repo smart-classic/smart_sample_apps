@@ -146,6 +146,20 @@ if (!BPC) {
         // Render the table view
         BPC.printTableView ("holder_table", pLong);
     };
+    
+    /**
+    * Readraws the short term view
+    *
+    * @param {Object} patient The patient data object
+    * @param {Object} zones The zones object
+    */
+    BPC.redrawViewShort = function (patient, zones) {
+        // Clear the short term view canvas
+        BPC.clearGraphsShort();
+        
+        // Draw the short term view graph
+        BPC.drawGraph (true, patient.recentEncounters(3), zones);
+    };
 
     /**
     * Readraws the long term view after applying the appropriate tag filters
