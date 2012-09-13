@@ -362,6 +362,7 @@ SMART.jsonld_context = {
         "@id": "http://smartplatforms.org/terms#provenance"
     },
     "provider": {
+        "@container": "@set",
         "@id": "http://smartplatforms.org/terms#provider"
     },
     "quantitativeResult": {
@@ -551,6 +552,7 @@ SMART.jsonld_context = {
         "@id": "http://www.w3.org/2006/vcard/ns#additional-name"
     },
     "vcard__adr": {
+        "@container": "@set",
         "@id": "http://www.w3.org/2006/vcard/ns#adr"
     },
     "vcard__bday": {
