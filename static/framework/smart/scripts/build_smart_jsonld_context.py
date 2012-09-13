@@ -17,8 +17,9 @@ def add_term(uri):
     jname = jname.replace(":", "__")
     jname = jname.replace("-","_")
     assert jname not in seen or seen[jname]==uri, "predicate appears in >1 vocab: %s, %s"%(uri, seen[jname])
-    seen[jname] = uri
-    context[jname] =  {"@id": str(uri)}
+    if jname not in seen:
+        seen[jname] = uri
+        context[jname] =  {"@id": str(uri)}
     return jname
 
 for c in rdf_ontology.SMART_Class.store.values():
