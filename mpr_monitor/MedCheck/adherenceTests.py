@@ -4,8 +4,7 @@ import datetime
 import readTable
 import math
 from xml.dom.minidom import parseString
-#from django.conf
-import settings
+from django.conf import settings
 
 # Global variables
 ISO_8601_DATETIME = '%Y-%m-%d'
