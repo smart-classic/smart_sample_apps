@@ -1,0 +1,37 @@
+#errors {
+  font-size: 16px;
+  font-family: Calibri, "Helvetica Neue", Helvetica, Verdana, sans-serif;
+  color: #555;
+}
+
+body {
+  background-color: white;
+  font-family: Verdana, "Lucida Grande", "Helvetica Neue", Helvetica, Calibri, sans-serif;
+  font-size: 12px !important;
+  line-height: 1.5em;
+  margin: 0px;
+}
+
+.container_12 {
+  /* usually width: 92% and both margins at 4% each */
+  width: 99%;
+  margin-left: 1% !important;
+  margin-right: 0 !important;
+}
+
+.section_header {
+  background-color: rgb(207, 201, 254);
+  margin-bottom: 6px;
+  margin-top: 12px;
+  font-weight: bold;
+}
+.bold { font-weight: bold; }
+.normal { font-weight: normal; }
+.smaller { font-size: smaller;}
+
+#top_line { padding-left: 2em; font-weight: bold; text-transform: uppercase; }
+
+.test_name { font-weight: bold; }
+.test_latest_value { font-weight: bold; }
+.gray { background-color: #ebebeb; }
+.red { color: red; }

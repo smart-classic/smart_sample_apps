@@ -22,7 +22,7 @@
         <link rel="stylesheet" href="css/bpc-screen.css" type="text/css" media="screen" />
         
         <!-- jQuert UI custom theme-->
-        <link rel="stylesheet" href="css/themes/custom/jquery.ui.all.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="css/themes/custom/jquery-ui.css" type="text/css" media="screen" />
         
         <!-- SMART Connector -->
         <script src="../smart/scripts/smart-api-client.js" type="text/javascript"></script>
@@ -31,7 +31,7 @@
         <script src="js/lib/jquery.js" type="text/javascript"></script>
         <script src="js/lib/jquery-jtemplates.js" type="text/javascript"></script>
         <script src="js/lib/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="js/lib/jquery-ui-1.8.13.custom.min.js" type="text/javascript"></script>
+        <script src="js/lib/jquery-ui.js" type="text/javascript"></script>
         <script src="js/lib/raphael.js" type="text/javascript"></script>
         <script src="js/lib/xdate.js" type="text/javascript"></script>
         
@@ -45,8 +45,8 @@
         <script src="js/bpc-config.js" type="text/javascript"></script>
         <script src="js/bpc-data.js" type="text/javascript"></script>
         <script src="js/bpc-filters.js" type="text/javascript"></script>
-        <script src="js/bpc-ui.js" type="text/javascript"></script>
         <script src="js/bpc-graph.js" type="text/javascript"></script>
+        <script src="js/bpc-ui.js" type="text/javascript"></script>
     </head>
     
     <body>
@@ -126,6 +126,13 @@
                                 pressure data after age 19 for this patient.
                             </p>
                         </div>
+                        <div id="dialog-demo" title="Information">
+                            <p>
+                                <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+                                <span id="alert-message">The BPC application was launched outside a SMART container and
+                                will run in DEMO mode.</span>
+                            </p>
+                        </div>
                     </div>
                     <div class="clearall">&nbsp;</div>
                 </div>
@@ -136,23 +143,23 @@
                             <div id="filter_encounter" class="toggle-set">
                                 <input type="checkbox" id="chkFilterInpatient" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterInpatient"> Inpatient </label>
-                                <input type="checkbox" id="chkFilterAmbulatory" onClick="BPC.updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterAmbulatory" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterAmbulatory"> Ambulatory </label>
                             </div>
                             <div id="filter_site" class="toggle-set">
-                                <input type="checkbox" id="chkFilterArm" onClick="BPC.updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterArm" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterArm"> Arm </label>
                                 <input type="checkbox" id="chkFilterLeg"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterLeg"> Leg </label>
                             </div>
                             <div id="filter_position" class="toggle-set">
-                                <input type="checkbox" id="chkFilterSitting" onClick="BPC.updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterSitting" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterSitting"> Sitting </label>
                                 <input type="checkbox" id="chkFilterStanding"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterStanding"> Standing </label>
                             </div>
                             <div id="filter_method" class="toggle-set">
-                                <input type="checkbox" id="chkFilterAuscultation" onClick="BPC.updateFilters()" checked/>
+                                <input type="checkbox" id="chkFilterAuscultation" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterAuscultation"> Auscultation </label>
                                 <input type="checkbox" id="chkFilterMachine"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterMachine"> Machine </label>
@@ -350,6 +357,8 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
             </div> <!-- tabs -->
 
             <div id="copy">v0.8</div>
+            <div id="loaded_through"></div>
+            <div id="div_y"><button id="btn_year" onclick="BPC.loadAnotherY();">load another year</button></div>
         </div>
         
         <!-- jTemplates template for the table view -->
@@ -387,7 +396,7 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
                     <td>{BPC.getYears($T.age)}y {BPC.getMonths($T.age)}m</td>
                     <td>{#if $T.height}{$T.height} cm{#else}-{#/if}</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
-                    <td>{#if $T.label}{$T.label}{#elseif $T.sPercentile && $T.dPercentile}{$T.sPercentile}%/{$T.dPercentile}%{#else}-{#/if}</td>
+                    <td>{#if $T.plabel}{$T.plabel}{#else}-{#/if}</td>
                     <td>{#if $T.site}{$T.site}{#else}-{#/if}</td>
                     <td>{#if $T.position}{$T.position}{#else}-{#/if}</td>
                     <td>{#if $T.method}{$T.method}{#else}-{#/if}</td>

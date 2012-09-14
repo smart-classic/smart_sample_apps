@@ -27,11 +27,14 @@ $def with (version)
 
 <h2>API Verifier (SMART v${version})</h2>
 
+<div id="spinner_main"><p><img src='/static/images/ajax-loader.gif' /></p></div>
+
 <div id="tabs">
 
     <ul>
         <li><a href="#tab_all">All</a></li>
-        <li><a href="#tab_custom">Custom</a></li>
+        <li><a href="#tab_custom">Custom Data</a></li>
+        <li><a href="#tab_manifest">Manifest</a></li>
         <li><a href="#tab_queries">Queries</a></li>
         <li><a href="#tab_help">Help</a></li>
     </ul>
@@ -74,6 +77,61 @@ $def with (version)
             <p><input id="validate" type="button" value="Validate" /></p>
             <div id="spinner"><p><img src='/static/images/ajax-loader.gif' /></p></div>
             <div><p><textarea id="custom_messages" class="console" cols="80" rows="8" readonly="readonly"></textarea></p></div>
+        </div>
+    </div>
+    
+    <div id="tab_manifest">
+        <div>
+            <p>Manifest:</p>
+            <p><textarea id="manifest_input" cols="80" rows="16">{
+  "name" : "My App",
+  "description" : "A test application for SMART",
+  "author" : "SMART Team",
+  "id" : "app123@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "mode" : "ui",
+  "scope": "record",
+
+  "index" : "http://example.com/smartapp/index.html",
+  "icon" :  "http://example.com/smartapp/icon.png",
+  
+  "smart_version": "0.4",
+  
+  "requires": {
+        "http://smartplatforms.org/terms#Demographics": {
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ]
+        }, 
+        "http://smartplatforms.org/terms#LabResult": {
+            "codes": [
+                "http://purl.bioontology.org/ontology/LNC/30522-7", 
+                "http://purl.bioontology.org/ontology/LNC/2093-3", 
+                "http://purl.bioontology.org/ontology/LNC/2085-9"
+            ], 
+            "methods": [
+                "GET"
+            ]
+        }
+   }, 
+  
+   "supportedBrowserEnvironments": [
+        "desktop", 
+        "tablet",
+        "mobile"
+   ],
+  
+   "optimalBrowserEnvironments": [
+        "desktop"
+   ]
+}</textarea></p>
+            <p><input id="validate_manifest" type="button" value="Validate" /></p>
+            <div id="spinner_manifest"><p><img src='/static/images/ajax-loader.gif' /></p></div>
+            <div><p><textarea id="custom_messages_manifest" class="console" cols="80" rows="8" readonly="readonly"></textarea></p></div>
         </div>
     </div>
     
@@ -139,7 +197,7 @@ $def with (version)
             </table>
             </p>
 
-            <p>The "Custom" tab provides means for manually entering data fragments and
+            <p>The "Custom Data" tab provides means for manually entering data fragments and
             testing them without he API Verifier for conformity to a specific data
             model.</p>
 
@@ -171,8 +229,10 @@ $def with (version)
     
     // Initialize the validate button (custom validator)
     \$('#validate').button();
+    \$('#validate_manifest').button();
     \$('#validate').button('disable');
     \$('#validate').click(VERIFY.validateCustomData);
+    \$('#validate_manifest').click(VERIFY.validateManifest);
     
     // Initialize the queries model selector
     \$('#model2').change(VERIFY.updateQueries);
@@ -182,12 +242,15 @@ $def with (version)
     
         // Load the API calls list and then initialize the app
         \$.when(VERIFY.loadCalls("${version}"))
-         .then( VERIFY.initializeApp,
+          .then(VERIFY.initializeApp,
                 function () {
                     // Bring up an error message dialog upon failing to load the API calls list
                     alert("Could not load the needed data");
                 }
               );
+    }).fail(function () {
+        \$.when(VERIFY.loadCalls("${version}", "standalone"))
+          .then(VERIFY.fallback);
     });
 }());
 </script>

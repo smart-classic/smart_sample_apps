@@ -1,7 +1,10 @@
 steal.plugins('smart')
     .css('stylesheets/api_playground')
-    .css('stylesheets/jquery_ui')
-    .resources("jash") 
+    .css('stylesheets/themes/custom-theme/jquery-ui-1.8.18.custom')
+    .css('stylesheets/prettify')
+    .resources("jash")
+    .resources("jquery-ui-1.8.14.custom.min")
+    .resources("prettify")
     .controllers("main") 
     .models("api_type")
     .views();

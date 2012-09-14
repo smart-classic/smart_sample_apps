@@ -28,7 +28,7 @@ extend('Smart.Models.Med',
 
 	
 	get: function(success, error){
-		SMART.MEDS_get_all().success(	
+		SMART.get_medications().success(
 					this.callback([this.saveRDF, success])
 				);  
 	},

@@ -37,9 +37,9 @@ if (!BPC) {
     *
     * @param {Object} newPatient The new patient object
     */
-    BPC.initApp = function (patient) {
+    BPC.initApp = function (patient, demo_mode) {
         
-        var i;
+        var i, age;
 
         if (patient) {
             // Update the global patient handle
@@ -48,16 +48,22 @@ if (!BPC) {
             // Initialize the patient object
             BPC.initPatient (patient);
             
-            // Draw the views
-            $("#tabs").show();
-            BPC.drawViews (patient,BPC.zones);
+            // Clear the error message
+            $("#info").text("").hide();
             
             // Initialize the UI
             BPC.initUI ();
             
+            // Initialize the filter buttons
+            BPC.initFilterButtons ();
+            
+            // Draw the views
+            $("#tabs").show();
+            BPC.drawViews (patient,BPC.settings.zones);
+            
             // Find the last pre-adult data record available
             for (i = patient.data.length - 1; i >= 0; i--) {
-                if (patient.data[i].age < BPC.ADULT_AGE) {
+                if (patient.data[i].age < BPC.settings.adult_age) {
                     break;
                 }
             }
@@ -70,6 +76,40 @@ if (!BPC) {
                            height: patient.data[i].height, 
                            systolic: patient.data[i].systolic, 
                            diastolic: patient.data[i].diastolic});
+            }
+            
+            // Display the demo dialog, if needed
+            if (demo_mode) {
+                $( "#dialog-demo" ).dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    resizable: false,
+                    modal: true,
+                    buttons: {
+                        Ok: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
+            }
+            
+            // Caculate the current age of the patient
+            age = years_apart(new XDate().toISOString(), patient.birthdate);
+            
+            // Display warning dialog if the patient has reached adult age
+            if (age >= BPC.settings.adult_age) {
+                $("#alert-message").text(patient.name + " is " + BPC.getYears(age) + " years old!");
+                $( "#dialog-message" ).dialog({
+                    closeOnEscape: false,
+                    draggable: false,
+                    resizable: false,
+                    modal: true,
+                    buttons: {
+                        Ok: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
             }
         }
     }
@@ -105,6 +145,20 @@ if (!BPC) {
         
         // Render the table view
         BPC.printTableView ("holder_table", pLong);
+    };
+    
+    /**
+    * Readraws the short term view
+    *
+    * @param {Object} patient The patient data object
+    * @param {Object} zones The zones object
+    */
+    BPC.redrawViewShort = function (patient, zones) {
+        // Clear the short term view canvas
+        BPC.clearGraphsShort();
+        
+        // Draw the short term view graph
+        BPC.drawGraph (true, patient.recentEncounters(3), zones);
     };
 
     /**
@@ -199,7 +253,7 @@ if (!BPC) {
             i,
             ii,
             patientType = patient.getDataType(),
-            transitionX = getTransitionX(patient, s);
+            transitionX;
             
         //console.log ("Type: " + patient.getDataType() + " " + getTransitionX(patient, s));
 
@@ -238,6 +292,9 @@ if (!BPC) {
         }
         
         s.Y = (s.height - s.bottomgutter - s.topgutter) / s.max;  // The Y distance per percentile
+        
+        // Calculate the age transition line coordinate
+        transitionX = getTransitionX(patient, s);
         
         // Update the local canvas handle
         if (shortTerm) {
@@ -341,7 +398,7 @@ if (!BPC) {
                     if (!otherInfo) otherInfo = "none";
                     
                     // Display the label box
-                    label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"") + ((data.age >= BPC.ADULT_AGE) ? " - ADULT" : "")});
+                    label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"") + ((data.age >= BPC.settings.adult_age) ? " - ADULT" : "")});
                     if (data.height) label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, " + data.height + " cm, " + gender});
                     else label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, ? cm, " + gender});
                     if (data.label) {
@@ -487,21 +544,26 @@ if (!BPC) {
             helpBlanket.click(function () {
             
                 // The state of the help panel
-                var displayed = false;
+                var displayed = false,
+                    animating = false;
             
                 return function () {
                 
                     // get effect type 
                     var selectedEffect = $( "#effectType" ).val();
                     
-                    if (!displayed) {
-                        $( "#help-content" ).stop().show( selectedEffect, {}, 1000 );
-                        helpL.attr({text:"Help <<"});
-                        displayed = true;
-                    } else {
-                        helpL.attr({text:"Help >>"});
-                        $( "#help-content" ).stop().hide( selectedEffect, {}, 1000 );
-                        displayed = false;
+                    if (!animating) {
+                        if (!displayed) {
+                            animating=true;
+                            $( "#help-content" ).stop().show( selectedEffect, {}, 1000, function () {animating=false;} );
+                            helpL.attr({text:"Help <<"});
+                            displayed = true;
+                        } else {
+                            animating=true;
+                            helpL.attr({text:"Help >>"});
+                            $( "#help-content" ).stop().hide( selectedEffect, {}, 1000, function () {animating=false;} );
+                            displayed = false;
+                        }
                     }
                 };
             } ());
@@ -813,7 +875,7 @@ if (!BPC) {
             //console.log ("time before:" + d.getTime());
             //console.log (d.getFullYear());
             
-            d.setYear ( d.getFullYear() + BPC.ADULT_AGE );
+            d.setYear ( d.getFullYear() + BPC.settings.adult_age );
             
             //console.log ("time after:" + d.getTime());
 

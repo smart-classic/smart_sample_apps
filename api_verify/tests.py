@@ -19,8 +19,11 @@ import dateutil.parser
 # Enables automated sparql query generation from the ontology
 import query_builder
 
+# Import the manifest validator function
+from smart_client.common.utils.manifest_tests import app_manifest_structure_validator, container_manifest_structure_validator
+
 # RDF parsing wrapper from the SMART python client
-from smart_client.common.util import parse_rdf
+from smart_client.common.rdf_tools.util import parse_rdf
 
 # Global variables for state synchronization accross the test suites
 lock = threading.Lock()
@@ -81,7 +84,12 @@ def testRDF (graph, model):
         # Negative queries should not return any results
         if type == "negative":
             # Run the query and report any failures
-            results = graph.query(q)
+            try:
+                results = graph.query(q)
+            except:
+                print "problem with QUERY!"
+                print q
+                
             
             # Stingify the results (limit to first 3)
             # This is needed to work around a bug in rdflib where the non-matched results
@@ -238,6 +246,10 @@ class TestAllergies(TestRDF):
 class TestDemographics(TestRDF, TestDataModelStructure):
     '''Tests for the Demographics data model'''
     pass
+    
+class TestClinicalNotes(TestRDF, TestDataModelStructure):
+    '''Tests for the Clinical Notes data model'''
+    pass
 
 class TestEncounters(TestRDF, TestDataModelStructure):
     '''Tests for the Encounters data model'''
@@ -249,6 +261,10 @@ class TestFulfillments(TestRDF, TestDataModelStructure):
     
 class TestImmunizations(TestRDF, TestDataModelStructure):
     '''Tests for the Immunizations data model'''
+    pass
+    
+class TestLabPanels(TestRDF, TestDataModelStructure):
+    '''Tests for the Lab Panels data model'''
     pass
     
 class TestLabResults(TestRDF, TestDataModelStructure):
@@ -263,7 +279,11 @@ class TestProblems(TestRDF, TestDataModelStructure):
     '''Tests for the Problems data model'''
     pass
     
-class TestVitalSigns(TestRDF, TestDataModelStructure):
+class TestProcedures(TestRDF, TestDataModelStructure):
+    '''Tests for the Procedures data model'''
+    pass
+    
+class TestVitalSignSets(TestRDF, TestDataModelStructure):
     '''Tests for the Vital Signs data model'''
     
     def testHeight(self):
@@ -371,52 +391,47 @@ class TestOntology(TestRDF):
     '''Tests for the ontology'''
     pass
     
-class TestCapabilities(TestJSON):
-    '''Tests for the capabilities API'''
+class TestContainerManifest(TestJSON):
+    '''Tests for the container manifest API'''
     
     def testStructure (self):
-        '''A simple structure test for the capabilities JSON output'''
+        '''A simple structure test for the container manifesst JSON output'''
         
-        if self.json:
+        if self.json: 
+            messages = container_manifest_structure_validator(self.json)
+            if len(messages) > 0 :
+                self.fail ("Container manifest structure test failed\n" + "\n".join(messages))
         
-            d = self.json
-            
-            if type(d) != dict:
-                self.fail ("The JSON payload should be a dictionary")
-            
-            for k in d.keys():
-                if "methods" not in d[k].keys():
-                    self.fail ("Missing methods for API '%s'" % k)
-                else:
-                    for m in d[k]["methods"]:
-                        if m not in ("GET", "POST", "PUT", "DELETE"):
-                            self.fail ("Improper method '%s' for API '%s'" % (m,k))
-                            
+
+                    
+class TestManifest(TestJSON):
+    '''Tests for a single manifest'''
+
+    def testStructure (self):
+        '''Test for the manifests JSON output'''
+        
+        if self.json: 
+            messages = app_manifest_structure_validator(self.json)
+            if len(messages) > 0 :
+                self.fail ("App manifest structure test failed\n" + "\n".join(messages))
     
 class TestManifests(TestJSON):
     '''Tests for the manifests'''
 
     def testStructure (self):
-        '''A simple structure test for the manifests JSON output'''
+        '''Test for the manifests JSON output'''
         
         if self.json:
         
             if type(self.json) != list:
-                self.fail ("The JSON payload should be a list:")
+                self.fail ("The JSON payload should be a list")
         
+            # Because we have a list of manifests, we have to iterate over the items
+            messages = []
             for manifest in self.json:
-                if type(manifest) != dict:
-                    self.fail ("The manifest definition should be a dictionary")
-                keys = manifest.keys()
-                if "name" not in keys or not isinstance(manifest["name"], basestring) :
-                    self.fail ("All app manifests must have a 'name' string property")
-                if "description" not in keys or not isinstance(manifest["description"], basestring) :
-                    self.fail ("All app manifests must have a 'description' string property")
-                if "id" not in keys or not isinstance(manifest["id"], basestring) :
-                    self.fail ("All app manifests must have a 'id' string property")
-                if "mode" not in keys or manifest["mode"] not in ("ui","background","frame_ui") :
-                    self.fail ("'mode' property must be one of ('ui','background','frame_ui')")
-    
+                messages += app_manifest_structure_validator(manifest)
+            if len(messages) > 0 :
+                self.fail ("App manifests structure test failed\n" + "\n".join(messages))
     
 class TestPreferences(unittest.TestCase):
     '''Tests for the Preferences API'''
@@ -441,17 +456,21 @@ class TestPreferences(unittest.TestCase):
 # Defines the mapping between the content models and the test suites
 tests = {'Allergy': TestAllergies,
          'AppManifest': TestManifests,
+         'Manifest': TestManifest,   # this is a custom model not present in the ontology
          'Demographics': TestDemographics,
-         'Capabilities': TestCapabilities,
+         'ClinicalNote': TestClinicalNotes,
+         'ContainerManifest': TestContainerManifest,
          'Encounter': TestEncounters,
          'Fulfillment': TestFulfillments,
          'Immunization': TestImmunizations,
+         'LabPanel': TestLabPanels,
          'LabResult': TestLabResults,
          'Medication': TestMedications,
          'Ontology': TestOntology,
          'Problem': TestProblems,
+         'Procedure': TestProcedures,
          'UserPreferences': TestPreferences,
-         'VitalSigns': TestVitalSigns}
+         'VitalSignSet': TestVitalSignSets}
 
 def runTest(model, testData, contentType=None):
     '''Runs the test suite applicable for a model'''

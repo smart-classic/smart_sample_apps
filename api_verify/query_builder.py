@@ -8,11 +8,11 @@
 import copy
 
 # Import the app settings
-from settings import APP_PATH, DOC_BASE
+from settings import APP_PATH, DOC_BASE, ONTOLOGY
 
 # Imports from the SMART client
-from smart_client.common import rdf_ontology
-from smart_client.common.util import NS, anyuri
+from smart_client.common.rdf_tools import rdf_ontology
+from smart_client.common.rdf_tools.util import NS, anyuri
 
 # Import rdflib modules
 import rdflib
@@ -169,8 +169,48 @@ def generate_data_for_type(t, res):
             
             # Append the properties definition
             res[name]["properties"].append(prop)
-                
+            
+def generate_optional_object_type_query (data, subj_type_url, predicate_url, obj_type_url, queries):
+    '''Generates an optional object type check query'''
+    
+    # We are not going to process RDF litera, dateTime, etc types
+    if str(obj_type_url) in (str(NS['rdfs']['Literal']), str(NS['xsd']['dateTime']), str(anyuri)):
+        return
+        
+    # Intialize the common prefixes list
+    prefixes = ["rdf"]
+    
+    # Normalize the data URIs
+    subj_type = normalize(subj_type_url, prefixes)
+    predicate = normalize(predicate_url, prefixes)
+    obj_type = normalize(obj_type_url, prefixes)
+    
+    # Construct the query string
+    q = """%sSELECT  ?s
+WHERE {
+   ?s rdf:type %s .
+   ?s %s ?o .
+   OPTIONAL {
+       ?o rdf:type ?t .
+       FILTER ( str(?t) = %s )
+   }
+   FILTER ( !BOUND(?t) )
+}""" % (get_prefix_defs(prefixes), subj_type, predicate, obj_type)
+    
+    # Documentation URL
+    doc_model = data[subj_type_url]["name"].replace(" ", "_")
+    doc_url = DOC_BASE + doc_model + "_RDF"
+    
+    # Add the query to the list of queries
+    queries.append({
+        "type": "negative",
+        "query": q,
+        "description": "%s property of %s object must be of type %s" % (predicate, subj_type, obj_type),
+        "doc": doc_url
+    })
+
 def generate_value_query (data, model, property, type, values, queries):
+    '''Generates a specific value check query (for instance units check)'''
     
     # Intialize the common prefixes list
     prefixes = ["rdf"]
@@ -356,6 +396,9 @@ def generate_queries (data, queries, type_url, visited_types = None):
                 # Recursively generate further queries
                 generate_queries (data, queries, p_type, visited_types)
                 
+                # Generat object type check query
+                generate_optional_object_type_query (data, type_url, p_name, p_type, queries)
+                
                 # If there are values constraints, generate value queries
                 if "values" in p.keys():
                     generate_value_query (data, type_url, p_name, p_type, p["values"], queries)
@@ -413,7 +456,7 @@ for ns in NS.keys():
     
 # Parse the ontology when necessary
 if not rdf_ontology.api_types:
-    rdf_ontology.parse_ontology(open(APP_PATH + '/data/smart.owl').read())
+    rdf_ontology.parse_ontology(open(ONTOLOGY).read())
 
 # Build a list of data types that need to be added to the data definitions
 for t in rdf_ontology.api_types:

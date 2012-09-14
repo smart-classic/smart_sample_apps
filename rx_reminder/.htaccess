@@ -1,0 +1,15 @@
+<Files reminder.py>
+    SetHandler wsgi-script
+    Options ExecCGI FollowSymLinks
+</Files>
+<IfModule mod_rewrite.c>      
+  RewriteEngine on
+  RewriteBase /
+  RewriteCond %{REQUEST_URI} !^/icons
+  RewriteCond %{REQUEST_URI} !^/favicon.ico$
+  RewriteCond %{REQUEST_URI} !^/smartapp/smart_manifest.json$
+  RewriteCond %{REQUEST_URI} !^/smartapp/icon.png$
+  RewriteCond %{REQUEST_URI} !^(/.*)+reminder.py/
+  RewriteRule ^(.*)$ reminder.py/$1 [PT]
+</IfModule>
+AddType text/html py

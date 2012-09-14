@@ -28,12 +28,14 @@
     $Log: readTable.py,v $
 """
 
-import string as str
+import string
 import sys
 
-class readTable():
+class ReadTable():
     
+	#=============================================================================
     # We only want to read the database once, so do it at initiation
+	#=============================================================================
     def __init__(self, datafilename):
         # Read the data from the datafile or database
         try:
@@ -42,13 +44,14 @@ class readTable():
             print "Can't open datafile: ", datafilename
             return
         
-        # Read in all data lines: skip blank lines and
-        # those that begin with '#'
+        # Read in all data lines: skip blank lines and those that begin with '#'
         self.lines = datafile.readlines()
         datafile.close()
         
+	#=============================================================================
+	# Here's where the table is actually read
+	#=============================================================================
     def read(self):
-                
         lines = self.lines
         datalines = []
         for line in lines:
@@ -57,7 +60,7 @@ class readTable():
             elif not line.strip():
                 continue
             else:
-                datalines.append( str.split(line.lower()) )
+                datalines.append( string.split(line.lower()) )
             
         table = {}
      
@@ -76,6 +79,9 @@ class readTable():
 
 
 
+#=============================================================================
+# main for testing purposes
+#=============================================================================
 if __name__ == "__main__":
 
     if(len(sys.argv) != 2):

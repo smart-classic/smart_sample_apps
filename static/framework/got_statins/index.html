@@ -2,53 +2,63 @@
 <html>
   <head>
     <title>Got Statins?</title>
+    <style>
+      body { font-family: "Helvetica Neue", Helvetica, Calibri, Verdana, sans-serif; }
+      #answer { font-weight: bold; font-size: 60pt; }
+    </style>
   </head>
   <body>
+    <h1>Got Statins?</h1>
+    <div id="answer">...</div>
 
-  <h1 style="font-family: Arial, sans-serif;">Got Statins?</h1>
-  <a id="TheAnswer" style="font-weight: bold; font-size: 120pt; font-family: Arial, sans-serif; text-decoration: none; color: black;">
-  	... 
-  </a> 
-	<script  src='../smart/scripts/smart-api-client.js'></script>
-	<script>
-	  
-SMART.ready(function(){
+    <script src='../smart/scripts/smart-api-client.js'></script>
+    <script src='sparql.js'></script>
+    <script>
+      var sparql = new SPARQL({ 
+        apikey: "5fde2ad9-ee30-4bf8-bbdc-9a7222a187cc", 
+        endpoint: "http://sparql.bioontology.org/sparql/"
+      });
 
-        SMART.MEDS_get().success(function(meds) {
-	
-	var medlist = meds.graph
-                    .where("?m rdf:type sp:Medication")
-                    .where("?m sp:drugName ?dn")
-                    .where("?dn dcterms:title ?drugname");	
-	var answer = false;
-	
-	for (var i = 0; i < medlist.length; i++) {
-	 console.log(medlist[i].drugname.value);
-	       if (is_a_statin(medlist[i].drugname.value))
-		   answer = true;
-          }
+      SMART.ready(function(){
+          SMART.get_medications().then(function(r) {
+          sparql
+          .query(statin_query(r.objects.of_type.Medication))
+          .done(function(j){
+            var answer = j.results.bindings;
+            if (answer.length > 0) {
+              var statins = SMART.$.map(answer, function(s){ return s.label.value; });
+              answer = statins.join(", ") + ".";
+              } else {
+              answer = "No."
+            }
+            SMART.$("#answer").text(answer);
+          });	
+        })
+      });
 
-	  document.getElementById("TheAnswer").innerHTML = answer ? "Yes." : "No.";
+      var statin_query = function(meds) {
+        var q =  "prefix rxnorm: <http://purl.bioontology.org/ontology/RXNORM/> \n\
+        prefix skos: <http://www.w3.org/2004/02/skos/core#> \n\
+        prefix umls: <http://bioportal.bioontology.org/ontologies/umls/> \n\
+        prefix ndfrt: <http://purl.bioontology.org/ontology/NDFRT/> \n\
+        SELECT distinct ?d ?label \n\
+        WHERE { \n\
+          FILTER ({{ON_MEDS}})\n\
+          ?d rxnorm:consists_of ?c.\n\
+          ?c rxnorm:has_ingredient ?i.\n\
+          ?i umls:cui ?cui.\n\
+          ?i skos:prefLabel ?label.\n\
+          ?ndfrtdrug umls:cui ?cui.\n\
+          ?ndfrtdrug ndfrt:has_mechanism_of_action \n\
+          <http://purl.bioontology.org/ontology/NDFRT/N0000000121>.\n\
+        }";
 
-	});
-		
-   var is_a_statin = function(drug) {
-      if (drug.match(/statin/i)) return true;
-      if (drug.match(/Advicor/i)) return true;
-      if (drug.match(/Altoprev/i)) return true;
-      if (drug.match(/Caduet/i)) return true;
-      if (drug.match(/Crestor/i)) return true;
-      if (drug.match(/Lescol/i)) return true;
-      if (drug.match(/Lipitor/i)) return true;
-      if (drug.match(/Mevacor/i)) return true;
-      if (drug.match(/Pravachol/i)) return true;
-      if (drug.match(/Simcor/i)) return true;
-      if (drug.match(/Vytorin/i)) return true;
-      if (drug.match(/Zocor/i)) return true;
+        var med_filter = SMART.$.map(meds || [false], function(med){
+          return med ? "?d = rxnorm:"+med.drugName.code.dcterms__identifier : "false";
+        });
 
-      return false;
-   }
-});		
-	</script>
+        return q.replace("{{ON_MEDS}}", med_filter.join(" || "));
+      }
+    </script>
   </body>
 </html>

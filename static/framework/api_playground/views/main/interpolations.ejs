@@ -1,4 +1,24 @@
-<em><%= call.method%> <%= call.path.replace("http://smartplatforms.org","")%>
+<em><%= call.method%> 
+<%
+var PARAM_CLUES = {
+    encounter_type: "ambulatory|inpatient",
+    date_from: "2000-01-01",
+    date_to: "2012-12-31",
+    limit: 10,
+    offset: 0,
+    loinc: "29571-7|38478-4"
+};
+
+var params = call.parameters;
+var call_path = call.path.replace("http://smartplatforms.org","");
+
+for (var i = 0; i < params.length; i++) {
+    if (i === 0) call_path += "?";
+    else call_path += "&";
+    call_path += params[i] + "={" + params[i] + "}";
+}
+%>
+<%= call_path%> 
 <table>
 <%
 var vs = ApiType.interpolationVars(call.path);
@@ -7,8 +27,14 @@ var f = vs[i];
 var fsans = f.substring(1, f.length-1);
 		
 %>
-<tr><td><%= vs[i]%></td><td><input class="interpolation-field" field_name="<%=fsans%>"/></td></tr>
+<tr><td><span class="mandatory-parameter"><%= vs[i]%></span></td><td><input class="interpolation-field" field_name="<%=fsans%>"/></td></tr>
+<% } %>
+<%
+for (var i = 0; i < params.length; i++) {
+    var p = params[i],
+        clue = PARAM_CLUES[p];
+%>
+<tr><td>{<%=p%>}</td><td><input field_name="<%=p%>" placeholder="<%=clue%>"/></td></tr>
 <% } %>
 <tr><td><button class="complete-call">Complete <%= call.method%></button><button class="cancel-call">Cancel</button></td></tr>
-<tr><td>RDF Serialization:</td><td><select id="serialization"><option value="xml">RDF-XML</option><option value="ntriples">NTriples</option></select></td></tr>
 </table>

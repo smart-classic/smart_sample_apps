@@ -21,8 +21,19 @@ if (!BPC) {
 (function () {
     "use strict";
 
+    BPC.settings = {};
+    
+    BPC.settings.app_title = "Blood Pressure Centiles";
+    
+    // BPC Data Load settings
+    BPC.settings.loading_mode = "full";   // possible values: full = complete data load, 
+                                          //                  progressive = paginate automatically,
+                                          //                  manual = user loads year by year
+    BPC.settings.vitals_limit = 50; // step used by progressive loading
+    BPC.settings.default_view = 0; // 0 = long term view, 1 = short term view, 2 = table view, 3 = calculator
+    
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
-    BPC.zones = [
+    BPC.settings.zones = [
         {definition: "Hypotension (< 1%)",       abbreviation: "\\/", label: "Hypotensive", percent: 1, colorhue: 0.7,  opacity: 0.4, dashthrough: false},
         //{definition:"Prehypotension (< 5%)",  abbreviation: "-", label: "Prehypotensive", percent: 4, colorhue: 0.9, opacity: 0.3, dashthrough: false},
         {definition: "Normal",                   abbreviation: "OK", label: "Normal", percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
@@ -32,8 +43,8 @@ if (!BPC) {
     
     // A unicode checkmark character (doesn't work with some of the IE8 fonts): \u2713
     
-    // Filter settings defaults
-    BPC.filterSettings = {
+    // Filter value settings
+    BPC.settings.filterSettings = {
         encounter: ["Inpatient", "Ambulatory"],
         site: ["Arm", "Leg"],
         position: ["Sitting", "Standing"],
@@ -42,8 +53,20 @@ if (!BPC) {
         dateTo: "2019-01-01"
     };
     
+    // Settings for the filter buttons
+    BPC.settings.filterButtonsSettings = [
+        {handle: 'chkFilterInpatient', onByDefault: true},
+        {handle: 'chkFilterAmbulatory', onByDefault: true},
+        {handle: 'chkFilterArm', onByDefault: true},
+        {handle: 'chkFilterLeg', onByDefault: true},
+        {handle: 'chkFilterSitting', onByDefault: true},
+        {handle: 'chkFilterStanding', onByDefault: true},
+        {handle: 'chkFilterAuscultation', onByDefault: true},
+        {handle: 'chkFilterMachine', onByDefault: true}
+    ];
+    
     // The age at which we switch to adult calculations
-    BPC.ADULT_AGE = 19;
+    BPC.settings.adult_age = 19;
     
     /**
     * Generates a settings object on request (Private)

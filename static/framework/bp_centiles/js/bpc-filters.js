@@ -20,9 +20,12 @@ if (!BPC) {
     * Event handler for the toggle filter buttons
     */
     BPC.updateFilters = function () {
+        // Hack to fix http://bugs.jqueryui.com/ticket/5604
+        $(".ui-button").removeClass("ui-state-focus");
+    
         //BPC.disableControls ();
         BPC.loadFilterSettings ();
-        BPC.redrawViewLong (BPC.patient,BPC.zones);
+        BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
         BPC.redrawViewTable (BPC.patient);
         //BPC.enableControls ();
     };
@@ -32,7 +35,7 @@ if (!BPC) {
     */
     BPC.loadFilterSettings = function () {
     
-        var f = BPC.filterSettings;
+        var f = BPC.settings.filterSettings;
         
         f.encounter = [];
         f.site = [];
@@ -73,7 +76,7 @@ if (!BPC) {
     */
     BPC.updateDateRange = function (valueFrom,valueTo) {
         BPC.setDateRange (valueFrom,valueTo);
-        BPC.redrawViewLong (BPC.patient,BPC.zones);
+        BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
         BPC.redrawViewTable (BPC.patient);
 
     };
@@ -97,8 +100,8 @@ if (!BPC) {
         toTime = BPC.scale (valueTo, 0, 100, startTime, endTime);
         
         // Convert the values to the standard format and update the settings
-        BPC.filterSettings.dateFrom = parse_date(fromTime).toString('yyyy-MM-dd');
-        BPC.filterSettings.dateTo = parse_date(toTime).toString('yyyy-MM-dd');
+        BPC.settings.filterSettings.dateFrom = parse_date(fromTime).toString('yyyy-MM-dd');
+        BPC.settings.filterSettings.dateTo = parse_date(toTime).toString('yyyy-MM-dd');
         
         // Convert the slider range dates to the display format
         fromTime = parse_date(fromTime).toString(s.dateFormat);
@@ -136,7 +139,7 @@ if (!BPC) {
     * @returns {Boolean} True if the patient data record is allowed through the filter
     */
     BPC.filterEncounter = function (record) {
-        return !record.encounter || inList (record.encounter, BPC.filterSettings.encounter);
+        return !record.encounter || inList (record.encounter, BPC.settings.filterSettings.encounter);
     };
         
     BPC.filterSite = function (record) {
@@ -149,20 +152,20 @@ if (!BPC) {
         site = record.site.toLowerCase();
         
         if (site.indexOf("arm") !== -1) {
-            return inList ("Arm", BPC.filterSettings.site);
+            return inList ("Arm", BPC.settings.filterSettings.site);
         } else if (site.indexOf("leg") !== -1) {
-            return inList ("Leg", BPC.filterSettings.site);
+            return inList ("Leg", BPC.settings.filterSettings.site);
         } else {
             return false;
         }
     };
         
     BPC.filterPosition = function (record) {
-        return !record.position || inList (record.position, BPC.filterSettings.position);
+        return !record.position || inList (record.position, BPC.settings.filterSettings.position);
     };
 
     BPC.filterMethod = function (record) {
-        return !record.method || inList (record.method, BPC.filterSettings.method);
+        return !record.method || inList (record.method, BPC.settings.filterSettings.method);
     };
 
     BPC.filterValid = function (record) {
@@ -170,7 +173,7 @@ if (!BPC) {
     };
 
     BPC.filterPediatric = function (record) {
-        return record.age < BPC.ADULT_AGE;
+        return record.age < BPC.settings.adult_age;
     };
 
     /**
@@ -182,7 +185,7 @@ if (!BPC) {
     */
     BPC.filterDate = function (record) {
         var date = parse_date(record.unixTime).toString('yyyy-MM-dd');
-        return BPC.filterSettings.dateFrom <= date && date <= BPC.filterSettings.dateTo;
+        return BPC.settings.filterSettings.dateFrom <= date && date <= BPC.settings.filterSettings.dateTo;
     };
 
     /**

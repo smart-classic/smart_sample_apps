@@ -21,9 +21,8 @@ sys.path.append(abspath)
 # Import the local smart client modules and components
 from smart_client import oauth
 from smart_client.smart import SmartClient
-from smart_client.rdf_utils import anonymize_smart_rdf
-from smart_client.common.rdf_ontology import get_api_calls
-from smart_client.generate_api import call_name
+from smart_client.common.rdf_tools.util import anonymize_smart_rdf
+from smart_client.common.rdf_tools import rdf_ontology
 
 # Import the local markdown module function
 from lib.markdown2 import markdown
@@ -118,7 +117,7 @@ class get_meds:
         smart_client = get_smart_client()
         
         # Query the SMART server for medications data
-        meds = smart_client.records_X_medications_GET().graph
+        meds = smart_client.get_medications().graph
         
         q = """
             PREFIX dc:<http://purl.org/dc/elements/1.1/>
@@ -155,7 +154,7 @@ class get_problems:
         smart_client = get_smart_client()
         
         # Query the SMART server for medications data
-        problems = smart_client.records_X_problems_GET().graph
+        problems = smart_client.get_problems().graph
         
         q = """
             PREFIX dc:<http://purl.org/dc/elements/1.1/>
@@ -193,7 +192,7 @@ class get_demographics:
         smart_client = get_smart_client()
         
         # Query the SMART server for demographics data
-        demographics = smart_client.records_X_demographics_GET().graph
+        demographics = smart_client.get_demographics().graph
         
         q = """
             PREFIX foaf:<http://xmlns.com/foaf/0.1/>
@@ -232,12 +231,10 @@ class get_user:
         smart_client = get_smart_client()
         
         # Query the SMART server for user data
-        user = smart_client.users_X_GET().graph
+        user = smart_client.get_user().graph
         
         q = """
             PREFIX foaf:<http://xmlns.com/foaf/0.1/> 
-            PREFIX sp:<http://smartplatforms.org/terms#>
-            PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             SELECT  ?firstname ?lastname ?email
             WHERE {
                ?r foaf:givenName ?firstname .
@@ -344,12 +341,12 @@ class send_apps_message:
         manifestbuffer.write(manifesttxt)
 
         # Build the patient RDF graph with the demographics
-        rdfres = smart_client.records_X_demographics_GET().graph
+        rdfres = smart_client.get_demographics().graph
         
         # Augment the RDF graph with the needed data models (except demographics)
         for a in apis:
             call = get_call(a)
-            if call != "records_X_demographics_GET":
+            if call != "get_demographics":
                 method_to_call = getattr(smart_client, get_call(a))
                 rdfres += method_to_call().graph
 
@@ -390,7 +387,7 @@ def get_recipients_json(smart_client):
     Expects a valid SMART client object
     '''
     # Load the address book from SMART
-    res = smart_client.accounts_X_apps_X_preferences_GET().body
+    res = smart_client.get_user_preferences().body
 
     # If there is no data, load the sample address book
     if len(res) == 0:
@@ -414,22 +411,39 @@ def add_recipient(smart_client, recipient):
     data.append ({"name": "User", "email": recipient})
     
     # Write the address book to SMART
-    smart_client.accounts_X_apps_X_preferences_PUT(data=json.dumps(data, sort_keys=True, indent=4), content_type="application/json")
+    smart_client.put_user_preferences(data=json.dumps(data, sort_keys=True, indent=4), content_type="application/json")
 
+def get_api_calls ():
+    calls = {}
+    
+    for t in rdf_ontology.api_calls:
+
+        target = str(t.target)
+        method = str(t.method)
+        path = str(t.path)
+        category = str(t.category)
+
+        if method == "GET" and (category == "record_items" or
+                                    path == "/ontology" or
+                                    path == "/apps/manifests/" or
+                                    path == "/manifest"):
+            if target not in calls.keys():
+                calls[target] = path
+            
+    return calls
+    
 def get_call(target):
     '''Returns the name of the SMART python client convenience method
     corresponding to the target SMART data model
     
     Expects a valid SMART data model target
     '''
-    class API_Call():
-        def __init__ (self, path, method):
-            self.path = path
-            self.method = method
 
     r = get_api_calls()
-    call = API_Call(r[target], "GET")
-    return call_name(call)
+    
+    for c in rdf_ontology.api_calls:
+        if str(c.http_method) == "GET" and str(c.path) == r[target]:
+            return c.client_method_name
         
 def get_smart_client():
     '''Initializes and returns a new SMART Client

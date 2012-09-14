@@ -66,7 +66,10 @@ To get started on ubuntu, you can
 
 Now, obtain the app code:
   git clone https://github.com/chb/smart_sample_apps
-  cd smart_sample_apps/api_verify
+  cd smart_sample_apps
+  git submodule init
+  git submodule update
+  cd api_verify
 
 Note (for Windows users): You will need to set up manually the
 following symlinks from an admin-privileged command prompt:

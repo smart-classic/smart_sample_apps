@@ -19,12 +19,12 @@ if (!VERIFY) {
     /**
     * Loads the SMART API calls matrix into the global object
     */
-    VERIFY.loadCalls = function (version) {
+    VERIFY.loadCalls = function (version, standalone) {
         var dfd = $.Deferred();
         
         $.get(
             "getcalls",
-            {'oauth_header': SMART.credentials.oauth_header},
+            {},
             function (responseText) {
                 
                 // Local variables
@@ -57,21 +57,6 @@ if (!VERIFY) {
                 // Update data to point at temp
                 data = temp;
                 
-                // Get the SMART connect client methods registry
-                m = SMART.methods;
-                
-                // Match the methods from the SMART connect client against the
-                // python library methods and update the data object as appropriate
-                for (i = 0; i < m.length; i++) {
-                    if (m[i].method === "GET" && 
-                        (m[i].category === "record_items" ||
-                         m[i].name === "MANIFESTS_get" ||
-                         m[i].name === "ONTOLOGY_get" ||
-                         m[i].name === "CAPABILITIES_get")) {
-                        if (data[m[i].target]) data[m[i].target].call_js = m[i].name;
-                    }
-                }
-                
                 // Update the global VERIFY object and resolve the differed object
                 VERIFY.calls = data;
                 dfd.resolve();
@@ -97,11 +82,11 @@ if (!VERIFY) {
                 var response = JSON.parse (responseText);
                 
                 // Process the response messages
-                VERIFY.processResults(call_name, response.messages);
+                VERIFY.processResults(call_name + "_py", response.messages);
             },
             "html"
         ).error(function () {
-            VERIFY.callbackError(call_name);
+            VERIFY.callbackError(call_name + "_py");
         });
     };
     
@@ -109,17 +94,22 @@ if (!VERIFY) {
     * Tests a SMART Connect API call
     */
     VERIFY.callJS = function (call_name, model) {
-        SMART[call_name](
-            function(response) {
-                // Run the tests on the server side over the call response data
-                VERIFY.testModel (call_name,
-                                  model,
-                                  response.body,
-                                  response.contentType,
-                                  VERIFY.processResults);
-            }, function () {
-                VERIFY.callbackError (call_name);
-            });
+        SMART[call_name]()
+            .success(
+                function(response) {
+                    // Run the tests on the server side over the call response data
+                    VERIFY.testModel (call_name + "_js",
+                                      model,
+                                      response.body,
+                                      response.contentType,
+                                      VERIFY.processResults);
+                }
+            )
+            .error(
+                function () {
+                    VERIFY.callbackError (call_name + "_js");
+                }
+            );
     };
     
     /**
@@ -186,7 +176,7 @@ if (!VERIFY) {
         $('#spinner').show();
         
         // Auto-select the content type based on the model
-        if (model === "AppManifest" || model === "Container") {
+        if (model === "AppManifest" || model === "ContainerManifest" || model === "Manifest") {
             contentType = "application/json";
         } else if (model === "UserPreferences") {
             contentType = "text/plain";
@@ -223,6 +213,55 @@ if (!VERIFY) {
                 // Reset the validate button state
                 $('#spinner').hide();
                 $('#validate').button('enable');
+            },
+            "html"
+        );
+    };
+    
+    /**
+    * Validates SMART manifests and displays the result
+    */
+    VERIFY.validateManifest = function () {
+    
+        var contentType,
+            model = "Manifest",
+            data = $('#manifest_input').val(),
+            contentType = "application/json";
+        
+        // Disable the validate button
+        $('#validate_manifest').button('disable');
+        $('#custom_messages_manifest').hide();
+        $('#spinner_manifest').show();
+        
+        // Ajax call to the server
+        $.post(
+            "runtests",
+            {'model': model, 'data': data, 'content_type': contentType},
+            function (responseText) {
+                var messages = JSON.parse (responseText),
+                    console_text = "";
+                
+                for (var i = 0; i < messages.length; i++) {
+                    console_text += messages[i] + "\n";
+                }
+                
+                // Default message
+                if (messages.length === 0) {
+                    console_text = "No problems detected";
+                }
+
+                // Hack to convert the line endings to \r when IE is used
+                if (VERIFY.getInternetExplorerVersion() > 0) {
+                    console_text = console_text.replace(/\n/g, "\r");
+                }
+
+                // Refresh the console and show it if there is any text to display in it
+                $('#custom_messages_manifest').text(console_text);
+                $('#custom_messages_manifest').show();
+                
+                // Reset the validate button state
+                $('#spinner_manifest').hide();
+                $('#validate_manifest').button('enable');
             },
             "html"
         );
@@ -354,12 +393,16 @@ if (!VERIFY) {
         // Local variables
         var table_str,
             smart_model,
-            call_py,
-            call_js,
-            call,
+            call_name,
             model,
             options_str = "",
             SP = "http://smartplatforms.org/terms#";
+            
+        // Hide the spinner and display the tabs
+        $("a[href='#tab_all']").show();
+        $('#tabs').tabs( "select" , "#tab_all" );
+        $('#spinner_main').hide();
+        $('#tabs').show();
         
         // Table header
         table_str = "<table class='nicetable'>";
@@ -367,9 +410,8 @@ if (!VERIFY) {
         
         // Table body (and options string)
         for (model in VERIFY.calls) {
-            call_py = VERIFY.calls[model].call_py;
-            call_js = VERIFY.calls[model].call_js;
-            table_str += "<tr><td>"+model.replace(SP,"")+"</td><td align='center' id='"+call_js+"'><img src='/static/images/ajax-loader.gif'/></td><td align='center' id='"+call_py+"'><img src='/static/images/ajax-loader.gif'/></td></tr>";
+            call_name = VERIFY.calls[model];
+            table_str += "<tr><td>"+model.replace(SP,"")+"</td><td align='center' id='"+call_name+"_js'><img src='/static/images/ajax-loader.gif'/></td><td align='center' id='"+call_name+"_py'><img src='/static/images/ajax-loader.gif'/></td></tr>";
             options_str += "<option>" + model.replace(SP,"") + "</option>\n";
         }
         
@@ -381,8 +423,7 @@ if (!VERIFY) {
         $('#model').html(options_str);
         
         // Output the queries descriptor model options
-        options_str = "<option></option>\n" + options_str;
-        $('#model2').html(options_str);
+        $('#model2').html("<option></option>\n" + options_str);
         
         // Enable the validate button
         $('#validate').button('enable');
@@ -391,14 +432,38 @@ if (!VERIFY) {
         for (model in VERIFY.calls) {
         
             // Fetch the call name and the data model name
-            call = VERIFY.calls[model];
+            call_name = VERIFY.calls[model];
             smart_model = model.replace(SP,"");
             
             // Run the api call tests on both the Python and JS interfaces
-            VERIFY.callREST(call.call_py);
-            VERIFY.callJS(call.call_js, smart_model);
+            VERIFY.callREST(call_name);
+            VERIFY.callJS(call_name, smart_model);
         }
             
+    };
+    
+    // Call this method should the SMART connect object fail (i.e. the page has been loaded outside a container)
+    VERIFY.fallback = function () {
+    
+        var options_str = "",
+            SP = "http://smartplatforms.org/terms#",
+            model;
+            
+        for (model in VERIFY.calls) {
+            options_str += "<option>" + model.replace(SP,"") + "</option>\n";
+        }
+        
+        $('#model').html(options_str);
+        $('#model2').html("<option></option>\n" + options_str);
+        $('#validate').button('enable');
+        $('#validate_manifest').button('enable');
+    
+        // Hide the spinner and display the tabs
+        $("a[href='#tab_all']").hide();
+        $('#tabs').tabs( "select" , "#tab_custom" );
+        $('#spinner_main').hide();
+        $('#tabs').show();
+        alert ("Load the API verifier within a SMART container to test its conformance to the SMART specifications");
     };
     
 }());

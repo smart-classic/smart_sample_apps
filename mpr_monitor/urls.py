@@ -37,7 +37,6 @@ import settings
 
 urlpatterns = patterns('',
     (r'^smartapp/index.html$', index),
-    #(r'^smartapp/bootstrap.html$', bootstrap),
     
     # List of all patients, indicating those with potential adherence issues
     (r'^smartapp/risk.html$', risk),
@@ -47,8 +46,10 @@ urlpatterns = patterns('',
     # For images
     (r'^smartapp/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.MEDIA_ROOT}),
     
-    # For RDF-NT drug information
-    (r'^smartapp/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.NDF_RT}),
+    # For RDF-NT drug information. This is not currently used, but may be useful in the future if
+	# the number of drugs/drug classes expands. To use the NDF-RT database, uncomment the 
+	# settings.NDF_RT variable in settings.py
+    #(r'^smartapp/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.NDF_RT}),
         
     # Examples:
     # url(r'^$', 'SMART.views.home', name='home'),

@@ -3,5 +3,8 @@
 # The absolute path of the SMART API Verifier deployment
 APP_PATH = '/path/to/smart/api_verify'
 
+# The local copy of the SMART ontology to be used by the app
+ONTOLOGY = APP_PATH + '/smart_client/common/schema/smart.owl'
+
 # The base for the data model documentation
 DOC_BASE = 'http://dev.smartplatforms.org/Developers_Documentation:_SMART_Data_Model#'
