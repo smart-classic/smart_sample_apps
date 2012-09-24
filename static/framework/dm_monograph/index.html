@@ -42,16 +42,28 @@
     <div id='content' class="container_12">
 
       <div class='demo_line'>
-        <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
-          <span class='family_name'></span>, <span class='given_name'></span>
-        </div>
-        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
+        <div class='left_inner_demo_line'>
+          <span class='name'>
+            <span class='family_name'></span>, <span class='given_name'></span>
+          </span>
           &nbsp;
-          <!-- <span class='demo_line_label' style='display: none;' class='diabetic_info_label'>DIAGNOSIS</span> -->
+          <span class='diabetic_diagnosis_p'></span>
           <span class='diabetic_info highlight'></span>
           <span class='diabetic_how_long_text highlight'></span>
         </div>
+        <div class='right_inner_demo_line'>
+          &nbsp;
+          <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
+          &middot;
+          <a rel='#explainer' id='show_explainer_overlay'/>App Explainer</a>
+          &middot;
+          <a rel='#timeline' id='show_timeline_overlay'/>Time Line</a>
+          &nbsp;
+          <span class="date_and_time"></span>
+        </div>
       </div>
+
+      <br class='clear'>
 
       <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
         <div style='width: 48%; float: left'>
@@ -60,11 +72,6 @@
           <span class='demo_line_label'>SEX</span> <span class='gender'></span>&nbsp;&nbsp;
         </div>
         <div style='float: left; width: 48%; text-align: right; font-size: small;'>
-          <a rel='#pt_summary' id='show_pt_summary_overlay'/>Patient Summary</a>
-          &middot;
-          <a rel='#explainer' id='show_explainer_overlay'/>App Explainer</a>
-          &middot;
-          <a rel='#timeline' id='show_timeline_overlay'/>Time Line</a>
         </div>
       </div>
 
@@ -386,7 +393,16 @@
 
         <div id='problems_header'>
           <!-- hidden problems div for sorting. todo: clean this up in the js-->
-          <div class='section_header'>Problems <span id='as_of'></span></div>
+          <div class='section_header'>
+            <div style='width: 75%; float:left;'>
+              Problems
+              <span id='as_of'></span>
+            </div>
+            <div style='width: 25%; float: left; text-align: right'>
+              <a class='header_sort_toggle'/>[Chrono]</a>&nbsp;
+            </div>
+            <div class='clear'></div>
+          </div>
 
           <div id='problems' style='display: none'></div>
 
@@ -401,7 +417,7 @@
           </div>
 
           <div>
-            <div class='section_subheader'>Closed <span style='font-size: smaller; font-weight: normal;'>(on date)</span></div>
+            <div class='section_subheader'>Resolved <span style='font-size: smaller; font-weight: normal;'>(on date)</span></div>
             <div id='resolved_problems'></div>
           </div>
 
@@ -429,7 +445,7 @@
         <div class='clear'></div>
 
         <div id='reminders_outer'>
-          <div class='section_header'>Reminders</div>
+          <div class='section_header'>Test Reminders</div>
           <div id='reminders'></div>
         </div>
 
@@ -439,7 +455,17 @@
         </div>
 
         <div id='medications_outer'>
-          <div class='section_header'>Medications <span id='meds_as_of'></span></div>
+          <div class='section_header'>
+            <div style='width: 75%; float: left;'>
+              Medications
+              <span id='meds_as_of'></span>
+            </div>
+            <div style='width: 25% float: left; text-align: right'>
+              <a class='header_sort_toggle'/>[Chrono]</a>&nbsp;
+            </div>
+            <div class='clear'></div>
+          </div>
+
           <div id='medications'></div>
         </div>
       </div>
@@ -595,16 +621,21 @@
       <div class='clear'></div>
 
       <div class='demo_line'>
-        <div style='width: 48%; float: left; margin-bottom: 10px;' class='name'>
-          <span class='family_name'></span>, <span class='given_name'></span>
-        </div>
-        <div class='diabetic_diagnosis_p' style='width: 48%; float: left; text-align: right; margin-bottom: 10px;'>
+        <div style='width: 75%; float: left; margin-bottom: 10px;'>
+          <span class='name'>
+            <span class='family_name'></span>, <span class='given_name'></span>
+          </span>
           &nbsp;
-          <!-- <span class='demo_line_label diabetic_info_label' style='display: none;'>DIAGNOSIS</span> -->
+          <span class='diabetic_diagnosis_p'></span>
           <span class='diabetic_info highlight'></span>
           <span class='diabetic_how_long_text highlight'></span>
         </div>
+        <div style='width: 24%; float: left; text-align: right; margin-bottom: 10px;'>
+          <span class='date_and_time'></span>
+        </div>
       </div>
+
+      <div class='clear'></div>
 
       <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
         <div style='width: 48%; float: left'>
@@ -628,25 +659,24 @@
 
       <div class='test_ps'>
         <div style='width: 33%; float: left'>
-          <div class='header'>Blood Pressure</div>
+          <div class='header'>BP <span style='font-weight: normal'>goal &lt;
+              130/80 mm/hg</span></div>
           <div class='ps_graph' id='bp_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
-          <div style='width: 45%; float: left;  margin-right: 10px;'>
-            <div><span class='label'>LAST TEST</span> <span id='bp_date_ps'></span></div>
-          </div>
-          <div style='width: 50%; float: left'>
-            <div>
-              <span style='color: #afd8f8; font-weight: bold'>O</span>
-              <span class='label'>SYSTOLIC VALUE</span>
-              <span id='bp_systolic_ps'></span>
-            </div>
-            <div>
-              <span style='color: #EDC240; font-weight: bold'>O</span>
-              <span class='label'>DIASTOLIC VALUE</span>
-              <span id='bp_diastolic_ps'></span>
-            </div>
-          </div>
+          The BP (Blood Pressure) test measures systolic and diastolic pressure
+          <br />
+          Your last systolic result <span style='color: #afd8f8; font-weight: bold'>O</span>
+          was <span class='bp_systolic_ps'></span>mm/hg (<span
+            class='bp_systolic_ps'></span> millimeters of mercury) which is above the desired limit of
+          130mm/hg
+          <br />
+          Your last diastolic result <span style='color: #EDC240; font-weight: bold'>O</span>
+          was <span class='bp_diastolic_ps'></span>mm/hg (<span
+            class='bp_diastolic_ps'></span> millimeters of mercury) which is above the desired limit of
+          80mm/hg
+          <br />
+          Your most recent test occured on <span id='bp_date_ps'></span>
         </div>
       </div>
 
@@ -654,20 +684,20 @@
 
       <div class='test_ps'>
         <div style='width: 33%; float: left'>
-          <div class='header'>LDL</div>
+          <div class='header'>LDL <span class='font-weight: normal'>goal &lt;
+              100mg/dL</span></div>
           <div class='ps_graph' id='ldl_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
-
-          <div id='ldl_explanation_ps' class='' style="margin-bottom: 8px;">
-            LDL measures low density lipoproteins (the "bad cholesterol")
-          </div>
-
-          <div style='margin-bottom: 8px;'>
-            <span class='label'>LAST TEST</span> <span id='ldl_date_ps'></span>
-          </div>
-
-          <div><span id='ldl_ps'></span></div>
+          The LDL test measures low density lipoprotein concentration (the
+          &quot;bad cholesterol&quot;)
+          <br />
+          Your last LDL test result was <span class='ldl_ps'></span> (<span
+            class='ldl_ps'></span> <span id='ldl_value_ps'></span> milligrams per deciliter) <span
+            id='ldl_range_ps'></span>
+          <br />
+          Your most recent LDL test occured on <span
+            id='ldl_date_ps'></span><span id='ldl_more_than'></span>
         </div>
       </div>
 
@@ -675,17 +705,16 @@
 
       <div class='test_ps'>
         <div style='width: 33%; float: left'>
-          <div class='header'>A1C</div>
+          <div class='header'>A1C <span class='font-weight:normal'>goal &lt; 7%</span></div>
           <div class='ps_graph' id='a1c_graph_ps'></div>
         </div>
         <div style='width: 63%; float: left; margin-top: 16px;'>
-          <div id='a1c_explanation_ps' style='margin-bottom: 8px;'>
-            The A1C test measures average blood sugar concentration
-          </div>
-          <div style='margin-bottom: 8px;'>
-            <span class='label'>LAST TEST</span> <span id='a1c_date_ps'></span>
-          </div>
-          <div><span id='a1c_ps'></span></div>
+          The A1C test measures average blood sugar concentration
+          <br />
+          Your last A1C test result was <span class='a1c_ps'></span> (<span
+            class='a1c_value_ps'> %</span>) <span id='a1c_range_ps'></span> 
+          <br />
+          Your most recent A1C test occured on <span id='a1c_date_ps'></span><span id='a1c_more_than'></span>
         </div>
       </div>
 
@@ -827,7 +856,8 @@
             <ul>
               <li><strong>Major CV Comorbidities</strong> &ndash; any current problem known to be a major cardiovascular (CV) comorbidity of diabetes mellitus type 2</li>
               <li><strong>Other</strong> &ndash; any remaining <u>current</u> problem, including highlighting a current case of <span style="color:#E46C0A">Diabetes mellitus type 2</span></li>
-              <li><strong>Closed </strong>(on date) &ndash; any instance of a problem that has been closed with end MM/DD/YY date shown to the right in smaller text, &ldquo;08/29/08&rdquo;</li>
+              <li><strong>Resolved </strong>(on date) &ndash; any instance of a
+              problem that has been resolved with end MM/DD/YY date shown to the right in smaller text, &ldquo;08/29/08&rdquo;</li>
             </ul>
             <p>Problems are listed <em>within category</em> in two views:</p>
             <ul>

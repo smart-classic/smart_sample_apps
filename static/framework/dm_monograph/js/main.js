@@ -3,6 +3,8 @@
 //
 // Arjun Sanyal <arjun.sanyal@childrens.harvard.edu>
 //
+// version 0.1.1
+//
 // Note: A good pt with a lot of data: p967332 William Robinson
 //
 // for tables: http://www.datatables.net/index
@@ -705,6 +707,7 @@ SMART.ready(function(){
     var b = new XDate(pt.bday)
     $('.age').text(Math.round(b.diffYears(new XDate())));
     $('.gender').text(pt.gender[0])
+    $('.date_and_time').text(XDate().toString('MM/dd/yy hh:mmtt'))
 
     $('#bp_date_ps').text(pt.sbp ? new XDate(pt.sbp[0]).toString('MM/dd/yy') : '')
     $('#ldl_date_ps').text(pt.ldl ? new XDate(pt.ldl[0]).toString('MM/dd/yy') : '')
@@ -1074,13 +1077,13 @@ SMART.ready(function(){
       if (pt.problems_arr.length > 0) {
         var el = _(pt.problems_arr).max(function(e){ return e[2] || e[0]; })
         var d = new XDate(el[2] || el[0]);
-        $('#as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+        $('#as_of').html('<span class="smaller normal">(updated '+d.toString('MM/dd/yy')+')</span>')
       }
 
       // medications
       if (pt.fulfillment) {
         d = new XDate(pt.fulfillment.dcterms__date);
-        $('#meds_as_of').html('<span class="smaller normal">(last update '+d.toString('MM/dd/yy')+')</span>')
+        $('#meds_as_of').html('<span class="smaller normal">(updated '+d.toString('MM/dd/yy')+')</span>')
       }
 
       $('#medications, #medications_ps').empty()
@@ -1103,8 +1106,13 @@ SMART.ready(function(){
 
         _(pt.meds_arr).chain()
           .sortBy(function(e){ return e[1].toLowerCase(); })
-          .map(function(e){ return e[1].split(' ')[0]; })
-          .uniq(true)
+          .map(function(e){
+            //return e[1].split(' ')[0];
+            return e[1];
+          })
+          .uniq(function(e){
+            return e.split(' ')[0];
+          })
           .each(function(e){
             $('<div></div>', {
               // 'class': 'medication', // strip class so no stripes
@@ -1214,25 +1222,21 @@ SMART.ready(function(){
     if (pt.reminders_arr.length == 0) { $('<div/>', {text: 'No current reminders'}).appendTo('#reminders'); }
     _(pt.reminders_arr).each(function(e){
       // todo: use templating here
-      var html = '<span class=\'bold\'>' + e.title_html + '</span> ';
-      if (e.overdue_p) {
-        html = html + '<span class=\'highlight\'>&bull; '  + e.reminder_html + ' &bull;</span> <br />';
-      }
-
+      // bold lab name first
+      var html = '<span class=\'bold\'>' + e.lab_name_html + '</span> ';
+      // on date
       var d = new XDate(e.lab_variable[0])
-      html = html + e.lab_name_html + ' last tested ' + d.toString('MM/dd/yy') +
-             ' (' + e.months_ago + ' months ago) '
-
-       if (e.overdue_p) {
-         html = html + '<span class=\'highlight\'>&bull; dated &bull;</span> <br />';
-       }
-
-       // faked table alignment
-       html = html + '<span style="color: #fff" class="hidden">' + e.lab_name_html + '</span> last result ' + e.lab_variable[1] + e.lab_variable[2] 
-                   + ' (goal ' + e.target_range_text_html + ')'
-
-      if (!e.in_range_p) {
-        html = html + ' <span class=\'highlight\'>&bull; out of target range &bull; </span>'
+      html = html + 'on ' + d.toString('MM/dd/yy') + ' was ';
+      // value
+      if (!e.in_range_p) { html = html + '<span class=\'highlight\'>'; }
+      html = html + e.lab_variable[1] + e.lab_variable[2]
+      if (!e.in_range_p) { html = html + '</span>'; }
+      // goal?
+      html = html + ' &middot; goal ' + e.target_range_text_html;
+      // overdue_p?
+      if (e.overdue_p) {
+        html = html + ' &middot; outdated by <span class=\'highlight\'>&gt; '
+                    + e.overdue_in_months + ' months</span>';
       }
 
       $('<div></div>', {
@@ -1297,15 +1301,33 @@ SMART.ready(function(){
     $('#sort_by_date').on('click',  function(){
       $('#sort_by_date').hide()
       $('#sort_by_alpha').show()
+      $('.header_sort_toggle').text('[Alpha]');
       sort_by_date();
       return false;
     });
     $('#sort_by_alpha').on('click', function(){
       $('#sort_by_alpha').hide()
       $('#sort_by_date').show()
+      $('.header_sort_toggle').text('[Chrono]');
       sort_by_alpha();
       return false;
     });
+
+    $('.header_sort_toggle').on('click', function(e){
+      if ($(this).text() == '[Chrono]') {
+        $('.header_sort_toggle').text('[Alpha]');
+        $('#sort_by_date').hide()
+        $('#sort_by_alpha').show()
+        sort_by_date();
+      } else {
+        $('.header_sort_toggle').text('[Chrono]');
+        $('#sort_by_alpha').hide()
+        $('#sort_by_date').show()
+        sort_by_alpha();
+      }
+
+      return false;
+    })
 
     var l_opts = {
       top: '5%',
@@ -1376,40 +1398,47 @@ SMART.ready(function(){
     do_tables();
 
     // reminders in the pt summary (todo: refactor dry!!)
-    $('#bp_systolic_ps').html(pt.sbp ? '<span class="bold larger">'+_round(pt.sbp[1], 0)+'</span>' : '');
-    $('#bp_diastolic_ps').html(pt.sbp ? '<span class="bold larger">'+_round(pt.dbp[1], 0)+'</span>': '');
+    // look into the processed reminders array, see if there are reminders for
+    // bps
+    $('.bp_systolic_ps').html('<span class="">'+_round(pt.sbp[1], 0)+'</span>');
+    $('.bp_diastolic_ps').html('<span class="">'+_round(pt.dbp[1], 0)+'</span>');
 
     // ldl or a1c
     var last_test_html = '';
     var value = null;
     var unit = '';
-    var value_line_html = '';
-
+    var overdue_text = '';
+    var range_html = '';
     var r = _(pt.reminders_arr).find(function(r){
       return (r.lab_name_html === 'LDL' && (!r.in_range_p || r.overdue_p))
     }) || false;
 
+    // there's a reminder for LDL
     if (r) {
-      last_test_html = new XDate(r.lab_variable[0]).toString('MM/dd/yy');
-      var overdue_text = 'You are due for a new LDL test';
       if (r.overdue_p) {
-        last_test_html = '<span class="highlight larger">' + last_test_html + ' is &gt; ' +
-          r.overdue_in_months + ' months ago <br /> '+ overdue_text +'</span>';
-      }
-      value = r.lab_variable[1];
-      unit = r.lab_variable[2];
-      if (r.in_range_p) {
-        value_line_html = '<span style="large">' + value + '</span>' + unit + ' is in the goal range of '+r.target_range_text_html;
-      } else {
-        value_line_html = '<span class="highlight larger">' + '<span style="large">' + value + '</span>' + unit + ' is out of the goal range of '+r.target_range_text_html + '</span>';
-        $('<li></li>', { 'class': 'reminder_for_pt', html: r.reminder_for_pt_html }).appendTo('#reminders_for_pt')
+        overdue_text = 'You are due for a new LDL test';
+        more_than_html = ', more than ' + r.overdue_in_months
+          + ' months ago <br /> <span class=\'highlight\'>'+ overdue_text +'</span>';
+        $('<li></li>', {
+          'class': 'reminder_for_pt',
+          html: overdue_text
+        }).appendTo('#reminders_for_pt')
       }
 
-      if (r.overdue_p) {
-        $('#ldl_date_ps').html(last_test_html);
-        $('<li></li>', { 'class': 'reminder_for_pt', html: overdue_text }).appendTo('#reminders_for_pt')
+      if (r.in_range_p) {
+        range_html = 'which is within the desired limit of &lt; 100mg/dL &mdash; this is good news';
+      } else {
+        range_html = 'which is <span style="font-weight: bold">above</span> the desired limit of &lt; 100mg/dL';
+        $('<li></li>', {
+          'class': 'reminder_for_pt',
+          html: r.reminder_for_pt_html
+        }).appendTo('#reminders_for_pt')
       }
-      $('#ldl_ps').html(value_line_html);
+      $('#ldl_value_ps').html(r.lab_variable[1]);
+      $('#ldl_more_than').html(more_than_html);
+      $('#ldl_date_ps').html(new XDate(r.lab_variable[0]).toString('MM/dd/yy'));
+      $('#ldl_range_ps').html(range_html);
+      $('.ldl_ps').html(r.lab_variable[1] + r.lab_variable[2]);
     }
 
     r = _(pt.reminders_arr).find(function(r){
@@ -1417,27 +1446,29 @@ SMART.ready(function(){
     }) || false;
 
    if (r) {
-      last_test_html = new XDate(r.lab_variable[0]).toString('MM/dd/yy')
-      var overdue_text = 'You are due for a new A1C test';
-
       if (r.overdue_p) {
-        last_test_html = '<span class="highlight larger">' + last_test_html + ' is &gt; ' +
-          r.overdue_in_months + ' months ago <br />'+ overdue_text +'</span>';
+        overdue_text = 'You are due for a new A1C test';
+        more_than_html = ', more than ' + r.overdue_in_months
+          + ' months ago <br /> <span class=\'highlight\'>'+ overdue_text +'</span>';
       }
-      value = r.lab_variable[1];
-      unit = r.lab_variable[2];
+
       if (r.in_range_p) {
-        value_line_html = '<span style="large">' + value + '</span>'  + unit + ' is in the goal range of '+r.target_range_text_html;
+        range_html = 'which is within the desired limit of &lt; 7% &mdash; this is good news';
       } else {
-        value_line_html = '<span class="highlight larger">' + '<span style="large">' + value + '</span>'  + unit + ' is out of the goal range of '+r.target_range_text_html + '</span>';
-        $('<li></li>', { 'class': 'reminder_for_pt', html: r.reminder_for_pt_html }).appendTo('#reminders_for_pt')
+        range_html = 'which is <span style="font-weight: bold">above</span> the desired limit of &lt; 7%';
+        $('<li></li>', {
+          'class': 'reminder_for_pt',
+          html: r.reminder_for_pt_html
+        }).appendTo('#reminders_for_pt')
       }
+      $('#a1c_value_ps').html(r.lab_variable[1]);
+      $('#a1c_more_than').html(more_than_html);
+      $('#a1c_date_ps').html(new XDate(r.lab_variable[0]).toString('MM/dd/yy'));
+      $('#a1c_range_ps').html(range_html);
+      $('.a1c_ps').html(r.lab_variable[1] + r.lab_variable[2]);
 
-      if (r.overdue_p) {
-        $('#a1c_date_ps').html(last_test_html);
-        $('<li></li>', { 'class': 'reminder_for_pt', html: overdue_text }).appendTo('#reminders_for_pt')
-      }
-      $('#a1c_ps').html(value_line_html);
+      // add this final line
+      $('<li></li>', { 'class': 'reminder_for_pt', html: 'Contact your doctor if any information is inconsistent with what you know or think you know'}).appendTo('#reminders_for_pt')
     }
   });
 });

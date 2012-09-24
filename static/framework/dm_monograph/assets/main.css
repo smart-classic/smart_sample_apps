@@ -79,6 +79,8 @@ body {
   font-weight: bold;
 }
 
+.left_inner_demo_line { width: 49%; float: left; margin-bottom: 10px; }
+.right_inner_demo_line { width: 50%; float: left; margin-bottom: 10px;  text-align: right}
 .name { font-size: 20px; font-weight: bold; }
 
 .demo_line_label {
@@ -311,3 +313,6 @@ p.first { margin-top:0 }
   padding: 6px 0;
   margin-bottom: 16px;
 }
+
+.header_sort_toggle { font-weight: bold; color: black; font-size: smaller;}
+.header_sort_toggle:hover { border-bottom: none !important;}
