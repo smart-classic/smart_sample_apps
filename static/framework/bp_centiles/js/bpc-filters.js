@@ -48,11 +48,17 @@ if (!BPC) {
         if ($("#chkFilterAmbulatory").attr("checked")) {
             f.encounter.push("Ambulatory");
         }
+        if ($("#chkFilterEncounterUnknown").attr("checked")) {
+            f.encounter.push("Unknown");
+        }
         if ($("#chkFilterArm").attr("checked")) {
             f.site.push("Arm");
         }
         if ($("#chkFilterLeg").attr("checked")) {
             f.site.push("Leg");
+        }
+        if ($("#chkFilterSiteUnknown").attr("checked")) {
+            f.site.push("Unknown");
         }
         if ($("#chkFilterSitting").attr("checked")) {
             f.position.push("Sitting");
@@ -60,11 +66,17 @@ if (!BPC) {
         if ($("#chkFilterStanding").attr("checked")) {
             f.position.push("Standing");
         }
+        if ($("#chkFilterPositionUnknown").attr("checked")) {
+            f.position.push("Unknown");
+        }
         if ($("#chkFilterAuscultation").attr("checked")) {
             f.method.push("Auscultation");
         }
         if ($("#chkFilterMachine").attr("checked")) {
             f.method.push("Machine");
+        }
+        if ($("#chkFilterMethodUnknown").attr("checked")) {
+            f.method.push("Unknown");
         }
     };
 
@@ -139,14 +151,22 @@ if (!BPC) {
     * @returns {Boolean} True if the patient data record is allowed through the filter
     */
     BPC.filterEncounter = function (record) {
-        return !record.encounter || inList (record.encounter, BPC.settings.filterSettings.encounter);
+        if (!record.encounter) {
+            return inList ("Unknown", BPC.settings.filterSettings.encounter);
+        } else {
+            return inList (record.encounter, BPC.settings.filterSettings.encounter);
+        }
     };
         
     BPC.filterSite = function (record) {
         var site;
         
         if (!record.site) {
-            return true;
+            if (inList ("Unknown", BPC.settings.filterSettings.site)) {
+                return true;
+            } else {
+                return false;
+            }
         }
         
         site = record.site.toLowerCase();
@@ -161,11 +181,19 @@ if (!BPC) {
     };
         
     BPC.filterPosition = function (record) {
-        return !record.position || inList (record.position, BPC.settings.filterSettings.position);
+        if (!record.position) {
+            return inList ("Unknown", BPC.settings.filterSettings.position);
+        } else {
+            return inList (record.position, BPC.settings.filterSettings.position);
+        }
     };
 
     BPC.filterMethod = function (record) {
-        return !record.method || inList (record.method, BPC.settings.filterSettings.method);
+        if (!record.method) {
+            return inList ("Unknown", BPC.settings.filterSettings.method);
+        } else {
+            return inList (record.method, BPC.settings.filterSettings.method);
+        }
     };
 
     BPC.filterValid = function (record) {
