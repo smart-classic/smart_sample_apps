@@ -18,11 +18,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Blood Pressure Centiles SMART Application</title>
         
-        <!-- BPC stylesheets-->
-        <link rel="stylesheet" href="css/bpc-screen.css" type="text/css" media="screen" />
-        
         <!-- jQuert UI custom theme-->
         <link rel="stylesheet" href="css/themes/custom/jquery-ui.css" type="text/css" media="screen" />
+        
+        <!-- BPC stylesheets-->
+        <link rel="stylesheet" href="css/bpc-screen.css" type="text/css" media="screen" />
         
         <!-- SMART Connector -->
         <script src="../smart/scripts/smart-api-client.js" type="text/javascript"></script>
@@ -145,24 +145,32 @@
                                 <label for="chkFilterInpatient"> Inpatient </label>
                                 <input type="checkbox" id="chkFilterAmbulatory" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterAmbulatory"> Ambulatory </label>
+                                <input type="checkbox" id="chkFilterEncounterUnknown" onClick="BPC.updateFilters()" />
+                                <label for="chkFilterEncounterUnknown"> Unknown </label>
                             </div>
                             <div id="filter_site" class="toggle-set">
                                 <input type="checkbox" id="chkFilterArm" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterArm"> Arm </label>
                                 <input type="checkbox" id="chkFilterLeg"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterLeg"> Leg </label>
+                                <input type="checkbox" id="chkFilterSiteUnknown" onClick="BPC.updateFilters()" />
+                                <label for="chkFilterSiteUnknown"> Unknown </label>
                             </div>
                             <div id="filter_position" class="toggle-set">
                                 <input type="checkbox" id="chkFilterSitting" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterSitting"> Sitting </label>
                                 <input type="checkbox" id="chkFilterStanding"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterStanding"> Standing </label>
+                                <input type="checkbox" id="chkFilterPositionUnknown" onClick="BPC.updateFilters()" />
+                                <label for="chkFilterPositionUnknown"> Unknown </label>
                             </div>
                             <div id="filter_method" class="toggle-set">
                                 <input type="checkbox" id="chkFilterAuscultation" onClick="BPC.updateFilters()" />
                                 <label for="chkFilterAuscultation"> Auscultation </label>
                                 <input type="checkbox" id="chkFilterMachine"  onClick="BPC.updateFilters()" />
                                 <label for="chkFilterMachine"> Machine </label>
+                                <input type="checkbox" id="chkFilterMethodUnknown" onClick="BPC.updateFilters()" />
+                                <label for="chkFilterMethodUnknown"> Unknown </label>
                             </div>
                             <div id="filter_timerange">
                                 <div id="label-timerange"></div>

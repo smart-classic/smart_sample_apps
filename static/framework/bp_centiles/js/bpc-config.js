@@ -57,12 +57,16 @@ if (!BPC) {
     BPC.settings.filterButtonsSettings = [
         {handle: 'chkFilterInpatient', onByDefault: true},
         {handle: 'chkFilterAmbulatory', onByDefault: true},
+        {handle: 'chkFilterEncounterUnknown', onByDefault: true},
         {handle: 'chkFilterArm', onByDefault: true},
         {handle: 'chkFilterLeg', onByDefault: true},
+        {handle: 'chkFilterSiteUnknown', onByDefault: true},
         {handle: 'chkFilterSitting', onByDefault: true},
         {handle: 'chkFilterStanding', onByDefault: true},
+        {handle: 'chkFilterPositionUnknown', onByDefault: true},
         {handle: 'chkFilterAuscultation', onByDefault: true},
-        {handle: 'chkFilterMachine', onByDefault: true}
+        {handle: 'chkFilterMachine', onByDefault: true},
+        {handle: 'chkFilterMethodUnknown', onByDefault: true}
     ];
     
     // The age at which we switch to adult calculations

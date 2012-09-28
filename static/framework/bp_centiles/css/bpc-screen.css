@@ -151,3 +151,12 @@ table.nicetable td {
     border-color: #a9c6c9;
     background-color:#d4e3e5;
 }
+
+/* Additional styling to make the filter buttons take less space */
+#filters .ui-button-text-only .ui-button-text {
+    padding: 0.2em 0.4em;
+}
+
+#filters {
+    font-size: 0.8em;
+}
