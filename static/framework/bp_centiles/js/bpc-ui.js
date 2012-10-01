@@ -191,7 +191,8 @@ if (!BPC) {
         
         // Disable the encounter type buttons
         $('#chkFilterInpatient').button("disable");
-        $('#chkFilterAmbulatory').button("disable");
+        $('#chkFilterAmbulatory').button("disable");	 
+        $('#chkFilterEncounterUnknown').button("disable");
         
         // Fade in the warning
         $('#warning').animate({ color: "#a00" }, 3000);
