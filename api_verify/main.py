@@ -102,7 +102,8 @@ class get_calls:
             if method == "GET" and ((category == "record" and cardinality == "multiple") or
                                     path == "/ontology" or
                                     path == "/apps/manifests/" or
-                                    path == "/manifest"):
+                                    path == "/manifest" or
+                                    t.client_method_name == "get_demographics"):
 
                 # Build the generic python client call name and use it in the dictionary
                 out[target] = str(t.client_method_name)

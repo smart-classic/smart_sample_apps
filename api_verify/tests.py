@@ -245,7 +245,35 @@ class TestAllergies(TestRDF):
 
 class TestDemographics(TestRDF, TestDataModelStructure):
     '''Tests for the Demographics data model'''
-    pass
+    
+    def testGender(self):
+        '''Tests the gender component of the Demographics RDF'''
+        
+        if self.rdf:
+        
+            # Query for extracting height data from the RDF stream
+            q = """
+                   PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                   PREFIX sp:<http://smartplatforms.org/terms#>
+                   PREFIX foaf:<http://xmlns.com/foaf/0.1/>
+                   SELECT ?gender
+                   WHERE {
+                       ?s rdf:type sp:Demographics .
+                       ?s foaf:gender ?gender .
+                   }
+                """
+            
+            # Run the query
+            data = self.rdf.query(q)
+            
+            valid_vals = ("male", "female", "undifferentiated")
+            
+            for d in data:
+                gender = str(d[0])
+
+                if gender not in valid_vals:
+                    self.fail("Gender '%s' is not one of (%s)" %(gender, ", ".join(valid_vals)))
+
     
 class TestClinicalNotes(TestRDF, TestDataModelStructure):
     '''Tests for the Clinical Notes data model'''

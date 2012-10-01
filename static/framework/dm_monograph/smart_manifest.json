@@ -3,7 +3,7 @@
   "description": "A single page, specialized view for Diabetes Mellitus",
   "author": "Design and Implimentation: Arjun Sanyal <arjun.sanyal@childrens.harvard.edu>",
   "id": "dm_monograph@apps.smartplatforms.org",
-  "version": ".1a",
+  "version": "0.1.1",
   "optimalBrowserEnvironments": ["desktop"],
   "supportedBrowserEnvironments": ["desktop", "tablet"],
 
