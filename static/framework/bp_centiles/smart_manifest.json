@@ -17,7 +17,7 @@
        "http://smartplatforms.org/terms#Demographics": {
          "methods": ["GET"]
        },
-       "http://smartplatforms.org/terms#VitalSignSets": {
+       "http://smartplatforms.org/terms#VitalSignSet": {
          "methods": ["GET"]
        }
   }
