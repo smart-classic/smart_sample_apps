@@ -256,7 +256,7 @@ class TestDemographics(TestRDF, TestDataModelStructure):
                    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                    PREFIX sp:<http://smartplatforms.org/terms#>
                    PREFIX foaf:<http://xmlns.com/foaf/0.1/>
-                   SELECT ?gender
+                   SELECT ?gender ?s
                    WHERE {
                        ?s rdf:type sp:Demographics .
                        ?s foaf:gender ?gender .
