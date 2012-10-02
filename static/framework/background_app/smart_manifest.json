@@ -6,6 +6,5 @@
   "version" : ".1a",
 
   "mode" : "background",
-  "scope": "container",
-  "icon" :  "http://sample-apps.smartplatforms.org/icon.png"
+  "scope": "container"
 }
