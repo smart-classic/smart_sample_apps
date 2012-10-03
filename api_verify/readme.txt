@@ -79,7 +79,7 @@ the apps server:
 
   PYTHONPATH=.:.. && python main.py 8000
 
-The app provides SMART a manifest that can be used for registering the
+The app provides a manifest that can be used for registering the
 app with a SMART container at this address (assuming that you are
 running and accessing the app locally):
 
