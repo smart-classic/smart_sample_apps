@@ -38,36 +38,17 @@ SMART_SERVER_PARAMS = {
 }
 
 # URL mappings for web.py
-urls = ('/smartapp/index.html', 'index05',
-        '/smartapp/index-0.5.html', 'index05',
-        '/smartapp/index-0.4.html', 'index04',
-        '/smartapp/index-0.3.html', 'index03',
+urls = ('/smartapp/index.html', 'index',
         '/smartapp/getcalls', 'get_calls',
         '/smartapp/apicall', 'api_call',
         '/smartapp/runtests', 'run_tests',
         '/smartapp/describe', 'describe_queries')
 
-class index05:
-    '''Disseminator for the SMART v0.5 tester index page'''
+class index:
+    '''Disseminator for the SMART tester index page'''
     def GET(self):
         template_html = web.template.frender(APP_PATH + '/templates/index.html')
-        html = template_html("0.5")
-        web.header('Content-Type', 'text/html')
-        return html
-        
-class index04:
-    '''Disseminator for the SMART v0.4 tester index page'''
-    def GET(self):
-        template_html = web.template.frender(APP_PATH + '/templates/index.html')
-        html = template_html("0.4")
-        web.header('Content-Type', 'text/html')
-        return html
-        
-class index03:
-    '''Disseminator for the SMART v0.3 tester index page'''
-    def GET(self):
-        template_html = web.template.frender(APP_PATH + '/templates/index.html')
-        html = template_html("0.3")
+        html = template_html("0.6")
         web.header('Content-Type', 'text/html')
         return html
 
