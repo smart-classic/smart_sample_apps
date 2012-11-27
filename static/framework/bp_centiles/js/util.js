@@ -21,6 +21,27 @@ var years_apart = function(d1, d2) {
 };
 
 /**
+* Returns the decimal representation of the years of age
+*
+* @param {String} birthDate The date of birth for the person
+*
+* @returns {Number} A decimal number representing the years of age
+*/
+var current_age = function(birthDate) {
+
+    // Parse the dates
+    d1 = new XDate();
+    d2 = parse_date(birthDate);
+    
+    // The diffYears method in XDate returns the years difference as
+    // a decimal fraction
+    var res = d1.diffYears(d2) ; 
+    
+    // The difference should always be a positive number
+    return Math.abs(res);
+};
+
+/**
 * Returns the age at a given date with respect to the birth date
 *
 * @param {String} date Date string for the current date

@@ -192,10 +192,45 @@ if (!BPC) {
         // Initialize the patient information area
         patient = new BPC.Patient(demographics.name, demographics.birthday, demographics.gender, demographics.identifier);
         $("#patient-info").text(String(patient));
-        
-        // Display appropriate error message
+
         if (vitals_bp.length === 0) {
-            BPC.displayError("No ambulatory blood pressure measurements were found in the patient chart.");
+            // Display appropriate error message when there are no vitals
+            // and degrade to calculator-only mode
+        
+            //BPC.displayError("No ambulatory blood pressure measurements were found in the patient chart.");
+            
+            // Clear the error message
+            $("#info").text("").hide();
+        
+            // Set the default tab to "calculator" and disable the first three tabs
+            $('#tabs').tabs({
+                selected: 3
+            }).tabs('option','disabled', [0, 1, 2]);
+            
+            // Show the tabs
+            $("#tabs").show();
+            
+            // Initialize the calculator
+            BPC.initCalculator ({
+               age: current_age(patient.birthdate), 
+               sex: patient.sex, 
+               height: 0, 
+               systolic: 0, 
+               diastolic: 0});
+            
+            // Display the error message
+            $("#dialog-demo #alert-message").text("No ambulatory blood pressure measurements were found in the patient chart. You may want to try entering the current height and blood pressure measurements in the Pediatric Percentile Calculator manually.");
+            $("#dialog-demo").dialog({
+                closeOnEscape: false,
+                draggable: false,
+                resizable: false,
+                modal: true,
+                buttons: {
+                    Ok: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
         } else {
             
             // No errors detected -> proceed with full data processing
