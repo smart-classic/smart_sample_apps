@@ -156,7 +156,7 @@ var get_allergies = function(){
   return $.Deferred(function(dfd){
     SMART.get_allergies().then(function(r){
       _(r.objects.of_type.Allergy).each(function(a){
-        var allergen = a.drugClassAllergen || a.foodAllergen;
+        var allergen = a.drugClassAllergen || a.drugAllergen || a.otherAllergen;
         pt.allergies_arr.push([
           allergen.dcterms__title,
           a.allergicReaction.dcterms__title
