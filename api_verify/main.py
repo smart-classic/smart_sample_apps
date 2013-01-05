@@ -81,10 +81,7 @@ class get_calls:
             # Process only GET calls of "record_items" category plus a few specific
             # exceptions by adding them to the dictionary
             if method == "GET" and ((category == "record" and cardinality == "multiple") or
-                                    path == "/ontology" or
-                                    path == "/apps/manifests/" or
-                                    path == "/manifest" or
-                                    t.client_method_name == "get_demographics"):
+                                    t.client_method_name in ("get_demographics","get_ontology","get_container_manifest","get_app_manifests","get_user_preferences")):
 
                 # Build the generic python client call name and use it in the dictionary
                 out[target] = str(t.client_method_name)
