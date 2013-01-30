@@ -97,7 +97,6 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
   this.received_setup = function(message) {
     this.context = message.context;
     this.uuid = message.uuid;
-    this.credentials = message.credentials;
     this.manifest = message.manifest;
 
     this.user = message.context.user;
@@ -211,7 +210,6 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
           app_instance: {
             uuid: app_instance.uuid,
             context: app_instance.context,
-            credentials: app_instance.credentials,
             manifest: app_instance.manifest
           },
 
@@ -227,7 +225,6 @@ var SMART_CONNECT_CLIENT = function(smart_server_origin, frame) {
         params:	{
           uuid: app_instance.uuid,
           context: app_instance.context,
-          credentials: app_instance.credentials, // (won't exist yet.)
           manifest: app_instance.manifest
         },
         success: success
