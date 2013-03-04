@@ -100,7 +100,7 @@ if (!BPC) {
                     .where('?v dcterms:date ?vital_date')
                     .where('?v sp:height ?h')
                     .where('?h sp:value ?height')
-                    .where('?h sp:unit \"m\"')
+                    .where('?h sp:unit \"cm\"')
                     .each(function(){
                         vitals.heightData.push({
                             vital_date: this.vital_date.value,
@@ -311,7 +311,7 @@ if (!BPC) {
             for (i = 0; i < vitals_height.length; i++) {
                 height_data.push({age: years_apart( vitals_height[i].vital_date, patient.birthdate ),
                                   date: vitals_height[i].vital_date,
-                                  height: Math.round(vitals_height[i].height * 100)});
+                                  height: vitals_height[i].height * 1.0});
             }
 
             // Sort the height data array
