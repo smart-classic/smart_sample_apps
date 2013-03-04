@@ -311,7 +311,7 @@ if (!BPC) {
             for (i = 0; i < vitals_height.length; i++) {
                 height_data.push({age: years_apart( vitals_height[i].vital_date, patient.birthdate ),
                                   date: vitals_height[i].vital_date,
-                                  height: vitals_height[i].height * 1.0});
+                                  height: Math.round(vitals_height[i].height * 1.0)});
             }
 
             // Sort the height data array
