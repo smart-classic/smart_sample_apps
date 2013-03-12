@@ -211,7 +211,7 @@ $.Model.extend('ApiCall',
     
         if (t.call_cardinality.value === "multiple") {
             params.push ("limit");
-            params.push ("offset");
+            //params.push ("offset");
         }
 		
 		ret = new ApiCall({path: t.call_path.value,
