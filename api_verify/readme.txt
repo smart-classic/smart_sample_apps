@@ -83,4 +83,8 @@ The app provides a manifest that can be used for registering the
 app with a SMART container at this address (assuming that you are
 running and accessing the app locally):
 
-  http://localhost:8000/static/smart_manifes.json
+  http://localhost:8000/static/smart_manifest.json
+
+Once you have installed the manifest into the container, replace the
+consumer_secret in the main.py file with the one returned by the
+container.
