@@ -30,7 +30,7 @@ if (!BPC) {
                                           //                  progressive = paginate automatically,
                                           //                  manual = user loads year by year
     BPC.settings.vitals_limit = 50; // step used by progressive loading
-    BPC.settings.default_view = 0; // 0 = long term view, 1 = short term view, 2 = table view, 3 = calculator
+    BPC.settings.default_view = 0; // 0 = short term view, 1 = long term view, 2 = table view, 3 = calculator
     
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
     BPC.settings.zones = [

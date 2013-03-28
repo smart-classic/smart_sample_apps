@@ -1,0 +1,30 @@
+{
+  "name" : "Pref/Scratch Demo",
+  "description" : "Provides a basic interface for playing around with the scratchpad/preferences API",
+  "author" : "Nikolai Schwertner, Children's Hospital Boston",
+  "id" : "pref-scratch@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "mode" : "ui",
+  "scope": "record",
+
+  "index" : "http://sample-apps.smartplatforms.org/framework/pref_scratch/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/pref_scratch/icon.png",
+  
+  "requires" : {
+        "http://smartplatforms.org/terms#UserPreferences": {
+            "methods": [
+                "GET", 
+                "DELETE", 
+                "PUT"
+            ]
+        },
+        "http://smartplatforms.org/terms#ScratchpadData": {
+            "methods": [
+                "GET", 
+                "DELETE", 
+                "PUT"
+            ]
+        }
+  }
+}

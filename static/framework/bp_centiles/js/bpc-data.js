@@ -100,7 +100,7 @@ if (!BPC) {
                     .where('?v dcterms:date ?vital_date')
                     .where('?v sp:height ?h')
                     .where('?h sp:value ?height')
-                    .where('?h sp:unit \"m\"')
+                    .where('?h sp:unit \"cm\"')
                     .each(function(){
                         vitals.heightData.push({
                             vital_date: this.vital_date.value,
@@ -263,9 +263,44 @@ if (!BPC) {
         patient = new BPC.Patient(demographics.name, demographics.birthday, demographics.gender);
         $("#patient-info").text(String(patient));
         
-        // Display appropriate error message
         if (vitals_bp.length === 0) {
-            BPC.displayError("No vitals in the patient record");
+            // Display appropriate error message when there are no vitals
+            // and degrade to calculator-only mode
+        
+            //BPC.displayError("No vitals in the patient record");
+            
+            // Clear the error message
+            $("#info").text("").hide();
+        
+            // Set the default tab to "calculator" and disable the first three tabs
+            $('#tabs').tabs({
+                selected: 3
+            }).tabs('option','disabled', [0, 1, 2]);
+            
+            // Show the tabs
+            $("#tabs").show();
+            
+            // Initialize the calculator
+            BPC.initCalculator ({
+               age: current_age(patient.birthdate), 
+               sex: patient.sex, 
+               height: 0, 
+               systolic: 0, 
+               diastolic: 0});
+            
+            // Display the error message
+            $("#dialog-demo #alert-message").text("There are no usable vital signs in the patient record. You may want to try entering the current height and blood pressure measurements in the Pediatric Percentile Calculator manually.");
+            $("#dialog-demo").dialog({
+                closeOnEscape: false,
+                draggable: false,
+                resizable: false,
+                modal: true,
+                buttons: {
+                    Ok: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
         } else {
             
             // No errors detected -> proceed with full data processing
@@ -276,7 +311,7 @@ if (!BPC) {
             for (i = 0; i < vitals_height.length; i++) {
                 height_data.push({age: years_apart( vitals_height[i].vital_date, patient.birthdate ),
                                   date: vitals_height[i].vital_date,
-                                  height: Math.round(vitals_height[i].height * 100)});
+                                  height: Math.round(vitals_height[i].height * 1.0)});
             }
 
             // Sort the height data array

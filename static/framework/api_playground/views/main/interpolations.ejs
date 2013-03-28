@@ -1,12 +1,19 @@
 <em><%= call.method%> 
 <%
 var PARAM_CLUES = {
-    encounter_type: "ambulatory|inpatient",
-    date_from: "2000-01-01",
-    date_to: "2012-12-31",
-    limit: 10,
-    offset: 0,
-    loinc: "29571-7|38478-4"
+    format: "e.g. metadata|combined|raw",
+    encounter_type: "e.g. ambulatory|inpatient",
+    date_from: "e.g. 2000-01-01",
+    date_from_excluding: "e.g. 2000-01-01",
+    date_from_including: "e.g. 2000-01-01",
+    date_to: "e.g. 2012-12-31",
+    date_to_excluding: "e.g. 2012-12-31",
+    date_to_including: "e.g. 2012-12-31",
+    limit: "e.g. 10",
+    //offset: "e.g. 0",
+    loinc: "e.g. 29571-7|38478-4",
+    snomed: "e.g. 161891005|73211009",
+    rxnorm: "e.g. 856845|202433"
 };
 
 var params = call.parameters;

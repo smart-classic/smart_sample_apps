@@ -1,4 +1,4 @@
-API Verifier 0.4.1
+API Verifier 0.6
 Nikolai Schwertner,  CHIP
 -------------------------
 
@@ -41,9 +41,6 @@ The "Queries" tab lists the details of the automatically-generated ontology
 tests that the API Verifier runs against the data models. (There are other
 tests included in the verifier that are not documented in this view.)
 
-The app can also be used for testing a SMART v0.3 container (see "Installing
-the Application" section of the readme for details).
-
 # How to use the API Verifier
 
 While passing the API Verifier's tests does provide a high level of conformity
@@ -74,7 +71,7 @@ Now, obtain the app code:
 Note (for Windows users): You will need to set up manually the
 following symlinks from an admin-privileged command prompt:
   mklink /d smart_client ..\smart_client
-  mklink /d static\smart-0.4 ..\..\static\framework\smart\scripts
+  mklink /d static\smart ..\..\static\framework\smart\scripts
   
 Before launching the apps, you should copy "settings.py.default"
 into "settings.py" and edit the APP_PATH value. Now you can launch
@@ -82,16 +79,12 @@ the apps server:
 
   PYTHONPATH=.:.. && python main.py 8000
 
-The app provides SMART manifests that can be used for registering the
+The app provides a manifest that can be used for registering the
 app with a SMART container at this address (assuming that you are
 running and accessing the app locally):
 
-  http://localhost:8000/static/manifests/
+  http://localhost:8000/static/smart_manifest.json
 
-The "smart_manifest-0.4.json" should be used for registering the app
-with a SMART 0.4 container and "smart_manifest-0.3.json" should be
-used with a SMART 0.3 container. "smart_manifest.json" is an alias
-to "smart_manifest-0.4.json".
-
-If you are running the app locally as "My App" on the reference container,
-the app will assume that the container is v0.4 and will act accordingly.
+Once you have installed the manifest into the container, replace the
+consumer_secret in the main.py file with the one returned by the
+container.

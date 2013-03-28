@@ -42,6 +42,12 @@ $.Model.extend('ApiType',
 			for (var i = 0; i < calls.length; i++) {
 			    if (calls[i].call_category.value.match(/^record/)) {
                     var params = [];
+                    var parameters = ont.where(calls[i].call.toString() + " rdf:type api:Call")
+                                     .where(calls[i].call.toString() + " api:hasParameter ?p")
+                                     .where("?p api:clientParameterName ?call_parameter");
+                    for (var j = 0; j < parameters.length; j++) {
+                        params.push (parameters[j].call_parameter.value.toString());
+                    }
                     var filters = ont.where(calls[i].call.toString() + " rdf:type api:Call")
                                      .where(calls[i].call.toString() + " api:hasFilter ?f")
                                      .where("?f api:clientParameterName ?call_parameter");
@@ -211,7 +217,7 @@ $.Model.extend('ApiCall',
     
         if (t.call_cardinality.value === "multiple") {
             params.push ("limit");
-            params.push ("offset");
+            //params.push ("offset");
         }
 		
 		ret = new ApiCall({path: t.call_path.value,

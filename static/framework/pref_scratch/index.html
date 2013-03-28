@@ -1,0 +1,78 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <title>Preferences/Scratchpad Demo App</title>
+    <script src='../smart/scripts/smart-api-client.js'></script>
+  </head> 
+  <body> 
+ 
+    <div>
+        <div><h2>Preferences/Scratchpad Demo App</h2></div>
+         <div>
+            <div><h3>Preferences</h3></div>
+            <div><textarea id="preferences" cols="40" rows="4"></textarea></div>
+            <div>
+                <button onclick="deletePreferences()">Delete</button>
+                <button onclick="savePreferences()">Save</button>
+            </div>
+        </div>
+        <div>
+            <div><h3>Scratchpad</h3></div>
+            <div><textarea id="scratchpad" cols="40" rows="4"></textarea></div>
+            <div>
+                <button onclick="deleteScratchpad()">Delete</button>
+                <button onclick="saveScratchpad()">Save</button>
+            </div>
+        </div>
+    </div>
+ 
+    <script>   
+        var $ = SMART.$;
+      
+        function deletePreferences () {
+            SMART.delete_user_preferences().success(function(r) {
+                $("#preferences").text("");
+                alert ("Preferences deleted");
+            });
+        }
+        
+        function deleteScratchpad () {
+            SMART.delete_scratchpad_data().success(function(r) {
+                $("#scratchpad").text("");
+                alert ("Scratchpad deleted");
+            });
+        }
+        
+        function savePreferences () {
+            SMART.put_user_preferences({data:$("#preferences").val(), contentType:"text/plain"}).success(function(r) {
+                alert ("Preferences saved");
+            });
+        }
+        
+        function saveScratchpad () {
+            SMART.put_scratchpad_data({data:$("#scratchpad").val(), contentType:"text/plain"}).success(function(r) {
+                alert ("Scratchpad saved");
+            });
+        }
+        
+        function loadPreferences () {
+            SMART.get_user_preferences().success(function(r) {
+                $("#preferences").text(r.body);
+            });
+        }
+
+           
+        function loadScratchpad () {
+            SMART.get_scratchpad_data().success(function(r) {
+                $("#scratchpad").text(r.body);
+            });
+        }
+        
+        SMART.ready(function(){
+            loadPreferences ();
+            loadScratchpad ();
+        });		
+    </script> 
+
+  </body> 
+</html> 

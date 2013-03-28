@@ -24,7 +24,7 @@
        $("#record_name").text(SMART.record.full_name);
 
        var iframes = [$("#app1"), $("#app2"), $("#app3")];
-       SMART.MANIFESTS_get(function(response) {
+       SMART.get_app_manifests(function(response) {
 
          var carousel = jQuery("#carousel"),
              manifests = response.json;
