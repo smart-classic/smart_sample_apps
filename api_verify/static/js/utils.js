@@ -76,7 +76,7 @@ if (!VERIFY) {
     VERIFY.callREST = function (call_name) {
         $.post(
             "apicall",
-            {'call_name': call_name, 'oauth_header': SMART.credentials.oauth_header},
+            {'call_name': call_name},
             function (responseText) {
                 // Parse the response from the server REST call handler
                 var response = JSON.parse (responseText);
