@@ -278,9 +278,17 @@ class TestDemographics(TestRDF, TestDataModelStructure):
 class TestClinicalNotes(TestRDF, TestDataModelStructure):
     '''Tests for the Clinical Notes data model'''
     pass
+    
+class TestDocuments(TestRDF, TestDataModelStructure):
+    '''Tests for the Documents data model'''
+    pass
 
 class TestEncounters(TestRDF, TestDataModelStructure):
     '''Tests for the Encounters data model'''
+    pass
+    
+class TestFamilyHistory(TestRDF, TestDataModelStructure):
+    '''Tests for the Family Hisotry data model'''
     pass
     
 class TestFulfillments(TestRDF, TestDataModelStructure):
@@ -301,6 +309,10 @@ class TestLabResults(TestRDF, TestDataModelStructure):
     
 class TestMedications(TestRDF, TestDataModelStructure):
     '''Tests for the Medications data model'''
+    pass
+    
+class TestPhotographs(TestRDF, TestDataModelStructure):
+    '''Tests for the Photographs data model'''
     pass
     
 class TestProblems(TestRDF, TestDataModelStructure):
@@ -488,13 +500,16 @@ tests = {'Allergy': TestAllergies,
          'Demographics': TestDemographics,
          'ClinicalNote': TestClinicalNotes,
          'ContainerManifest': TestContainerManifest,
+         'Document': TestDocuments,
          'Encounter': TestEncounters,
+         'FamilyHistory': TestFamilyHistory,
          'Fulfillment': TestFulfillments,
          'Immunization': TestImmunizations,
          'LabPanel': TestLabPanels,
          'LabResult': TestLabResults,
          'Medication': TestMedications,
          'Ontology': TestOntology,
+         'Photograph': TestPhotographs,
          'Problem': TestProblems,
          'Procedure': TestProcedures,
          'UserPreferences': TestPreferences,
