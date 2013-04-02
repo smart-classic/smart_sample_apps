@@ -19,10 +19,12 @@ import tempfile
 import time
 import urllib
 import web
+
 from smart_client.client import SMARTClient
 from smart_client.common.rdf_tools import rdf_ontology
 from settings import APP_PATH, ONTOLOGY_PATH
 from tests import runTest, getMessages, describeQueries
+from threading import Lock
 
 # Configuration
 ###########################################################################
@@ -231,27 +233,13 @@ class api_call:
     def POST(self):
         '''Executes a python client API call identified by its generic name'''
         global _smart
-        global _session
-
-        #req_token = _session['req_token']
-        #api_base = _session['api_base']
-        #record_id = _session['record_id']
 
         call_name = web.input().call_name
 
         # Figure out the SMART model corresponding to the API call
-        # AKS: failure mode?
         model = get_model(call_name)
 
-        test_p = _test_token()
-
-        logging.debug('Calling ' + call_name + ' init? ' + str(test_p))
-
-        # race condition?
-        if not test_p:
-            time.sleep(5)
-
-        # call the method
+        logging.debug('Calling ' + call_name)
         method_to_call = getattr(SMARTClient, call_name)
         r = method_to_call(_smart)
 
@@ -287,8 +275,6 @@ class describe_queries:
     def GET(self):
         '''Returns a string describing the queries used in testing a DM'''
         model = web.input().model
-
-        # Return description
         return describeQueries(model)
 
 
@@ -329,9 +315,23 @@ def get_model(call):
             return c.target.replace("http://smartplatforms.org/terms#", "")
 
 
-# Initialize web.py
+# Simulate single threading using a mutex. This is to prevent errors
+# in httplib2 (used by oauth2) which is comically not threadsafe! Argh!!!
+def mutex_processor():
+    mutex = Lock()
+
+    def processor_func(handle):
+        mutex.acquire()
+        try:
+            return handle()
+        finally:
+            mutex.release()
+    return processor_func
+
+
 web.config.debug = False
 app = web.application(urls, globals())
+app.add_processor(mutex_processor())
 
 if __name__ == "__main__":
     app.run()
