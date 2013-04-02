@@ -33,11 +33,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 # SMART Container OAuth Endpoint Configuration
 _ENDPOINT = {
-    "url": "http://localhost:7000",
+    "url": "http://sandbox-v06.smartplatforms.org/",
     "name": "Localhost",
     "app_id": "api-verifier@apps.smartplatforms.org",
     "consumer_key": "api-verifier@apps.smartplatforms.org",
-    "consumer_secret": "EYsgXsIHisHecbxO"
+    "consumer_secret": "changeme"
 }
 
 # webpy file based sessions
@@ -104,6 +104,13 @@ def _exchange_token(verifier):
     logging.debug("Exchanged req_token for acc_token: %s" % acc_token)
     _session['acc_token'] = acc_token
     smart.update_token(acc_token)
+
+    # store in cookies too
+    web.setcookie('oauth_token_secret', acc_token['oauth_token_secret'])
+    web.setcookie('oauth_token', acc_token['oauth_token'])
+    web.setcookie('user_id', acc_token['user_id'])
+    web.setcookie('api_base', api_base)
+    web.setcookie('record_id', record_id)
     return True
 
 
@@ -156,6 +163,10 @@ class index:
         # Do we have a valid access token?
         if 'acc_token' not in _session or not _test_token():
             # Nope, clear the acc and req tokens
+            web.setcookie('oauth_token_secret', '', -1)
+            web.setcookie('oauth_token', '', -1)
+            web.setcookie('record_id', '', -1)
+            web.setcookie('user_id', '', -1)
             _session['acc_token'] = None
             _session['req_token'] = None
             fetched, error_msg = _request_token_for_record(api_base, record_id)
@@ -233,6 +244,29 @@ class api_call:
     def POST(self):
         '''Executes a python client API call identified by its generic name'''
         global _smart
+
+        # make sure the SMARTClient is init'd
+        cookies = web.cookies()
+        api_base = cookies.api_base
+        record_id = cookies.record_id
+
+        # reconstruct acc_token from cookies
+        acc_token = {
+            'oauth_token_secret': cookies.oauth_token_secret,
+            'oauth_token': cookies.oauth_token,
+            'record_id': record_id,
+            'user_id': cookies.user_id
+        }
+
+        logging.debug('Cookies are: api_base: ' + api_base +
+                ' record_id: ' + record_id +
+                ' acc_token: ' + str(acc_token))
+
+        smart = _smart_client(api_base, record_id)
+        if smart is None:
+            return False
+
+        smart.update_token(acc_token)
 
         call_name = web.input().call_name
 
