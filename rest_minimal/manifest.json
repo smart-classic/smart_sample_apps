@@ -1,0 +1,13 @@
+{
+  "name": "SMART REST Minimal",
+  "description": "The minimal SMART REST example app",
+  "author": "Arjun Sanyal & Pascal Pfiffner, Harvard Medical School",
+  "id": "rest-minimal@apps.smartplatforms.org",
+  "mode": "ui",
+  "scope": "record",
+  "index": "http://localhost:8000/",
+  "oauth_callback": "http://localhost:8000/authorize",
+  "icon": "http://localhost:8000/static/icon.png",
+  "smart_version": "0.6",
+  "version": ".1"
+}
