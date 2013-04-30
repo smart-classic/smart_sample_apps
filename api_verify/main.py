@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # SMART Container OAuth Endpoint Configuration
 _ENDPOINT = {
-    "url": "http://sandbox-v06.smartplatforms.org/",
+    "url": "http://sandbox-api-v06.smartplatforms.org/",
     "name": "Localhost",
     "app_id": "api-verifier@apps.smartplatforms.org",
     "consumer_key": "api-verifier@apps.smartplatforms.org",
@@ -58,7 +58,7 @@ def _smart_client(api_base, record_id=None):
         try:
             _smart = SMARTClient(_ENDPOINT.get('app_id'), api_base, _ENDPOINT)
         except Exception, e:
-            logging.fatal("Could not init SMARTClient. " + str(e))
+            logging.critical("Could not init SMARTClient. " + str(e))
 
     _smart.record_id = record_id
     return _smart
@@ -152,10 +152,11 @@ class index:
         # We should have the api_base and record_id in the query string
         # e.g we're not going to redirect to the record selection UI
         global _session
-        _session['api_base'] = api_base = web.input().api_base
-        _session['record_id'] = record_id = web.input().record_id
+        _session['api_base'] = api_base = _ENDPOINT.get('url')
+        _session['record_id'] = record_id = web.input().get('record_id')
 
-        logging.debug('api_base: ' + api_base + ' record_id: ' + record_id)
+        logging.debug('api_base: ' + str(api_base) +
+                      ' record_id: ' + str(record_id))
 
         # Init the SMARTClient
         smart = _smart_client(api_base, record_id)
@@ -197,7 +198,7 @@ class authorized:
         record_id = _session['record_id']
 
         if new_oauth_token != req_token.get('oauth_token', None):
-            logging.fatal('Token mismatch in /authorize! Aborting.')
+            logging.critical('Token mismatch in /authorize! Aborting.')
             web.internalerror()
             return
 
@@ -206,7 +207,7 @@ class authorized:
                 '/smartapp/index.html?api_base=%s&record_id=%s' %
                 (api_base, record_id))
         else:
-            logging.fatal('Could not exchange token.')
+            logging.critical('Could not exchange token.')
             web.internalerror()
 
 
