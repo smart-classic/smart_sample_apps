@@ -5,6 +5,8 @@ Arjun Sanyal <arjun dot sanyal at childrens harvard edu>
 Pascal Pfiffner <pascal dot pfiffner at childrens.harvard.edu>
 """
 
+# FIXME: remove api_base everywhere!!
+
 import flask
 import logging
 from smart_client.client import SMARTClient

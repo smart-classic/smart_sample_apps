@@ -24,7 +24,7 @@
 """
 
 from django.conf.urls.defaults import patterns
-from MedCheck.views import index, risk, about, choose_med
+from MedCheck.views import index, risk, about, choose_med, authorize
 import settings
 
 # A typical urlconf entry looks like this:
@@ -37,6 +37,7 @@ import settings
 
 urlpatterns = patterns('',
     (r'^smartapp/index.html$', index),
+    (r'^smartapp/authorize$', authorize),
     
     # List of all patients, indicating those with potential adherence issues
     (r'^smartapp/risk.html$', risk),
