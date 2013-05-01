@@ -193,7 +193,7 @@ def risk(request):
     drug = request.GET.get('drug', 'all')
        
     # Current context information
-    client = get_smart_client()
+    client = get_smart_client(request.COOKIES.get('record_id'))
            
     # Get the medication list for this context
     medications = client.get_medications().graph
@@ -274,15 +274,9 @@ def risk(request):
 def about(request):
     """ This function creates a page with information about the MPR Monitor app."""
 	
-	# Get the template
     page = get_template('about.html')
-            
-    # Current context information
-    client = get_smart_client()
-    variables = Context({
-    })
-    
-	# Render the page
+    client = get_smart_client(request.COOKIES.get('record_id'))
+    variables = Context({ })
     output = page.render(variables)
     return HttpResponse(output)
 
@@ -292,13 +286,10 @@ def about(request):
 #===================================================
 def choose_med(request):
     """ This function creates a page with instructions for the MPR Monitor app."""
+
     page = get_template('choose_med.html')
-    
-    # Current context information
-    client = get_smart_client()
-    variables = Context({
-    })
-    
+    client = get_smart_client(request.COOKIES.get('record_id'))
+    variables = Context({ })
 	# Render the page
     output = page.render(variables)
     return HttpResponse(output)
@@ -307,17 +298,12 @@ def choose_med(request):
 # Convenience function to get oa_params and ret
 # variables from the SmartClient and return them.
 #===================================================
-def get_smart_client(record_id=None):
+def get_smart_client(record_id):
     """ Initialize a new SmartClient and return it """
-    
-    api_base = _ENDPOINT.get('url')
-
-    if not record_id:
-        record_id = request.GET.get('record_id')
 
     try:
         client = SMARTClient(_ENDPOINT.get('app_id'),
-                             api_base,
+                             _ENDPOINT.get('url'),
                              _ENDPOINT)
     except Exception as e:
         logging.critical('Could not init SMARTClient: %s' % e)
