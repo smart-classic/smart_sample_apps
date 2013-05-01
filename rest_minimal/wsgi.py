@@ -5,8 +5,6 @@ Arjun Sanyal <arjun dot sanyal at childrens harvard edu>
 Pascal Pfiffner <pascal dot pfiffner at childrens.harvard.edu>
 """
 
-# FIXME: remove api_base everywhere!!
-
 import flask
 import logging
 from smart_client.client import SMARTClient
@@ -24,7 +22,7 @@ _ENDPOINT = {
 }
 
 # Other Configuration (you shouldn't need to change this)
-logging.basicConfig(level=logging.DEBUG)  # cf. .INFO or commented out
+logging.basicConfig(level=logging.DEBUG)  # cf. .INFO; default is WARNING
 application = app = flask.Flask(  # Some PaaS need "application"
     'wsgi',
     template_folder='app',
@@ -38,18 +36,19 @@ app.secret_key = 'mySMARTrestAPPrules!!'  # only for encrypting the session
 ###########################################################################
 # SMARTClient and OAuth Helper Functions
 ###########################################################################
-def _init_smart_client(api_base, record_id=None):
+def _init_smart_client(record_id=None):
     """ Returns the SMART client, configured accordingly. """
     try:
         client = SMARTClient(_ENDPOINT.get('app_id'),
-                             api_base,
+                             _ENDPOINT.get('url'),
                              _ENDPOINT)
     except Exception as e:
         logging.critical('Could not init SMARTClient: %s' % e)
         flask.abort(500)
         return
 
-    client.record_id = record_id  # record_id is optional at this point
+    # initial client setup doesn't require record_id
+    client.record_id = record_id
     return client
 
 
@@ -87,10 +86,9 @@ def _exchange_token(verifier):
     """ Exchanges verifier for an acc_token and stores it in the session """
     record_id = flask.session['record_id']
     req_token = flask.session['req_token']
-    api_base = flask.session['api_base']
-    assert record_id and req_token and api_base
+    assert record_id and req_token
 
-    client = _init_smart_client(api_base, record_id)
+    client = _init_smart_client(record_id)
     client.update_token(req_token)
 
     try:
@@ -128,7 +126,7 @@ def index():
         # no record id in the req, clear session and redir to record selection
         flask.session['acc_token'] = None
         flask.session['req_token'] = None
-        client = _init_smart_client(api_base)  # just init to get launch_url
+        client = _init_smart_client()  # just init to get launch_url
         assert client.launch_url, "No launch_url found in client. Aborting."
         logging.debug('Redirecting to app launch_url: ' + client.launch_url)
         return flask.redirect(client.launch_url)
@@ -143,7 +141,7 @@ def index():
 
     logging.debug('record_id: ' + record_id)
 
-    client = _init_smart_client(api_base, record_id)
+    client = _init_smart_client(record_id)
 
     acc_token = flask.session.get('acc_token')
 
@@ -189,6 +187,7 @@ def authorize():
     api_base = flask.session['api_base']
     record_id = flask.session['record_id']
     assert new_oauth_token == req_token.get('oauth_token')
+    assert api_base and record_id
 
     _exchange_token(flask.request.args.get('oauth_verifier'))
     return flask.redirect('/smartapp/index.html?api_base=%s&record_id=%s' %
