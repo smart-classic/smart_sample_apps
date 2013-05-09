@@ -8,15 +8,7 @@
   "mode" : "ui",
   "scope" : "record",
 
-  "index" :  "http://mpr-monitor.smartplatforms.org/smartapp/index.html",
-  "icon" :  "http://mpr-monitor.smartplatforms.org/smartapp/icon.png",
- 
-  "requires" : {
-       "http://smartplatforms.org/terms#Demographics": {
-         "methods": ["GET"]
-       },
-       "http://smartplatforms.org/terms#Medication": {
-         "methods": ["GET"]
-       }
-  }
+  "index" :  "http://localhost:8000/smartapp/index.html",
+  "oauth_callback": "http://localhost:8000/smartapp/authorize",
+  "icon" :  "http://localhost:8000/smartapp/icon.png"
 }

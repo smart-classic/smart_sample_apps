@@ -22,30 +22,29 @@
 
     $Log: views.py,v $
 """
-# Django imports.
 from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import get_template
 from django.template import RequestContext
 from django.utils import simplejson 
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 
-# The SMArt API uses these libraries
+import ast
 import datetime
+import logging
 import urllib
 import mpr_monitor.settings as settings
-import smart_client.smart as smart
-import smart_client.oauth as oauth
 import adherenceTests
+from smart_client.client import SMARTClient
+logging.basicConfig(level=logging.DEBUG)  # cf. .INFO or commented out
 
-# Basic configuration:  the consumer key and secret we'll use
-# to OAuth-sign requests.
-SMART_SERVER_OAUTH = {'consumer_key': '', 
-                      'consumer_secret': 'smartapp-secret'}
-
-# The SMArt container we're planning to talk to
-SMART_SERVER_PARAMS = {
-    'api_base' : ''
+# SMART Container OAuth Endpoint Configuration
+_ENDPOINT = {
+    "url": "http://localhost:7000",
+    "name": "SMART Sandbox API v0.6",
+    "app_id": "mpr-monitor@apps.smartplatforms.org",
+    "consumer_key": "mpr-monitor@apps.smartplatforms.org",
+    "consumer_secret": "smartapp-secret"
 }
 
 # Global variables
@@ -64,13 +63,37 @@ def index(request):
 	# Declare global variables that may be modified here
     global Global_PATIENT_ID 
     global Global_ADHERE_VARS 
-	
-    # Current context information
-    oa_params, client, smart_oauth_header = get_smart_client(request)
+    args_record_id = request.GET.get('record_id')
+    current_record_id = request.COOKIES.get('record_id')
+    record_change_p = False
+
+    # have we changed records?
+    if current_record_id != args_record_id:
+        record_change_p = True
+        patientID = args_record_id
+    else:
+        patientID = current_record_id
+
+    client = get_smart_client(patientID)
+
+    # do we already have an acc_token?
+    acc_token = request.COOKIES.get('acc_token')
+    logging.debug('acc_token is: ' + str(acc_token))
+
+    if not acc_token or record_change_p:
+        req_token = client.fetch_request_token()
+        logging.debug("Redirecting to authorize url")
+        response = redirect(client.auth_redirect_url)
+        response.set_cookie('record_id', patientID, 600) 
+        logging.debug('req_token cookie is: ' + str(request.COOKIES.get('req_token')))
+        logging.debug('setting              : ' + str(req_token))
+
+        response.set_cookie('req_token', req_token, 60) 
+        response.set_cookie('acc_token', '', 60) 
+        return response
+    else:
+        client.update_token(ast.literal_eval(acc_token))
 	 
-    # User or physician and the patient name
-    user = oa_params["smart_user_id"]
-    patientID = oa_params["smart_record_id"]
             
     # Get the medication list for this context
     # Note the general pattern: GET /records/{record_id}/medications/
@@ -114,18 +137,45 @@ def index(request):
 	# Send these variables to the page for rendering
     variables = Context({
         'head_title': u'Medication Adherence Monitor',
-        'user': user,
         'patientID': patientID,
         'meds_flags': meds_flags,			# Contains all the data needed for tables and plotting 
         'media_root': settings.MEDIA_ROOT,
         'patient_name': patient_name,
         'drug_class_array': sorted_drug_class_list,
-        'oauth_header': urllib.quote(smart_oauth_header),
     })
     output = indexpage.render(variables)
-    return HttpResponse(output)
+    response = HttpResponse(output)
+    response.set_cookie('record_id', patientID, 600) 
+    return response
 
-    
+def authorize(request):
+    """ Extract the oauth_verifier and exchange it for an access token. """
+
+    oauth_token = request.GET.get('oauth_token')
+    oauth_verifier = request.GET.get('oauth_verifier')
+    record_id = request.COOKIES.get('record_id')
+    req_token = ast.literal_eval(request.COOKIES.get('req_token'))
+    assert oauth_token and record_id and req_token
+    assert oauth_token == req_token.get('oauth_token')
+
+    # exchange req_token for acc_token
+    client = get_smart_client(record_id)
+    client.update_token(req_token)
+
+    try:
+        acc_token = client.exchange_token(oauth_verifier)
+    except Exception as e:
+        logging.critical("Token exchange failed: %s" % e)
+        return 
+
+    # success, store it!
+    logging.debug("Exchanged req_token for acc_token: %s" % acc_token)
+    response = redirect('/smartapp/index.html?api_base=%s&record_id=%s' %
+                          (_ENDPOINT.get('url'),
+                           record_id))
+    response.set_cookie('acc_token', acc_token, 600)
+    return response
+
 #===================================================
 # Creates data and serves information about 
 # adherence for specific medications.
@@ -143,7 +193,7 @@ def risk(request):
     drug = request.GET.get('drug', 'all')
        
     # Current context information
-    oa_params, client, smart_oauth_header = get_smart_client(request)
+    client = get_smart_client(request.COOKIES.get('record_id'))
            
     # Get the medication list for this context
     medications = client.get_medications().graph
@@ -213,7 +263,6 @@ def risk(request):
                 'width': width,
                 'height': height,
                 'drug_class_array': sorted_drug_class_array,
-                'oauth_header': urllib.quote(smart_oauth_header),
                 })     
     response = render_to_response("risk.html", context_instance=variables )
     return HttpResponse(response)
@@ -225,16 +274,9 @@ def risk(request):
 def about(request):
     """ This function creates a page with information about the MPR Monitor app."""
 	
-	# Get the template
     page = get_template('about.html')
-            
-    # Current context information
-    oa_params, client, smart_oauth_header = get_smart_client(request)
-    variables = Context({
-        'oauth_header': urllib.quote(smart_oauth_header),
-    })
-    
-	# Render the page
+    client = get_smart_client(request.COOKIES.get('record_id'))
+    variables = Context({ })
     output = page.render(variables)
     return HttpResponse(output)
 
@@ -244,14 +286,10 @@ def about(request):
 #===================================================
 def choose_med(request):
     """ This function creates a page with instructions for the MPR Monitor app."""
+
     page = get_template('choose_med.html')
-    
-    # Current context information
-    oa_params, client, smart_oauth_header = get_smart_client(request)
-    variables = Context({
-        'oauth_header': urllib.quote(smart_oauth_header),
-    })
-    
+    client = get_smart_client(request.COOKIES.get('record_id'))
+    variables = Context({ })
 	# Render the page
     output = page.render(variables)
     return HttpResponse(output)
@@ -260,29 +298,19 @@ def choose_med(request):
 # Convenience function to get oa_params and ret
 # variables from the SmartClient and return them.
 #===================================================
-def get_smart_client(request):
-    """ Initialize a new SmartClient and return oa_params, ret."""
+def get_smart_client(record_id):
+    """ Initialize a new SmartClient and return it """
 
     try:
-        smart_oauth_header_quoted = request.GET.get('oauth_header')
-        smart_oauth_header = urllib.unquote(smart_oauth_header_quoted)
-    except:
-        return "Couldn't find a parameter to match the name 'oauth_header'"
+        client = SMARTClient(_ENDPOINT.get('app_id'),
+                             _ENDPOINT.get('url'),
+                             _ENDPOINT)
+    except Exception as e:
+        logging.critical('Could not init SMARTClient: %s' % e)
+        return
 
-    oa_params = oauth.parse_header(smart_oauth_header)
-    
-    resource_tokens={'oauth_token':       oa_params['smart_oauth_token'],
-                     'oauth_token_secret':oa_params['smart_oauth_token_secret']}
-                     
-    SMART_SERVER_PARAMS['api_base'] = oa_params['smart_container_api_base']
-    SMART_SERVER_OAUTH['consumer_key'] = oa_params['smart_app_id']
-
-    ret = smart.SmartClient(SMART_SERVER_OAUTH['consumer_key'], 
-                       SMART_SERVER_PARAMS, 
-                       SMART_SERVER_OAUTH, 
-                       resource_tokens)
-    ret.record_id=oa_params['smart_record_id']
-    return oa_params, ret, smart_oauth_header
+    client.record_id = record_id
+    return client
 
 #===================================================
 # Function to get birthday and patient name from
@@ -315,5 +343,3 @@ def get_birthday_name(client):
         birthday = d[3]
         
     return birthday, patient_name
-
-
