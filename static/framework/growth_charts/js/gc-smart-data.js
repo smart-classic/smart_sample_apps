@@ -329,12 +329,14 @@ window.GC = window.GC || {};
                     .prefix('dcterms','http://purl.org/dc/terms/')
                     .prefix('sp','http://smartplatforms.org/terms#')
                     .prefix('rdf','http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-                    .where('?l rdf:type sp:ClinicalNote')
-                    .where('?l dcterms:date ?date')
-                    .where('?l dcterms:hasFormat ?f')
-                    .where('?f dcterms:format ?ft')
+                    .prefix('rdfs','http://www.w3.org/2000/01/rdf-schema#')
+                    .where('?cn rdf:type sp:ClinicalNote')
+                    .where('?cn dcterms:date ?date')
+                    .where('?cn dcterms:format ?ft')
                     .where('?ft rdfs:label \"text/plain\"')
-                    .where('?f rdf:value ?note')
+                    .where('?cn sp:resource ?r')
+                    .where('?r sp:content ?c')
+                    .where('?c sp:value ?note')
                     .each(function(){
                         data.push(new SmartAnnotation(this.date.value, this.note.value));
                     });
