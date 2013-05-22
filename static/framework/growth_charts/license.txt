@@ -1,6 +1,6 @@
 LICENSE AGREEMENT
 
-Copyright 2013 The SMART Project
+Copyright 2013 SMART Platforms
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this software except in compliance with the License.

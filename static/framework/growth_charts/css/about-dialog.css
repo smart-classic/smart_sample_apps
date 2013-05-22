@@ -113,3 +113,13 @@
 	margin: 0 0 1ex;
 	font-family: Arial, sans-serif;
 }
+
+#about-dialog h2 {
+	font-weight: bold;
+	font-size: 14px;
+	font-family: Arial, sans-serif;
+}
+
+#about-dialog p {
+	margin: 1em;
+}
