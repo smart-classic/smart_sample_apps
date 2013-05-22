@@ -22,7 +22,7 @@ import web
 
 from smart_client.client import SMARTClient
 from smart_client.common.rdf_tools import rdf_ontology
-from settings import APP_PATH, ONTOLOGY_PATH
+from settings import APP_PATH, ONTOLOGY_PATH, ENDPOINT
 from tests import runTest, getMessages, describeQueries
 from threading import Lock
 
@@ -31,14 +31,8 @@ from threading import Lock
 
 logging.basicConfig(level=logging.DEBUG)
 
-# SMART Container OAuth Endpoint Configuration
-_ENDPOINT = {
-    "url": "http://sandbox-api-v06.smartplatforms.org/",
-    "name": "Localhost",
-    "app_id": "api-verifier@apps.smartplatforms.org",
-    "consumer_key": "api-verifier@apps.smartplatforms.org",
-    "consumer_secret": "changeme"
-}
+# SMART Container OAuth Endpoint
+_ENDPOINT = ENDPOINT
 
 # webpy file based sessions
 ###########################################################################
