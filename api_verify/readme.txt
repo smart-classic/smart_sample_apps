@@ -58,7 +58,7 @@ locally on port 8000. You'll need the following python packages:
 web.py, rdflib, rdflibextras, pyparsing, and dateutil.
 
 To get started on ubuntu, you can
-  sudo apt-get install python-webpy python-setuptools python-pyparsing python-dateutil
+  sudo apt-get install python-webpy python-setuptools python-pyparsing python-dateutil python-httplib2
   sudo easy_install -U "rdflib>=3.0.0" rdfextras
 
 Now, obtain the app code:
