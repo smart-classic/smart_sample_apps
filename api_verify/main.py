@@ -139,7 +139,7 @@ def _test_token():
 
 # URL mappings for web.py
 urls = ('/smartapp/index.html', 'index',
-        '/smartapp/authorized', 'authorized',
+        '/smartapp/authorize', 'authorize',
         '/smartapp/getcalls', 'get_calls',
         '/smartapp/apicall', 'api_call',
         '/smartapp/runtests', 'run_tests',
@@ -188,7 +188,7 @@ class index:
         return html
 
 
-class authorized:
+class authorize:
     def GET(self):
         """ Extract the oauth_verifier and exchange it for an access token. """
         global _session
