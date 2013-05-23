@@ -25,7 +25,7 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="../framework/smart/scripts/jschannel.js"></script>
-<script src="http://sandbox.smartplatforms.org/static/smart_common/resources/smart-api-container.js"></script>
+<script src="http://sandbox-v06.smartplatforms.org/static/smart_common/resources/smart-api-container.js"></script>
 
 <script>
 var simple_context = { 
@@ -48,8 +48,8 @@ var got_statins_manifest = {
 
   "mode" : "ui",
   "scope" : "record",
-  "index" : "http://sample-apps.smartplatforms.org/framework/got_statins/index.html",
-  "icon" :  "http://sample-apps.smartplatforms.org/framework/got_statins/icon.png"
+  "index" : "http://sample-apps-v06.smartplatforms.org/framework/got_statins/index.html",
+  "icon" :  "http://sample-apps-v06.smartplatforms.org/framework/got_statins/icon.png"
 };
 
 var api_playground_manifest = {
@@ -61,8 +61,8 @@ var api_playground_manifest = {
 
   "mode" : "ui",
   "scope" : "record",
-  "index" :  "http://sample-apps.smartplatforms.org/framework/api_playground/index.html",
-  "icon" :  "http://sample-apps.smartplatforms.org/framework/api_playground/icon.png"
+  "index" :  "http://sample-apps-v06.smartplatforms.org/framework/api_playground/index.html",
+  "icon" :  "http://sample-apps-v06.smartplatforms.org/framework/api_playground/icon.png"
 };
 
 var emr_frame_manifest = {
@@ -75,8 +75,8 @@ var emr_frame_manifest = {
   "mode" : "frame_ui",
   "scope" : "user",
 
-  "index" : "http://sample-apps.smartplatforms.org/framework/emr_frame/index.html",
-  "icon" :  "http://sample-apps.smartplatforms.org/framework/emr_frame/icon.png"
+  "index" : "http://sample-apps-v06.smartplatforms.org/framework/emr_frame/index.html",
+  "icon" :  "http://sample-apps-v06.smartplatforms.org/framework/emr_frame/icon.png"
 }
 
 var all_manifests = [got_statins_manifest, api_playground_manifest, emr_frame_manifest];
@@ -96,7 +96,7 @@ SMART.get_credentials = function (app_instance, callback){
    */
 
   var credentials = {
-    api_base: "http://sandbox-api.smartplatforms.org",
+    api_base: "http://sandbox-api-v06.smartplatforms.org",
     rest_token:"fake_rest_access_token", 
     rest_secret: "fake_rest_access_secret",
     oauth_header: "OAuth: fake_header_data_"+app_instance.uuid
