@@ -10,6 +10,6 @@
   "scope" : "record",
 
   "index" :  "http://localhost:8000/smartapp/index.html",
-  "oauth_callback" :  "http://localhost:8000/smartapp/authorized",
+  "oauth_callback" :  "http://localhost:8000/smartapp/authorize",
   "icon" :  "http://localhost:8000/static/images/icon.png"
 }

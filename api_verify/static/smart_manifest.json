@@ -10,6 +10,6 @@
   "scope" : "record",
 
   "index" :  "http://apiverifier.smartplatforms.org/smartapp/index.html",
-  "oauth_callback" :  "http://apiverifier.smartplatforms.org/smartapp/authorized",
+  "oauth_callback" :  "http://apiverifier.smartplatforms.org/smartapp/authorize",
   "icon" :  "http://apiverifier.smartplatforms.org/static/images/icon.png"
 }
