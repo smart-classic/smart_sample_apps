@@ -74,7 +74,7 @@ XDate, setTimeout, getDataSet*/
 	
 	function getWeight( entry ) {
 		if ( entry.hasOwnProperty("weight") ) {
-			return GC.Util.format(entry.lengthAndStature, {
+			return GC.Util.format(entry.weight, {
 				type : "weight",
 				lb   : '<span class="units">lb</span>', 
 				oz   : '<span class="units">oz</span>',
