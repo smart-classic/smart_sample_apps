@@ -225,8 +225,8 @@ class get_calls:
                     "get_demographics",
                     "get_ontology",
                     "get_container_manifest",
-                    "get_app_manifests",
-                    "get_user_preferences")):
+                    #"get_user_preferences",       # disabled
+                    "get_app_manifests")):
 
                 # Build the generic python client call name and use it
                 # in the dictionary
