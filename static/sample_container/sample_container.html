@@ -120,7 +120,7 @@ SMART.handle_api = function(app_instance, api_call, callback_success, callback_e
 	var success = function(data, status_code, xhr) {
             var ct = xhr.getResponseHeader("Content-Type") || "unknown";
             callback_success({
-                contentType: ct.split(";")[0],  
+                contentType: "application/rdf+xml",  
                 data: data});
         };
 
