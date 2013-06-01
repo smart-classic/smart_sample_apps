@@ -1,0 +1,16 @@
+body {padding: 0px; margin: 0px;}
+
+IFRAME {
+  width: 100%;
+  height: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-top: 2em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+#app_selector { background: blue; }

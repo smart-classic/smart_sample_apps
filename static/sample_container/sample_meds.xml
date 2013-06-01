@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:sp="http://smartplatforms.org/terms#"
+  xmlns:spcode="http://smartplatforms.org/terms/codes/"
+  xmlns:dcterms="http://purl.org/dc/terms/">
+
+    <sp:Medication rdf:about="http://smartplatforms.org/records/10000003/medications/123">
+        <sp:drugName>
+          <sp:CodedValue>
+              <dcterms:title>Albuterol 4 MG Oral Tablet</dcterms:title>
+              <sp:code>
+                <spcode:RxNorm_Semantic rdf:about="http://purl.bioontology.org/ontology/RXNORM/197318">
+                  <rdf:type rdf:resource="http://smartplatforms.org/terms#Code" /> 
+                  <sp:system>http://purl.bioontology.org/ontology/RXNORM/</sp:system>
+                  <dcterms:identifier>197318</dcterms:identifier>
+                  <dcterms:title>Albuterol 4 MG Oral Tablet</dcterms:title>
+                </spcode:RxNorm_Semantic>    
+              </sp:code>
+          </sp:CodedValue>
+        </sp:drugName>
+        <sp:startDate>2001-07-25</sp:startDate>
+        <sp:endDate>2001-08-10</sp:endDate>
+    </sp:Medication>
+
+    <sp:Medication rdf:about="http://smartplatforms.org/records/10000003/medications/567">
+        <sp:drugName>
+          <sp:CodedValue>
+              <dcterms:title>Diazepam 2 MG Oral Tablet</dcterms:title>
+              <sp:code>
+                <spcode:RxNorm_Semantic rdf:about="http://purl.bioontology.org/ontology/RXNORM/197590">
+                  <rdf:type rdf:resource="http://smartplatforms.org/terms#Code" /> 
+                  <sp:system>http://purl.bioontology.org/ontology/RXNORM/</sp:system>
+                  <dcterms:identifier>197590</dcterms:identifier>
+                  <dcterms:title>Diazepam 2 MG Oral Tablet</dcterms:title>
+                </spcode:RxNorm_Semantic>    
+              </sp:code>
+          </sp:CodedValue>
+        </sp:drugName>
+        <sp:startDate>2003-02-07</sp:startDate>
+        <sp:endDate>2003-02-23</sp:endDate>
+    </sp:Medication>
+
+</rdf:RDF>

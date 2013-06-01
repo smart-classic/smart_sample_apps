@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SMART Container Example</title>
+        <link rel='stylesheet' href='styles.css' type='text/css' />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script src="../framework/smart/scripts/jschannel.js"></script>
+        <script src="http://sandbox-v06.smartplatforms.org/static/smart_common/resources/smart-api-container.js"></script>
+    </head>
+    <body>
+        <script>
+            /* Sample implementations of SMART Connect Host glue methods */
+            
+            SMART = new SMART_CONNECT_HOST();
+
+            SMART.get_credentials = function(app_instance, callback) {
+                var credentials = {
+                    api_base: "http://sandbox-api-v06.smartplatforms.org",
+                    rest_token:"",     // provide real tokens here for SMART REST and Standalone apps
+                    rest_secret: "",
+                    oauth_header: ""
+                }; 
+
+                callback(credentials);
+            };
+
+            SMART.get_iframe = function(app_instance, callback) {
+                $("iframe").remove(); // clear old iframes
+                $("body").append("<iframe src='about:blank;' id='app_iframe_"+app_instance.uuid+"'></iframe>");
+                callback($("iframe")[0]);
+            };
+
+            SMART.handle_api = function(app_instance, api_call, callback_success, callback_error) {
+                // Implementation of the get medications API call which feeds the data from a static file
+                if (api_call.method=="GET" && api_call.func.match(/^.*\/medications\/$/)) {
+                    $.ajax({type: 'get', url: 'sample_meds.xml', dataType: 'text'})
+                     .success(function(data, status_code, xhr) {
+                        var ct = xhr.getResponseHeader("Content-Type") || "unknown";
+                        callback_success({
+                            contentType: "application/rdf+xml",  
+                            data: data});
+                     });
+                } else {
+                    alert("Function " + api_call.func + " not implemented yet.");
+                }
+            };
+            
+            /* Sample context and manifests for our container */
+            
+            var sample_context = { 
+              record: {
+                full_name: 'Anonymous Patient',
+                id: '10000003'
+              },
+              user: {
+                full_name: 'Logged-in User',
+                id: 'user12345'
+              }
+            };
+
+            var got_statins_manifest = {
+              "name" : "Got Statins?",
+              "description" : "Determines whether patient is taking a statin",
+              "id" : "got-statins@apps.smartplatforms.org",
+              "mode" : "ui",
+              "scope" : "record",
+              "index" : "http://sample-apps-v06.smartplatforms.org/framework/got_statins/index.html",
+              "icon" :  "http://sample-apps-v06.smartplatforms.org/framework/got_statins/icon.png"
+            };
+
+            var med_list_manifest = {
+              "name" : "Med List",
+              "description" : "Display medications in a table or timeline view",
+              "id" : "med-list@apps.smartplatforms.org",
+              "mode" : "ui",	
+              "scope": "record",
+              "icon" : "http://sample-apps-v06.smartplatforms.org/framework/med_list/icon.png",
+              "index": "http://sample-apps-v06.smartplatforms.org/framework/med_list/index.html",
+            }
+            
+            /* Event handler for the UI buttons in our sample container */
+            var launch_app = function(manifest) {
+                SMART.launch_app(manifest, sample_context);
+            };
+        </script>
+        <div id="app_selector">
+            <input type="submit" value="Got Statins?" onclick="launch_app(got_statins_manifest)"/>
+            <input type="submit" value="Med List" onclick="launch_app(med_list_manifest)"/>
+        </div>
+    </body>
+</html>

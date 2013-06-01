@@ -5,6 +5,7 @@ steal.plugins('smart')
     .resources("jash")
     .resources("jquery-ui-1.8.14.custom.min")
     .resources("prettify")
+    .resources("vkbeautify")
     .controllers("main") 
     .models("api_type")
     .views();

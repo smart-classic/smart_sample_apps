@@ -60,17 +60,28 @@ jQuery.Controller.extend('ApiPlayground.Controllers.MainController',
 		this.selected_call = c;
 		var method = c.method;
 		
-		if ($.inArray(method, ApiCall.payload_methods) !== -1)
-		{
-		    if (c.example !== undefined)
-			this.payload_box.val(c.example);	
-		    else
-			this.payload_box.val(this.selected_top_group.group_type.example);	
-		    this.payload_box.show();	
+		if ($.inArray(method, ApiCall.payload_methods) !== -1) {
+      if (c.example !== undefined) { this.payload_box.val(c.example); }
+		  else { this.payload_box.val(this.selected_top_group.group_type.example); }
+      ex = this.payload_box.val();
+
+      // remove rdf:about property
+      var res = SMART.process_rdf("application/rdf+xml", ex.replace(/ rdf:about=".*?"/, ''));
+
+      // remove the belongsTo triple
+      res.where('?s sp:belongsTo ?o').remove('?s sp:belongsTo ?o');
+
+      // serialize and beautify
+      dump = res.databank.dump({format:'application/rdf+xml', serialize: true});
+      this.payload_box.val(vkbeautify.xml(dump, 4));
+      this.payload_box.show();	
+
 		} else  {
 			this.payload_box.val("");
 			this.payload_box.hide();
 		}
+
+    //console.log('pb: ', this.payload_box.val());
 
 		this.response_box.hide();
         this.response_tabs.hide()
