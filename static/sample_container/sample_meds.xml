@@ -4,7 +4,7 @@
   xmlns:spcode="http://smartplatforms.org/terms/codes/"
   xmlns:dcterms="http://purl.org/dc/terms/">
 
-    <sp:Medication rdf:about="http://smartplatforms.org/records/1000000003/medications/123">
+    <sp:Medication rdf:about="http://smartplatforms.org/records/10000003/medications/123">
         <sp:drugName>
           <sp:CodedValue>
               <dcterms:title>Albuterol 4 MG Oral Tablet</dcterms:title>
@@ -22,7 +22,7 @@
         <sp:endDate>2001-08-10</sp:endDate>
     </sp:Medication>
 
-    <sp:Medication rdf:about="http://smartplatforms.org/records/1000000003/medications/567">
+    <sp:Medication rdf:about="http://smartplatforms.org/records/10000003/medications/567">
         <sp:drugName>
           <sp:CodedValue>
               <dcterms:title>Diazepam 2 MG Oral Tablet</dcterms:title>
