@@ -27,7 +27,7 @@
             SMART.get_iframe = function(app_instance, callback) {
                 $("iframe").remove(); // clear old iframes
                 $("body").append("<iframe src='about:blank;' id='app_iframe_"+app_instance.uuid+"'></iframe>");
-                callback(iframe[0]);
+                callback($("iframe")[0]);
             };
 
             SMART.handle_api = function(app_instance, api_call, callback_success, callback_error) {
