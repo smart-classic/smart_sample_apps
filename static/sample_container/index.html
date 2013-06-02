@@ -13,17 +13,6 @@
             
             SMART = new SMART_CONNECT_HOST();
 
-            SMART.get_credentials = function(app_instance, callback) {
-                var credentials = {
-                    api_base: "http://sandbox-api-v06.smartplatforms.org",
-                    rest_token:"",     // provide real tokens here for SMART REST and Standalone apps
-                    rest_secret: "",
-                    oauth_header: ""
-                }; 
-
-                callback(credentials);
-            };
-
             SMART.get_iframe = function(app_instance, callback) {
                 $("iframe").remove(); // clear old iframes
                 $("body").append("<iframe src='about:blank;' id='app_iframe_"+app_instance.uuid+"'></iframe>");
