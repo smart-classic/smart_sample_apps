@@ -1,0 +1,59 @@
+/**
+ * Styles for the print and print preview of the app
+ * Vladimir Ignatov
+ */
+
+* {
+	font-family: Calibri, Tahoma, sans-serif;
+}
+body, td, th {
+	font-size  : 17px;
+	background : #FFF;
+	color      : #666;
+}
+
+#header-table {
+	width: 100%;
+}
+
+#header-table td, 
+#header-table th {
+	padding: 0 1ex;
+	white-space: nowrap;
+}
+
+#header-table th {
+	text-align: right;
+	color: #CCC;
+}
+
+h1 {
+	font-size: 50px;
+	font-weight: normal;
+	color: #666;
+	margin: 0;
+}
+h2 {
+	font-size: 30px;
+	font-weight: normal;
+	color: #CCC;
+	margin: 0;
+}
+
+@media print {
+	* {
+		font-family: Calibri, Tahoma, sans-serif;
+		text-shadow: none !important;
+	}
+	tr, td { 
+		page-break-before: avoid; 
+		page-break-after : avoid; 
+		page-break-inside: avoid;
+	}
+	.page-break	{ 
+		page-break-before: always !important; 
+	}
+	.invisible-on-print {
+		display: none;
+	}
+}

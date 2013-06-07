@@ -247,4 +247,18 @@ if (!BPC) {
     BPC.disableControls = function () {
         setControlsState ("disable");
     };
+	
+	/**
+	 * Opens the pop-up window that renders the app for printing.
+	 * If the window is already opened, then just focus it.
+	 */
+	BPC.openPrintWindow = function() {
+		if (!BPC.PRINT_WINDOW || BPC.PRINT_WINDOW.closed) {
+			BPC.PRINT_WINDOW = window.open("print.html", "printWindow", "resizable=yes,scrollbars=yes,status=yes,top=10,left=10,width=1100,height=800");
+		} else {
+			BPC.PRINT_WINDOW.focus();
+			BPC.PRINT_WINDOW.location.reload();
+		}
+	};
+	
 }());

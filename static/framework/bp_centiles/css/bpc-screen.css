@@ -160,3 +160,14 @@ table.nicetable td {
 #filters {
     font-size: 0.8em;
 }
+
+/* The print-link container */
+#print {
+	height: 0;
+	overflow: visible;
+}
+
+/* The print-link */
+#print a {
+	color: #CCC;
+}

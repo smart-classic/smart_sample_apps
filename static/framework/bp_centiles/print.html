@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Blood Pressure Centiles SMART Application</title>
+        
+        <!-- BPC stylesheets-->
+        <link rel="stylesheet" href="css/bpc-print.css" type="text/css" media="screen" />
+        
+        <!-- SMART Connector -->
+        <script src="../smart/scripts/smart-api-client.js" type="text/javascript"></script>
+        
+        <!-- Standard JS Libraries -->
+        <script src="js/lib/jquery.js" type="text/javascript"></script>
+        <script src="js/lib/jquery-jtemplates.js" type="text/javascript"></script>
+        <script src="js/lib/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="js/lib/jquery-ui.js" type="text/javascript"></script>
+        <script src="js/lib/raphael.js" type="text/javascript"></script>
+        <script src="js/lib/xdate.js" type="text/javascript"></script>
+        
+        <!-- BPC Utilities -->
+        <script src="js/cdc_height_tables.js" type="text/javascript"></script>
+        <script src="js/nih_bp_tables.js" type="text/javascript"></script>
+        <script src="js/util.js" type="text/javascript"></script>
+        <script src="js/popup.js" type="text/javascript"></script>
+        
+        <!-- BPC App Modules -->
+        <script src="js/bpc-config.js" type="text/javascript"></script>
+        <script src="js/bpc-data.js" type="text/javascript"></script>
+        <script src="js/bpc-filters.js" type="text/javascript"></script>
+        <script src="js/bpc-graph.js" type="text/javascript"></script>
+        <!--script src="js/bpc-ui.js" type="text/javascript"></script-->
+    </head>
+    <body>
+        <div id="main">
+			<table id="header-table">
+				<tr>
+					<td rowspan="5" width="100%">
+						<h1>Allen Vitalis</h1>
+						<h2>BP Centiles Report</h2>
+					</td>
+					<th></th>
+					<td>15 Aug 13 15:15</td>
+				</tr>
+				<tr>
+					<th>gender</th>
+					<td>male</td>
+				</tr>
+				<tr>
+					<th>dob</th>
+					<td>11 Apr 07</td>
+				</tr>
+				<tr>	
+					<th>height</th>
+					<td>124cm on 7 May 13</td>
+				</tr>
+				<tr>	
+					<th>mrn</th>
+					<td>99912345</td>
+				</tr>
+                <tr>
+                  <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                	<td colspan="3">last BP on most recent 3 clinic days in mmhg</td>
+                </tr>
+			</table>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+			    <td width="50%">SVG</td>
+			    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+			      <tr>
+			        <td>&nbsp;</td>
+			        <td>systolic</td>
+			        <td>diastolic</td>
+		          </tr>
+			      <tr>
+			        <td>12
+			          Jul
+			          13
+			          6y
+		            3m</td>
+			        <td>&amp;%&quot; ·∙
+		            64%</td>
+			        <td>!' ·∙
+		            66%</td>
+		          </tr>
+			      <tr>
+			        <td>9
+			          May
+			          13
+			          6y
+		            2m</td>
+			        <td>&amp;%) ·∙
+		            70%</td>
+			        <td>!&quot;			          ·∙
+		            71%</td>
+		          </tr>
+			      <tr>
+			        <td>1
+			          Mar
+			          13
+			          5y
+		            11m</td>
+			        <td>&amp;%!
+			          ·∙
+		            76%</td>
+			        <td>!)
+			          ·∙
+		            76%</td>
+		          </tr>
+		        </table></td>
+		      </tr>
+		  </table>
+        </div>
+		
+		<!-- TODO: Move this script somehere else -->
+		<script>
+		jQuery(function($) {
+			
+		});
+		</script>
+		
+    </body>
+</html>
