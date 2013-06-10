@@ -2,11 +2,10 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>Blood Pressure Centiles SMART Application</title>
         
         <!-- BPC stylesheets-->
-        <link rel="stylesheet" href="css/bpc-print.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="css/bpc-print.css" type="text/css" />
         
         <!-- SMART Connector -->
         <script src="../smart/scripts/smart-api-client.js" type="text/javascript"></script>
@@ -23,7 +22,7 @@
         <script src="js/cdc_height_tables.js" type="text/javascript"></script>
         <script src="js/nih_bp_tables.js" type="text/javascript"></script>
         <script src="js/util.js" type="text/javascript"></script>
-        <script src="js/popup.js" type="text/javascript"></script>
+        <script src="js/popup.js" type="text/javascript"></script> 
         
         <!-- BPC App Modules -->
         <script src="js/bpc-config.js" type="text/javascript"></script>
@@ -33,92 +32,209 @@
         <!--script src="js/bpc-ui.js" type="text/javascript"></script-->
     </head>
     <body>
-        <div id="main">
-			<table id="header-table">
+        <table id="header-table">
+			<tr>
+				<td rowspan="5" width="100%">
+					<h1>Allen Vitalis</h1>
+					<h2>BP Centiles Report</h2>
+				</td>
+				<th></th>
+				<td>15 Aug 13 15:15</td>
+			</tr>
+			<tr>
+				<th>gender</th>
+				<td>male</td>
+			</tr>
+			<tr>
+				<th>dob</th>
+				<td>11 Apr 07</td>
+			</tr>
+			<tr>	
+				<th>height</th>
+				<td>
+					124cm 
+					<span class="grey-4">on</span> 
+					7 May 13
+				</td>
+			</tr>
+			<tr>	
+				<th>mrn</th>
+				<td>99912345</td>
+			</tr>
+			<tr>
+			  <td colspan="3">&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="3">last BP on most recent 3 clinic days in mmhg</td>
+			</tr>
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="100%">
+					<div class="bg-grey-7" style="height:350px">SVG</div>
+				</td>
+				<td align="right">
+					<table style="margin-left:2em" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td width="100%">&nbsp;</td>
+							<td class="grey-4 small">systolic</td>
+							<td class="grey-4 small">diastolic</td>
+						</tr>
+						<tr>
+							<td>
+							12 Jul 13 
+							<span class="grey-4 small">6y 3m</span>
+							</td>
+							<td><b class="grey-1">104</b> &bull; 64%</td>
+							<td><b class="grey-1">104</b> &bull; 66%</td>
+						</tr>
+						<tr>
+							<td>
+							12 Jul 13 
+							<span class="grey-4 small">6y 3m</span>
+							</td>
+							<td><b class="grey-1">104</b> &bull; 64%</td>
+							<td><b class="grey-1">104</b> &bull; 64%</td>
+						</tr>
+						<tr>
+							<td>
+							12 Jul 13 
+							<span class="grey-4 small">6y 3m</span>
+							</td>
+							<td><b class="grey-1">104</b> &bull; 64%</td>
+							<td><b class="grey-1">104</b> &bull; 64%</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		
+		<div class="page-break"></div>
+		
+		<div class="bg-grey-7" style="height:500px; margin:1ex;">SVG</div>
+		
+		<div id="table-view"></div>
+		<br />
+		<br />
+		
+		<!-- jTemplates template for the table view -->
+        <div style="display:none"><textarea id="template" rows="0" cols="0"><!--
+            {#template MAIN}
+                <table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        {#include HEAD}
+                    </thead>
+                    <tbody>
+                        {#foreach $T.data as record}
+                            {#include ROW root=$T.record}
+                        {#/for}
+                    </tbody>
+                </table>
+            {#/template MAIN}
+            
+            {#template HEAD}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="grey-4 small">systolic</td>
+                    <td class="grey-4 small">diastolic</td>
+                    <td class="grey-4 small">notes</td>
+                </tr>
+            {#/template HEAD}
+            
+            {#template ROW}
+				{#if $T.sPercentile >= 90}
+				<tr class="bg-grey-7">
+					<td><b>&#x0039F;</b></td>
+				{#elseif $T.dPercentile >= 90}
+				<tr class="bg-grey-7">
+					<td><b>&#x0039F;</b></td>
+				{#else}
 				<tr>
-					<td rowspan="5" width="100%">
-						<h1>Allen Vitalis</h1>
-						<h2>BP Centiles Report</h2>
+					<td></td>
+				{#/if}
+                    <td>
+						{#if $T.unixTime}{new XDate($T.unixTime).toString('d MMM yy')}{#/if}
+						<span class="grey-4 small">
+							{BPC.getYears($T.age)}y {BPC.getMonths($T.age)}m
+						</span>
 					</td>
-					<th></th>
-					<td>15 Aug 13 15:15</td>
-				</tr>
-				<tr>
-					<th>gender</th>
-					<td>male</td>
-				</tr>
-				<tr>
-					<th>dob</th>
-					<td>11 Apr 07</td>
-				</tr>
-				<tr>	
-					<th>height</th>
-					<td>124cm on 7 May 13</td>
-				</tr>
-				<tr>	
-					<th>mrn</th>
-					<td>99912345</td>
-				</tr>
-                <tr>
-                  <td colspan="3">&nbsp;</td>
+                    <td><b class="grey-1">{$T.systolic}</b> &bull; {$T.sPercentile}%</td>
+                    <td><b class="grey-1">{$T.diastolic}</b> &bull; {$T.dPercentile}%</td>
+                    <td class="small">
+						{#if $T.site}{$T.site}
+						{#if $T.position}, {$T.position}
+						{#if $T.method}, {$T.method}
+					</td>
                 </tr>
-                <tr>
-                	<td colspan="3">last BP on most recent 3 clinic days in mmhg</td>
-                </tr>
-			</table>
-			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			  <tr>
-			    <td width="50%">SVG</td>
-			    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
-			      <tr>
-			        <td>&nbsp;</td>
-			        <td>systolic</td>
-			        <td>diastolic</td>
-		          </tr>
-			      <tr>
-			        <td>12
-			          Jul
-			          13
-			          6y
-		            3m</td>
-			        <td>&amp;%&quot; ·∙
-		            64%</td>
-			        <td>!' ·∙
-		            66%</td>
-		          </tr>
-			      <tr>
-			        <td>9
-			          May
-			          13
-			          6y
-		            2m</td>
-			        <td>&amp;%) ·∙
-		            70%</td>
-			        <td>!&quot;			          ·∙
-		            71%</td>
-		          </tr>
-			      <tr>
-			        <td>1
-			          Mar
-			          13
-			          5y
-		            11m</td>
-			        <td>&amp;%!
-			          ·∙
-		            76%</td>
-			        <td>!)
-			          ·∙
-		            76%</td>
-		          </tr>
-		        </table></td>
-		      </tr>
-		  </table>
-        </div>
+            {#/template ROW}
+        --></textarea></div>
 		
 		<!-- TODO: Move this script somehere else -->
 		<script>
+		// Initialize the BPC global obeject as needed
+		var BPC;
+		if (!BPC) {
+			BPC = {};
+		}
+		
 		jQuery(function($) {
 			
+			SMART.ready(function() {
+				
+				if ( typeof SMART === "undefined" ) {
+					$("#info").text("Error: SMART Connect interface not found");
+				} else {
+					// Fire up the SMART API calls and initialize the application asynchronously
+					$.when(BPC.get_demographics(), BPC.get_vitals(0))
+					 .then( function (demographics, vitals) {
+						var total = vitals.total;
+						BPC.initPrintApp ( BPC.processData(demographics, vitals) );
+						if (BPC.settings.loading_mode === "progressive") {
+							BPC.loadAdditionalVitals (demographics, vitals, BPC.settings.vitals_limit, total);
+						} else {
+							BPC.vitals = vitals;
+							BPC.demographics = demographics;
+						}
+					},
+					function (message) {
+						BPC.displayError (message.data);
+					});
+				}
+				
+				// Add other things to do upon document loading here...
+				
+			}); // end document.ready handler
+			
+			SMART.fail (function () {
+				initPrintApp ( BPC.getSamplePatient(), true );
+			});
+			
+			function initPrintApp( patient, isDemo ) {
+				console.log( patient, BPC );
+				drawShortGraph( "", patient );
+				drawLongGraph( "", patient );
+				drawTable( "#table-view", patient );
+			}
+			
+			function drawShortGraph( container, patient ) {}
+			function drawLongGraph( container, patient ) {}
+			
+			function drawTable( container, patient ) {
+				
+				BPC.initPatient( patient );
+				
+				// Apply filters 
+				var p = patient.applyFilters ();
+				
+				// Reverse the data order
+				p.data.reverse();
+				
+				console.log(p);
+				
+				// Generate the table output
+				$(container).setTemplateElement("template").processTemplate(p);
+			}
 		});
 		</script>
 		
