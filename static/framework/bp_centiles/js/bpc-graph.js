@@ -658,7 +658,11 @@ if (!BPC) {
             }
         }
         
-        return this.path(path.join(",")).attr({stroke: color}).toBack();
+        path = this.path(path.join(",")).attr({stroke: color}).toBack();
+        
+        path[0].style.shapeRendering = "crispedges";
+        
+        return path;
     };
 
     /**
