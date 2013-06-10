@@ -32,42 +32,8 @@
         <!--script src="js/bpc-ui.js" type="text/javascript"></script-->
     </head>
     <body>
-        <table id="header-table">
-			<tr>
-				<td rowspan="5" width="100%">
-					<h1>Allen Vitalis</h1>
-					<h2>BP Centiles Report</h2>
-				</td>
-				<th></th>
-				<td>15 Aug 13 15:15</td>
-			</tr>
-			<tr>
-				<th>gender</th>
-				<td>male</td>
-			</tr>
-			<tr>
-				<th>dob</th>
-				<td>11 Apr 07</td>
-			</tr>
-			<tr>	
-				<th>height</th>
-				<td>
-					124cm 
-					<span class="grey-4">on</span> 
-					7 May 13
-				</td>
-			</tr>
-			<tr>	
-				<th>mrn</th>
-				<td>99912345</td>
-			</tr>
-			<tr>
-			  <td colspan="3">&nbsp;</td>
-			</tr>
-			<tr>
-				<td colspan="3">last BP on most recent 3 clinic days in mmhg</td>
-			</tr>
-		</table>
+		<div id="header"></div>
+		
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<td width="100%">
@@ -117,8 +83,54 @@
 		<br />
 		<br />
 		
-		<!-- jTemplates template for the table view -->
-        <div style="display:none"><textarea id="template" rows="0" cols="0"><!--
+		<!-- jTemplates templates -->
+        <div style="display:none">
+			
+			<!-- Header -->
+			<textarea id="header-template" rows="0" cols="0"><!--
+				{#template MAIN}
+					<table id="header-table">
+						<tr>
+							<td rowspan="5" width="100%">
+								<h1>{$T.name}</h1>
+								<h2>BP Centiles Report</h2>
+							</td>
+							<th></th>
+							<td>{$T.date}</td>
+						</tr>
+						<tr>
+							<th>gender</th>
+							<td>{$T.sex}</td>
+						</tr>
+						<tr>
+							<th>dob</th>
+							<td>{$T.dob}</td>
+						</tr>
+						<tr>	
+							<th>height</th>
+							<td>
+								{#if $T.lastHeight}
+									{$T.lastHeight}
+									<span class="grey-4">on</span>  
+									{$T.lastHeightDate}
+								{#/if}
+							</td>
+						</tr>
+						<tr>	
+							<th>mrn</th>
+							<td style="color:red">99912345</td>
+						</tr>
+						<tr>
+						  <td colspan="3">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="3">last BP on most recent 3 clinic days in mmhg</td>
+						</tr>
+					</table>
+				{#/template MAIN}
+			--></textarea>
+			
+			<textarea id="template" rows="0" cols="0"><!--
             {#template MAIN}
                 <table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
                     <thead>
@@ -211,7 +223,10 @@
 			});
 			
 			function initPrintApp( patient, isDemo ) {
+				BPC.initPatient( patient );
 				console.log( patient, BPC );
+				
+				drawHeader( "#header", patient );
 				drawShortGraph( "", patient );
 				drawLongGraph( "", patient );
 				drawTable( "#table-view", patient );
@@ -220,9 +235,38 @@
 			function drawShortGraph( container, patient ) {}
 			function drawLongGraph( container, patient ) {}
 			
-			function drawTable( container, patient ) {
+			function drawHeader( container, patient ) {
 				
-				BPC.initPatient( patient );
+				var lastRecord, 
+					tplData = {
+						date : new XDate().toString('d MMM yy h:mm'),
+						name : patient.name,
+						sex  : patient.sex,
+						dob  : new XDate(patient.birthdate).toString('d MMM yy')
+					};
+				
+				// Find the last height record 
+				if (patient.data && patient.data.length) {
+					lastRecord = $.grep(patient.data, function(record, index) {
+						return !!record.height;
+					}).sort(function(a, b) {
+						return b.unixTime - a.unixTime;
+					})[0];
+					
+					if (lastRecord && lastRecord.height) {
+						tplData.lastHeight = lastRecord.height + "cm";
+						tplData.lastHeightDate = new XDate(lastRecord.unixTime).toString('d MMM yy');
+					} else {
+						tplData.lastHeight = "";
+						tplData.lastHeightDate = ""
+					}
+				}
+				
+				// Generate the table output
+				$(container).setTemplateElement("header-template").processTemplate(tplData);
+			}
+			
+			function drawTable( container, patient ) {
 				
 				// Apply filters 
 				var p = patient.applyFilters ();
