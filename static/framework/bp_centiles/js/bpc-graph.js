@@ -629,10 +629,28 @@ if (!BPC) {
     */
     Raphael.fn.drawGrid = function (x, y, w, h, wv, hv, color, shortTerm, patientType, transitionX) {
         
-        var path = ["M", Math.round(x), Math.round(y), "L", Math.round(x + w), Math.round(y), Math.round(x + w), Math.round(y + h), Math.round(x), Math.round(y + h), Math.round(x), Math.round(y)],
+        var path = [],
             rowHeight = h / hv,
             columnWidth = w / wv,
             i;
+        
+        if (hv > 0) {
+			path.push(
+				"M", Math.round(x)    , Math.round(y), 
+				"L", Math.round(x + w), Math.round(y),
+				"M", Math.round(x + w), Math.round(y + h),
+				"L", Math.round(x)    , Math.round(y + h)
+			);
+		}
+		
+		if (wv > 0) {
+			path.push(
+				"M", Math.round(x)    , Math.round(y),
+				"L", Math.round(x)    , Math.round(y + h),
+				"M", Math.round(x + w), Math.round(y + h),
+				"L", Math.round(x + w), Math.round(y)
+			);
+		}
             
         color = color || "#000";   // default color to black
             
@@ -745,7 +763,16 @@ if (!BPC) {
             
             //console.log (currentY + ":" + zoneH + "->" + ltv_scale(currentY) + ":" + zoneH_scaled);
             
-            this.rect(x, ltv_scale(currentY), w, zoneH_scaled).attr({stroke: "none", "stroke-width": 0, fill: "hsb(" + [zones[i].colorhue, .9, .8] + ")", opacity: zones[i].opacity}).toBack();
+            this.rect(x, ltv_scale(currentY), w, zoneH_scaled).attr({
+				stroke: "none", 
+				"stroke-width": 0, 
+				fill: "hsb(" + [
+					zones[i].colorhue, 
+					zones[i].saturation === undefined ? 0.9 : zones[i].saturation, 
+					zones[i].brightness === undefined ? 0.8 : zones[i].brightness
+				] + ")", 
+				opacity: zones[i].opacity
+			}).toBack();
             
             currentY = currentY + zoneH;
             
