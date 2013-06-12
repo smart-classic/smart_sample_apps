@@ -55,11 +55,15 @@
   font-family: Calibri, Tahoma, sans-serif;
 }
 .small {
-  font-size: 15px;
+  font-size: 12px;
 }
 body, td, th {
-  font-size: 18px;
+  font-size: 15px;
   color: #515151;
+}
+#wrap {
+  width: 800px;
+  margin: auto;
 }
 #header-table {
   width: 100%;
@@ -74,13 +78,13 @@ td, th {
   font-weight: normal;
 }
 h1 {
-  font-size: 50px;
+  font-size: 300%;
   font-weight: normal;
   color: #515151;
   margin: 0;
 }
 h2 {
-  font-size: 30px;
+  font-size: 130%;
   font-weight: normal;
   color: #929292;
   margin: 0;
