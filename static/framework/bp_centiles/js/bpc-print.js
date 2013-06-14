@@ -15,94 +15,16 @@ jQuery(function($) {
 		this[0].style.shapeRendering = "crispedges";
 	};
 	
-	// Configuration constants
-	// =========================================================================
-	var FONT_FAMILY  = "Calibri, Tahoma, sans-serif",
-		FONT_SIZE    = 12,
-		COLOR_GREY_0 = "#222222",
-		COLOR_GREY_1 = "#515151",
-		COLOR_GREY_2 = "#636363",
-		COLOR_GREY_3 = "#787878",
-		COLOR_GREY_4 = "#929292",
-		COLOR_GREY_5 = "#c8c8c8",
-		COLOR_GREY_6 = "#d6d6d6",
-		COLOR_GREY_7 = "#e3e3e3",
-		COLOR_WHITE  = "#FFFFFF";
-		
 	// GRAPHS
 	// =========================================================================
-	// Settings for the long term view (which gets split in two parallel graphs)
-	var LT_HEIGHT = 420,
-		LT_TOP_GUTTER = 30,
-		LT_BOTTOM_GUTTER = 70,
-		splitHeight,
-		systolic = true;
-	
-	// The height of each individual graph content area in the long term view
-	splitHeight = Math.round( (LT_HEIGHT - LT_TOP_GUTTER - LT_BOTTOM_GUTTER)/2 );
 	
 	var PrintSettings = {
-		
-		// Basic settings all the graphs
-		GraphsCommonSettings : {
-			
-			// dimensions for the drawing area (in pixels)
-			width : 760,
-			height: LT_HEIGHT,
-			
-			// margins to be left around the main grid (for labels etc)
-			leftgutter  : 40, 
-			rightgutter : 40,
-			bottomgutter: LT_BOTTOM_GUTTER,
-			topgutter   : LT_TOP_GUTTER,
-			
-			// parameters for the graph's background grid
-			gridRows : 20,  
-			gridCols : 20,
-			gridColor: "#CCC",
-			
-			// Styling definitions for the graph and labels
-			dotSize: 4,         // normal radius for the data point circle
-			dotSizeSelected: 6, // radius for when the data point is selected (hovered over)
-			blanketSize: 20,    // hover area diameter (invisible)
-			showDotLabel: false,    // flag for displaying the percentile within the data circle
-			colorS: "hsb(.6, 0.5, 1)",   // systolic pressure line color
-			colorD: "hsb(.5, 0.5, 1)",   // diastolic pressure line color
-			colorhueDefault: 0.9,          // default colorhue for datapoints when no percentile data is available
-			txt: {font: '12px Helvetica, Arial', fill: "#ccc"},  // Styling for the popup label data
-			txt1: {font: '10px Helvetica, Arial', fill: "#aaa"},  // Styling for the popup label heading
-			txt2: {font: '10px Helvetica, Arial', fill: "#666"},  // Axis labels styling
-			txt3: {font: '12px Helvetica, Arial', fill: "#666"},  // Styling for the popup label line headers
-			
-			// X axis definitons
-			minDX: 30,  // minimum spacing between each two consecutive labels
-			
-			// Y axis definitions
-			max: 100,  // maximum value of the data (plotted on the Y axis); this is either mmHg or percentile
-			vLabels: 10, // number of labels to display for the Y axis
-			vAxisLabel: "",// text to be displayed as the units label
-			
-			// Legend settings
-			//txt4: {font: '14px Times New Roman', "font-weight": "bold", "font-style": "italic", fill: "#555"},  // the legend "i" icon text style
-			txt5: {font: '12px Helvetica, Arial', fill: "#555", "font-weight": "bold"},  // the legend title text style
-			txt6: {font: '10px Helvetica, Arial', fill: "#ccc", "text-anchor": "start"}, // the legend items text style
-			legendWidth: 160,
-			legendHeightEmpty: 34,   // the legend height when there are no items to display
-			legendItemHeight: 24,
-			
-			// Date format
-			dateFormat: "dd MMM yy",
-			
-			// Default zone abbreviation and label
-			abbreviationDefault: "-",
-			labelDefault: "N/A"
-		},
 		
 		// Settings for the short-view graph (extends GraphsCommonSettings)
 		ShortView : {
 			width          : 360,
 			height         : 260,
-			topgutter      : FONT_SIZE * 1.5 + 1, // enough to contain a circle at 100%
+			topgutter      : BPC.Constants.FONT_SIZE * 1.5 + 1, // enough to contain a circle at 100%
 			leftgutter     : 30, 
 			rightgutter    : 0,
 			bottomgutter   : 50,
@@ -115,211 +37,96 @@ jQuery(function($) {
 			
 			// data circles
 			dotAttr : {
-				r : FONT_SIZE * 1.4, 
-				fill : COLOR_WHITE,
-				stroke : COLOR_GREY_3,
+				r : BPC.Constants.FONT_SIZE * 1.4, 
+				fill : BPC.Constants.COLOR_WHITE,
+				stroke : BPC.Constants.COLOR_GREY_3,
 				"stroke-width" : 1.1
 			},
 			
 			// data labels inside the circles
 			dotLabelAttr : {
-				"font-size" : FONT_SIZE,
-				"font-family" : FONT_FAMILY,
-				fill : COLOR_GREY_1,
+				"font-size" : BPC.Constants.FONT_SIZE,
+				"font-family" : BPC.Constants.FONT_FAMILY,
+				fill : BPC.Constants.COLOR_GREY_1,
 				"font-weight" : "bold"
 			},
 			
 			// Y axis labels
 			VAxisLabelsAttr : {
-				"font-size" : FONT_SIZE * 0.82,
-				"font-family" : FONT_FAMILY,
-				fill : COLOR_GREY_3
+				"font-size" : BPC.Constants.FONT_SIZE * 0.82,
+				"font-family" : BPC.Constants.FONT_FAMILY,
+				fill : BPC.Constants.COLOR_GREY_3
 			}
 		},
 		
 		// Settings for the long-view graph (extends GraphsCommonSettings)
 		LongView  : {
 			
+			height       : 400,
+			leftgutter   : BPC.Constants.FONT_SIZE * 5, 
+			rightgutter  : BPC.Constants.FONT_SIZE * 5,
+			bottomgutter : BPC.Constants.FONT_SIZE * 5,
+			topgutter    : 10,
+			plotsMargin  : 6, // The distance between the two plots
+			leftpadding  : 0, 
+			rightpadding : 0,
+			
 			// data circles
 			dotAttr : {
 				r : 5, 
-				fill : COLOR_WHITE,
-				stroke : COLOR_GREY_3,
-				"stroke-width" : 1.2
+				fill : "none",
+				stroke : BPC.Constants.COLOR_GREY_3,
+				"stroke-width" : 2
+			},
+			dotAttrHypertensive : {
+				r : 5, 
+				fill : "none",
+				stroke : "#000",
+				"stroke-width" : 4
+			},
+			dotAttrPrehypertensive : {
+				r : 5, 
+				fill : "none",
+				stroke : BPC.Constants.COLOR_GREY_1,
+				"stroke-width" : 3
+			},	
+			
+			// Y axis labels
+			VAxisLabelsAttr : {
+				"font-size" : BPC.Constants.FONT_SIZE * 0.92,
+				"font-family" : BPC.Constants.FONT_FAMILY,
+				fill : BPC.Constants.COLOR_GREY_3
+			},
+			
+			// Y axis titles
+			VAxisTitlesAttr : {
+				"font-size" : BPC.Constants.FONT_SIZE * 1.2,
+				"font-family" : BPC.Constants.FONT_FAMILY,
+				fill : BPC.Constants.COLOR_GREY_4
 			}
 			
 		}
 	};
 	
 	
-	/**
-	 * Graph - The base class for graphs.
-	 * @constructor
-	 * @abstract
-	 * ---------------------------------------------------------------------- */
-	function Graph() {}
 	
-	Graph.prototype = {
-		
-		/**
-		 * The Raphael paper for this graph.
-		 */
-		paper : null,
-		
-		/**
-		 * Initializes the graph (stores a ref. to the container as property, 
-		 * creates a paper etc.)
-		 * @param {String CSS selector | DOMElement | jQuery } container 
-		 */
-		init : function( container, settings ) {
-			if (!this._initialized) {
-				this._initialized = true;
-				this.container = $(container);
-				this.settings = this.getSettings(settings);
-				
-				this.paper = Raphael(
-					this.container[0], 
-					this.settings.width, 
-					this.settings.height
-				);
-				
-				this.plotRect = {
-					top    : this.settings.topgutter,
-					right  : this.settings.rightgutter,
-					bottom : this.settings.bottomgutter,
-					left   : this.settings.leftgutter,
-					width  : this.settings.width - 
-							 this.settings.leftgutter - 
-							 this.settings.rightgutter,
-					height : this.settings.height - 
-							 this.settings.topgutter - 
-							 this.settings.bottomgutter
-				};
-			}
-			return this;
-		},
-		
-		/**
-		 * Each subclass can extend this method to change it's settings. The 
-		 * output must be an object that is going to be merged with the base 
-		 * settings from PrintSettings.GraphsCommonSettings.
-		 * @returns Object
-		 */
-		getSettings : function(customSettings) {
-			if (!this.settings) {
-				this.settings = $.extend(
-					true, 
-					{}, 
-					PrintSettings.GraphsCommonSettings, 
-					customSettings
-				);
-			}
-			return this.settings;
-		},
-		
-		/**
-		 * Clears the paper for this graph. Subclasses might extend this to also
-		 * free some additional resources at this point.
-		 */
-		clear : function() {
-			this.paper.clear();
-		},
-		
-		/**
-		 * The main drawing method. Computes some common stuff and calls other 
-		 * drawing methods to render specific things on the graph.
-		 * @param {BPC.Patient} patient
-		 */
-		draw : function(patient) {
-			var s     = this.settings,
-				inst  = this,
-				stepY = (s.height - s.bottomgutter - s.topgutter) / s.max;  // The Y distance per percentile;
-			
-			//this.paper.rect( 0, 0, s.width, s.height ).attr({
-			//	fill : "none",
-			//	"stroke-dasharray": "- ",
-			//	"stroke" : COLOR_GREY_5
-			//});
-			
-			this.drawGrid(patient);
-			this.drawXAxis();
-			this.drawYAxis();
-			
-			// Build the line graph and draw the data points
-			for (var i = 0, ii = patient.data.length; i < ii; i++) {
-				// Calculate the x coordinate for this data point
-                var x, dx;
-                if (ii === 1) {
-                    dx = (s.width - s.leftgutter - s.rightgutter - s.leftpadding - s.rightpadding) / 2;
-                } else {
-                    dx = i * (s.width - s.leftgutter - s.rightgutter - s.leftpadding - s.rightpadding) / (ii-1);
-                    
-                    dx = ((s.width - s.leftgutter - s.rightgutter - s.leftpadding - s.rightpadding) / (ii));
-                }
-                x = Math.round (s.leftgutter + s.leftpadding + dx * i +  dx * 0.5);
-                
-                
-                
-                
-                this.drawRecord(patient.data[i], x);
-                
-                // Draw the corresponding date text label beneath the X axis
-                this.paper.text(x, s.height - 30, patient.data[i].date).attr(s.txt2).toBack();
-			}
-		},
-		
-		/**
-		 * Render single record from the patient's data. Basically this means to
-		 * draw two data circles for the systolic and diastolic values.
-		 */
-		drawRecord : function(rec, x) {
-			var stepY = this.plotRect.height / this.settings.max,
-				yD    = Math.round(this.settings.height - this.settings.bottomgutter - stepY * rec.diastolic),
-				yS    = Math.round(this.settings.height - this.settings.bottomgutter - stepY * rec.systolic );
-			
-			this.drawDot(x, yD, rec.dPercentile, rec.dAbbreviation);
-			this.drawDot(x, yS, rec.sPercentile, rec.dAbbreviation);
-		},
-		
-		/**
-		 * Draws one data circle 
-		 */
-		drawDot : function (x, y) {
-			this.paper.circle(x, y, 0).attr(this.settings.dotAttr);
-		},
-		
-		/**
-		 * Implement this in subclasses to draw  a grid
-		 */
-		drawGrid : function() {},
-		
-		/**
-		 * Implement this in subclasses to draw the X axis(es)
-		 */
-		drawXAxis : function() {},
-		
-		/**
-		 * Implement this in subclasses to draw the Y axis(es)
-		 */
-		drawYAxis : function() {}
-	};
 	
 	/**
 	 * ShortGraph
 	 * @constructor
 	 * @param {String CSS selector | DOMElement | jQuery } container 
 	 * ---------------------------------------------------------------------- */
-	function ShortGraph(container) {
-		this.init(container);
+	function ShortGraph(container, model) {
+		this.init(container, model);
 	}
 	
-	ShortGraph.prototype = new Graph();
+	ShortGraph.prototype = new BPC.Graph();
 	
 	ShortGraph.prototype.getSettings = function() {
-		return Graph.prototype.getSettings.call(this, PrintSettings.ShortView); 
+		return BPC.Graph.prototype.getSettings.call(this, PrintSettings.ShortView); 
 	};
 	
-	ShortGraph.prototype.drawGrid = function(patient) {
+	ShortGraph.prototype.drawGrid = function() {
 		this.paper.drawGrid(
 			this.settings.leftgutter, 
 			this.settings.topgutter, 
@@ -329,7 +136,7 @@ jQuery(function($) {
 			this.settings.gridRows, 
 			this.settings.gridColor, 
 			true, //shortTerm, 
-			patient.getDataType(), //patientType, 
+			this.model.getDataType(), //patientType, 
 			200 // transitionX
 		);
 	};
@@ -339,8 +146,12 @@ jQuery(function($) {
 			"M" + [this.settings.leftgutter, this.settings.height - this.settings.bottomgutter] + " " + 
 			"h" + (this.settings.width  - this.settings.leftgutter - this.settings.rightgutter)
 		).attr({
-			stroke : COLOR_GREY_3
+			stroke : BPC.Constants.COLOR_GREY_3
 		}).crisp();
+		
+		this.forEachRecord(function(rec, idx, x, all) {
+			this.paper.text(x, this.settings.height - 30, rec.date).attr(this.settings.txt2).toBack();
+		});
 	};
 	
 	ShortGraph.prototype.drawYAxis = function() {
@@ -348,7 +159,7 @@ jQuery(function($) {
 			"M" + [this.settings.leftgutter, 0] + " " + 
 			"v" + (this.settings.height - this.settings.bottomgutter)
 		).attr({
-			stroke : COLOR_GREY_3
+			stroke : BPC.Constants.COLOR_GREY_3
 		}).crisp();
 		
 		// Draw the percentiles axis (needs to be reworked as a function and tested for correct scaling)
@@ -364,9 +175,9 @@ jQuery(function($) {
 		);
 	};
 	
-	ShortGraph.prototype.draw = function(patient) {
-		Graph.prototype.draw.apply(this, arguments);
-		drawTable( "#short-table-view", patient );
+	ShortGraph.prototype.draw = function() {
+		BPC.Graph.prototype.draw.apply(this, arguments);
+		drawTable( "#short-table-view", this.model );
 	};
 	
 	/**
@@ -394,7 +205,7 @@ jQuery(function($) {
 	 * Overrides the base method to also draw a connecting line between the two 
 	 * circles.
 	 */
-	ShortGraph.prototype.drawRecord = function(rec, x) {
+	ShortGraph.prototype.drawRecord = function(rec, idx, x, all) {
 		
 		// Draw the vertical line connecting the pair of dots (short term view)
 		var s     = this.settings,
@@ -408,7 +219,7 @@ jQuery(function($) {
 			"stroke-linejoin": "round"
 		}).crisp();
 		
-		Graph.prototype.drawRecord.call(this, rec, x);
+		BPC.Graph.prototype.drawRecord.call(this, rec, idx, x, all);
 	};
 	
 	////////////////////////////////////////////////////////////////////////////
@@ -418,89 +229,366 @@ jQuery(function($) {
 	 * @constructor
 	 * @param {String CSS selector | DOMElement | jQuery } container 
 	 * ---------------------------------------------------------------------- */
-	function LongGraph(container) {
-		this.init(container);
+	function LongGraph(container, model) {
+		
+		// First call the init() from the base class to initialize the base
+		this.init(container, model);
+		
+		/**
+		 * The rectangle of the systolic plot
+		 */ 
+		this.systolicPlotRect = new BPC.Rect(
+			new BPC.Point(
+				this.plotRect.left, 
+				this.plotRect.top
+			),
+			new BPC.Point(
+				this.plotRect.left + this.plotRect.width,
+				this.plotRect.top  + this.plotRect.height / 2 - this.settings.plotsMargin / 2
+			)
+		);
+		
+		/**
+		 * The rectangle of the diastolic plot
+		 */ 
+		this.diastolicPlotRect = new BPC.Rect(
+			new BPC.Point(
+				this.plotRect.left, 
+				this.plotRect.top + this.plotRect.height / 2 + this.settings.plotsMargin / 2
+			),
+			new BPC.Point(
+				this.plotRect.left + this.plotRect.width,
+				this.plotRect.top  + this.plotRect.height
+			)
+		);
+		
+		/**
+		 * The Y axis configuration
+		 */ 
+		this.dimesionY = [
+			{ value : 0   }, 
+			{ value : 10, label: "10%" },
+			{ value : 20  }, 
+			{ value : 30, label: "30%" },
+			{ value : 40  }, 
+			{ value : 50, label: "50%" },
+			{ value : 60  },
+			{ value : 70, label: "70%" },
+			{ value : 75  },
+			{ value : 80  },
+			{ value : 85  },
+			{ value : 90, label: "90%" },
+			{ value : 91.6666666666666667 }, 
+			{ value : 93.3333333333333335 },
+			{ value : 95, label: "95%" },
+			{ value : 96.6666666666666667 }, 
+			{ value : 98.3333333333333335 },
+			{ value : 100 }
+        ];
+        
+        this.zones = [
+			{
+				label    : "Hypertensive",
+				startPct : 95,
+				endPct   : 100,
+				bgColor  : "#BDBDBD"
+			},
+			{
+				label    : "Prehypertensive",
+				startPct : 90,
+				endPct   : 95,
+				bgColor  : "#DDD"
+			},
+			{
+				label    : "Normal",
+				startPct : 1,
+				endPct   : 90,
+				bgColor  : "#FFF"
+			},
+			{
+				label    : "Hypotensive",
+				startPct : 0,
+				endPct   : 1,
+				bgColor  : "#EEE"
+			}
+        ];
 	}
 	
-	LongGraph.prototype = new Graph();
+	/**
+	 * Inherit from BPC.Graph
+	 */
+	LongGraph.prototype = new BPC.Graph();
 	
-	LongGraph.prototype.getCustomSettings = function() {
-		return Graph.prototype.getSettings.call(this, PrintSettings.LongView);
+	LongGraph.prototype.getSettings = function() {
+		return BPC.Graph.prototype.getSettings.call(this, PrintSettings.LongView);
 	};
 	
-	LongGraph.prototype.drawGrid = function(patient) {
-		//var splitHeight = Math.round( (this.settings.height - this.settings.topgutter - this.settings.bottomgutter)/2 );
-        //var bottomgutter2 = this.settings.bottomgutter - 5,
-		//	topgutter2 = splitHeight + this.settings.topgutter + 5;
-		//	
-		//var bottomgutter = this.settings.height - this.settings.topgutter - splitHeight;
+	/**
+	 * The Y dimension of this graph is not linear, so we need a method to 
+	 * convert percentiles to Y positions.
+	 */
+	LongGraph.prototype.pct2Y = function(pct, type) {
+		var len  = this.dimesionY.length,
+			rect = type == "diastolic" ? 
+				this.diastolicPlotRect : 
+				this.systolicPlotRect,
+			step = rect.height / (len - 1),
+			item, nextItem, i, dy, y = 0;
 		
-		var height = (this.settings.height - this.settings.topgutter  - this.settings.bottomgutter) / 2,
-			width  =  this.settings.width  - this.settings.leftgutter - this.settings.rightgutter;
+		for ( i = 0; i < len - 1; i++ ) {
+			item = this.dimesionY[i];
+			nextItem = this.dimesionY[i + 1];
+			if ( pct < nextItem.value ) {
+				dy = nextItem.value - item.value;
+				y += step * ((pct - item.value) / dy);
+				break;
+			}
+			y += step;
+		}
 		
-		// TODO
-		var transitionX = 200;
-		var patientType = patient.getDataType();
+		return rect.top + rect.height - y;
+	};
+	
+	LongGraph.prototype.drawRecord = function(rec, idx, x, all) 
+	{
+		x = this.getRecordX(rec, idx, true);
+		this.drawDot(x, this.pct2Y(rec.dPercentile, "diastolic" ), rec.dPercentile, rec.dAbbreviation);
+		this.drawDot(x, this.pct2Y(rec.sPercentile, "sysstolic"), rec.sPercentile, rec.dAbbreviation);
+	};
+	
+	LongGraph.prototype.drawDot = function(x, y, percentile, abbreviation) {
+		var title = [];
 		
-		// Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
-		var zones = [
-			{ definition: "Hypotension (< 1%)"     , abbreviation: "\\/", label: "Hypotensive"    , percent: 1 , colorhue: 0.7, opacity: 0.4, dashthrough: false, saturation : 0 },
-			//{ definition:"Prehypotension (< 5%)" , abbreviation: "-"  , label: "Prehypotensive" , percent: 4 , colorhue: 0.9, opacity: 0.3, dashthrough: false, saturation : 0 },
-			{ definition: "Normal"                 , abbreviation: "OK" , label: "Normal"         , percent: 89, colorhue: 0.3, opacity: 0.0, dashthrough: false, saturation : 0 },
-			{ definition: "Prehypertension (> 90%)", abbreviation: "^"  , label: "Prehypertensive", percent: 5 , colorhue: 0.1, opacity: 0.2, dashthrough: true , saturation : 0 },
-			{ definition: "Hypertension (> 95%)"   , abbreviation: "/\\", label: "Hypertensive"   , percent: 5 , colorhue: 0  , opacity: 0.4, dashthrough: true , saturation : 0 }
-		];
+		
+		
+		var dot = this.paper.circle(x, y, 0).attr(
+			percentile > 95 ? this.settings.dotAttrHypertensive : 
+			percentile > 90 ? this.settings.dotAttrPrehypertensive : 
+			this.settings.dotAttr
+		);
+		
+		if (abbreviation) {
+			title.push(abbreviation);
+		}
+		
+		if (percentile) {
+			title.push(percentile + "%");
+		}
+		
+		if (title.length) {
+			dot.attr("title", title.join("\n"));
+		}
+	};
+	
+	LongGraph.prototype.draw = function() {
+		this.paper.rect( 0, 0, this.paper.width, this.paper.height ).attr({
+			fill : "none",
+			"stroke-dasharray": "- ",
+			"stroke" : BPC.Constants.COLOR_GREY_5
+		});
+		this.drawZones();
+		BPC.Graph.prototype.draw.apply(this, arguments);
+		//console.log(this.getTickInterval(), this.getTickInterval(true));
+	};
+	
+	LongGraph.prototype.drawZones = function() 
+	{
+		var x = this.plotRect.left, 
+			w = this.plotRect.width, 
+			y1, y2, z;
+		for ( var i = 0, l = this.zones.length; i < l; i++ ) {
+			z = this.zones[i];
+			
+			y1 = this.pct2Y(z.endPct  , "systolic");
+			y2 = this.pct2Y(z.startPct, "systolic");
+			this.paper.rect(x, y1, w, y2 - y1).attr({
+				"fill" : z.bgColor,
+				"stroke" : "none"
+			}).toBack();
+			
+			y1 = this.pct2Y(z.endPct  , "diastolic");
+			y2 = this.pct2Y(z.startPct, "diastolic");
+			this.paper.rect(x, y1, w, y2 - y1).attr({
+				"fill" : z.bgColor,
+				"stroke" : "none"
+			}).toBack();
+		}
+	};
+	
+	LongGraph.prototype.drawGrid = function() {
+		var s = this.settings;
+		var patient = this.model;
+		var inst = this;
+		
         
-		this.paper.drawGrid(
-			this.settings.leftgutter, 
-			this.settings.topgutter, 
-			width, 
-			height, 
-			this.settings.gridCols, 
-			this.settings.gridRows, 
-			this.settings.gridColor, 
-			false, //shortTerm, 
-			patientType, 
-			transitionX
-		);
+        function drawGrid(x1, y1, x2, y2) {
+			var h    = y2 - y1,
+				l    = inst.dimesionY.length,
+				step = h / (l - 1),
+				item, y, i;
+			
+			for (i = 0; i < l; i++) {
+				item = inst.dimesionY[i];
+				y = y2 - step * i;
+				inst.paper.path("M" + [ x1, y ] + "H" + x2).attr({
+					stroke : s.gridColor
+				}).crisp();
+				
+				if (item.label) {
+					inst.paper.text(x1 - BPC.Constants.FONT_SIZE * 1.6, y, item.label).attr(inst.settings.VAxisLabelsAttr);
+					inst.paper.text(x2 + BPC.Constants.FONT_SIZE * 1.6, y, item.label).attr(inst.settings.VAxisLabelsAttr);
+				}
+			}
+		}
+        
+        drawGrid(
+			this.systolicPlotRect.left,
+			this.systolicPlotRect.top,
+			this.systolicPlotRect.left + this.systolicPlotRect.width,
+			this.systolicPlotRect.top + this.systolicPlotRect.height
+        );
+        
+        drawGrid(
+			this.diastolicPlotRect.left,
+			this.diastolicPlotRect.top,
+			this.diastolicPlotRect.left + this.diastolicPlotRect.width,
+			this.diastolicPlotRect.top + this.diastolicPlotRect.height
+        );
+        
+        var axis = this.getTimeRange();
+        console.log("axis: ", axis);
+        
+        for ( var i = 0, x; i < axis.tickCount; i++ ) {
+			x = axis.ticks[i].endX;
+			
+			// Skip the last vertical lines
+			if (i < axis.tickCount - 1) {
+				inst.paper.path(
+					"M" + [ x, this.systolicPlotRect.top ] + 
+					"v" + this.systolicPlotRect.height
+				).attr({
+					stroke : BPC.Constants.COLOR_GREY_4,
+					"stroke-dasharray" : "- "
+				}).crisp();
+				
+				inst.paper.path(
+					"M" + [ x, this.diastolicPlotRect.top ] + 
+					"v" + this.diastolicPlotRect.height
+				).attr({
+					stroke : BPC.Constants.COLOR_GREY_4,
+					"stroke-dasharray" : "- "
+				}).crisp();
+			}
+			
+			this.paper.text(
+				x - axis.tickWidth / 2,
+				this.settings.height - 40,
+				new XDate(axis.ticks[i].startTime).getFullYear()
+			).attr(inst.settings.VAxisLabelsAttr);
+		}
+		return;
+        var tick = this.getTickInterval(true), 
+			x    = this.plotRect.left,
+			d    = new XDate();
+        while ( x < this.plotRect.right - tick.px ) {
+			x += tick.px;
+			d.addMilliseconds(tick.time);
+			
+			inst.paper.path(
+				"M" + [ x, this.systolicPlotRect.top ] + 
+				"v" + this.systolicPlotRect.height
+			).attr({
+				stroke : BPC.Constants.COLOR_GREY_4,
+				"stroke-dasharray" : "- "
+			}).crisp();
+			
+			inst.paper.path(
+				"M" + [ x, this.diastolicPlotRect.top ] + 
+				"v" + this.diastolicPlotRect.height
+			).attr({
+				stroke : BPC.Constants.COLOR_GREY_4,
+				"stroke-dasharray" : "- "
+			}).crisp();
+			
+			this.paper.text(
+				x - tick.px / 2,
+				this.settings.height - 40,
+				d.getFullYear()
+			);
+		}
 		
-		//this.paper.drawGrid(
-		//	this.settings.leftgutter, 
-		//	this.settings.topgutter + height + 5, 
-		//	width, 
-		//	height, 
-		//	this.settings.gridCols, 
-		//	this.settings.gridRows, 
-		//	this.settings.gridColor, 
-		//	false, //shortTerm, 
-		//	patientType, 
-		//	transitionX
-		//);
 		
-		this.paper.drawZones(
-			this.settings.leftgutter, 
-			this.settings.topgutter, 
-			width, 
-			height, 
-			zones, 
-			this.settings, 
-			patientType, 
-			transitionX
+		
+		return;
+        var len = this.model.data.length,
+			w   = this.plotRect.width,
+			d1  = new XDate(this.model.data[0].unixTime),
+			d2  = new XDate(this.model.data[len - 1].unixTime),
+			dY  = Math.ceil(d1.diffYears(d2)),
+			i, x;
+		
+		//console.log(d1, d2, d1.diffYears(d2));
+		
+		for ( i = 1; i < dY; i++ ) {
+			x = this.plotRect.left + (this.plotRect.width / dY) * i;
+			
+			
+		}
+		
+		this.paper.text(
+			x + (this.plotRect.width / dY) * 0.5,
+			this.settings.height - 40,
+			d1.getFullYear() + dY - 1
 		);
+        
 	};
 	
-	LongGraph.prototype.drawVAxisLabels = function() {
-		// Draw the percentiles axis (needs to be reworked as a function and tested for correct scaling)
-		this.paper.drawVAxisLabels(
-			this.settings.leftgutter - 15, 
-			this.settings.topgutter,
-			this.paper.height - this.settings.topgutter - this.settings.bottomgutter, // s.height - s.topgutter - s.bottomgutter, 
-			this.settings.vLabels, 
-			this.settings.max, 
-			this.settings.vAxisLabel, 
-			{ font: '10px Helvetica, Arial', fill: "#666" }, //s.txt2, 
-			false// shortTerm
-		);
+	LongGraph.prototype.drawYAxis = function() 
+	{	
+		this.paper.path(
+			"M" + [this.systolicPlotRect.left, this.systolicPlotRect.top] + " " + 
+			"v" + this.systolicPlotRect.height + 
+			"M" + [this.diastolicPlotRect.left, this.diastolicPlotRect.top] + " " + 
+			"v" + this.diastolicPlotRect.height
+		).attr({
+			stroke : BPC.Constants.COLOR_GREY_4
+		}).crisp();
+	};
+	
+	LongGraph.prototype.drawXAxis = function() 
+	{	
+		this.paper.path(
+			"M" + [this.systolicPlotRect.left, this.systolicPlotRect.top + this.systolicPlotRect.height] + " " + 
+			"h" + this.systolicPlotRect.width + 
+			"M" + [this.diastolicPlotRect.left, this.diastolicPlotRect.top + this.diastolicPlotRect.height] + " " + 
+			"h" + this.diastolicPlotRect.width
+		).attr({
+			stroke : BPC.Constants.COLOR_GREY_4
+		}).crisp();
+		
+		this.paper.text(
+			BPC.Constants.FONT_SIZE / 1.5, 
+			this.systolicPlotRect.top + this.systolicPlotRect.height / 2, 
+			"S\nY\nS\nT\nO\nL\nI\nC"
+		).attr(this.settings.VAxisTitlesAttr);
+		
+		this.paper.text(
+			this.settings.width - BPC.Constants.FONT_SIZE / 1.5, 
+			this.systolicPlotRect.top + this.systolicPlotRect.height / 2, 
+			"S\nY\nS\nT\nO\nL\nI\nC"
+		).attr(this.settings.VAxisTitlesAttr);
+		
+		this.paper.text(
+			BPC.Constants.FONT_SIZE / 1.5, 
+			this.diastolicPlotRect.top + this.diastolicPlotRect.height / 2, 
+			"D\nI\nA\nS\nT\nO\nL\nI\nC"
+		).attr(this.settings.VAxisTitlesAttr);
+		
+		this.paper.text(
+			this.settings.width - BPC.Constants.FONT_SIZE / 1.5,
+			this.diastolicPlotRect.top + this.diastolicPlotRect.height / 2, 
+			"D\nI\nA\nS\nT\nO\nL\nI\nC"
+		).attr(this.settings.VAxisTitlesAttr);
 	};
 	////////////////////////////////////////////////////////////////////////////
 	
@@ -539,7 +627,7 @@ jQuery(function($) {
 		
 		drawHeader( "#header", patient );
 		drawShortGraph( "#short-graph", patient );
-		//drawLongGraph( "#long-graph", patient );
+		drawLongGraph( "#long-graph", patient );
 		drawTable( "#table-view", patient );
 	}
 	
@@ -549,7 +637,7 @@ jQuery(function($) {
 	 * @param {Patient} patient
 	 */
 	function drawShortGraph( container, patient ) {
-		(new ShortGraph(container)).draw(patient.recentEncounters(3));
+		(new ShortGraph(container, patient.recentEncounters(3))).draw();
 	}
 	
 	/**
@@ -558,7 +646,7 @@ jQuery(function($) {
 	 * @param {Patient} patient
 	 */
 	function drawLongGraph( container, patient ) {
-		(new LongGraph(container)).draw(patient);
+		(new LongGraph(container, patient)).draw();
 	}
 	
 	/**
