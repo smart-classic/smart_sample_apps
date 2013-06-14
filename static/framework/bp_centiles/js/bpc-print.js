@@ -177,7 +177,7 @@ jQuery(function($) {
 	
 	ShortGraph.prototype.draw = function() {
 		BPC.Graph.prototype.draw.apply(this, arguments);
-		drawTable( "#short-table-view", this.model );
+		drawTable( "#short-table-view", this.model, true );
 	};
 	
 	/**
@@ -628,7 +628,7 @@ jQuery(function($) {
 		drawHeader( "#header", patient );
 		drawShortGraph( "#short-graph", patient );
 		drawLongGraph( "#long-graph", patient );
-		drawTable( "#table-view", patient );
+		drawTable( "#table-view", patient, false );
 	}
 	
 	/**
@@ -691,7 +691,7 @@ jQuery(function($) {
 	 * @param {String CSS selector | DOMElement | jQuery } container 
 	 * @param {Patient} patient
 	 */
-	function drawTable( container, patient ) {
+	function drawTable( container, patient, short ) {
 		
 		// Apply filters 
 		var p = patient.applyFilters ();
@@ -700,7 +700,10 @@ jQuery(function($) {
 		p.data.reverse();
 		
 		// Generate the table output
-		$(container).setTemplateElement("template").processTemplate(p);
+		$(container).setTemplateElement("template").processTemplate(
+			p, 
+			{ short : !!short ? 1 : 0 }
+		);
 	}
 	
 	

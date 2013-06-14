@@ -125,7 +125,9 @@
                     <td></td>
                     <td class="grey-4 small">systolic</td>
                     <td class="grey-4 small">diastolic</td>
-                    <td class="grey-4 small">notes</td>
+                    {#if !$P.short}
+						<td class="grey-4 small">notes</td>
+                    {#/if}
                 </tr>
             {#/template HEAD}
             
@@ -148,11 +150,13 @@
 					</td>
                     <td><b class="grey-1">{$T.systolic}</b> &bull; {$T.sPercentile}%</td>
                     <td><b class="grey-1">{$T.diastolic}</b> &bull; {$T.dPercentile}%</td>
+                    {#if !$P.short}
                     <td class="small">
 						{#if $T.site}{$T.site}
 						{#if $T.position}, {$T.position}
 						{#if $T.method}, {$T.method}
 					</td>
+					{#/if}
                 </tr>
             {#/template ROW}
         --></textarea></div>
