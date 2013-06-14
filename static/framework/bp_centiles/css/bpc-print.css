@@ -57,6 +57,9 @@
 .small {
   font-size: 12px;
 }
+body {
+  margin: 0;
+}
 body, td, th {
   font-size: 15px;
   color: #515151;

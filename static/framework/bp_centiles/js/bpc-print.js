@@ -22,8 +22,8 @@ jQuery(function($) {
 		
 		// Settings for the short-view graph (extends GraphsCommonSettings)
 		ShortView : {
-			width          : 360,
-			height         : 260,
+			//width          : 360,
+			//height         : 260,
 			topgutter      : BPC.Constants.FONT_SIZE * 1.5 + 1, // enough to contain a circle at 100%
 			leftgutter     : 30, 
 			rightgutter    : 0,
@@ -62,7 +62,7 @@ jQuery(function($) {
 		// Settings for the long-view graph (extends GraphsCommonSettings)
 		LongView  : {
 			
-			height       : 400,
+			//height       : 400,
 			leftgutter   : BPC.Constants.FONT_SIZE * 5, 
 			rightgutter  : BPC.Constants.FONT_SIZE * 5,
 			bottomgutter : BPC.Constants.FONT_SIZE * 5,
@@ -130,8 +130,8 @@ jQuery(function($) {
 		this.paper.drawGrid(
 			this.settings.leftgutter, 
 			this.settings.topgutter, 
-			this.paper.width  - this.settings.leftgutter - this.settings.rightgutter, //s.width - s.leftgutter - s.rightgutter, 
-			this.paper.height - this.settings.topgutter  - this.settings.bottomgutter, //s.height - s.topgutter - s.bottomgutter, 
+			this.width  - this.settings.leftgutter - this.settings.rightgutter, 
+			this.height - this.settings.topgutter  - this.settings.bottomgutter,
 			this.settings.gridCols, 
 			this.settings.gridRows, 
 			this.settings.gridColor, 
@@ -143,21 +143,21 @@ jQuery(function($) {
 	
 	ShortGraph.prototype.drawXAxis = function() {
 		this.paper.path(
-			"M" + [this.settings.leftgutter, this.settings.height - this.settings.bottomgutter] + " " + 
-			"h" + (this.settings.width  - this.settings.leftgutter - this.settings.rightgutter)
+			"M" + [this.settings.leftgutter, this.height - this.settings.bottomgutter] + " " + 
+			"h" + (this.width  - this.settings.leftgutter - this.settings.rightgutter)
 		).attr({
 			stroke : BPC.Constants.COLOR_GREY_3
 		}).crisp();
 		
 		this.forEachRecord(function(rec, idx, x, all) {
-			this.paper.text(x, this.settings.height - 30, rec.date).attr(this.settings.txt2).toBack();
+			this.paper.text(x, this.height - 30, rec.date).attr(this.settings.txt2).toBack();
 		});
 	};
 	
 	ShortGraph.prototype.drawYAxis = function() {
 		this.paper.path(
 			"M" + [this.settings.leftgutter, 0] + " " + 
-			"v" + (this.settings.height - this.settings.bottomgutter)
+			"v" + (this.height - this.settings.bottomgutter)
 		).attr({
 			stroke : BPC.Constants.COLOR_GREY_3
 		}).crisp();
@@ -210,8 +210,8 @@ jQuery(function($) {
 		// Draw the vertical line connecting the pair of dots (short term view)
 		var s     = this.settings,
 			stepY = this.plotRect.height / s.max,
-			y1    = Math.round(s.height - s.bottomgutter - stepY * rec.diastolic);
-			y2    = Math.round(s.height - s.bottomgutter - stepY * rec.systolic );
+			y1    = Math.round(this.height - s.bottomgutter - stepY * rec.diastolic);
+			y2    = Math.round(this.height - s.bottomgutter - stepY * rec.systolic );
 		
 		this.paper.path ("M" + x + " " + y1 + "L" + x + " " + y2).attr({
 			stroke : this.settings.dotAttr.stroke, 
@@ -482,7 +482,7 @@ jQuery(function($) {
 			
 			this.paper.text(
 				x - axis.tickWidth / 2,
-				this.settings.height - 40,
+				this.height - 40,
 				new XDate(axis.ticks[i].startTime).getFullYear()
 			).attr(inst.settings.VAxisLabelsAttr);
 		}
@@ -512,7 +512,7 @@ jQuery(function($) {
 			
 			this.paper.text(
 				x - tick.px / 2,
-				this.settings.height - 40,
+				this.height - 40,
 				d.getFullYear()
 			);
 		}
@@ -573,7 +573,7 @@ jQuery(function($) {
 		).attr(this.settings.VAxisTitlesAttr);
 		
 		this.paper.text(
-			this.settings.width - BPC.Constants.FONT_SIZE / 1.5, 
+			this.width - BPC.Constants.FONT_SIZE / 1.5, 
 			this.systolicPlotRect.top + this.systolicPlotRect.height / 2, 
 			"S\nY\nS\nT\nO\nL\nI\nC"
 		).attr(this.settings.VAxisTitlesAttr);
@@ -585,7 +585,7 @@ jQuery(function($) {
 		).attr(this.settings.VAxisTitlesAttr);
 		
 		this.paper.text(
-			this.settings.width - BPC.Constants.FONT_SIZE / 1.5,
+			this.width - BPC.Constants.FONT_SIZE / 1.5,
 			this.diastolicPlotRect.top + this.diastolicPlotRect.height / 2, 
 			"D\nI\nA\nS\nT\nO\nL\nI\nC"
 		).attr(this.settings.VAxisTitlesAttr);
@@ -624,7 +624,6 @@ jQuery(function($) {
 	function initPrintApp( patient, isDemo ) {
 		BPC.initPatient( patient );
 		console.log( patient, BPC );
-		
 		drawHeader( "#header", patient );
 		drawShortGraph( "#short-graph", patient );
 		drawLongGraph( "#long-graph", patient );

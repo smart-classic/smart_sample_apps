@@ -4,10 +4,6 @@
 	// and extend this configuration
 	var CONFIG = {
 		
-		// dimensions for the drawing area (in pixels)
-		width : 760,
-		height: 420,
-		
 		// margins to be left around the main grid (for labels etc)
 		leftgutter   : 40, 
 		rightgutter  : 40,
@@ -112,14 +108,12 @@
 			if (!this._initialized) {
 				this._initialized = true;
 				this.container = $(container);
+				this.width = this.container.width();
+				this.height = this.container.height();
 				this.model = model;
 				this.settings = this.getSettings(settings);
 				
-				this.paper = Raphael(
-					this.container[0], 
-					this.settings.width, 
-					this.settings.height
-				);
+				this.paper = Raphael(this.container[0], this.width, this.height);
 				
 				this.plotRect = new Rect(
 					new Point(
@@ -127,8 +121,8 @@
 						this.settings.topgutter
 					),
 					new Point(
-						this.settings.width - this.settings.rightgutter,
-						this.settings.height - this.settings.bottomgutter
+						this.width - this.settings.rightgutter,
+						this.height - this.settings.bottomgutter
 					)
 				);
 			}
@@ -373,8 +367,8 @@
 			var s       = this.settings,
 				inst    = this,
 				patient = this.model,
-				stepY   = (s.height - s.bottomgutter - s.topgutter) / s.max,  // The Y distance per percentile
-				innerWidth = s.width - s.leftgutter - s.rightgutter - s.leftpadding - s.rightpadding;
+				stepY   = (this.plotRect.height - s.bottomgutter - s.topgutter) / s.max,  // The Y distance per percentile
+				innerWidth = this.plotRect.width - s.leftpadding - s.rightpadding;
 			
 			this.drawGrid(patient);
 			this.drawXAxis();
@@ -411,8 +405,8 @@
 		drawRecord : function(rec, idx, x, all) 
 		{
 			var stepY = this.plotRect.height / this.settings.max,
-				yD    = Math.round(this.settings.height - this.settings.bottomgutter - stepY * rec.diastolic),
-				yS    = Math.round(this.settings.height - this.settings.bottomgutter - stepY * rec.systolic );
+				yD    = Math.round(this.height - this.settings.bottomgutter - stepY * rec.diastolic),
+				yS    = Math.round(this.height - this.settings.bottomgutter - stepY * rec.systolic );
 			
 			this.drawDot(x, yD, rec.dPercentile, rec.dAbbreviation);
 			this.drawDot(x, yS, rec.sPercentile, rec.dAbbreviation);
