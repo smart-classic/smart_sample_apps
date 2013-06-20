@@ -16,8 +16,8 @@
 @color-grey-6: #d6d6d6;
 @color-grey-7: #e3e3e3;
 @font-family : ~"Calibri, Tahoma, sans-serif";
-@font-size      : 15px;
-@font-size-small: 12px;
+@font-size      : 14px;
+@font-size-small: 11px;
 
 
 // some classes for general use
@@ -57,6 +57,11 @@ body, td, th {
 	color      : @color-grey-1;
 }
 
+// Uncomment below to see the paper sizes
+//svg {
+//	background: #DDD;
+//}
+
 #wrap {
 	width: 800px;
 	margin: auto;
@@ -68,7 +73,7 @@ body, td, th {
 }
 
 td, th {
-	padding: 0.5ex 1ex;
+	padding: 0.3ex 1ex;
 	white-space: nowrap;
 }
 
@@ -94,6 +99,19 @@ h2 {
 
 #table-view {
 	padding: 0.5ex 1ex;
+}
+
+tr.intensive {
+	background-color: @color-grey-7;
+}
+
+tr.hiperintensive {
+	background-color: @color-grey-5;
+	
+	td:first-child b {
+		color: @color-grey-0;
+		-webkit-text-stroke: 1px;
+	}
 }
 
 @media print {

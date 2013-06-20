@@ -54,22 +54,33 @@
 		labelDefault: "N/A"
 	};
 	
-	var MILLISECOND = 1;
-		SECOND      = 1000;
-		MINUTE      = 1000 * 60;
-		HOUR        = 1000 * 60 * 60;
-		DAY         = 1000 * 60 * 60 * 24;
-		WEEK        = 1000 * 60 * 60 * 24 * 7;
-		MONTH       = 1000 * 60 * 60 * 24 * 7 * 4.348214285714286;
-		YEAR        = 1000 * 60 * 60 * 24 * 7 * 4.348214285714286 * 12;
+	function isNumber(x) {
+		var _x = parseFloat(x);
+		return !isNaN(_x) && isFinite(_x);
+	}
 	
-	function Point( x, y, data ) {
+	/**
+	 * Class Point - just a basic functionality here (x, y and a data object to
+	 * store aditional custom information)
+	 * @constructor
+	 * @param {Number} x
+	 * @param {Number} y
+	 * @param {Object} data Optional data
+	 */
+	function Point( x, y, data ) 
+	{
 		this.x = x;
 		this.y = y;
 		this.data = data || {};
 	}
 	
-	function Rect( p1, p2 ) {
+	/**
+	 * Class Rect. Represents a canonical rectangle constructed by two points.
+	 * @param {Point} p1
+	 * @param {Point} p1
+	 */
+	function Rect( p1, p2 ) 
+	{
 		this.left   = Math.min( p1.x, p2.x );
 		this.right  = Math.max( p1.x, p2.x );
 		this.top    = Math.min( p1.y, p2.y );
@@ -86,11 +97,6 @@
 	function Graph() {}
 	
 	Graph.prototype = {
-		
-		/**
-		 * The Raphael paper for this graph.
-		 */
-		paper : null,
 		
 		/**
 		 * Initializes the graph (stores a ref. to the container as property, 
@@ -201,122 +207,6 @@
 			}
 		},
 		
-		getTimeRange : function() 
-		{
-			var len = this.model.data.length;
-			
-			var axis = {
-				startX     : this.plotRect.left,
-				startY     : this.plotRect.bottom,
-				endX       : this.plotRect.right,
-				endY       : this.plotRect.bottom,
-				width      : this.plotRect.width,
-				innerWidth : this.plotRect.width - 
-					(this.settings.leftpadding || 0) - 
-					(this.settings.rightpadding || 0),
-				
-				dataDuration : 0,
-				tickDuration : 0,
-				tickWidth : 0,
-				tickCount : 0,
-				ticks : []
-			};
-			
-			var d1 = new XDate(this.model.data[0      ].unixTime),
-				d2 = new XDate(this.model.data[len - 1].unixTime);
-			
-			axis.dataDuration = d1.diffMilliseconds(d2);
-			
-			if (axis.dataDuration > YEAR) {
-				
-				axis.tickDuration = YEAR;
-				d1.setMonth(0, true);
-				d2.setMonth(11, true);
-				axis.dataDuration = d1.diffMilliseconds(d2);
-				
-			} else if (diff > MONTH) {
-				out.time = MONTH;
-			} else if (diff > WEEK) {
-				out.time = WEEK;
-			} else if (diff > DAY) {
-				out.time = DAY;
-			} else if (diff > HOUR) {
-				out.time = HOUR;
-			} else if (diff > MINUTE) {
-				out.time = MINUTE;
-			} else if (diff > SECOND) {
-				out.time = SECOND;
-			} else {
-				out.time = MILLISECOND;
-			}
-			
-			axis.tickCount = Math.ceil( axis.dataDuration / axis.tickDuration );
-			axis.tickWidth = axis.innerWidth / axis.tickCount;
-			
-			var i, 
-				x = axis.startX, 
-				t = d1.getTime(), 
-				tick;
-			for ( i = 0; i < axis.tickCount; i++ ) {
-				tick = {
-					startX : x,
-					startTime : t
-				};
-				
-				x += axis.tickWidth;
-				t += axis.tickDuration;
-				
-				tick.endTime = t;
-				tick.endX = x;
-				
-				axis.ticks.push(tick);
-			}
-			
-			return axis;
-		},
-		
-		getTickInterval : function( useTime ) 
-		{
-			var len = this.model.data.length,
-				out = { px : this.plotRect.width },
-				innerWidth = this.plotRect.width - 
-					(this.settings.leftpadding || 0) - 
-					(this.settings.rightpadding || 0);
-			
-			if ( len ) {
-				if ( !useTime ) {
-					out.px = innerWidth / len;
-				} else {
-					var d1 = new XDate(this.model.data[0      ].unixTime),
-						d2 = new XDate(this.model.data[len - 1].unixTime);
-					
-					var diff = d1.diffMilliseconds(d2);
-					
-					if (diff > YEAR) {
-						out.time = YEAR;
-					} else if (diff > MONTH) {
-						out.time = MONTH;
-					} else if (diff > WEEK) {
-						out.time = WEEK;
-					} else if (diff > DAY) {
-						out.time = DAY;
-					} else if (diff > HOUR) {
-						out.time = HOUR;
-					} else if (diff > MINUTE) {
-						out.time = MINUTE;
-					} else if (diff > SECOND) {
-						out.time = SECOND;
-					} else {
-						out.time = MILLISECOND;
-					}
-					
-					out.px = innerWidth / (diff / out.time);
-				}
-			}
-			
-			return out;
-		},
-		
 		/**
 		 * There are two possible ways to compute the X coordinate for the 
 		 * record, depending on how the chart should behave.
@@ -337,18 +227,8 @@
 			
 			var startX = this.plotRect.left + (this.settings.leftpadding || 0);
 			
-			if ( !useTime ) {
-				var stepX = innerWidth / Math.max( len, 1 );
-                return Math.round( startX + stepX * (recordIndex + 0.5) );
-			}
-			
-			// Time
-			var d1   = new XDate(this.model.data[0      ].unixTime).setMonth(0, true),
-				d2   = new XDate(this.model.data[len - 1].unixTime).setMonth(11, true),
-				dT   = d1.diffMilliseconds(d2),
-				pxMs = innerWidth / dT;
-				
-			return startX + pxMs * (record.unixTime - d1.getTime());
+			var stepX = innerWidth / Math.max( len, 1 );
+            return Math.round( startX + stepX * (recordIndex + 0.5) );
 		},
 		
 		getRecordY : function() {},
@@ -451,8 +331,8 @@
 	};
 	
 	// Export classes to the namespace
-	NS.Point = Point;
-	NS.Rect  = Rect;
-	NS.Graph = Graph;
+	NS.Point         = Point;
+	NS.Rect          = Rect;
+	NS.Graph         = Graph;
 	
 })(window.BPC || {}, jQuery);

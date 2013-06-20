@@ -55,13 +55,13 @@
   font-family: Calibri, Tahoma, sans-serif;
 }
 .small {
-  font-size: 12px;
+  font-size: 11px;
 }
 body {
   margin: 0;
 }
 body, td, th {
-  font-size: 15px;
+  font-size: 14px;
   color: #515151;
 }
 #wrap {
@@ -94,6 +94,16 @@ h2 {
 }
 #table-view {
   padding: 0.5ex 1ex;
+}
+tr.intensive {
+  background-color: #e3e3e3;
+}
+tr.hiperintensive {
+  background-color: #c8c8c8;
+}
+tr.hiperintensive td:first-child b {
+  color: #222222;
+  -webkit-text-stroke: 1px;
 }
 @media print {
   * {

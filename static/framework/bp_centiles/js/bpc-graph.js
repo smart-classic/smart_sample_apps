@@ -811,7 +811,16 @@ if (!BPC) {
         
         return legend;
     };
-
+    
+    /**
+     * Turns on the "crispedges" rendering for the element (if supported by the 
+     * browser). WARNING: This can make object have one of their dimmensions 
+     * smaller than 0.5 pixels to dissapear!
+     */
+    Raphael.el.crisp = function() {
+		this[0].style.shapeRendering = "crispedges";
+		return this;
+	};
 
     /**
     * Returns the correct colorhue for the percentile based on the defined zones (undefined if no match)
