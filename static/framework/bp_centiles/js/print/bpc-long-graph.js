@@ -3,7 +3,6 @@
 	// Settings for the long-view graph
 	var SETTINGS = {
 		
-		//height       : 400,
 		leftgutter   : NS.Constants.FONT_SIZE * 5, 
 		rightgutter  : NS.Constants.FONT_SIZE * 3,
 		bottomgutter : NS.Constants.FONT_SIZE * 4,
@@ -75,7 +74,8 @@
 			),
 			new NS.Point(
 				this.plotRect.left + this.plotRect.width,
-				this.plotRect.top  + this.plotRect.height / 2 - this.settings.plotsMargin / 2
+				this.plotRect.top  + this.plotRect.height / 2 - 
+					this.settings.plotsMargin / 2
 			)
 		);
 		
@@ -85,7 +85,8 @@
 		this.diastolicPlotRect = new NS.Rect(
 			new NS.Point(
 				this.plotRect.left, 
-				this.plotRect.top + this.plotRect.height / 2 + this.settings.plotsMargin / 2
+				this.plotRect.top + this.plotRect.height / 2 + 
+					this.settings.plotsMargin / 2
 			),
 			new NS.Point(
 				this.plotRect.left + this.plotRect.width,
@@ -115,9 +116,9 @@
 			{ value : 96.6666666666666667 }, 
 			{ value : 98.3333333333333335 },
 			{ value : 100 }
-        ];
-        
-        this.zones = [
+		];
+		
+		this.zones = [
 			{
 				label    : "Hypertensive",
 				startPct : 95,
@@ -142,13 +143,13 @@
 				endPct   : 1,
 				bgColor  : "#EEE"
 			}
-        ];
-        
-        this.TimeIterator = new NS.TimeIterator(
+		];
+		
+		this.TimeIterator = new NS.TimeIterator(
 			this.model.data[0].unixTime,
 			this.model.data[this.model.data.length - 1].unixTime,
 			true
-        );
+		);
 	}
 	
 	/**
@@ -305,7 +306,7 @@
 			current, pos, w, q, x;
 			
 		
-        function drawGrid(x1, y1, x2, y2) {
+		function drawGrid(x1, y1, x2, y2) {
 			var h    = y2 - y1,
 				l    = inst.dimesionY.length,
 				step = h / (l - 1),
@@ -348,32 +349,33 @@
 				"stroke-dasharray" : "- "
 			}).crisp();
 		}
-        
-        // Horizontal lines on the systolic plot
-        drawGrid(
+		
+		// Horizontal lines on the systolic plot
+		drawGrid(
 			this.systolicPlotRect.left,
 			this.systolicPlotRect.top,
 			this.systolicPlotRect.left + this.systolicPlotRect.width,
 			this.systolicPlotRect.top + this.systolicPlotRect.height
-        );
-        
-        // Horizontal lines on the diastolic plot
-        drawGrid(
+		);
+		
+		// Horizontal lines on the diastolic plot
+		drawGrid(
 			this.diastolicPlotRect.left,
 			this.diastolicPlotRect.top,
 			this.diastolicPlotRect.left + this.diastolicPlotRect.width,
 			this.diastolicPlotRect.top + this.diastolicPlotRect.height
-        );
-        
-        // Vertical dashed lines for days, weeks, years or months
-        if (step != "Millisecond" && step != "Second" && step != "Minute") {
+		);
+		
+		// Vertical dashed lines for days, weeks, years or months
+		if (step != "Millisecond" && step != "Second" && step != "Minute") {
 			this.TimeIterator.rewind();
 			while ( this.TimeIterator.hasNext() ) {
 				if (i++) { // Skip the first vertical line
 					current = this.TimeIterator.current();
 					if (!pos || current.pos - pos > 1/150) { // max 150 lines
 						drawLine(
-							this.plotRect.left + this.plotRect.width * current.pos
+							this.plotRect.left + 
+							this.plotRect.width * current.pos
 						);
 						pos = current.pos;
 					}
@@ -383,7 +385,9 @@
 		}
 		
 		// The "today" marker if in range
-		if (now >= this.TimeIterator.startTime && now <= this.TimeIterator.endTime) {
+		if (now >= this.TimeIterator.startTime && 
+			now <= this.TimeIterator.endTime) 
+		{
 			w = this.TimeIterator.endTime - this.TimeIterator.startTime;
 			q = (now - this.TimeIterator.startTime) / w;
 			x = inst.plotRect.left + inst.plotRect.width * q;
@@ -433,9 +437,9 @@
 	LongGraph.prototype.drawYAxis = function() 
 	{	
 		this.paper.path(
-			"M" + [this.systolicPlotRect.left, this.systolicPlotRect.top] + " " + 
+			"M" + [this.systolicPlotRect.left, this.systolicPlotRect.top] + 
 			"v" + this.systolicPlotRect.height + 
-			"M" + [this.diastolicPlotRect.left, this.diastolicPlotRect.top] + " " + 
+			"M" + [this.diastolicPlotRect.left, this.diastolicPlotRect.top] + 
 			"v" + this.diastolicPlotRect.height
 		).attr({
 			stroke : NS.Constants.COLOR_GREY_4
@@ -461,9 +465,15 @@
 	LongGraph.prototype.drawXAxis = function() 
 	{	
 		this.paper.path(
-			"M" + [this.systolicPlotRect.left, this.systolicPlotRect.top + this.systolicPlotRect.height] + " " + 
+			"M" + [
+				this.systolicPlotRect.left, 
+				this.systolicPlotRect.top + this.systolicPlotRect.height
+			] + 
 			"h" + this.systolicPlotRect.width + 
-			"M" + [this.diastolicPlotRect.left, this.diastolicPlotRect.top + this.diastolicPlotRect.height] + " " + 
+			"M" + [
+				this.diastolicPlotRect.left, 
+				this.diastolicPlotRect.top + this.diastolicPlotRect.height
+			] + 
 			"h" + this.diastolicPlotRect.width
 		).attr({
 			stroke : NS.Constants.COLOR_GREY_4
@@ -624,7 +634,8 @@
 			
 			if (week < 5) {
 				this.paper.text(
-					this.plotRect.left + this.plotRect.width * current.pos + step / 2,
+					this.plotRect.left + this.plotRect.width * current.pos + 
+						step / 2,
 					this.plotRect.bottom + 12,
 					current.date.toString("MMM yyyy") + " week " + week + ""
 				).attr(this.settings.XAxisLabelsAttr);
@@ -650,7 +661,8 @@
 			current = iterator.current();
 			
 			this.paper.text(
-				this.plotRect.left + this.plotRect.width * current.pos + step / 2,
+				this.plotRect.left + this.plotRect.width * current.pos + 
+					step / 2,
 				this.plotRect.bottom + 12,
 				current.date.toString("dd MMM yyyy")
 			).attr(this.settings.XAxisLabelsAttr);
