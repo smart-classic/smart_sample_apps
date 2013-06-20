@@ -3,8 +3,10 @@
 	/**
 	 * Class TimeIterator.
 	 * Provides some useful methods for iterating over time intervals.
-	 * @param {Number} startTime
-	 * @param {Number} endTime
+	 * @param {Number|Date|String} startTime Anything that the XDate can use to
+	 *                                       construct itdelf from.
+	 * @param {Number|Date|String} endTime Anything that the XDate can use to
+	 *                                     construct itdelf from.
 	 * @param {Boolean} ceil (optional) Wether to ceil the interval boundaries.
 	 *                                  Defaults to false.
 	 * @param {String} timeStep (optional) The time step to use. Defaults to 
@@ -15,6 +17,8 @@
 	{
 		var d     = new XDate(startTime),
 			inst  = this,
+			_startTime = new XDate(startTime).getTime(),
+			_endTime   = new XDate(endTime).getTime(),
 			steps = [
 				"Millisecond", 
 				"Second", 
@@ -27,8 +31,8 @@
 			],
 			step;
 		
-		this.startTime = startTime;
-		this.endTime   = endTime;
+		this.startTime = _startTime;
+		this.endTime   = _endTime;
 		
 		// Add some (32) methods like hasPrevDay, hasNextDay, prevDay, nextDay...
 		$.each(steps, function(i, name) {
@@ -166,9 +170,9 @@
 		this.ceil = function() 
 		{
 			// Note: start with dates that are reset to the initial times by 
-			// using the local vars from the constructor arguments here
-			var d1 = new XDate(startTime);
-			var d2 = new XDate(endTime  );
+			// using the local vars created from the constructor arguments here
+			var d1 = new XDate(_startTime);
+			var d2 = new XDate(_endTime  );
 			
 			switch ( this.getTimeStep() ) {
 				case "Year":
