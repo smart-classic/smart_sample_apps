@@ -1,4 +1,4 @@
-(function(NS, $) {
+(function(NS, $, undefined) {
 	
 	// Settings for the long-view graph
 	var SETTINGS = {
@@ -203,21 +203,11 @@
 	 */
 	LongGraph.prototype.drawRecord = function(rec, idx) 
 	{
-		var x = this.getRecordX(rec, idx, true);
-		
-		this.drawDot(
-			x, 
-			this.pct2Y(rec.dPercentile, "diastolic" ), 
-			rec.dPercentile, 
-			rec.dAbbreviation
-		);
-		
-		this.drawDot(
-			x, 
-			this.pct2Y(rec.sPercentile, "sysstolic"), 
-			rec.sPercentile, 
-			rec.dAbbreviation
-		);
+		var x            = this.getRecordX(rec, idx, true);
+		var systolicPct  = this.pct2Y(rec.sPercentile, "sysstolic"); 
+		var diastolicPct = this.pct2Y(rec.sPercentile, "diastolic"); 
+		this.drawDot( x, diastolicPct, rec.dPercentile, rec.dAbbreviation );
+		this.drawDot( x, systolicPct , rec.sPercentile, rec.dAbbreviation );
 	};
 	
 	/**
@@ -733,4 +723,4 @@
 	// Export this class to the namespace
 	NS.LongGraph = LongGraph;
 	
-})(window.BPC || {}, jQuery);
+})(BPC, jQuery);
