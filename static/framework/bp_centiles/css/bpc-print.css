@@ -57,6 +57,9 @@
 .small {
   font-size: 11px;
 }
+.lowercase {
+  text-transform: lowercase;
+}
 body {
   margin: 0;
 }
@@ -72,7 +75,7 @@ body, td, th {
   width: 100%;
 }
 td, th {
-  padding: 0.5ex 1ex;
+  padding: 0.3ex 1ex;
   white-space: nowrap;
 }
 #header-table th {
