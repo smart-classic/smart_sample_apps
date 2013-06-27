@@ -15,7 +15,7 @@ jQuery(function($) {
 	 */
 	function initPrintApp( patient, isDemo ) {
 		BPC.initPatient( patient );
-		console.log( patient, BPC );
+		//console.log( patient, BPC );
 		render( patient );
 		
 		// Below is just a temp. code for testing ------------------------------
@@ -24,24 +24,24 @@ jQuery(function($) {
 		var rec2 = patient.data[1];
 		
 		$("#header").after(
-			'Rec 1: <input type="date" id="date1" /><input type="time" id="time1" />' +
+			'Rec 1: <input type="date" id="date1" />' + //<input type="time" id="time1" />' +
 			'&nbsp;&nbsp;&nbsp;' + 
-			'Rec 2: <input type="date" id="date2" /><input type="time" id="time2" />'
+			'Rec 2: <input type="date" id="date2" />' //<input type="time" id="time2" />'
 		);
 		
 		$("#date1").prop("valueAsNumber", rec1.unixTime).change(onTimeChange);
 		$("#date2").prop("valueAsNumber", rec2.unixTime).change(onTimeChange);
-		$("#time1").prop("valueAsNumber", rec1.unixTime).change(onTimeChange);
-		$("#time2").prop("valueAsNumber", rec2.unixTime).change(onTimeChange);
+		//$("#time1").prop("valueAsNumber", rec1.unixTime).change(onTimeChange);
+		//$("#time2").prop("valueAsNumber", rec2.unixTime).change(onTimeChange);
 		
 		function onTimeChange() {
 			var d1 = new XDate($("#date1").prop("valueAsNumber"));
-			var t1 = new XDate($("#time1").prop("valueAsNumber"));
+			//var t1 = new XDate($("#time1").prop("valueAsNumber"));
 			var d2 = new XDate($("#date2").prop("valueAsNumber"));
-			var t2 = new XDate($("#time2").prop("valueAsNumber"));
+			//var t2 = new XDate($("#time2").prop("valueAsNumber"));
 			
-			d1.setHours(t1.getUTCHours());
-			d2.setHours(t2.getUTCHours());
+			//d1.setHours(t1.getUTCHours());
+			//d2.setHours(t2.getUTCHours());
 			
 			patient.data[0].unixTime = d1.getTime();
 			patient.data[1].unixTime = d2.getTime();

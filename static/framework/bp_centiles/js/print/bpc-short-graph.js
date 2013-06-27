@@ -5,7 +5,7 @@
 		topgutter      : NS.Constants.FONT_SIZE * 1.5 + 1, // enough to contain a circle at 100%
 		leftgutter     : 30, 
 		rightgutter    : 0,
-		bottomgutter   : 50,
+		bottomgutter   : 40,
 		leftpadding    : 15, 
 		rightpadding   : 15,
 		gridRows       : 16, 
@@ -97,8 +97,11 @@
 		
 		// the date labels
 		this.forEachRecord(function(rec, idx, x, all) {
-			this.paper.text(x, this.height - 30, rec.date)
-				.attr(this.settings.txt2);
+			this.paper.text(
+				x, 
+				this.plotRect.bottom + 15, 
+				rec.date
+			).attr(this.settings.txt2);
 		});
 	};
 	

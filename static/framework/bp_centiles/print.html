@@ -46,7 +46,7 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td>
-						<div id="short-graph" style="height: 250px; width: 400px"></div>
+						<div id="short-graph" style="height: 240px; width: 330px"></div>
 					</td>
 					<td align="right" id="short-table-view" style="padding-left:2em"></td>
 				</tr>
@@ -87,18 +87,22 @@
 									{$T.lastHeight}
 									<span class="grey-4">on</span>  
 									{$T.lastHeightDate}
+								{#else}
+									N/A
 								{#/if}
 							</td>
 						</tr>
 						<tr>	
 							<th>mrn</th>
-							<td style="color:red">99912345</td>
+							<td>
+							{#if $T.mrn}{$T.mrn}{#else}N/A{#/if}
+							</td>
 						</tr>
 						<tr>
 						  <td colspan="3">&nbsp;</td>
 						</tr>
 						<tr>
-							<td colspan="3">last BP on most recent 3 clinic days in mmHg</td>
+							<td colspan="3" class="small">last BP on most recent 3 clinic days in mmHg</td>
 						</tr>
 					</table>
 				{#/template MAIN}
