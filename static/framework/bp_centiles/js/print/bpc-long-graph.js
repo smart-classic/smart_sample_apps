@@ -73,7 +73,7 @@
 				this.plotRect.top
 			),
 			new NS.Point(
-				this.plotRect.left + this.plotRect.width,
+				this.plotRect.right,
 				this.plotRect.top  + this.plotRect.height / 2 - 
 					this.settings.plotsMargin / 2
 			)
@@ -89,8 +89,8 @@
 					this.settings.plotsMargin / 2
 			),
 			new NS.Point(
-				this.plotRect.left + this.plotRect.width,
-				this.plotRect.top  + this.plotRect.height
+				this.plotRect.right,
+				this.plotRect.bottom
 			)
 		);
 		
@@ -205,7 +205,7 @@
 	{
 		var x            = this.getRecordX(rec, idx, true);
 		var systolicPct  = this.pct2Y(rec.sPercentile, "sysstolic"); 
-		var diastolicPct = this.pct2Y(rec.sPercentile, "diastolic"); 
+		var diastolicPct = this.pct2Y(rec.dPercentile, "diastolic"); 
 		this.drawDot( x, diastolicPct, rec.dPercentile, rec.dAbbreviation );
 		this.drawDot( x, systolicPct , rec.sPercentile, rec.dAbbreviation );
 	};
