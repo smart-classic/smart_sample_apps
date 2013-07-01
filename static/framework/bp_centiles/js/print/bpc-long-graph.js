@@ -14,19 +14,19 @@
 		// data circles
 		dotAttr : {
 			r              : 5, 
-			fill           : "none",
+			fill           : "rgba(255, 255, 255, 0.2)",
 			stroke         : NS.Constants.COLOR_GREY_3,
 			"stroke-width" : 2
 		},
 		dotAttrHypertensive : {
 			r              : 5, 
-			fill           : "none",
+			fill           : "rgba(255, 255, 255, 0.2)",
 			stroke         : "#000",
 			"stroke-width" : 4
 		},
 		dotAttrPrehypertensive : {
 			r              : 5, 
-			fill           : "none",
+			fill           : "rgba(255, 255, 255, 0.2)",
 			stroke         : NS.Constants.COLOR_GREY_1,
 			"stroke-width" : 3
 		},	
