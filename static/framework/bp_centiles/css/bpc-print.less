@@ -76,6 +76,10 @@ body, td, th {
 	width: 100%;
 }
 
+table {
+    width: 100%;
+}
+
 td, th {
 	padding: 0.3ex 1ex;
 	white-space: nowrap;
@@ -131,8 +135,13 @@ tr.hiperintensive {
 		border : 4px solid #000;
 		border-radius: 50%;
 		vertical-align: middle;
-		margin: -1px 0 0;
+		margin: -2px 0 0;
 	}
+}
+
+.ltie9 tr.intensive td:first-child:before, 
+.ltie9 tr.hiperintensive td:first-child:before {
+	display: none !important;
 }
 
 #print-toolbar {

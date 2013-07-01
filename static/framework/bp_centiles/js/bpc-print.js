@@ -14,6 +14,12 @@ jQuery(function($) {
 	 * Initializes the patient object and renders everything. 
 	 */
 	function initPrintApp( patient, isDemo ) {
+		
+		// Mark IE < 9! to help the CSS stuff
+		if (!window.getComputedStyle) {
+			$("html").addClass("ltie9");
+		}
+		
 		BPC.initPatient( patient );
 		//console.log( patient, BPC );
 		render( patient );
@@ -159,6 +165,24 @@ jQuery(function($) {
 			p, 
 			{ short : !!short ? 1 : 0 }
 		);
+		
+		if (!window.getComputedStyle) {
+			$("tr.intensive", container).find("td:first-child").html(
+				$('<b>&#927;</b>').css({
+					fontFamily: "monospace",
+					fontSize  : 17,
+					color: "#888"
+				})
+			);
+			$("tr.hiperintensive", container).find("td:first-child").html(
+				$('<b>&#927;</b>').css({
+					fontFamily: "monospace",
+					fontSize  : 17,
+					lineHeight: "1px;",
+					color: "#000"
+				})
+			);
+		}
 	}
 	
 	/**
