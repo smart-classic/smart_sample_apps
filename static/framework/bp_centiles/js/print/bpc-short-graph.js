@@ -2,7 +2,7 @@
 	
 	// Settings for the short-view graph
 	var SETTINGS = {
-		topgutter      : NS.Constants.FONT_SIZE * 1.5 + 1, // enough to contain a circle at 100%
+		topgutter      : NS.Constants.FONT_SIZE * 1.5 + 3, // enough to contain a circle at 100%
 		leftgutter     : 30, 
 		rightgutter    : 0,
 		bottomgutter   : 40,

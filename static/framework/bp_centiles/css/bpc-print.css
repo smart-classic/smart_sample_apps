@@ -123,6 +123,9 @@ tr.hiperintensive td:first-child:before {
   border-radius: 50%;
   vertical-align: middle;
 }
+td.notes {
+  color: rgba(0, 0, 0, 0.5);
+}
 @media print {
   * {
     text-shadow: none !important;

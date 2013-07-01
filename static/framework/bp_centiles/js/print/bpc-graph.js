@@ -289,7 +289,7 @@
 				yS    = Math.round(this.height - this.settings.bottomgutter - stepY * rec.systolic );
 			
 			this.drawDot(x, yD, rec.dPercentile, rec.dAbbreviation);
-			this.drawDot(x, yS, rec.sPercentile, rec.dAbbreviation);
+			this.drawDot(x, yS, rec.sPercentile, rec.sAbbreviation);
 		},
 		
 		/**
