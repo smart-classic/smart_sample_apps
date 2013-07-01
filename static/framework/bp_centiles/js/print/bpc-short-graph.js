@@ -30,12 +30,12 @@
 			r              : NS.Constants.FONT_SIZE * 1.4, 
 			fill           : NS.Constants.COLOR_WHITE,
 			stroke         : "#000",
-			"stroke-width" : 4
+			"stroke-width" : 3
 		},
 		
 		// data labels inside the circles
 		dotLabelAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE,
+			"font-size"   : NS.Constants.FONT_SIZE * 0.9,
 			"font-family" : NS.Constants.FONT_FAMILY,
 			fill          : NS.Constants.COLOR_GREY_1,
 			"font-weight" : "bold"

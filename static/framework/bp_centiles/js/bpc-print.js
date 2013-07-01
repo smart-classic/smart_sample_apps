@@ -131,7 +131,14 @@ jQuery(function($) {
 		}
 		
 		// Generate the output
-		$(container).empty().setTemplateElement("header-template").processTemplate(tplData);
+		$(container).empty().setTemplateElement("header-template").processTemplate(
+			tplData,
+			{ 
+				mrn : opener.SMART && opener.SMART.record && opener.SMART.record.id ? 
+					opener.SMART.record.id : 
+					"N/A" 
+			}
+		);
 	}
 	
 	/**
@@ -173,30 +180,4 @@ jQuery(function($) {
 	} else {
 		initPrintApp( BPC.getSamplePatient(), true );
 	}
-	
-	/*SMART.ready(function() {
-		if ( typeof SMART === "undefined" ) {
-			$("#info").text("Error: SMART Connect interface not found");
-		} else {
-			// Fire up the SMART API calls and initialize the application asynchronously
-			$.when(BPC.get_demographics(), BPC.get_vitals(0))
-			 .then( function (demographics, vitals) {
-				var total = vitals.total;
-				BPC.initPrintApp ( BPC.processData(demographics, vitals) );
-				if (BPC.settings.loading_mode === "progressive") {
-					BPC.loadAdditionalVitals (demographics, vitals, BPC.settings.vitals_limit, total);
-				} else {
-					BPC.vitals = vitals;
-					BPC.demographics = demographics;
-				}
-			},
-			function (message) {
-				BPC.displayError (message.data);
-			});
-		}
-	});
-	
-	SMART.fail (function () {
-		initPrintApp ( BPC.getSamplePatient(), true );
-	});*/
 });
