@@ -164,12 +164,12 @@ jQuery(function($) {
 	}
 	
 	// Bootstrap ---------------------------------------------------------------
-	if (window.parent && 
-		parent.BPC && 
-		parent.BPC.patient && 
-		!$.isEmptyObject(parent.BPC.patient)) 
+	if (window.opener && 
+		opener.BPC && 
+		opener.BPC.patient && 
+		!$.isEmptyObject(opener.BPC.patient)) 
 	{
-		initPrintApp( parent.BPC.patient );
+		initPrintApp( opener.BPC.patient );
 	} else {
 		initPrintApp( BPC.getSamplePatient(), true );
 	}

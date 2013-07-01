@@ -115,7 +115,7 @@
                         {#include HEAD}
                     </thead>
                     <tbody>
-                        {#foreach $T.data as record}
+                        {#foreach $T.data as record count=10}
                             {#include ROW root=$T.record}
                         {#/for}
                     </tbody>

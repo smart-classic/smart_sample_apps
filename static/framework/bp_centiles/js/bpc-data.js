@@ -45,7 +45,7 @@ if (!BPC) {
                             .where('?a foaf:gender ?gender')
                             .where('?a v:bday ?birthday')
                             .get(0);
-                            
+                console.log(demographics);            
                 dfd.resolve({name: demographics.firstname.value.toString() + " " + demographics.lastname.value.toString(),
                              gender: demographics.gender.value.toString(),
                              birthday: demographics.birthday.value.toString()});
