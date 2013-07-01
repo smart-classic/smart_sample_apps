@@ -20,6 +20,18 @@
 			stroke         : NS.Constants.COLOR_GREY_3,
 			"stroke-width" : 1.1
 		},
+		dotAttrPrehypertensive : {
+			r              : NS.Constants.FONT_SIZE * 1.4, 
+			fill           : NS.Constants.COLOR_WHITE,
+			stroke         : NS.Constants.COLOR_GREY_1,
+			"stroke-width" : 3
+		},
+		dotAttrHypertensive : {
+			r              : NS.Constants.FONT_SIZE * 1.4, 
+			fill           : NS.Constants.COLOR_WHITE,
+			stroke         : "#000",
+			"stroke-width" : 4
+		},
 		
 		// data labels inside the circles
 		dotLabelAttr : {
@@ -147,7 +159,12 @@
 			labelText = percentile + "%";
 		}
 		
-		this.paper.circle(x, y, 0).attr(this.settings.dotAttr);
+		this.paper.circle(x, y, 0).attr(
+			percentile > 95 ? this.settings.dotAttrHypertensive : 
+			percentile > 90 ? this.settings.dotAttrPrehypertensive : 
+			this.settings.dotAttr
+		);
+		
 		this.paper.text(x, y, labelText).attr(
 			this.settings.dotLabelAttr
 		).toFront();

@@ -135,14 +135,10 @@
             {#/template HEAD}
             
             {#template ROW}
-				{#if $T.sPercentile >= 95}
-					<tr class="hiperintensive"><td><b>&#x0039F;</b></td>
-				{#elseif $T.dPercentile >= 95}
-					<tr class="hiperintensive"><td><b>&#x0039F;</b></td>
-				{#elseif $T.sPercentile >= 90}
-					<tr class="intensive"><td><b>&#x0039F;</b></td>
-				{#elseif $T.dPercentile >= 90}
-					<tr class="intensive"><td><b>&#x0039F;</b></td>
+				{#if $T.sPercentile >= 95 || $T.dPercentile >= 95}
+					<tr class="hiperintensive"><td></td>
+				{#elseif $T.sPercentile >= 90 || $T.dPercentile >= 90}
+					<tr class="intensive"><td></td>
 				{#else}
 					<tr><td></td>
 				{#/if}
