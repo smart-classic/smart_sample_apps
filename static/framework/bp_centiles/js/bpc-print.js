@@ -167,9 +167,14 @@ jQuery(function($) {
 			// Template params
 			{ 
 				short : !!short ? 1 : 0,
-				adultAge : BPC.settings.adult_age 
+				adultAge : BPC.settings.adult_age,
+				maxRows  : BPC.Constants.MAX_TABLE_ROWS
 			}
 		);
+		
+		if (!short) {
+			$(".numrows").text(BPC.Constants.MAX_TABLE_ROWS);
+		}
 		
 		if (!window.getComputedStyle) {
 			$("tr.intensive", container).find("td:first-child").html(

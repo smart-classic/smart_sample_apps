@@ -54,7 +54,7 @@
 			<!--div class="page-break"></div-->
 			<h3>All BP Measurements in Percentiles</h3>
 			<div style="margin:0 1ex;height: 360px;" id="long-graph"></div>
-			<h3>Last 8 BP Measurements</h3>
+			<h3>Last <span class="numrows"></span> BP Measurements</h3>
 			<div id="table-view"></div>
 		</div>
 		
@@ -118,7 +118,7 @@
                         {#include HEAD}
                     </thead>
                     <tbody>
-                        {#foreach $T.data as record count=8}
+						{#foreach $T.data as record count=$P.maxRows}
                             {#include ROW root=$T.record}
                         {#/for}
                     </tbody>
