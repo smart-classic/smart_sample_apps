@@ -115,7 +115,7 @@
                         {#include HEAD}
                     </thead>
                     <tbody>
-                        {#foreach $T.data as record count=10}
+                        {#foreach $T.data as record count=9}
                             {#include ROW root=$T.record}
                         {#/for}
                     </tbody>
@@ -143,7 +143,7 @@
 					<tr><td></td>
 				{#/if}
                     <td>
-						{#if $T.unixTime}{new XDate($T.unixTime).toString('d MMM yy')}{#/if}
+						{#if $T.unixTime}{new XDate($T.unixTime).toString('d MMM yyyy')}{#/if}
 						<span class="grey-4 small">
 							{BPC.getYears($T.age)}y {BPC.getMonths($T.age)}m
 						</span>
@@ -152,9 +152,7 @@
                     <td><b class="grey-1">{$T.diastolic}</b> &bull; {$T.dPercentile}%</td>
                     {#if !$P.short}
                     <td class="grey-4 small lowercase notes">
-						{#if $T.site}{$T.site}
-						{#if $T.position}, {$T.position}
-						{#if $T.method}, {$T.method}
+						{#if $T.site}{$T.site}{#if $T.position}, {$T.position}{#if $T.method}, {$T.method}
 					</td>
 					{#/if}
                 </tr>
