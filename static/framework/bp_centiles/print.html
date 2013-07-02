@@ -35,10 +35,10 @@
     </head>
     <body>
 		<div id="print-toolbar">
-			<a href="javascript:window.print();" class="print-link">
+			<button onclick="window.print();" class="print-link">
 			<img src="images/print.png" alt="Print" />
 			Print Now
-			</a>
+			</button>
 		</div>
 		<br />
 		<div id="wrap">
@@ -46,16 +46,17 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td>
-						<div id="short-graph" style="height: 240px; width: 330px"></div>
+						<div id="short-graph" style="height: 230px; width: 330px"></div>
 					</td>
 					<td align="left" id="short-table-view" style=""></td>
 				</tr>
 			</table>
 			<!--div class="page-break"></div-->
-			<div style="margin:0 1ex;height: 380px;" id="long-graph"></div>
+			<h3>All BP Measurements in Percentiles</h3>
+			<div style="margin:0 1ex;height: 360px;" id="long-graph"></div>
+			<h3>Last 8 BP Measurements</h3>
 			<div id="table-view"></div>
 		</div>
-		<br />
 		
 		<!-- jTemplates templates -->
         <div style="display:none">
@@ -102,7 +103,9 @@
 						  <td colspan="3">&nbsp;</td>
 						</tr>
 						<tr>
-							<td colspan="3" class="small">last BP on most recent 3 clinic days in mmHg</td>
+							<td colspan="3">
+								<h3>Last BP on most recent 3 clinic days in mmHg</h3>
+							</td>
 						</tr>
 					</table>
 				{#/template MAIN}
@@ -115,7 +118,7 @@
                         {#include HEAD}
                     </thead>
                     <tbody>
-                        {#foreach $T.data as record count=9}
+                        {#foreach $T.data as record count=8}
                             {#include ROW root=$T.record}
                         {#/for}
                     </tbody>
@@ -148,8 +151,14 @@
 							{BPC.getYears($T.age)}y {BPC.getMonths($T.age)}m
 						</span>
 					</td>
-                    <td><b class="grey-1">{$T.systolic}</b> &bull; {$T.sPercentile}%</td>
-                    <td><b class="grey-1">{$T.diastolic}</b> &bull; {$T.dPercentile}%</td>
+                    <td>
+						<b class="grey-1">{$T.systolic}</b>
+						{#if $T.age < $P.adultAge} &bull; {$T.sPercentile}%{#/if}
+					</td>
+                    <td>
+						<b class="grey-1">{$T.diastolic}</b>
+						{#if $T.age < $P.adultAge} &bull; {$T.dPercentile}%{#/if}
+					</td>
                     {#if !$P.short}
                     <td class="grey-4 small lowercase notes">
 						{#if $T.site}{$T.site}{#if $T.position}, {$T.position}{#if $T.method}, {$T.method}
