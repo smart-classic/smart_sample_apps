@@ -16,6 +16,7 @@
 @color-grey-6: #d6d6d6;
 @color-grey-7: #e3e3e3;
 @font-family : ~"Verdana, Tahoma, Calibri, sans-serif";
+@font-family-h : ~"Arial, Calibri, sans-serif";
 @font-size      : 14px;
 @font-size-small: 12px;
 
@@ -66,6 +67,15 @@ body, td, th {
 //	background: #DDD;
 //}
 
+h3 {
+	font-family : @font-family-h;
+	font-size   : @font-size * 1.2;
+	//font-weight : normal;
+	margin      : 0 0 0.1ex;
+	padding     : 0 @font-size / 2; // 1ex of the base size
+	color       : @color-grey-1;
+}
+
 #wrap {
 	width: 800px;
 	margin: auto;
@@ -81,8 +91,9 @@ table {
 }
 
 td, th {
-	padding: 0.3ex 1ex;
+	padding: 0.2ex 1ex;
 	white-space: nowrap;
+	border-bottom: 1px solid #FFF;
 }
 
 #header-table th {
@@ -145,32 +156,27 @@ tr.hiperintensive {
 }
 
 #print-toolbar {
-	background: #AC4;
+	background: #BBB;
 	border-radius: 0 0 5px 5px;
 	position: fixed;
 	z-index: 100;
 	top: -1px;
 	left: 50%;
-	margin-left: -60px;
-	padding: 4px 8px;
-	box-shadow: inset 0px -13px 21px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1); 
-	text-shadow: 0 1px 0 #DDD;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	user-select: none;
+	margin-left: -70px;
+	padding: 2px;
+	box-shadow: inset 0px -13px 21px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.16); 
 }
 
 #print-toolbar .print-link {
 	line-height: 16px;
-	text-decoration: none;
 	color: #333;
-	padding-right: 4px;
+	padding: 5px 15px;
 	font-weight: bold;
+	text-shadow: 0 1px 0 #FFF;
 }
 
 #print-toolbar .print-link:hover {
 	color : #000;
-	text-shadow: 0 1px 0 #EEE;
 }
 
 #print-toolbar .print-link img {
