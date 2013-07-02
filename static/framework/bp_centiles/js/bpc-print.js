@@ -163,7 +163,12 @@ jQuery(function($) {
 		// Generate the table output
 		$(container).empty().setTemplateElement("template").processTemplate(
 			p, 
-			{ short : !!short ? 1 : 0 }
+			
+			// Template params
+			{ 
+				short : !!short ? 1 : 0,
+				adultAge : BPC.settings.adult_age 
+			}
 		);
 		
 		if (!window.getComputedStyle) {
