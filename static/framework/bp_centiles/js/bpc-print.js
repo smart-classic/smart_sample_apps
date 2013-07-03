@@ -100,6 +100,7 @@ jQuery(function($) {
 	 * @param {Patient} patient
 	 */
 	function drawLongGraph( container, patient ) {
+		console.dir( patient );
 		(new BPC.LongGraph($(container).empty(), patient)).draw();
 	}
 	
