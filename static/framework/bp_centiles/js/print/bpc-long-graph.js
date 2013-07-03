@@ -1,58 +1,5 @@
 (function(NS, $, undefined) {
 	
-	// Settings for the long-view graph
-	var SETTINGS = {
-		
-		leftgutter   : NS.Constants.FONT_SIZE * 5, 
-		rightgutter  : NS.Constants.FONT_SIZE * 3,
-		bottomgutter : NS.Constants.FONT_SIZE * 4,
-		topgutter    : 15,
-		plotsMargin  : 6, // The distance between the two plots
-		leftpadding  : 0, 
-		rightpadding : 0,
-		
-		// data circles
-		dotAttr : {
-			r              : 5, 
-			fill           : "rgba(255, 255, 255, 0.2)",
-			stroke         : NS.Constants.COLOR_GREY_3,
-			"stroke-width" : 2
-		},
-		dotAttrHypertensive : {
-			r              : 5, 
-			fill           : "rgba(255, 255, 255, 0.2)",
-			stroke         : "#000",
-			"stroke-width" : 4
-		},
-		dotAttrPrehypertensive : {
-			r              : 5, 
-			fill           : "rgba(255, 255, 255, 0.2)",
-			stroke         : NS.Constants.COLOR_GREY_1,
-			"stroke-width" : 3
-		},	
-		
-		// Y axis labels
-		VAxisLabelsAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 0.92,
-			"font-family" : NS.Constants.FONT_FAMILY,
-			fill          : NS.Constants.COLOR_GREY_3
-		},
-		
-		// Y axis titles
-		VAxisTitlesAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 1.2,
-			"font-family" : NS.Constants.FONT_FAMILY,
-			fill          : NS.Constants.COLOR_GREY_4
-		},
-		
-		// X axis labels
-		XAxisLabelsAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 0.92,
-			"font-family" : NS.Constants.FONT_FAMILY,
-			fill          : NS.Constants.COLOR_GREY_3
-		}
-	};
-	
 	/**
 	 * LongGraph extends NS.Graph
 	 * @constructor
@@ -158,11 +105,14 @@
 	LongGraph.prototype = new NS.Graph();
 	
 	/**
-	 * Returns the LongView specific settings merged with the base settings.
+	 * Returns the LongView specific settings.
 	 */
 	LongGraph.prototype.getSettings = function() 
 	{
-		return NS.Graph.prototype.getSettings.call(this, SETTINGS);
+		return NS.Graph.prototype.getSettings.call(
+			this, 
+			BPC.printSettings.longGraph
+		);
 	};
 	
 	/**
