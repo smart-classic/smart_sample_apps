@@ -301,7 +301,7 @@
 				}
 			}
 			
-			if (x2 < inst.plotRect.right) {
+			if (x2 > inst.plotRect.left && x2 < inst.plotRect.right) {
 				
 				// The vertical edge line
 				inst.paper.path("M" + [ x2, y1 ] + "V" + y2).attr({
