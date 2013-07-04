@@ -203,6 +203,16 @@ if (!BPC) {
             {timestamp: "2007-12-04T14:07:00Z", height: 175, systolic: 118, diastolic: 66, site: "Leg", position: "Sitting", method: "Machine", encounter: "Inpatient"},
             {timestamp: "2011-08-26T10:24:00Z", height: 182, systolic: 109, diastolic: 74, site: "Leg", position: "Standing", method: "Machine", encounter: "Inpatient"}
         ];
+        /*
+        patient.data = [
+            {timestamp: "1999-01-21T04:32:00Z", height: 85, systolic: 98, diastolic: 73, site: "Arm", position: "Standing", method: "Auscultation", encounter: "Inpatient"},
+            {timestamp: "1999-02-21T04:34:00Z", height: 96, systolic: 82, diastolic: 53, site: "Leg", position: "Sitting", method: "Auscultation", encounter: "Ambulatory"},
+            //{timestamp: "2000-01-12T15:30:00Z", height: 116, systolic: 84, diastolic: 48, site: "Arm", position: "Sitting", method: "Auscultation", encounter: "Ambulatory"},
+            //{timestamp: "2000-04-24T19:13:00Z", height: 118, systolic: 104, diastolic: 52, site: "Leg", position: "Sitting", method: "Auscultation", encounter: "Ambulatory"},
+            //{timestamp: "2001-06-30T08:43:00Z", height: 125, systolic: 107, diastolic: 75, site: "Arm", position: "Standing", method: "Machine", encounter: "Inpatient"},
+            //{timestamp: "2010-10-04T14:07:00Z", height: 175, systolic: 118, diastolic: 66, site: "Leg", position: "Sitting", method: "Machine", encounter: "Inpatient"},
+            //{timestamp: "2011-08-26T10:24:00Z", height: 182, systolic: 109, diastolic: 74, site: "Leg", position: "Standing", method: "Machine", encounter: "Inpatient"}
+        ];*/
         return patient;
     };
     

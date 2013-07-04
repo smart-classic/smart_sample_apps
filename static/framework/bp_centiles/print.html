@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Blood Pressure Centiles SMART Application</title>
+        
+        <!-- BPC stylesheets-->
+        <link rel="stylesheet" href="css/bpc-print.css" type="text/css" />
+        
+        <!-- Standard JS Libraries -->
+        <script src="js/lib/jquery.js" type="text/javascript"></script>
+        <script src="js/lib/jquery-jtemplates.js" type="text/javascript"></script>
+        <script src="js/lib/raphael.js" type="text/javascript"></script>
+        <script src="js/lib/xdate.js" type="text/javascript"></script>
+        
+        <!-- BPC Utilities -->
+        <script src="js/cdc_height_tables.js" type="text/javascript"></script>
+        <script src="js/nih_bp_tables.js" type="text/javascript"></script>
+        <script src="js/util.js" type="text/javascript"></script>
+        <script src="js/popup.js" type="text/javascript"></script> 
+        
+        <!-- BPC App Modules -->
+        <script src="js/bpc-config.js" type="text/javascript"></script>
+        <script src="js/bpc-data.js" type="text/javascript"></script>
+        <script src="js/bpc-filters.js" type="text/javascript"></script>
+        <script src="js/bpc-graph.js" type="text/javascript"></script>
+        
+        <!-- BPC Print-specific scripts -->
+        <script src="js/print/bpc-constants.js"     type="text/javascript"></script>
+        <script src="js/print/bpc-time-iterator.js" type="text/javascript"></script>
+        <script src="js/print/bpc-graph.js"         type="text/javascript"></script>
+        <script src="js/print/bpc-short-graph.js"   type="text/javascript"></script>
+        <script src="js/print/bpc-long-graph.js"    type="text/javascript"></script>
+        <script src="js/bpc-print.js"               type="text/javascript"></script>
+    </head>
+    <body>
+		<div id="print-toolbar">
+			<button onclick="window.print();" class="print-link">
+			<img src="images/print.png" alt="Print" />
+			Print Now
+			</button>
+		</div>
+		<br />
+		<div id="wrap">
+			<div id="header"></div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>
+						<div id="short-graph" style="height: 230px; width: 330px"></div>
+					</td>
+					<td align="left" id="short-table-view" style=""></td>
+				</tr>
+			</table>
+			<!--div class="page-break"></div-->
+			<h3>All BP Measurements in Percentiles</h3>
+			<div style="margin:0 1ex;height: 360px;" id="long-graph"></div>
+			<h3>Last <span class="numrows"></span> BP Measurements</h3>
+			<div id="table-view"></div>
+		</div>
+		
+		<!-- jTemplates templates -->
+        <div style="display:none">
+			
+			<!-- Header -->
+			<textarea id="header-template" rows="0" cols="0"><!--
+				{#template MAIN}
+					<table id="header-table">
+						<tr>
+							<td rowspan="5" width="100%">
+								<h1>{$T.name}</h1>
+								<h2>BP Centiles Report</h2>
+							</td>
+							<th></th>
+							<td>{$T.date}</td>
+						</tr>
+						<tr>
+							<th>gender</th>
+							<td>{$T.sex}</td>
+						</tr>
+						<tr>
+							<th>dob</th>
+							<td>{$T.dob}</td>
+						</tr>
+						<tr>	
+							<th>height</th>
+							<td>
+								{#if $T.lastHeight}
+									{$T.lastHeight}
+									<span class="grey-4">on</span>  
+									{$T.lastHeightDate}
+								{#else}
+									N/A
+								{#/if}
+							</td>
+						</tr>
+						<tr>	
+							<th>mrn</th>
+							<td>
+							{$P.mrn}
+							</td>
+						</tr>
+						<tr>
+						  <td colspan="3">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<h3>Last BP on most recent 3 clinic days in mmHg</h3>
+							</td>
+						</tr>
+					</table>
+				{#/template MAIN}
+			--></textarea>
+			
+			<textarea id="template" rows="0" cols="0"><!--
+            {#template MAIN}
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        {#include HEAD}
+                    </thead>
+                    <tbody>
+						{#foreach $T.data as record count=$P.maxRows}
+                            {#include ROW root=$T.record}
+                        {#/for}
+                    </tbody>
+                </table>
+            {#/template MAIN}
+            
+            {#template HEAD}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="grey-4 small">systolic</td>
+                    <td class="grey-4 small">diastolic</td>
+                    {#if !$P.short}
+						<td class="grey-4 small">notes</td>
+                    {#/if}
+                </tr>
+            {#/template HEAD}
+            
+            {#template ROW}
+				{#if $T.sPercentile >= 95 || $T.dPercentile >= 95}
+					<tr class="hiperintensive"><td></td>
+				{#elseif $T.sPercentile >= 90 || $T.dPercentile >= 90}
+					<tr class="intensive"><td></td>
+				{#else}
+					<tr><td></td>
+				{#/if}
+                    <td>
+						{#if $T.unixTime}{new XDate($T.unixTime).toString('d MMM yyyy')}{#/if}
+						<span class="grey-4 small">
+							{BPC.getYears($T.age)}y {BPC.getMonths($T.age)}m
+						</span>
+					</td>
+                    <td>
+						<b class="grey-1">{$T.systolic}</b>
+						{#if $T.age < $P.adultAge} &bull; {$T.sPercentile}%{#/if}
+					</td>
+                    <td>
+						<b class="grey-1">{$T.diastolic}</b>
+						{#if $T.age < $P.adultAge} &bull; {$T.dPercentile}%{#/if}
+					</td>
+                    {#if !$P.short}
+                    <td class="grey-4 small lowercase notes">
+						{#if $T.site}{$T.site}{#if $T.position}, {$T.position}{#if $T.method}, {$T.method}
+					</td>
+					{#/if}
+                </tr>
+            {#/template ROW}
+        --></textarea></div>
+    </body>
+</html>
