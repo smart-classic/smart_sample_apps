@@ -200,6 +200,8 @@ if (!BPC) {
 
         // Initialize the slider range
         BPC.setDateRange($("#slider-timerange").slider("values", 0),$("#slider-timerange").slider("values", 1));
+        
+        $("#print button").css("visibility", "visible");
     };
     
     /**

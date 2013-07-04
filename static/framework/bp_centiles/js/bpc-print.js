@@ -137,14 +137,8 @@ jQuery(function($) {
 		}
 		
 		// Generate the output
-		$(container).empty().setTemplateElement("header-template").processTemplate(
-			tplData,
-			{ 
-				mrn : opener.SMART && opener.SMART.record && opener.SMART.record.id ? 
-					opener.SMART.record.id : 
-					"N/A" 
-			}
-		);
+		$(container).empty().setTemplateElement("header-template")
+			.processTemplate(tplData, { isBCH : BPC.printSettings.isBCH });
 	}
 	
 	/**
@@ -166,14 +160,14 @@ jQuery(function($) {
 			
 			// Template params
 			{ 
-				short : !!short ? 1 : 0,
+				short    : !!short ? 1 : 0,
 				adultAge : BPC.settings.adult_age,
-				maxRows  : BPC.Constants.MAX_TABLE_ROWS
+				maxRows  : BPC.printSettings.maxTableRows
 			}
 		);
 		
 		if (!short) {
-			$(".numrows").text(BPC.Constants.MAX_TABLE_ROWS);
+			$(".numrows").text(BPC.printSettings.maxTableRows);
 		}
 		
 		if (!window.getComputedStyle) {

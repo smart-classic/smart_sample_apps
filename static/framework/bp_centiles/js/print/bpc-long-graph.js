@@ -1,58 +1,5 @@
 (function(NS, $, undefined) {
 	
-	// Settings for the long-view graph
-	var SETTINGS = {
-		
-		leftgutter   : NS.Constants.FONT_SIZE * 5, 
-		rightgutter  : NS.Constants.FONT_SIZE * 3,
-		bottomgutter : NS.Constants.FONT_SIZE * 4,
-		topgutter    : 15,
-		plotsMargin  : 6, // The distance between the two plots
-		leftpadding  : 0, 
-		rightpadding : 0,
-		
-		// data circles
-		dotAttr : {
-			r              : 5, 
-			fill           : "rgba(255, 255, 255, 0.2)",
-			stroke         : NS.Constants.COLOR_GREY_3,
-			"stroke-width" : 2
-		},
-		dotAttrHypertensive : {
-			r              : 5, 
-			fill           : "rgba(255, 255, 255, 0.2)",
-			stroke         : "#000",
-			"stroke-width" : 4
-		},
-		dotAttrPrehypertensive : {
-			r              : 5, 
-			fill           : "rgba(255, 255, 255, 0.2)",
-			stroke         : NS.Constants.COLOR_GREY_1,
-			"stroke-width" : 3
-		},	
-		
-		// Y axis labels
-		VAxisLabelsAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 0.92,
-			"font-family" : NS.Constants.FONT_FAMILY,
-			fill          : NS.Constants.COLOR_GREY_3
-		},
-		
-		// Y axis titles
-		VAxisTitlesAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 1.2,
-			"font-family" : NS.Constants.FONT_FAMILY,
-			fill          : NS.Constants.COLOR_GREY_4
-		},
-		
-		// X axis labels
-		XAxisLabelsAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 0.92,
-			"font-family" : NS.Constants.FONT_FAMILY,
-			fill          : NS.Constants.COLOR_GREY_3
-		}
-	};
-	
 	/**
 	 * LongGraph extends NS.Graph
 	 * @constructor
@@ -158,11 +105,14 @@
 	LongGraph.prototype = new NS.Graph();
 	
 	/**
-	 * Returns the LongView specific settings merged with the base settings.
+	 * Returns the LongView specific settings.
 	 */
 	LongGraph.prototype.getSettings = function() 
 	{
-		return NS.Graph.prototype.getSettings.call(this, SETTINGS);
+		return NS.Graph.prototype.getSettings.call(
+			this, 
+			BPC.printSettings.longGraph
+		);
 	};
 	
 	/**
@@ -266,17 +216,36 @@
 			
 			y1 = this.pct2Y(z.endPct  , "systolic");
 			y2 = this.pct2Y(z.startPct, "systolic");
+			
 			this.paper.rect(x, y1, w, y2 - y1).attr({
-				"fill" : z.bgColor,
+				"fill"   : z.bgColor,
 				"stroke" : "none"
-			}).toBack();
+			}).toBack().crisp();
+			
+			if (z.startPct > 50) {
+				this.paper.path(
+					"M" + [x, y2] + "h" + w
+				).attr({
+					"stroke"         : "black",
+					"stroke-opacity" : 0.3
+				}).crisp();
+			}
 			
 			y1 = this.pct2Y(z.endPct  , "diastolic");
 			y2 = this.pct2Y(z.startPct, "diastolic");
 			this.paper.rect(x, y1, w, y2 - y1).attr({
-				"fill" : z.bgColor,
+				"fill"   : z.bgColor,
 				"stroke" : "none"
-			}).toBack();
+			}).toBack().crisp();
+			
+			if (z.startPct > 50) {
+				this.paper.path(
+					"M" + [x, y2] + "h" + w
+				).attr({
+					"stroke"         : "black",
+					"stroke-opacity" : 0.3
+				}).crisp();
+			}
 		}
 	};
 	
@@ -292,6 +261,10 @@
 			inst    = this,
 			step    = this.TimeIterator.getTimeStep(),
 			now     = (new Date()).getTime(),
+			right   = Math.max(Math.min(
+				this.plotRect.right,
+				this.getAdultTreshold()
+			), this.plotRect.left),
 			i       = 0,
 			current, pos, w, q, x;
 			
@@ -302,11 +275,12 @@
 				step = h / (l - 1),
 				item, y, i;
 			
-			for (i = 0; i < l; i++) {
+			for (i = 0; i < l - 1; i++) {
 				item = inst.dimesionY[i];
 				y = y2 - step * i;
 				inst.paper.path("M" + [ x1, y ] + "H" + x2).attr({
-					stroke : s.gridColor
+					stroke : "black",
+					"stroke-opacity" : 0.2
 				}).crisp();
 				
 				if (item.label) {
@@ -320,10 +294,87 @@
 					
 					// right percentile label
 					inst.paper.text(
-						x2 + NS.Constants.FONT_SIZE * 2, 
+						inst.plotRect.right + NS.Constants.FONT_SIZE * 2, 
 						y, 
 						item.label
 					).attr(inst.settings.VAxisLabelsAttr);
+				}
+			}
+			
+			if (x2 > inst.plotRect.left && x2 < inst.plotRect.right) {
+				
+				// The vertical edge line
+				inst.paper.path("M" + [ x2, y1 ] + "V" + y2).attr({
+					stroke         : NS.Constants.COLOR_GREY_3,
+					"stroke-width" : 1,
+					"stroke-opacity" : 0.7
+				}).crisp();
+				
+				// First draw the "Adult" label and get it's BBox
+				var label = inst.paper.text(
+					x2 + (inst.plotRect.right - x2) / 2,
+					y2 - 16,
+					"Adult"
+				).attr({
+					"font-family" : "Verdana, sans-serif",
+					"font-weight" : "bold",
+					"fill" : NS.Constants.COLOR_GREY_3
+				});
+				
+				var labelBox = label.getBBox();
+				//console.log(labelBox);
+				var space = inst.plotRect.right - x2,
+					labelPaddingX     = 6,
+					labelPaddingY     = 2,
+					minSpaceForText   = labelBox.width + labelPaddingX * 2,
+					minSpaceForArrows = minSpaceForText + 20,
+					minSpaceForLines  = minSpaceForArrows + 20;
+				
+				if (space < minSpaceForText) {
+					label.hide();
+				} else {
+					if (space >= minSpaceForLines) {
+						// Connecting lines
+						inst.paper.path(
+							"M" + [ x2 + 10, y2 - 16 ] + 
+							"H" + (labelBox.x - labelPaddingX) + 
+							"M" + [labelBox.x + labelBox.width + labelPaddingX, y2 - 16 ] +
+							"H" + (inst.plotRect.right - 10)
+						).attr({
+							stroke         : NS.Constants.COLOR_GREY_4,
+							"stroke-width" : 1,
+							"stroke-opacity" : 0.7
+						}).crisp();
+						
+						inst.paper.rect().attr({
+							x: labelBox.x - labelPaddingX,
+							y: labelBox.y - labelPaddingY,
+							width  : labelBox.width + labelPaddingX * 2,
+							height : labelBox.height + labelPaddingY * 2,
+							stroke : "none"//NS.Constants.COLOR_GREY_3,
+							//fill   : "#FFF"
+						}).crisp();
+					}
+					
+					if (space >= minSpaceForArrows) {
+						// Left arrow
+						inst.paper.path(
+							"M" + [ x2, y2 - 16 ] + 
+							"l 10,-5 v 10 Z"
+						).attr({
+							fill : NS.Constants.COLOR_GREY_7,
+							stroke: NS.Constants.COLOR_GREY_4
+						});
+						
+						// Right arrow
+						inst.paper.path(
+							"M" + [ inst.plotRect.right, y2 - 16 ] + 
+							"l -10,-5 v 10 Z"
+						).attr({
+							fill : NS.Constants.COLOR_GREY_7,
+							stroke: NS.Constants.COLOR_GREY_4
+						});
+					}
 				}
 			}
 		}
@@ -344,7 +395,7 @@
 		drawGrid(
 			this.systolicPlotRect.left,
 			this.systolicPlotRect.top,
-			this.systolicPlotRect.left + this.systolicPlotRect.width,
+			right,
 			this.systolicPlotRect.top + this.systolicPlotRect.height
 		);
 		
@@ -352,7 +403,7 @@
 		drawGrid(
 			this.diastolicPlotRect.left,
 			this.diastolicPlotRect.top,
-			this.diastolicPlotRect.left + this.diastolicPlotRect.width,
+			right,
 			this.diastolicPlotRect.top + this.diastolicPlotRect.height
 		);
 		
@@ -418,6 +469,25 @@
 			pxMs      = innerWidth / diff;
 			
 		return startX + pxMs * (record.unixTime - startTime);
+	};
+	
+	LongGraph.prototype.getAdultTreshold = function()
+	{
+		var 
+		
+		innerWidth = this.plotRect.width - 
+					 (this.settings.leftpadding || 0) - 
+					 (this.settings.rightpadding || 0),
+		startX    = this.plotRect.left + (this.settings.leftpadding || 0);
+		startTime = this.TimeIterator.startTime,
+		endTime   = this.TimeIterator.endTime,
+		diff      = endTime - startTime,
+		pxMs      = innerWidth / diff,
+		pos       = new XDate(this.model.birthdate)
+			.addYears(BPC.settings.adult_age)
+			.getTime();
+			
+		return startX + pxMs * (pos - startTime);
 	};
 	
 	/**

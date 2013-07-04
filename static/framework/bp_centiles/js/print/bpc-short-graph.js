@@ -1,54 +1,5 @@
 (function(NS, $) {	
 	
-	// Settings for the short-view graph
-	var SETTINGS = {
-		topgutter      : NS.Constants.FONT_SIZE * 1.5 + 3, // enough to contain a circle at 100%
-		leftgutter     : 30, 
-		rightgutter    : 0,
-		bottomgutter   : 40,
-		leftpadding    : 15, 
-		rightpadding   : 15,
-		gridRows       : 16, 
-		gridCols       : 0, 
-		max            : 160, // maximum value of the data (plotted on the Y axis); this is either mmHg or percentile
-		vLabels        : 16,  // number of labels to display for the Y axis
-		
-		// data circles
-		dotAttr : {
-			r              : NS.Constants.FONT_SIZE * 1.4, 
-			fill           : NS.Constants.COLOR_WHITE,
-			stroke         : NS.Constants.COLOR_GREY_3,
-			"stroke-width" : 1.1
-		},
-		dotAttrPrehypertensive : {
-			r              : NS.Constants.FONT_SIZE * 1.4, 
-			fill           : NS.Constants.COLOR_WHITE,
-			stroke         : NS.Constants.COLOR_GREY_1,
-			"stroke-width" : 3
-		},
-		dotAttrHypertensive : {
-			r              : NS.Constants.FONT_SIZE * 1.4, 
-			fill           : NS.Constants.COLOR_WHITE,
-			stroke         : "#000",
-			"stroke-width" : 3
-		},
-		
-		// data labels inside the circles
-		dotLabelAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 0.9,
-			"font-family" : NS.Constants.FONT_FAMILY,
-			fill          : NS.Constants.COLOR_GREY_1,
-			"font-weight" : "bold"
-		},
-		
-		// Y axis labels
-		VAxisLabelsAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 0.82,
-			"font-family" : NS.Constants.FONT_FAMILY,
-			fill          : NS.Constants.COLOR_GREY_3
-		}
-	};
-	
 	/**
 	 * Class ShortGraph extends NS.Graph
 	 * @constructor
@@ -67,7 +18,10 @@
 	 */
 	ShortGraph.prototype.getSettings = function() 
 	{
-		return NS.Graph.prototype.getSettings.call(this, SETTINGS); 
+		return NS.Graph.prototype.getSettings.call(
+			this, 
+			BPC.printSettings.shortGraph
+		); 
 	};
 	
 	/**
@@ -113,7 +67,7 @@
 				x, 
 				this.plotRect.bottom + 15, 
 				rec.date
-			).attr(this.settings.txt2);
+			).attr(this.settings.HAxisLabelsAttr);
 		});
 	};
 	
@@ -136,7 +90,7 @@
 			this.plotRect.height, 
 			this.settings.vLabels, 
 			this.settings.max, 
-			this.settings.vAxisLabel, 
+			"", // vAxisLabel, 
 			this.settings.VAxisLabelsAttr, 
 			true // shortTerm
 		);
