@@ -437,10 +437,20 @@ if (!BPC) {
         // Sort the patient data records by timestamp
         patient.data.sort(function (a,b) {
         
-            var x = parse_date(a.timestamp).getTime(),
-                y = parse_date(b.timestamp).getTime();
+            var t1 = parse_date(a.timestamp).getTime(),
+                t2 = parse_date(b.timestamp).getTime(),
+                s1 = a.systolic,
+                s2 = b.systolic,
+                d1 = a.diastolic,
+                d2 = b.diastolic;
                 
-            return ( (x<y) ? -1: ((x>y)?1:0));
+            if (t1 < t2) return -1;
+            else if (t1 > t2) return 1;
+            else if (s1 < s2) return -1;
+            else if (s1 > s2) return 1;
+            else if (d1 < d2) return -1;
+            else if (d1 > d2) return 1;
+            else return 0;
         });
              
         // Calculate the age and percentiles for the patient encounters
