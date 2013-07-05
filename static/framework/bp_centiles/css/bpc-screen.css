@@ -102,7 +102,7 @@ input[type='number'] {border: 1px solid #555;}
     font-size:12px;
 }
 
-#dialog-message, #dialog-demo {
+#dialog-message, #dialog-demo, #loaded_through, #div_y {
     display: none;
 }
 
@@ -112,11 +112,12 @@ input[type='number'] {border: 1px solid #555;}
 
 #footer {
     margin-top: 2px;
-    width: 780px;
+    width: 790px;
 }
 
 #version {
     font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+    right: 1em;
     text-align: right;
 	width: 100px;
     position: relative;
@@ -125,7 +126,7 @@ input[type='number'] {border: 1px solid #555;}
 
 #warning {
     text-align: left;
-	width: 680px;
+	width: 740px;
     color: #000;
     position: relative;
     float: left;
@@ -182,4 +183,27 @@ table.nicetable td {
 
 #filters {
     font-size: .9em;
+}
+
+/* The print-link container */
+#print {
+	height: 0;
+	overflow: visible;
+}
+
+/* The print-button */
+#print button {
+	background: #444;
+    border: 1px solid #555;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 -22px 20px -9px #000 inset, 0 1px 1px 0 #000 inset, 0 8px 23px 3px #111;
+    color: #999;
+    cursor: pointer;
+    margin: 5px 0;
+    padding: 5px 15px;
+    text-shadow: 0 -1px 0 #000;
+}
+
+#print button:hover {
+	color : #FFF;
 }

@@ -21,8 +21,19 @@ if (!BPC) {
 (function () {
     "use strict";
 
+    BPC.settings = {};
+    
+    BPC.settings.app_title = "Blood Pressure Centiles";
+    
+    // BPC Data Load settings
+    BPC.settings.loading_mode = "full";   // possible values: full = complete data load, 
+                                          //                  progressive = paginate automatically,
+                                          //                  manual = user loads year by year
+    BPC.settings.vitals_limit = 50; // step used by progressive loading
+    BPC.settings.default_view = 0; // 0 = short term view, 1 = long term view, 2 = table view, 3 = calculator
+    
     // Percentile interpretation zones data and styling (IMPORTANT: Percents should sum up to 100)
-    BPC.zones = [
+    BPC.settings.zones = [
         {definition: "Hypotension (< 1%)",       abbreviation: "\\/", label: "Hypotensive", percent: 1, colorhue: 0.7,  opacity: 0.4, dashthrough: false},
         //{definition:"Prehypotension (< 5%)",  abbreviation: "-", label: "Prehypotensive", percent: 4, colorhue: 0.9, opacity: 0.3, dashthrough: false},
         {definition: "Normal",                   abbreviation: "OK", label: "Normal", percent: 89, colorhue: 0.3, opacity: 0.2, dashthrough: false},
@@ -33,7 +44,7 @@ if (!BPC) {
     // A unicode checkmark character (doesn't work with some of the IE8 fonts): \u2713
     
     // Filter value settings
-    BPC.filterSettings = {
+    BPC.settings.filterSettings = {
         encounter: ["Inpatient", "Ambulatory"],
         site: ["Arm", "Leg"],
         position: ["Sitting", "Standing"],
@@ -43,7 +54,7 @@ if (!BPC) {
     };
     
     // Settings for the filter buttons
-    BPC.filterButtonsSettings = [
+    BPC.settings.filterButtonsSettings = [
         {handle: 'chkFilterInpatient', onByDefault: false},
         {handle: 'chkFilterAmbulatory', onByDefault: true},
         {handle: 'chkFilterEncounterUnknown', onByDefault: true},
@@ -59,7 +70,7 @@ if (!BPC) {
     ];
     
     // The age at which we switch to adult calculations
-    BPC.ADULT_AGE = 19;
+    BPC.settings.adult_age = 19;
     
     /**
     * Generates a settings object on request (Private)
@@ -192,6 +203,16 @@ if (!BPC) {
             {timestamp: "2007-12-04T14:07:00Z", height: 175, systolic: 118, diastolic: 66, site: "Leg", position: "Sitting", method: "Machine", encounter: "Inpatient"},
             {timestamp: "2011-08-26T10:24:00Z", height: 182, systolic: 109, diastolic: 74, site: "Leg", position: "Standing", method: "Machine", encounter: "Inpatient"}
         ];
+        /*
+        patient.data = [
+            {timestamp: "1999-01-21T04:32:00Z", height: 85, systolic: 98, diastolic: 73, site: "Arm", position: "Standing", method: "Auscultation", encounter: "Inpatient"},
+            {timestamp: "1999-02-21T04:34:00Z", height: 96, systolic: 82, diastolic: 53, site: "Leg", position: "Sitting", method: "Auscultation", encounter: "Ambulatory"},
+            //{timestamp: "2000-01-12T15:30:00Z", height: 116, systolic: 84, diastolic: 48, site: "Arm", position: "Sitting", method: "Auscultation", encounter: "Ambulatory"},
+            //{timestamp: "2000-04-24T19:13:00Z", height: 118, systolic: 104, diastolic: 52, site: "Leg", position: "Sitting", method: "Auscultation", encounter: "Ambulatory"},
+            //{timestamp: "2001-06-30T08:43:00Z", height: 125, systolic: 107, diastolic: 75, site: "Arm", position: "Standing", method: "Machine", encounter: "Inpatient"},
+            //{timestamp: "2010-10-04T14:07:00Z", height: 175, systolic: 118, diastolic: 66, site: "Leg", position: "Sitting", method: "Machine", encounter: "Inpatient"},
+            //{timestamp: "2011-08-26T10:24:00Z", height: 182, systolic: 109, diastolic: 74, site: "Leg", position: "Standing", method: "Machine", encounter: "Inpatient"}
+        ];*/
         return patient;
     };
     

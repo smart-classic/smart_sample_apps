@@ -33,7 +33,7 @@ if (!BPC) {
         var dfd = $.Deferred();
         SMART.DEMOGRAPHICS_get()
              .success(function(demos) {
-                var demographics, medRecordNumber = '';
+                var demographics, medRecordNumber = null;
 
                 // Query the RDF for the demographics
                 var demographics = demos.graph
@@ -73,12 +73,34 @@ if (!BPC) {
     *
     * @returns {Object} jQuery deferred promise object
     */  
-    BPC.get_vitals = function() {
+    BPC.get_vitals = function(offset, vitals) {
         
         var dfd = $.Deferred(),
+            response,
+            filters,
+            d, y;
+            
+        if (!vitals) {
             // Template for the vitals object thrown by the callback
             vitals = {heightData: [],
                       bpData: []};
+        }
+        
+        if (BPC.settings.loading_mode === "progressive") {
+            if (offset === 0) $('#title').text("loading 0%");
+            filters = {limit:BPC.settings.vitals_limit, offset:offset};
+        } else if (BPC.settings.loading_mode === "manual") {
+            $('#loaded_through').show();
+            $('#div_y').show();
+            d = new Date();
+            y = d.getFullYear();
+            y -= offset;
+            $('#loaded_through').text("Data stream starting from " + y);
+            BPC.offset = offset;
+            filters = {date_from:(y+"-01-01"), date_to:(y+"-12-31")};
+        } else {   // full mode
+            filters = {};
+        }
         
         SMART.VITAL_SIGNS_get()
              .success(function(vital_signs){
@@ -155,12 +177,72 @@ if (!BPC) {
                             methodCode: this.methodCode && this.methodCode.value.toString(),
                             encounterTypeCode: this.code && this.code.value.toString()});
                     });
+                    
+                // If this is the first page, grab the total number of results
+                if (offset === 0) {
+                    response = vital_signs.graph
+                        .prefix('rdf','http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                        .prefix('api','http://smartplatforms.org/terms/api#')
+                        .where('?rs rdf:type api:ResponseSummary')
+                        .where('?rs api:resultsReturned ?results')
+                        .where('?rs api:totalResultCount ?total')
+                        .get(0);
+
+                    try {
+                        vitals.total = Number(response.total.value.toString());
+                    } catch(err) {
+                        vitals.total = 0
+                    }
+                }
+                    
                 dfd.resolve(vitals);
             })
             .error(function(e) {
                 dfd.reject(e.message);
             });
         return dfd.promise();
+    };
+    
+    BPC.loadAdditionalVitals = function (demographics, vitals, offset, total) {
+        $('#title').text("loading " + Math.round((offset / total) * 100) + "%");
+        $.when(BPC.get_vitals(offset, vitals))
+         .then( function (vitals) {
+                    var patient = BPC.processData(demographics, vitals);
+                    BPC.initPatient (patient);
+                    BPC.patient = patient;
+                    BPC.redrawViewShort (BPC.patient,BPC.settings.zones);
+                    BPC.setDateRange(0,100);
+                    BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
+                    BPC.redrawViewTable (BPC.patient);
+                    var next_offset = offset + BPC.settings.vitals_limit;
+                    if (next_offset < total) {
+                        BPC.loadAdditionalVitals (demographics, vitals, next_offset, total);
+                    } else {
+                        $('#title').text(BPC.settings.app_title);
+                    }
+                },
+                function (message) {
+                    BPC.displayError (message.data);
+                });
+    };
+    
+    BPC.loadAnotherY = function () {
+        $('#title').text("loading data...");
+        $.when(BPC.get_vitals(BPC.offset+1, BPC.vitals))
+         .then( function (vitals) {
+                    var patient = BPC.processData(BPC.demographics, vitals);
+                    BPC.initPatient (patient);
+                    BPC.patient = patient;
+                    BPC.redrawViewShort (BPC.patient,BPC.settings.zones);
+                    BPC.setDateRange(0,100);
+                    BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
+                    BPC.redrawViewTable (BPC.patient);
+                    BPC.vitals = vitals;
+                    $('#title').text(BPC.settings.app_title);
+                },
+                function (message) {
+                    BPC.displayError (message.data);
+                });
     };
 
     /**
@@ -192,7 +274,7 @@ if (!BPC) {
         // Initialize the patient information area
         patient = new BPC.Patient(demographics.name, demographics.birthday, demographics.gender, demographics.identifier);
         $("#patient-info").text(String(patient));
-
+        
         if (vitals_bp.length === 0) {
             // Display appropriate error message when there are no vitals
             // and degrade to calculator-only mode
@@ -257,7 +339,7 @@ if (!BPC) {
             
             // Don't use Array.filter or IE8 will have a problem
             for (i = 0; i < height_data.length; i++) {
-                if (height_data[i].age >= BPC.ADULT_AGE) {
+                if (height_data[i].age >= BPC.settings.adult_age) {
                     height_data_adult.push (height_data[i]);
                 }
             }
@@ -265,7 +347,7 @@ if (!BPC) {
             // This fails in IE8 (apparently Array.filter is not implemented there)
             /*
             height_data_adult = height_data.filter(function (e) {
-                return e.age >= BPC.ADULT_AGE;
+                return e.age >= BPC.settings.adult_age;
             });
             */
 
@@ -298,7 +380,7 @@ if (!BPC) {
                 // Calculate the age of the patient at the ime of the vital encounter
                 age = years_apart( vitals_bp[i].vital_date, patient.birthdate );
                 
-                if (age < BPC.ADULT_AGE) {
+                if (age < BPC.settings.adult_age) {
                     // Add code to update the patient data records with extrapolated height
                     // ...
                     // ... For now, here is a *very* inefficient function which picks the closest height data point.
@@ -368,7 +450,7 @@ if (!BPC) {
             patient.data[i].age = years_apart( patient.data[i].timestamp , patient.birthdate );
 
             // Calculate the blood pressure percentiles according to the age rules
-            if ( (patient.data[i].age >= 1 && patient.data[i].age < BPC.ADULT_AGE) && patient.data[i].height ) {
+            if ( (patient.data[i].age >= 1 && patient.data[i].age < BPC.settings.adult_age) && patient.data[i].height ) {
                 // For pediatric patients (1-18 year old) with height data
                 percentiles = bp_percentiles ({height: patient.data[i].height / 100,   // convert height to meters from centimeters
                                                age: patient.data[i].age, 
@@ -378,15 +460,15 @@ if (!BPC) {
                                                round_results: true});
                 patient.data[i].sPercentile = percentiles.systolic;
                 patient.data[i].dPercentile = percentiles.diastolic;
-            } else if (patient.data[i].age >= BPC.ADULT_AGE) {
+            } else if (patient.data[i].age >= BPC.settings.adult_age) {
                 // For adult patients
                 patient.data[i].sPercentile = BPC.getAdultPercentile(patient.data[i].systolic,true);
                 patient.data[i].dPercentile = BPC.getAdultPercentile(patient.data[i].diastolic,false);
             }
             
             // Set the abbreviation for the adult percentiles
-            if (patient.data[i].age >= BPC.ADULT_AGE) {
-                res = getAbbreviationLabel (BPC.zones, patient.data[i].sPercentile, patient.data[i].dPercentile);
+            if (patient.data[i].age >= BPC.settings.adult_age) {
+                res = getAbbreviationLabel (BPC.settings.zones, patient.data[i].sPercentile, patient.data[i].dPercentile);
                 patient.data[i] = $.extend(patient.data[i], res);
                 //patient.data[i].sAbbreviation = res.sAbbreviation;
                 //patient.data[i].dAbbreviation = res.dAbbreviation;
@@ -531,8 +613,8 @@ if (!BPC) {
         // Default to pediatric when no data is available
         if (data.length === 0) return BPC.PEDIATRIC;
         
-        if (data[0].age < BPC.ADULT_AGE) {
-            if (data[data.length - 1].age < BPC.ADULT_AGE) return BPC.PEDIATRIC;
+        if (data[0].age < BPC.settings.adult_age) {
+            if (data[data.length - 1].age < BPC.settings.adult_age) return BPC.PEDIATRIC;
             else return BPC.MIXED;
         } else {
             return BPC.ADULT;

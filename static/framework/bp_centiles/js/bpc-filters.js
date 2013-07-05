@@ -25,7 +25,7 @@ if (!BPC) {
     
         //BPC.disableControls ();
         BPC.loadFilterSettings ();
-        BPC.redrawViewLong (BPC.patient,BPC.zones);
+        BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
         BPC.redrawViewTable (BPC.patient);
         //BPC.enableControls ();
     };
@@ -35,7 +35,7 @@ if (!BPC) {
     */
     BPC.loadFilterSettings = function () {
     
-        var f = BPC.filterSettings;
+        var f = BPC.settings.filterSettings;
         
         f.encounter = [];
         f.site = [];
@@ -88,7 +88,7 @@ if (!BPC) {
     */
     BPC.updateDateRange = function (valueFrom,valueTo) {
         BPC.setDateRange (valueFrom,valueTo);
-        BPC.redrawViewLong (BPC.patient,BPC.zones);
+        BPC.redrawViewLong (BPC.patient,BPC.settings.zones);
         BPC.redrawViewTable (BPC.patient);
 
     };
@@ -112,8 +112,8 @@ if (!BPC) {
         toTime = BPC.scale (valueTo, 0, 100, startTime, endTime);
         
         // Convert the values to the standard format and update the settings
-        BPC.filterSettings.dateFrom = parse_date(fromTime).toString('yyyy-MM-dd');
-        BPC.filterSettings.dateTo = parse_date(toTime).toString('yyyy-MM-dd');
+        BPC.settings.filterSettings.dateFrom = parse_date(fromTime).toString('yyyy-MM-dd');
+        BPC.settings.filterSettings.dateTo = parse_date(toTime).toString('yyyy-MM-dd');
         
         // Convert the slider range dates to the display format
         fromTime = parse_date(fromTime).toString(s.dateFormat);
@@ -152,9 +152,9 @@ if (!BPC) {
     */
     BPC.filterEncounter = function (record) {
         if (!record.encounter) {
-            return inList ("Unknown", BPC.filterSettings.encounter);
+            return inList ("Unknown", BPC.settings.filterSettings.encounter);
         } else {
-            return inList (record.encounter, BPC.filterSettings.encounter);
+            return inList (record.encounter, BPC.settings.filterSettings.encounter);
         }
     };
         
@@ -162,7 +162,7 @@ if (!BPC) {
         var site;
         
         if (!record.site) {
-            if (inList ("Unknown", BPC.filterSettings.site)) {
+            if (inList ("Unknown", BPC.settings.filterSettings.site)) {
                 return true;
             } else {
                 return false;
@@ -172,9 +172,9 @@ if (!BPC) {
         site = record.site.toLowerCase();
         
         if (site.indexOf("arm") !== -1) {
-            return inList ("Arm", BPC.filterSettings.site);
+            return inList ("Arm", BPC.settings.filterSettings.site);
         } else if (site.indexOf("leg") !== -1) {
-            return inList ("Leg", BPC.filterSettings.site);
+            return inList ("Leg", BPC.settings.filterSettings.site);
         } else {
             return false;
         }
@@ -182,17 +182,17 @@ if (!BPC) {
         
     BPC.filterPosition = function (record) {
         if (!record.position) {
-            return inList ("Unknown", BPC.filterSettings.position);
+            return inList ("Unknown", BPC.settings.filterSettings.position);
         } else {
-            return inList (record.position, BPC.filterSettings.position);
+            return inList (record.position, BPC.settings.filterSettings.position);
         }
     };
 
     BPC.filterMethod = function (record) {
         if (!record.method) {
-            return inList ("Unknown", BPC.filterSettings.method);
+            return inList ("Unknown", BPC.settings.filterSettings.method);
         } else {
-            return inList (record.method, BPC.filterSettings.method);
+            return inList (record.method, BPC.settings.filterSettings.method);
         }
     };
 
@@ -201,7 +201,7 @@ if (!BPC) {
     };
 
     BPC.filterPediatric = function (record) {
-        return record.age < BPC.ADULT_AGE;
+        return record.age < BPC.settings.adult_age;
     };
 
     /**
@@ -213,7 +213,7 @@ if (!BPC) {
     */
     BPC.filterDate = function (record) {
         var date = parse_date(record.unixTime).toString('yyyy-MM-dd');
-        return BPC.filterSettings.dateFrom <= date && date <= BPC.filterSettings.dateTo;
+        return BPC.settings.filterSettings.dateFrom <= date && date <= BPC.settings.filterSettings.dateTo;
     };
 
     /**
