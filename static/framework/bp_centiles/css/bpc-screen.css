@@ -110,15 +110,34 @@ input[type='number'] {border: 1px solid #555;}
     display: none;
 }
 
-#copy {
+#footer {
+    width: 780px;
+}
+
+#version {
     font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
     right: 1em;
     text-align: right;
-    width: 786px;
-    margin-top: 5px;
+	width: 100px;
+    position: relative;
+    float: left;
 }
-#copy a {
-    color: #fff;
+
+#warning {
+    text-align: left;
+	width: 680px;
+    color: #000;
+    position: relative;
+    float: left;
+    font-weight: bold;
+}
+
+#copy {
+    font: 300 0.7em "Helvetica Neue",Helvetica,"Arial Unicode MS",Arial,sans-serif;
+    margin-top: 5px;
+    right: 1em;
+    text-align: right;
+    width: 786px;
 }
 
 /* Styling for the table view */

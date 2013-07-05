@@ -20,7 +20,7 @@
 	// =========================================================================
 	NS.printSettings = {
 		maxTableRows : 8,
-		isBCH : true
+		isBCH : false     // triggers print page customizations for Boston Childrens Hospital
 	};
 	
 	// SHORT-VIEW Settings

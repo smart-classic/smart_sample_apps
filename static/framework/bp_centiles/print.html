@@ -99,12 +99,14 @@
 								{#/if}
 							</td>
 						</tr>
+                        {#if $P.isBCH}
 						<tr>	
 							<th>mrn</th>
 							<td>
 							{#if $T.mrn}{$T.mrn}{#else}N/A{#/if}
 							</td>
 						</tr>
+                        {#/if}
 						<tr>
 						  <td colspan="3">&nbsp;</td>
 						</tr>
