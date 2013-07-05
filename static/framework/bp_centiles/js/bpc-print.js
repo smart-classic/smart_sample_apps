@@ -113,10 +113,11 @@ jQuery(function($) {
 		
 		var lastRecord, 
 			tplData = {
-				date : new XDate().toString('d MMM yy H:mm'),
+				date : new XDate().toString('d MMM yyyy H:mm'),
 				name : patient.name,
 				sex  : patient.sex,
-				dob  : new XDate(patient.birthdate).toString('d MMM yy')
+                mrn  : patient.id,
+				dob  : new XDate(patient.birthdate).toString('d MMM yyyy')
 			};
 		
 		// Find the last height record 
@@ -129,7 +130,7 @@ jQuery(function($) {
 			
 			if (lastRecord && lastRecord.height) {
 				tplData.lastHeight = lastRecord.height + "cm";
-				tplData.lastHeightDate = new XDate(lastRecord.unixTime).toString('d MMM yy');
+				tplData.lastHeightDate = new XDate(lastRecord.unixTime).toString('d MMM yyyy');
 			} else {
 				tplData.lastHeight = "";
 				tplData.lastHeightDate = ""
