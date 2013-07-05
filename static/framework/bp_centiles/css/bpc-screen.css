@@ -110,35 +110,72 @@ input[type='number'] {border: 1px solid #555;}
     display: none;
 }
 
+/* Styling for the footer and the stuff inside it */
 #footer {
-    width: 780px;
+    width: 786px;
+    line-height: 40px;
+    position: relative;
 }
 
-#version {
-    font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
-    right: 1em;
-    text-align: right;
-	width: 100px;
-    position: relative;
-    float: left;
+#footer:after {
+	content: "";
+	display: block;
+	clear: both;
 }
 
 #warning {
-    text-align: left;
-	width: 680px;
-    color: #000;
-    position: relative;
+    text-align: center;
+	width: 70%;
+    color: rgb(170, 0, 0);
     float: left;
     font-weight: bold;
 }
 
 #copy {
-    font: 300 0.7em "Helvetica Neue",Helvetica,"Arial Unicode MS",Arial,sans-serif;
-    margin-top: 5px;
-    right: 1em;
+    width: 15%;
+    float: right;
     text-align: right;
-    width: 786px;
+    color: #999;
 }
+
+#loaded_through {
+	float: left;
+	width: 50%;
+	text-align: left;
+	clear: both;
+	min-height: 40px;
+}
+
+#div_y {
+	float: left;
+	width: 50%;
+	text-align: right;
+	min-height: 40px;
+}
+
+/* The print-button container */
+#print {
+	float: left;
+	width: 15%;
+}
+
+/* The print-button */
+#print button {
+	background: #444;
+    border: 1px solid #555;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 -22px 20px -9px #000 inset, 0 1px 1px 0 #000 inset, 0 8px 23px 3px #111;
+    color: #999;
+    cursor: pointer;
+    margin: 5px 0;
+    padding: 5px 15px;
+    text-shadow: 0 -1px 0 #000;
+}
+
+#print button:hover {
+	color : #FFF;
+}
+
 
 /* Styling for the table view */
 
@@ -180,25 +217,3 @@ table.nicetable td {
     font-size: 0.8em;
 }
 
-/* The print-link container */
-#print {
-	height: 0;
-	overflow: visible;
-}
-
-/* The print-button */
-#print button {
-	background: #444;
-    border: 1px solid #555;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 -22px 20px -9px #000 inset, 0 1px 1px 0 #000 inset, 0 8px 23px 3px #111;
-    color: #999;
-    cursor: pointer;
-    margin: 5px 0;
-    padding: 5px 15px;
-    text-shadow: 0 -1px 0 #000;
-}
-
-#print button:hover {
-	color : #FFF;
-}
