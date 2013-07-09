@@ -77,6 +77,13 @@ h3 {
 h3 span {
   font-family: inherit;
 }
+small {
+  font-family: inherit;
+  font-size: 80%;
+  font-weight: normal;
+  opacity: 0.85;
+  -ms-filter: alpha(opacity=85);
+}
 #wrap {
   width: 800px;
   margin: auto;
