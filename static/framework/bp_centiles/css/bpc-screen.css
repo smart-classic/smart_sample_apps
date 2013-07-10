@@ -113,7 +113,7 @@ input[type='number'] {border: 1px solid #555;}
 /* Styling for the footer and the stuff inside it */
 #footer {
     width: 786px;
-    line-height: 40px;
+    line-height: 20px;
     position: relative;
 }
 
@@ -124,8 +124,8 @@ input[type='number'] {border: 1px solid #555;}
 }
 
 #warning {
-    text-align: center;
-	width: 70%;
+    text-align: left;
+	width: 85%;
     color: rgb(170, 0, 0);
     float: left;
     font-weight: bold;
@@ -153,27 +153,38 @@ input[type='number'] {border: 1px solid #555;}
 	min-height: 40px;
 }
 
-/* The print-button container */
-#print {
-	float: left;
-	width: 15%;
+.print-button {
+	background: #666;
+	border : 1px solid #333;
+	padding: 0 13px 0 10px;
+	margin : 0px 15px;
+	border-radius: 6px;
+	cursor: pointer;
+	white-space: nowrap;
+	height: 24px;
+	vertical-align: top;
 }
 
-/* The print-button */
-#print button {
-	background: #444;
-    border: 1px solid #555;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 -22px 20px -9px #000 inset, 0 1px 1px 0 #000 inset, 0 8px 23px 3px #111;
-    color: #999;
-    cursor: pointer;
-    margin: 5px 0;
-    padding: 5px 15px;
-    text-shadow: 0 -1px 0 #000;
+.print-button:hover,
+.print-button:active {
+	border: 1px solid #47889e;
+	background: #295d70 url(themes/custom/images/ui-bg_glass_40_295d70_1x400.png) 50% 50% repeat-x;
+	font-weight: bold;
+	color: #cccccc;
 }
 
-#print button:hover {
-	color : #FFF;
+.print-button:active {
+	background-position: 50% 53%;
+}
+
+.print-button * {
+	display: inline;
+	vertical-align: top;
+	line-height: 16px;
+}
+
+.print-button img {
+	margin-right: 5px;
 }
 
 /* Hide the encounter type filter toggle buttons (CHB version) */
