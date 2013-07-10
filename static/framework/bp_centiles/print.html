@@ -52,9 +52,12 @@
 				</tr>
 			</table>
 			<!--div class="page-break"></div-->
-			<h3>All BP Measurements in Percentiles</h3>
+			<h3>All BPs in Percentiles</h3>
 			<div style="margin:0 1ex;height: 360px;" id="long-graph"></div>
-			<h3>Last <span class="numrows"></span> BP Measurements</h3>
+			<h3>
+				Last <span class="numrows"></span> BPs 
+				<small>complete data available in BP Centiles app</small>
+			</h3>
 			<div id="table-view"></div>
 		</div>
 		
@@ -71,8 +74,7 @@
 								<h2>BP Centiles Report</h2>
 								{#if $P.isBCH}
 								<span class="small grey-4">
-									Note: 
-									<i>Only ambulatory blood pressures are displayed.</i>
+									Note: Only ambulatory blood pressures are displayed.
 								</span>
 								{#/if}
 							</td>
@@ -111,8 +113,8 @@
 						  <td colspan="3">&nbsp;</td>
 						</tr>
 						<tr>
-							<td colspan="3">
-								<h3>Last BP on most recent 3 clinic days in mmHg</h3>
+							<td colspan="3" style="padding:0.2ex 0">
+								<h3>Last BP on Most Recent 3 Clinic Days in mmHg</h3>
 							</td>
 						</tr>
 					</table>
