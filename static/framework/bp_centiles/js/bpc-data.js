@@ -433,26 +433,33 @@ if (!BPC) {
         if (!patient) {
             patient = BPC.getSamplePatient ();
         }
-             
-        // Sort the patient data records by timestamp
-        patient.data.sort(function (a,b) {
         
-            var t1 = parse_date(a.timestamp).getTime(),
-                t2 = parse_date(b.timestamp).getTime(),
-                s1 = a.systolic,
-                s2 = b.systolic,
-                d1 = a.diastolic,
-                d2 = b.diastolic;
-                
-            if (t1 < t2) return -1;
-            else if (t1 > t2) return 1;
-            else if (s1 < s2) return -1;
-            else if (s1 > s2) return 1;
-            else if (d1 < d2) return -1;
-            else if (d1 > d2) return 1;
-            else return 0;
-        });
-             
+		try {
+			// Sort the patient data records by timestamp
+			patient.data.sort(function (a,b) {
+				
+				var t1 = parse_date(a.timestamp).getTime(),
+					t2 = parse_date(b.timestamp).getTime(),
+					s1 = a.systolic,
+					s2 = b.systolic,
+					d1 = a.diastolic,
+					d2 = b.diastolic;
+					
+				if (t1 < t2) return -1;
+				else if (t1 > t2) return 1;
+				else if (s1 < s2) return -1;
+				else if (s1 > s2) return 1;
+				else if (d1 < d2) return -1;
+				else if (d1 > d2) return 1;
+				else return 0;
+			});
+		} catch (e) {
+			// This throws some wired exception in IE < 9. Fortunately we can 
+			// just skip it because that only happens from the print window and 
+			// that reuses the patient object from the opener where the data is 
+			// already sorted.
+		}
+		
         // Calculate the age and percentiles for the patient encounters
         for (i = 0, ii = patient.data.length; i < ii; i++) {
         
