@@ -90,7 +90,7 @@
 		rightgutter  : NS.Constants.FONT_SIZE * 3,
 		bottomgutter : NS.Constants.FONT_SIZE * 4,
 		topgutter    : 15,
-		plotsMargin  : 6, // The distance between the two plots
+		plotsMargin  : 20, // The distance between the two plots
 		leftpadding  : 0, 
 		rightpadding : 0,
 		
@@ -123,7 +123,7 @@
 		
 		// Y axis titles
 		VAxisTitlesAttr : {
-			"font-size"   : NS.Constants.FONT_SIZE * 1.2,
+			"font-size"   : NS.Constants.FONT_SIZE * 1,
 			"font-family" : NS.Constants.FONT_FAMILY,
 			fill          : NS.Constants.COLOR_GREY_4
 		},
