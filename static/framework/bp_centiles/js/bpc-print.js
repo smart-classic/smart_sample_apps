@@ -200,7 +200,7 @@ jQuery(function($) {
 	}
 	
 	// Bootstrap ---------------------------------------------------------------
-	if (window.opener && 
+   if (window.opener && 
 		opener.BPC && 
 		opener.BPC.patient && 
 		!$.isEmptyObject(opener.BPC.patient)) 
@@ -209,4 +209,11 @@ jQuery(function($) {
 	} else {
 		initPrintApp( BPC.getSamplePatient(), true );
 	}
+    
+    // try to set the same language as we currently have in the opener
+    BPC.setLanguage(
+        window.opener && opener.BPC ? 
+            opener.BPC.getLanguage() : 
+            BPC.getLanguage()
+    );
 });
