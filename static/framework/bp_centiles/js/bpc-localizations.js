@@ -5,10 +5,12 @@ BPC.createLocale({ language : "Bulgarian", langAbbr : "bg" });
 BPC.localizations = {
     STR_1  : { 
         en : "Short Term View",
+        es : "Visión a corto plazo",
         bg : "Последни данни"
     },
     STR_2 : {
         en : "Shows the last three BP measurements, excluding those within a same day",
+        es : "Muestra las últimas tres mediciones de la PA, con exclusión de los que están dentro de un mismo día",
         bg : "Последните три дни с измервания на кръвното налягане"
     },
     STR_3 : {
@@ -277,8 +279,78 @@ BPC.localizations = {
         bg : "Преглед" 
     },
     
-    STR_60 : {
+    STR_100 : {
         en : "Print Now",
         bg : "Принтирай"
-    }
+    },
+    STR_101 : {
+        en : "All BPs in Percentiles",
+        es : "Todos los BPs en percentiles",
+        bg : "Всички BPs в перцентили"
+    },
+    STR_102 : {
+        en : "Last ",
+        es : "Últimos ",
+        bg : "Последните "
+    },
+    STR_103 : {
+        en : " BPs",
+        es : " BPs",
+        bg : " BPs"
+    },
+    STR_104 : {
+        en : "complete data available in BP Centiles app",
+        es : "datos completos disponibles en BP percentiles aplicación",
+        bg : "пълни данни в наличност в BP Centiles приложението"
+    },
+    STR_105 : {
+        en : "BP Centiles Report",
+        es : "BP informe centiles",
+        bg : "BP Centiles Доклад"
+    },
+    STR_106 : {
+        en : "Note: Only ambulatory blood pressures are displayed.",
+        es : "Nota: Sólo se muestran la presión arterial ambulatoria.",
+        bg : "Бележка: Изложени са само резултати от измерено кръвно налягане в извън болнична среда."
+    },
+    STR_107 : {
+        en : "gender",
+        es : "género",
+        bg : "пол"
+    },
+    STR_108 : {
+        en : "dob",
+        es : "fdn",
+        bg : "днр"
+    },
+    STR_109 : {
+        en : "height",
+        es : "altura",
+        bg : "височина"
+    },
+    STR_110 : {
+        en : "on",
+        es : "en",
+        bg : "на"
+    },
+    STR_111 : {
+        en : "Last BP on Most Recent 3 Clinic Days in mmHg",
+        es : "Últimos BP sobre Más recientes 3 ​​días en la Clínica mmHg",
+        bg : "Най-новите данни за статуса на кръвното налягане през последните 3 клинични дни измерени в mmHg"
+    },
+    STR_112 : {
+        en : "systolic",
+        es : "sistólico",
+        bg : "систоличен" 
+    },
+    STR_113 : {
+        en : "diastolic",
+        es : "diastólicо",
+        bg : "диастоличен" 
+    },
+    STR_114 : {
+        en : "notes",
+        es : "notas",
+        bg : "бележки"
+    }   
 };
