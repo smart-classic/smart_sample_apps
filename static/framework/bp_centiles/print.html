@@ -172,7 +172,11 @@
 					</td>
                     {#if !$P.short}
                     <td class="grey-4 small lowercase notes">
-						{#if $T.site}{$T.site}{#if $T.position}, {$T.position}{#if $T.method}, {$T.method}
+						<span {#if $T.site} data-translatecontent="STR_SMART_site_{$T.site}"{#/if}>{#if $T.site}{$T.site}</span>
+						<span>,&nbsp</span>
+						<span {#if $T.position} data-translatecontent="STR_SMART_position_{$T.position}"{#/if}>{#if $T.position}, {$T.position}</span>
+						<span>,&nbsp</span>
+						<span {#if $T.method} data-translatecontent="STR_SMART_method_{$T.method}"{#/if}>{#if $T.method}, {$T.method}</span>
 					</td>
 					{#/if}
                 </tr>

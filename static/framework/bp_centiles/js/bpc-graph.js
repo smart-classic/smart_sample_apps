@@ -862,6 +862,7 @@ if (!BPC) {
         // Table output (using jTemplates)
         $("#"+divID).setTemplateElement("template");
         $("#"+divID).processTemplate(patient);
+        BPC.translateHTML($("#"+divID).parent());
     };
     
     /**

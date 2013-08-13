@@ -251,7 +251,7 @@ BPC.localizations = {
     STR_50 : {
         en : "Blood Pressure",
         es : "Presión Arterial",
-        bg : "Кръвно налягане" 
+        bg : "Кръвно" 
     },
     STR_51 : {
         en : "Percentiles",
@@ -277,6 +277,21 @@ BPC.localizations = {
         en : "Encounter",
         es : "Encontrar",
         bg : "Преглед" 
+    },
+    STR_56 : {
+        en : "Systolic BP",
+        es : "Sistólico BP",
+        bg : "Систолично BP" 
+    },
+    STR_57 : {
+        en : "Diastolic BP",
+        es : "Diastólicо BP",
+        bg : "Диастолично BP" 
+    },
+    STR_58 : {
+        en : "Percentile",
+        es : "Percentil",
+        bg : "Процентил" 
     },
     
     STR_100 : {
@@ -336,7 +351,7 @@ BPC.localizations = {
     STR_111 : {
         en : "Last BP on Most Recent 3 Clinic Days in mmHg",
         es : "Últimos BP sobre Más recientes 3 ​​días en la Clínica mmHg",
-        bg : "Най-новите данни за статуса на кръвното налягане през последните 3 клинични дни измерени в mmHg"
+        bg : "Данни за кръвното налягане през последните 3 клинични дни измерени в mmHg"
     },
     STR_112 : {
         en : "systolic",
@@ -352,5 +367,58 @@ BPC.localizations = {
         en : "notes",
         es : "notas",
         bg : "бележки"
-    }   
+    },
+    STR_SMART_sex_male : {
+    	en : "male",
+    	es : "macho",
+        bg : "мъжки"
+    },
+    STR_SMART_sex_female : {
+        en : "female",
+        es : "femenino",
+        bg : "женски"
+    },
+    STR_SMART_position_Standing : {
+        en : "Standing",
+        es : "Permanente",
+        bg : "Изправен"
+    },
+    STR_SMART_position_Sitting : {
+        en : "Sitting",
+        es : "Sentado",
+        bg : "Седящ"
+    },
+    STR_SMART_site_Leg : {
+        en : "Leg",
+        es : "Pierna",
+        bg : "Крак"
+    },
+    STR_SMART_site_Arm : {
+        en : "Arm",
+        es : "Brazo",
+        bg : "Ръка"
+    },
+    STR_SMART_encounter_Inpatient: {
+        en : "Inpatient",
+        es : "Hospitalización",
+        bg : "Стационарен" //болничен 
+    },
+    STR_SMART_encounter_Ambulatory : {
+        en : "Ambulatory",
+        es : "Аmbulatorio",
+        bg : "Амбулаторен" //извън болничен
+    },
+    STR_SMART_method_Machine: {
+        en : "Machine",
+        es : "Аparato",
+        bg : "Апарат" //болничен 
+    },
+    STR_SMART_method_Auscultation : {
+        en : "Auscultation",
+        es : "Аuscultación",
+        bg : "Преслушване" //извън болничен
+    }
+
+  
+    
 };

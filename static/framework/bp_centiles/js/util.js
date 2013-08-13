@@ -253,9 +253,9 @@ var parse_date = function(d) {
         }
     }
     
-    function translateHTML() {
-        $('[data-translatecontent]').each(translateInnerHTML);
-        $('[data-translateattr]').each(translateAttribute);
+    function translateHTML(context) {
+        $('[data-translatecontent]',context || document).each(translateInnerHTML);
+        $('[data-translateattr]',context || document).each(translateAttribute);
     }
     
     function createLanguageSelectors() {
@@ -272,6 +272,7 @@ var parse_date = function(d) {
         $(".language-selector").each(function(i, o) {
             $(o).empty();
             
+
             // Display the one or more than two languages as select
             var html = '<select name="language" class="language-select">';
             $.each(enabledLocales, function(i, locale) {
@@ -286,8 +287,10 @@ var parse_date = function(d) {
                     NS.setLanguage($(this).val());
                 })
             );
-            
+ 
             $("html").bind("set:language", function(e, lang) {})
+
+            
         });
     }
     
@@ -300,11 +303,16 @@ var parse_date = function(d) {
         createLanguageSelectors();
         $("html").bind("set:language", function(e, lang) {
             $(".language-selector select").val(lang);
-            translateHTML();
+            translateHTML(e.target.parentNode || e.target);
         });
         NS.setLanguage(NS.getLanguage());
     });
     
+    
+    
+    NS.translateHTML = translateHTML;
+
+
 })(BPC, jQuery);
 
 

@@ -15,6 +15,7 @@
 <html lang="en">
 
     <head>
+    
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>Blood Pressure Centiles SMART Application</title>
@@ -49,6 +50,10 @@
         <script src="js/bpc-filters.js" type="text/javascript"></script>
         <script src="js/bpc-graph.js" type="text/javascript"></script>
         <script src="js/bpc-ui.js" type="text/javascript"></script>
+
+
+
+
     </head>
     
     <body>
@@ -90,7 +95,7 @@
                                 <h3 data-translatecontent="STR_8"></h3>
                                 <table>
                                     <tr>
-                                        <td valign="top"><img src="images/bpc-short-term-help.png" alt="short term view illustration" /></td>
+                                        <td valign="top"><div class="toLeft size_image_text" data-translatecontent="STR_56">Systolic BP</div><div><img src="images/bpc-new.png" alt="short term view illustration" /></div><div class="toLeft size_image_text" data-translatecontent="STR_57">Diastolic BP</div><div id="pos_perc" class="size_image_text" data-translatecontent="STR_58">Percentile</div></td>
                                         <td>
                                             <p align="justify" data-translatecontent="STR_9">
                                                 
@@ -401,10 +406,10 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
                     <td>{#if $T.height}{$T.height} cm{#else}-{#/if}</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
                     <td>{#if $T.plabel}{$T.plabel}{#else}-{#/if}</td>
-                    <td>{#if $T.site}{$T.site}{#else}-{#/if}</td>
-                    <td>{#if $T.position}{$T.position}{#else}-{#/if}</td>
-                    <td>{#if $T.method}{$T.method}{#else}-{#/if}</td>
-                    <td>{#if $T.encounter}{$T.encounter}{#else}-{#/if}</td>
+                    <td{#if $T.site} data-translatecontent="STR_SMART_site_{$T.site}"{#/if}>{#if $T.site}{$T.site}{#else}-{#/if}</td>
+                    <td{#if $T.position} data-translatecontent="STR_SMART_position_{$T.position}"{#/if}>{#if $T.position}{$T.position}{#else}-{#/if}</td> 
+                    <td{#if $T.method} data-translatecontent="STR_SMART_method_{$T.method}"{#/if}>{#if $T.method}{$T.method}{#else}-{#/if}</td>
+                    <td{#if $T.encounter} data-translatecontent="STR_SMART_encounter_{$T.encounter}"{#/if}>{#if $T.encounter}{$T.encounter}{#else}-{#/if}</td>
                 </tr>
             {#/template ROW}
         --></textarea></div>
