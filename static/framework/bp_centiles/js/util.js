@@ -282,7 +282,7 @@ var parse_date = function(d) {
             });
             html += '</select>';
             
-            $(o).append('<span>Language: </span>').append(
+            $(o).append('<span data-translatecontent="STR_59">Language: </span>').append(
                 $(html).val(cur).change(function() {
                     NS.setLanguage($(this).val());
                 })
@@ -303,7 +303,7 @@ var parse_date = function(d) {
         createLanguageSelectors();
         $("html").bind("set:language", function(e, lang) {
             $(".language-selector select").val(lang);
-            translateHTML(e.target.parentNode || e.target);
+            translateHTML(e.target.parentNode || e.target);  
         });
         NS.setLanguage(NS.getLanguage());
     });

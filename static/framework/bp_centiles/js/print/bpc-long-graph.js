@@ -508,13 +508,13 @@
 		this.paper.text(
 			NS.Constants.FONT_SIZE / 1.5, 
 			this.systolicPlotRect.top + this.systolicPlotRect.height / 2, 
-			"S\nY\nS\nT\nO\nL\nI\nC"
+			BPC.str("STR_SMART_SYSTOLIC").split("").join("\n")
 		).attr(this.settings.VAxisTitlesAttr);
 		
 		this.paper.text(
 			NS.Constants.FONT_SIZE / 1.5, 
 			this.diastolicPlotRect.top + this.diastolicPlotRect.height / 2, 
-			"D\nI\nA\nS\nT\nO\nL\nI\nC"
+			BPC.str("STR_SMART_DIASTOLIC").split("").join("\n")
 		).attr(this.settings.VAxisTitlesAttr);
 	};
 	

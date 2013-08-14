@@ -293,6 +293,11 @@ BPC.localizations = {
         es : "Percentil",
         bg : "Процентил" 
     },
+    STR_59 : {
+        en : "Language: ",
+        es : "Lenguaje: ",
+        bg : "Език: " 
+    },
     
     STR_100 : {
         en : "Print Now",
@@ -416,8 +421,95 @@ BPC.localizations = {
     STR_SMART_method_Auscultation : {
         en : "Auscultation",
         es : "Аuscultación",
-        bg : "Преслушване" //извън болничен
+        bg : "Преслушване" 
+    },
+    STR_SMART_sys_Systolic : {
+        en : "Systolic",
+        es : "Sistólico",
+        bg : "Систоличен" 
+    },
+    STR_SMART_sys_Diastolic : {
+        en : "Diastolic",
+        es : "Diastólicо",
+        bg : "Диастоличен" 
+    },
+    "STR_SMART_Hypotension (< 1%)" : {
+        en : "Hypotension (< 1%)",
+        es : "Hipotensión (< 1%)",
+        bg : "Хипотония (< 1%)" 
+    },
+    "STR_SMART_Normal" : {
+        en : "Normal",
+        es : "Normal",
+        bg : "Нормално" 
+    },
+    "STR_SMART_Prehypertension (> 90%)" : {
+        en : "Prehypertension (> 90%)",
+        es : "Prehipertensión (> 90%)",
+        bg : "Прехипертония (> 90%)" 
+    },
+    "STR_SMART_Hypertension (> 95%)" : {
+        en : "Hypertension (> 95%)",
+        es : "Hipertensión (> 95%)",
+        bg : "Хипертония (> 95%)" 
+    },
+    STR_SMART_Legend: {
+        en : "Legend",
+        es : "Leyenda",
+        bg : "Легенда" 
+    },
+    STR_SMART_help : {
+        en : "Help",
+        es : "Ayudar",
+        bg : "Помощ" 
+    },
+    STR_SMART_SYSTOLIC : {
+        en : "SYSTOLIC",
+        es : "SYSTOLICO",
+        bg : "СИСТОЛИЧЕН" 
+    },
+    STR_SMART_DIASTOLIC : {
+        en : "DIASTOLIC",
+        es : "DIASTOLICO",
+        bg : "ДИАСТОЛИЧЕН" 
+    },
+    STR_SMART_Patient : {
+        en : "Patient",
+        es : "Paciente",
+        bg : "Пациент" 
+    },
+    STR_SMART_BP : {
+        en : "BP",
+        es : "PA", //presión arterial
+        bg : "КН" 
+    },
+    STR_SMART_Other : {
+        en : "Other",
+        es : "Оtro",
+        bg : "Друго" 
+    },
+    STR_VAXIS_LABEL_mmHg : {
+    	en : "mmHg",
+        es : "mmHg",
+        bg : "mmHg"
+    },
+    STR_VAXIS_LABEL_Percentile : {
+    	en : "Percentile",
+        es : "Percentile",
+        bg : "Процент"
+    },
+    STR_SMART_gender_female : {
+        en : "female",
+        es : "femenino",
+        bg : "женски" 
+    },
+    STR_SMART_gender_male : {
+        en : "male",
+        es : "macho",
+        bg : "мъжки" 
     }
+    
+    
 
   
     
