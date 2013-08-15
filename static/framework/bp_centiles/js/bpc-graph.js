@@ -83,6 +83,7 @@ if (!BPC) {
                            systolic: patient.data[i].systolic, 
                            diastolic: patient.data[i].diastolic});
             }
+        
             
             // Display the demo dialog, if needed
             if (demo_mode) {

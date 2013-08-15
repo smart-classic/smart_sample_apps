@@ -508,9 +508,6 @@ BPC.localizations = {
         es : "macho",
         bg : "мъжки" 
     }
-    
-    
 
-  
     
 };
