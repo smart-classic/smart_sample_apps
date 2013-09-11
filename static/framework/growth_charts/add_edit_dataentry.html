@@ -1,10 +1,12 @@
 <script src="js/charts/mini_charts.js"></script>
+
+
 <table id="add-edit-entry-dialog">
 	
 	<tr>
-		<td colspan="2"><label>Date of measurement/note </label></td>
+		<td colspan="2"><label data-translatecontent="STR_5000"></label></td>
 		<td colspan="2">
-			<div class="input-wrap today">
+			<div class="input-wrap today" data-translateattr="data-content=STR_6040">
 				<input type="text" name="agemos" />
 				<b class="button light btn-down" onclick="$(this).parent().find('input').trigger('focus')"></b>
 			</div>
@@ -16,7 +18,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2"><label style="color:#888">Patient's age on above date </label></td>
+		<td colspan="2"><label style="color:#888" data-translatecontent="STR_5001"></label></td>
 		<td colspan="2" class="age"></td>
 	</tr>
 	<tr>
@@ -25,7 +27,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2"><label>Entered by user/department </label></td>
+		<td colspan="2"><label data-translatecontent="STR_5002"></label></td>
 		<td colspan="2">
 			<div class="input-wrap">
 				<input type="text" name="med-service" />
@@ -39,27 +41,27 @@
 		</td>
 	</tr>
 	<tr class="length">
-		<td><div class="label">Length</div></td>
+		<td><div class="label" data-translatecontent="STR_5003"></div></td>
 		<td><div class="chart"></div></td>
-		<td class="pct">N/A</td>
+		<td class="pct" style="width:60px">&nbsp;</td>
 		<td><input type="text" name="length-and-stature" class="step-input" placeholder="+ Add new entry" /></td>
 	</tr>
 	<tr class="weight">
-		<td><div class="label">Weight</div></td>
+		<td><div class="label" data-translatecontent="STR_5005"></div></td>
 		<td><div class="chart"></div></td>
-		<td class="pct">N/A</td>
+		<td class="pct">&nbsp;</td>
 		<td><input type="text" name="weight" class="step-input" /></td>
 	</tr>
 	<tr class="headc">
-		<td><div class="label">Head C</div></td>
+		<td><div class="label" data-translatecontent="STR_5007"></div></td>
 		<td><div class="chart"></div></td>
-		<td class="pct">N/A</td>
+		<td class="pct">&nbsp;</td>
 		<td><input type="text" name="headc" class="step-input" /></td>
 	</tr>
 	<tr class="bmi">
-		<td><div class="label">BMI</div></td>
+		<td><div class="label" data-translatecontent="STR_5009"></div></td>
 		<td><div class="chart"></div></td>
-		<td class="pct">N/A</td>
+		<td class="pct">&nbsp;</td>
 		<td><input type="text" name="bmi" class="step-input" /></td>
 	</tr>
 	<tr>
@@ -68,7 +70,7 @@
 		</td>
 	</tr>
 	<tr class="boneage">
-		<td><div class="label">Bone Age</div></td>
+		<td><div class="label" data-translatecontent="STR_5011"></div></td>
 		<td><div class="chart"></div></td>
 		<td class="pct">&nbsp;</td>
 		<td><input type="text" name="boneage" class="time-interval-input" /></td>
@@ -76,9 +78,9 @@
 	<tr>
 		<td colspan="4">
 			<div class="annotation">
-				<b class="title">Annotation</b>
+				<b class="title" data-translatecontent="STR_5012"></b>
 				<div class="separator"></div>
-				<textarea name="annotation-content" placeholder="+ Add Annotation"></textarea>
+				<textarea name="annotation-content" data-translateattr="placeholder=STR_5013"></textarea>
 			</div>
 		</td>
 	</tr>
@@ -89,12 +91,12 @@
 	</tr>
 	<tr>
 		<td colspan="2">
-			<a href="javascript:void 0;" id="del-rec-btn" style="color:red;">Delete record</a>
+			<a href="javascript:void 0;" id="del-rec-btn" style="color:red;"><span data-translatecontent="STR_5014"></span></a>
 		</td>
 		<td colspan="2">
 			<!--b class="error-message">Possible Error in recording</b-->
-			<a class="button save" href="javascript:void 0;">Save</a>
-			<a class="button cancel" href="javascript:void 0;" onclick="$(this).closest('#dialog').dialog('close');">Cancel</a>
+			<a class="button save" href="javascript:void 0;"><span data-translatecontent="STR_5015"></span></a>
+			<a class="button cancel" href="javascript:void 0;" onclick="$(this).closest('#dialog').dialog('close');"><span data-translatecontent="STR_5016"></span></a>
 		</td>
 	</tr>
 </table>
@@ -483,7 +485,7 @@
 				} else {
 					root.find(".length .pct")
 						.text("N/A")
-						.attr("title", "Not enough statistics data to calculate the percentile");
+						.attr("title", GC.str("STR_6035"));
 				}
 				
 				root.find('[name="length-and-stature"]').toggleClass("error", isPossibleError("lengthAndStature"));
@@ -522,7 +524,7 @@
 						.removeAttr("Title");
 				} else {
 					root.find(".weight .pct").text("N/A")
-						.attr("title", "Not enough statistics data to calculate the percentile");
+						.attr("title", GC.str("STR_6035"));
 				}
 				
 				root.find('[name="weight"]').toggleClass("error", isPossibleError("weight"));
@@ -561,7 +563,7 @@
 						.removeAttr("Title");
 				} else {
 					root.find(".headc .pct").text("N/A")
-						.attr("title", "Not enough statistics data to calculate the percentile");
+						.attr("title", GC.str("STR_6035"));
 				}
 				
 				root.find('[name="headc"]').toggleClass("error", isPossibleError("headc"));
@@ -600,7 +602,7 @@
 						.removeAttr("Title");
 				} else {
 					root.find(".bmi .pct").text("N/A")
-						.attr("title", "Not enough statistics data to calculate the percentile");
+						.attr("title", GC.str("STR_6035"));
 				}
 				
 				root.find('[name="bmi"]').toggleClass("error", isPossibleError("bmi"));
@@ -647,7 +649,7 @@
 					return Math.round(rec.agemos * GC.Constants.TIME_INTERVAL.DAYS_IN_MONTH) === ageDays;
 				});
 			
-			if (other && confirm("There is another record existing at the selected day.\nDo you want to edit it instead?")) {
+			if (other && confirm(GC.str("STR_6036"))) {
 				return GC.App.editEntry(other);
 			} else {
 					
@@ -715,10 +717,10 @@
 		
 		updateUI();
 		
-		root.width(root.width());
+		//root.css("minWidth", root.width());
 		
 		root.closest("#dialog").dialog("option", {
-			title : entry ? "Edit Data" : "Add Data",
+			title : GC.str(entry ? "STR_6037" : "STR_6038"),
 			minWidth : root.width() + 40,
 			modal : false
 		}).dialog("option", {
@@ -729,7 +731,7 @@
 			if ( !$(this).is(".ui-state-disabled")) {
 				save();
 			}
-		}).text(mode == "edit" ? " Submit " : " Submit ");
+		});
 		
 		root.find("#del-rec-btn").click(function() {
 			var prev = patient.getPrevModelEntry(record.agemos, function() {
@@ -750,6 +752,7 @@
 	}
 	
 	initUI.apply({}, args);
-	
 })();
 </script>
+
+	

@@ -24,13 +24,13 @@ window.GC = window.GC || {};
 	// =========================================================================
 	var readOnlySettings = {
 		
-		fileRevision : 197,
+		fileRevision : 201,
 		
 		// See the toString method for the rendering template
 		version : {
 			major    : 0,
 			minor    : 9,
-			build    : 5,
+			build    : 8,
 			revision : 0,
 			state    : "beta", // dev|alpha|beta|rc|r
 			
@@ -54,8 +54,9 @@ window.GC = window.GC || {};
 		
 		// set to true to enable the editing of the parents in the header
 		patientFamilyHistoryEditable : false,
-		patientDataEditable : false
+		patientDataEditable : false,
 		
+		hidePatientHeader : false
 	};
 	
 	// =========================================================================
@@ -324,6 +325,7 @@ window.GC = window.GC || {};
 		weightChart : {
 			abbr : "W",
 			shortName : "WEIGHT",
+			shortNameId : "STR_6",
 			color : "", // general use clear color
 			lines : {
 				stroke           : "", 
@@ -356,6 +358,7 @@ window.GC = window.GC || {};
 		lengthChart : {
 			abbr : "L",
 			shortName : "LENGTH",
+			shortNameId : "STR_2",
 			color : "", // general use clear color
 			lines : {
 				stroke           : "", 
@@ -389,6 +392,7 @@ window.GC = window.GC || {};
 		headChart : {
 			abbr : "HC",
 			shortName : "HEAD C",
+			shortNameId : "STR_13",
 			color : "", // general use clear color
 			lines : {
 				stroke           : "", 
@@ -421,6 +425,7 @@ window.GC = window.GC || {};
 		bodyMassChart : {
 			abbr : "BMI",
 			shortName : "BMI",
+			shortNameId : "STR_14",
 			color : "", // general use clear color
 			lines : {
 				stroke           : "", 

@@ -506,3 +506,13 @@
 	background-color: #F39E17;
 	font-weight: bold;
 }
+
+.vitals-chart.four-cols.labels {
+	display: table;
+	width: 100%;
+}
+
+.vitals-chart.four-cols.labels .fat-cell {
+	display: table-cell;
+	float: none;
+}

@@ -210,7 +210,11 @@
 					x += circle.getBBox().width + 2;
 					
 					label = this.pane.paper.text(
-						x, y, this.charts[i].settings.shortName
+						x,
+						y,
+						this.charts[i].settings.shortNameId ?
+						GC.str(this.charts[i].settings.shortNameId) :
+						this.charts[i].settings.shortName
 					).attr({
 						"fill" : color,
 						"font-weight" : "bold",

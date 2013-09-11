@@ -177,23 +177,17 @@
 		drawn = true;
 	}
 	
-	function translateHTML() {
-		$('[data-translatecontent]').each(function() {
-			$(this).html(GC.str(this.getAttribute("data-translatecontent")));
-		});
-	}
-	
 	$(function() {
 		
 		$("html").addClass(PATIENT.gender);
 		
-		translateHTML();
+		GC.Util.translateHTML();
 		
 		
 		$('.patient-name').text(PATIENT.name);
 		$('.patient-age').text(PATIENT.getCurrentAge().toString(GC.chartSettings.timeInterval));
 		$('.patient-birth').text(PATIENT.DOB.toString(GC.chartSettings.dateFormat));
-		$('.patient-gender').text(PATIENT.gender);
+		$('.patient-gender').text(GC.str("STR_SMART_GENDER_" + PATIENT.gender));
 		
 		if (PATIENT.weeker) {
 			$(".weeker").show().find(".value").html(PATIENT.weeker + " Weeker");

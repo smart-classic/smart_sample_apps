@@ -1335,7 +1335,7 @@ ChartPane.prototype = {
 	},
 	
 	/**
-	 * Draws the today's vertical line and it's label (but only if the todau's
+	 * Draws the today's vertical line and it's label (but only if the today's
 	 * date happens to be inside the current time range)
 	 */
 	drawToday : function() 
@@ -1358,7 +1358,7 @@ ChartPane.prototype = {
 				this.paper.circle(x, y, 3).attr(GC.chartSettings.todayDot);
 				
 				// Text
-				txt = this.paper.text(x + 8, y, "TODAY " + label)
+				txt = this.paper.text(x + 8, y, GC.str("STR_6040").toUpperCase() + " " + label)
 					.attr(GC.chartSettings.todayText);
 				
 				textBox = txt.getBBox();

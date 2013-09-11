@@ -33,7 +33,7 @@
 			z : 10000000000, 
 			bgcolor : "#FFF", 
 			opacity: 0.8, 
-			html : "Please wait..." 
+			html : GC.str("STR_180") 
 		});
 	}
 	
@@ -165,7 +165,7 @@
 			}
 			
 			html[i++] = '<div class="option" data-preset="' + name + '">';
-			html[i++] = '<div class="title">' + name + '</div>';
+			html[i++] = '<div class="title">' + GC.str("STR_colorPrreset_" + name) + '</div>';
 			html[i++] = '<div class="colors">';
 			
 			for (type in data) {
