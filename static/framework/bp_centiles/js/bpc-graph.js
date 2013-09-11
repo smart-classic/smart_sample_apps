@@ -327,7 +327,7 @@ if (!BPC) {
         r.drawGrid(s.leftgutter, s.topgutter, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, s.gridCols, s.gridRows, s.gridColor, shortTerm, patientType, transitionX);
           
         // Draw the percentiles axis (needs to be reworked as a function and tested for correct scaling)
-        r.drawVAxisLabels (s.leftgutter - 15, s.topgutter,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel ? BPC.str("STR_VAXIS_LABEL_" + s.vAxisLabel) : null, s.txt2, shortTerm);
+        r.drawVAxisLabels (s.leftgutter - 15, s.topgutter,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel ? BPC.str("STR_VAXIS_LABEL_" + s.vAxisLabel.toUpperCase()) : null, s.txt2, shortTerm);
             
         // Draw the zones
         if (!shortTerm) r.drawZones(s.leftgutter, s.topgutter, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zones, s, patientType, transitionX);
@@ -350,9 +350,9 @@ if (!BPC) {
         label.push(r.text(45, 27, "5y 8m, 75 cm, male").attr(s.txt).attr({"text-anchor":"start"}));
         label.push(r.text(45, 42, "96/75 mmHg (79%/63%)").attr(s.txt).attr({"text-anchor":"start"}));
         label.push(r.text(45, 57, "Arm, Sitting, Auscultation").attr(s.txt).attr({"text-anchor":"start"}));
-        label.push(r.text(40, 27, BPC.str("STR_SMART_Patient") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
-        label.push(r.text(40, 42, BPC.str("STR_SMART_BP") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
-        label.push(r.text(40, 57, BPC.str("STR_SMART_Other") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
+        label.push(r.text(40, 27, BPC.str("STR_PATIENT") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
+        label.push(r.text(40, 42, BPC.str("STR_BP") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
+        label.push(r.text(40, 57, BPC.str("STR_OTHER") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
         label.hide();
         frame = r.popup(100, 100, label, "right").attr({fill: "#000", stroke: "#666", "stroke-width": 2, "fill-opacity": .9}).hide();  
           
@@ -396,21 +396,21 @@ if (!BPC) {
                     // Construct the other information string from the available metadata
                     var otherInfo = "";
                     
-                    if (data.site) otherInfo += BPC.str("STR_SMART_site_" + data.site);
+                    if (data.site) otherInfo += BPC.str("STR_SITE_" + data.site.toUpperCase());
                     if (data.position) {
                         if (otherInfo) otherInfo += ", ";
-                        otherInfo += BPC.str("STR_SMART_position_" + data.position);
+                        otherInfo += BPC.str("STR_POSITION_" + data.position.toUpperCase());
                     }
                     if (data.method) {
                         if (otherInfo) otherInfo += ", ";
-                        otherInfo += BPC.str("STR_SMART_method_" + data.method);
+                        otherInfo += BPC.str("STR_METHOD_" + data.method.toUpperCase());
                     }
                     if (!otherInfo) otherInfo = "none";
                     
                     // Display the label box
-                    label[0].attr({text: data.date + (BPC.str("STR_SMART_encounter_" + data.encounter)?" - " + BPC.str("STR_SMART_encounter_" + data.encounter):"") + ((data.age >= BPC.settings.adult_age) ? " - ADULT" : "")});
-                    if (data.height) label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, " + data.height + " cm, " + BPC.str("STR_SMART_gender_" + gender)});
-                    else label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, ? cm, " + BPC.str("STR_SMART_gender_" + gender)});
+                    label[0].attr({text: data.date + (BPC.str("STR_ENCOUNTER_" + data.encounter.toUpperCase())?" - " + BPC.str("STR_ENCOUNTER_" + data.encounter.toUpperCase()):"") + ((data.age >= BPC.settings.adult_age) ? " - ADULT" : "")});
+                    if (data.height) label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, " + data.height + " cm, " + BPC.str("STR_GENDER_" + gender.toUpperCase())});
+                    else label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, ? cm, " + BPC.str("STR_GENDER_" + gender.toUpperCase())});
                     if (data.label) {
                         label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.label + ")"});
                     } else {
@@ -529,19 +529,25 @@ if (!BPC) {
             labelToFront();
         }
         
+        
+        /*function capitaliseFirstLetter(string)
+		{
+    		return string.charAt(0).toUpperCase() + string.slice(1);
+		}*/
+        
         // Draw the side label for the systolic and diastolic graphs in the long term view
         if (!shortTerm) {
             var mytext;
             
-            if (systolic) mytext = BPC.str("STR_SMART_sys_Systolic");
-            else mytext = BPC.str("STR_SMART_sys_Diastolic");
+            if (systolic) mytext = BPC.str("STR_SYSTOLIC");
+            else mytext = BPC.str("STR_DIASTOLIC");
             r.text(s.width - s.rightgutter + 20, Math.round(s.topgutter + ((s.height-s.topgutter-s.bottomgutter)/2)), mytext).attr({font: '20px Helvetica, Arial', fill: "#555"}).rotate(90).toBack();       
         }
         
         // Add the "help" hotspot to the short term view
         if (shortTerm) {
             var helpBlanket = r.rect (s.width-s.rightgutter-55, 13, 60, 15).attr({fill: "#fff", opacity: 0, cursor:"pointer"});
-            var helpL = r.text(s.width-s.rightgutter, 20, BPC.str("STR_SMART_help") + ">>").attr({"text-anchor":"end"}).attr(s.txt2).attr({fill: "#555"});
+            var helpL = r.text(s.width-s.rightgutter, 20, BPC.str("STR_HELP") + ">>").attr({"text-anchor":"end"}).attr(s.txt2).attr({fill: "#555"});
             
             var animation_duration = 200; //milliseconds
             
@@ -567,11 +573,11 @@ if (!BPC) {
                         if (!displayed) {
                             animating=true;
                             $( "#help-content" ).stop().show( selectedEffect, {}, 1000, function () {animating=false;} );
-                            helpL.attr({text:BPC.str("STR_SMART_help") + "<<"}); 
+                            helpL.attr({text:BPC.str("STR_HELP") + "<<"}); 
                             displayed = true;
                         } else {
                             animating=true;
-                            helpL.attr({text:BPC.str("STR_SMART_help") + ">>"});
+                            helpL.attr({text:BPC.str("STR_HELP") + ">>"});
                             $( "#help-content" ).stop().hide( selectedEffect, {}, 1000, function () {animating=false;} );
                             displayed = false;
                         }
@@ -810,7 +816,7 @@ if (!BPC) {
             colorhue,
             i;
         
-        legend.push(this.text(x - width + 35, y - height + 15, BPC.str("STR_SMART_Legend")).attr(settings.txt5));
+        legend.push(this.text(x - width + 35, y - height + 15, BPC.str("STR_LEGEND")).attr(settings.txt5));
         
         for (i = zones.length - 1; i >= 0; i--) {
             colorhue = zones[i].colorhue;
@@ -820,9 +826,9 @@ if (!BPC) {
             	this.text(
 		        	x - width + 36, 
 		        	y - height + (zones.length-i)*dy + 15, 
-		        	("STR_SMART_" + zones[i].definition in BPC.localizations) ? 
-				    	BPC.str("STR_SMART_" + zones[i].definition) : 
-				    	zones[i].definition
+		        	("STR_" + zones[i].definition.toUpperCase() in BPC.localizations) ? 
+				    	BPC.str("STR_" + zones[i].definition.toUpperCase()) : 
+				    	zones[i].definition.toUpperCase()
 		        ).attr(settings.txt6)
 		    );
         }

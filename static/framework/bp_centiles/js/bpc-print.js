@@ -64,6 +64,8 @@ jQuery(function($) {
 			//console.log(d1.toString() + "\n" + d2.toString());
 			
 			render( patient );
+			
+			
 		}
 	}
 	
@@ -90,6 +92,7 @@ jQuery(function($) {
 		drawTable( "#table-view", patient, false );
 		
 		setTitle( patient );
+		
 	}
 	
 	/**
@@ -121,7 +124,7 @@ jQuery(function($) {
 			tplData = {
 				date : new XDate().toString('d MMM yyyy H:mm'),
 				name : patient.name,
-				sex  : BPC.str("STR_SMART_sex_" + patient.sex),
+				sex  : BPC.str("STR_SEX_" + patient.sex.toUpperCase()),
                 mrn  : patient.id,
 				dob  : new XDate(patient.birthdate).toString('d MMM yyyy')
 			};
