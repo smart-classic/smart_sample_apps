@@ -6,7 +6,7 @@
         
         <!-- BPC stylesheets-->
         <link rel="stylesheet" href="css/bpc-print.css" type="text/css" />
-        
+
         <!-- Standard JS Libraries -->
         <script src="js/lib/jquery.js" type="text/javascript"></script>
         <script src="js/lib/jquery-jtemplates.js" type="text/javascript"></script>
@@ -33,13 +33,14 @@
         <script src="js/print/bpc-short-graph.js"   type="text/javascript"></script>
         <script src="js/print/bpc-long-graph.js"    type="text/javascript"></script>
         <script src="js/bpc-print.js"               type="text/javascript"></script>
+
         
     </head>
     <body>
 		<div id="print-toolbar">
 			<button onclick="window.print();" class="print-link">
                 <img src="images/print.png" alt="Print" />
-                <span data-translatecontent="STR_100"></span>
+                <span data-translatecontent="STR_PRINT_100"></span>
 			</button>
 		</div>
 		<br />
@@ -54,11 +55,11 @@
 				</tr>
 			</table>
 			<!--div class="page-break"></div-->
-			<h3 data-translatecontent="STR_101"></h3>
+			<h3 data-translatecontent="STR_ALL_BP_PERCENTILES_101"></h3>
 			<div style="margin:0 1ex;height: 360px;" id="long-graph"></div>
 			<h3>
-				<span data-translatecontent="STR_102"></span> <span class="numrows"></span><span data-translatecontent="STR_103"></span>
-				<small data-translatecontent="STR_104"></small>
+				<span data-translatecontent="STR_LAST_102"></span> <span class="numrows"></span>&nbsp<span data-translatecontent="STR_BP_103"></span>
+				<small data-translatecontent="STR_COMPLETE_DATA_104"></small>
 			</h3>
 			<div id="table-view"></div>
 		</div>
@@ -73,9 +74,9 @@
 						<tr>
 							<td rowspan="5" width="100%">
 								<h1>{$T.name}</h1>
-								<h2 data-translatecontent="STR_105"></h2>
+								<h2 data-translatecontent="STR_BP_CENTILES_REPORT_105"></h2>
 								{#if $P.isBCH}
-								<span class="small grey-4" data-translatecontent="STR_106">
+								<span class="small grey-4" data-translatecontent="STR_NOTE_ONLY_AMBULATORY_106">
 								</span>
 								{#/if}
 							</td>
@@ -83,19 +84,19 @@
 							<td>{$T.date}</td>
 						</tr>
 						<tr>
-							<th data-translatecontent="STR_107"></th>
+							<th data-translatecontent="STR_GENDER_107"></th>
 							<td>{$T.sex}</td>
 						</tr>
 						<tr>
-							<th data-translatecontent="STR_108"></th>
+							<th data-translatecontent="STR_DOB_108"></th>
 							<td>{$T.dob}</td>
 						</tr>
 						<tr>	
-							<th data-translatecontent="STR_109"></th>
+							<th data-translatecontent="STR_HEIGHT_109"></th>
 							<td>
 								{#if $T.lastHeight}
 									{$T.lastHeight}
-									<span class="grey-4" data-translatecontent="STR_110"></span>  
+									<span class="grey-4" data-translatecontent="STR_ON_110"></span>  
 									{$T.lastHeightDate}
 								{#else}
 									N/A
@@ -115,7 +116,7 @@
 						</tr>
 						<tr>
 							<td colspan="3" style="padding:0.2ex 0">
-								<h3 data-translatecontent="STR_111"></h3>
+								<h3 data-translatecontent="STR_LAST_BP_TITLE_111"></h3>
 							</td>
 						</tr>
 					</table>
@@ -140,10 +141,10 @@
                 <tr>
                     <td></td>
                     <td></td>
-                    <td class="grey-4 small" data-translatecontent="STR_112"></td>
-                    <td class="grey-4 small" data-translatecontent="STR_113"></td>
+                    <td class="grey-4 small" data-translatecontent="STR_SYSTOLIC_112"></td>
+                    <td class="grey-4 small" data-translatecontent="STR_DIASTOLIC_113"></td>
                     {#if !$P.short}
-						<td class="grey-4 small" data-translatecontent="STR_114"></td>
+						<td class="grey-4 small" data-translatecontent="STR_NOTES_114"></td>
                     {#/if}
                 </tr>
             {#/template HEAD}
@@ -172,13 +173,14 @@
 					</td>
                     {#if !$P.short}
                     <td class="grey-4 small lowercase notes">
-						<span {#if $T.site} data-translatecontent="STR_SMART_site_{$T.site}"{#/if}>{#if $T.site}{$T.site}</span>,
-						<span {#if $T.position} data-translatecontent="STR_SMART_position_{$T.position}"{#/if}>{#if $T.position},{$T.position}</span>,
-						<span {#if $T.method} data-translatecontent="STR_SMART_method_{$T.method}"{#/if}>{#if $T.method},{$T.method}</span>
+						<span {#if $T.site} data-translatecontent="STR_SITE_{$T.site.toUpperCase()}"{#/if}>{#if $T.site}{$T.site}</span>,
+						<span {#if $T.position} data-translatecontent="STR_POSITION_{$T.position.toUpperCase()}"{#/if}>{#if $T.position},{$T.position}</span>,
+						<span {#if $T.method} data-translatecontent="STR_METHOD_{$T.method.toUpperCase()}"{#/if}>{#if $T.method},{$T.method}</span>
 					</td>
 					{#/if}
                 </tr>
             {#/template ROW}
         --></textarea></div>
     </body>
+
 </html>
