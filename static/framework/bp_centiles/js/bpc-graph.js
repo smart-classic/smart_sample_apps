@@ -68,6 +68,7 @@ if (!BPC) {
             
             $(window).on("set:language", function() {
             	BPC.drawViews (patient, BPC.settings.zones);
+                $("#patient-info").text(String(patient));
             });
             
             // Find the last pre-adult data record available
