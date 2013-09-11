@@ -88,11 +88,11 @@ var parse_date = function(d) {
 // 
 // 2. Define some string translations like this:
 // BPC.localizations = {
-//    STR_1  : { 
+//    STR_SHORT_TERM_VIEW_1  : { 
 //        en : "Short Term View",
 //        bg : "Последни данни"
 //    },
-//    STR_2 : {
+//    STR_LAST_THREE_BP_DAYS_2 : {
 //        en : "Shows the last three BP measurements",
 //        bg : "Последните три дни с измервания на кръвното налягане"
 //    },
@@ -100,10 +100,10 @@ var parse_date = function(d) {
 // };
 // 
 // 3. To make the innerHTML of an element translatable use attr like:
-// data-translatecontent="STR_1"
+// data-translatecontent="STR_SHORT_TERM_VIEW_1"
 // 
 // 4. To make the value of an attribute translatable use attr like:
-// data-translateattr="title=STR_2"
+// data-translateattr="title=STR_LAST_THREE_BP_DAYS_2"
 // 
 // 5. To set the defaul (initial) locale set it's abbr as the value of the lang 
 // attribute of the HTML tag like so:
@@ -282,7 +282,7 @@ var parse_date = function(d) {
             });
             html += '</select>';
             
-            $(o).append('<span data-translatecontent="STR_59">Language: </span>').append(
+            $(o).append('<span data-translatecontent="STR_LANGUAGE_59"></span>: ').append(
                 $(html).val(cur).change(function() {
                     NS.setLanguage($(this).val());
                 })

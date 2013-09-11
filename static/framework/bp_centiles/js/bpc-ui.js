@@ -118,8 +118,8 @@ if (!BPC) {
     	BPC.getYears(bpparams.age) + "y " + 
     	BPC.getMonths(bpparams.age) + "m, " +
         Math.round(bpparams.height * 100) + " cm, " + 
-        '<span data-translatecontent="STR_SMART_gender_' + bpparams.sex + '">'  +
-        BPC.str("STR_SMART_gender_" + bpparams.sex) + "</span>, " +
+        '<span data-translatecontent="STR_GENDER_' + bpparams.sex.toUpperCase() + '">'  +
+        BPC.str("STR_GENDER_" + bpparams.sex.toUpperCase()) + "</span>, " +
         bpparams.systolic + "/" + bpparams.diastolic + " mmHg"
     );
             } else {
