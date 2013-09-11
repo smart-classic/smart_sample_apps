@@ -228,3 +228,33 @@ table.nicetable td {
     font-size: 0.8em;
 }
 
+.language-selector {
+    color: #888;
+    text-shadow: 0 -1px 0 #333;
+    line-height: 25px;
+    float: right !important;
+}
+
+.language-selector select {
+    background: #333;
+    color: #999;
+    border: 1px solid #222;
+    padding: 1px 4px;
+    border-radius: 3px;
+    box-shadow: 0px 1px 2px 0px rgba(255, 255, 255, 0.2);
+}
+
+#pos_perc {
+	position: relative;
+	bottom: 100px;
+	left: 53px;
+}
+
+.toLeft {
+	margin-left: 9px;
+}
+
+.size_image_text {
+	font-size: 13.5px;
+}
+

@@ -74,6 +74,13 @@ jQuery(function($) {
 	{
 		var pacientCrop3 = patient.recentEncounters(3);
 		
+		$("html").attr(
+    		"lang", 
+    		window.opener && opener.BPC ? 
+        	opener.BPC.getLanguage() : 
+        	BPC.getLanguage()
+    	);
+		
 		drawHeader( "#header", patient );
 		
 		drawShortGraph( "#short-graph", pacientCrop3 );
@@ -110,16 +117,15 @@ jQuery(function($) {
 	 * @param {Patient} patient
 	 */
 	function drawHeader( container, patient ) {
-		
 		var lastRecord, 
 			tplData = {
 				date : new XDate().toString('d MMM yyyy H:mm'),
 				name : patient.name,
-				sex  : patient.sex,
+				sex  : BPC.str("STR_SMART_sex_" + patient.sex),
                 mrn  : patient.id,
 				dob  : new XDate(patient.birthdate).toString('d MMM yyyy')
 			};
-		
+        console.log(tplData,BPC.getLanguage());
 		// Find the last height record 
 		if (patient.data && patient.data.length) {
 			lastRecord = $.grep(patient.data, function(record, index) {
@@ -200,7 +206,8 @@ jQuery(function($) {
 	}
 	
 	// Bootstrap ---------------------------------------------------------------
-	if (window.opener && 
+    
+   if (window.opener && 
 		opener.BPC && 
 		opener.BPC.patient && 
 		!$.isEmptyObject(opener.BPC.patient)) 
@@ -209,4 +216,13 @@ jQuery(function($) {
 	} else {
 		initPrintApp( BPC.getSamplePatient(), true );
 	}
+	
+	// try to set the same language as we currently have in the opener
+	BPC.setLanguage(
+    	window.opener && opener.BPC ? 
+            opener.BPC.getLanguage() : 
+            BPC.getLanguage()
+    );
+    
+
 });

@@ -17,6 +17,7 @@
         <script src="js/cdc_height_tables.js" type="text/javascript"></script>
         <script src="js/nih_bp_tables.js" type="text/javascript"></script>
         <script src="js/util.js" type="text/javascript"></script>
+        <script src="js/bpc-localizations.js" type="text/javascript"></script>
         <script src="js/popup.js" type="text/javascript"></script> 
         
         <!-- BPC App Modules -->
@@ -32,12 +33,13 @@
         <script src="js/print/bpc-short-graph.js"   type="text/javascript"></script>
         <script src="js/print/bpc-long-graph.js"    type="text/javascript"></script>
         <script src="js/bpc-print.js"               type="text/javascript"></script>
+        
     </head>
     <body>
 		<div id="print-toolbar">
 			<button onclick="window.print();" class="print-link">
-			<img src="images/print.png" alt="Print" />
-			Print Now
+                <img src="images/print.png" alt="Print" />
+                <span data-translatecontent="STR_100"></span>
 			</button>
 		</div>
 		<br />
@@ -52,11 +54,11 @@
 				</tr>
 			</table>
 			<!--div class="page-break"></div-->
-			<h3>All BPs in Percentiles</h3>
+			<h3 data-translatecontent="STR_101"></h3>
 			<div style="margin:0 1ex;height: 360px;" id="long-graph"></div>
 			<h3>
-				Last <span class="numrows"></span> BPs 
-				<small>complete data available in BP Centiles app</small>
+				<span data-translatecontent="STR_102"></span> <span class="numrows"></span><span data-translatecontent="STR_103"></span>
+				<small data-translatecontent="STR_104"></small>
 			</h3>
 			<div id="table-view"></div>
 		</div>
@@ -71,10 +73,9 @@
 						<tr>
 							<td rowspan="5" width="100%">
 								<h1>{$T.name}</h1>
-								<h2>BP Centiles Report</h2>
+								<h2 data-translatecontent="STR_105"></h2>
 								{#if $P.isBCH}
-								<span class="small grey-4">
-									Note: Only ambulatory blood pressures are displayed.
+								<span class="small grey-4" data-translatecontent="STR_106">
 								</span>
 								{#/if}
 							</td>
@@ -82,19 +83,19 @@
 							<td>{$T.date}</td>
 						</tr>
 						<tr>
-							<th>gender</th>
+							<th data-translatecontent="STR_107"></th>
 							<td>{$T.sex}</td>
 						</tr>
 						<tr>
-							<th>dob</th>
+							<th data-translatecontent="STR_108"></th>
 							<td>{$T.dob}</td>
 						</tr>
 						<tr>	
-							<th>height</th>
+							<th data-translatecontent="STR_109"></th>
 							<td>
 								{#if $T.lastHeight}
 									{$T.lastHeight}
-									<span class="grey-4">on</span>  
+									<span class="grey-4" data-translatecontent="STR_110"></span>  
 									{$T.lastHeightDate}
 								{#else}
 									N/A
@@ -114,7 +115,7 @@
 						</tr>
 						<tr>
 							<td colspan="3" style="padding:0.2ex 0">
-								<h3>Last BP on Most Recent 3 Clinic Days in mmHg</h3>
+								<h3 data-translatecontent="STR_111"></h3>
 							</td>
 						</tr>
 					</table>
@@ -139,10 +140,10 @@
                 <tr>
                     <td></td>
                     <td></td>
-                    <td class="grey-4 small">systolic</td>
-                    <td class="grey-4 small">diastolic</td>
+                    <td class="grey-4 small" data-translatecontent="STR_112"></td>
+                    <td class="grey-4 small" data-translatecontent="STR_113"></td>
                     {#if !$P.short}
-						<td class="grey-4 small">notes</td>
+						<td class="grey-4 small" data-translatecontent="STR_114"></td>
                     {#/if}
                 </tr>
             {#/template HEAD}
@@ -171,7 +172,9 @@
 					</td>
                     {#if !$P.short}
                     <td class="grey-4 small lowercase notes">
-						{#if $T.site}{$T.site}{#if $T.position}, {$T.position}{#if $T.method}, {$T.method}
+						<span {#if $T.site} data-translatecontent="STR_SMART_site_{$T.site}"{#/if}>{#if $T.site}{$T.site}</span>,
+						<span {#if $T.position} data-translatecontent="STR_SMART_position_{$T.position}"{#/if}>{#if $T.position},{$T.position}</span>,
+						<span {#if $T.method} data-translatecontent="STR_SMART_method_{$T.method}"{#/if}>{#if $T.method},{$T.method}</span>
 					</td>
 					{#/if}
                 </tr>

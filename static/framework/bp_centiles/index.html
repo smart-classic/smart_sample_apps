@@ -15,6 +15,7 @@
 <html lang="en">
 
     <head>
+    
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>Blood Pressure Centiles SMART Application</title>
@@ -40,6 +41,7 @@
         <script src="js/cdc_height_tables.js" type="text/javascript"></script>
         <script src="js/nih_bp_tables.js" type="text/javascript"></script>
         <script src="js/util.js" type="text/javascript"></script>
+        <script src="js/bpc-localizations.js" type="text/javascript"></script>
         <script src="js/popup.js" type="text/javascript"></script>
         
         <!-- BPC App Modules -->
@@ -71,12 +73,13 @@
             <div id="tabs">
             
                 <ul>
-                    <li><a href="#tab_short">Short Term View</a></li>
-                    <li><a href="#tab_long">Long Term View</a></li>
-                    <li><a href="#tab_table">Table View</a></li>
-                    <li><a href="#tab_calculator">Calculator</a></li>
-                    <li><a href="#tab_references">References</a></li>
-                    <li><button onclick="BPC.openPrintWindow();" class="ui-state-default print-button"><img src="images/print2.png" /><span>Print</span></button></li>
+                    <li><a href="#tab_short" data-translatecontent="STR_1" data-translateattr="title=STR_2"></a></li>
+                    <li><a href="#tab_long" data-translatecontent="STR_3"></a></li>
+                    <li><a href="#tab_table" data-translatecontent="STR_4"></a></li>
+                    <li><a href="#tab_calculator" data-translatecontent="STR_5"></a></li>
+                    <li><a href="#tab_references" data-translatecontent="STR_6"></a></li>
+                    <li><button onclick="BPC.openPrintWindow();" class="ui-state-default print-button"><img src="images/print2.png" /><span data-translatecontent="STR_7"></span></button></li>
+                    <li class="language-selector"></li>
                 </ul>
                 
                 <div id="tab_short">
@@ -85,33 +88,24 @@
                         <div class="help-panel">
                             <input type="hidden" name="effects" id="effectType" value="slide"/>
                             <div id="help-content">
-                                <h3>About the Short Term View</h3>
+                                <h3 data-translatecontent="STR_8"></h3>
                                 <table>
                                     <tr>
-                                        <td valign="top"><img src="images/bpc-short-term-help.png" alt="short term view illustration" /></td>
+                                        <td valign="top"><div class="toLeft size_image_text" data-translatecontent="STR_56"></div><div><img src="images/bpc-new.png" alt="short term view illustration" /></div><div class="toLeft size_image_text" data-translatecontent="STR_57"></div><div id="pos_perc" class="size_image_text" data-translatecontent="STR_58"></div></td>
                                         <td>
-                                            <p align="justify">
-                                                The short term view displays blood pressure readings from the most
-                                                recent three encounters where blood pressure was recorded.  For this 
-                                                summary view, only the last measurement is plotted for any given day.
-                                            </p>
-                                            <p align="justify">
-                                                Each measurement is represented by a pair of circles:  systolic (above)
-                                                and diastolic (below). A circle's vertical position corresponds to the
-                                                blood pressure value in mmHg. 
-                                            </p>
-                                            <p align="justify">
-                                                For pediatric patients, a calculated blood pressure percentile  value is
-                                                displayed inside each circle.  Since percentiles are based on a
-                                                patient's height as well as blood pressure, a hyphen is displayed (-) in
-                                                the absence of height data.
+                                            <p align="justify" data-translatecontent="STR_9">
                                                 
-                                                For adults, since diagnoses are not based on percentiles, a symbol
-                                                indicates whether each reading was normal (OK<!--&#x2713;-->), prehypertensive (^)
-                                                or hypertensive (/\). 
+                                            </p>
+                                            <p align="justify" data-translatecontent="STR_10">
+
+                                            </p>
+                                            <p align="justify" data-translatecontent="STR_11">
+                                    
+                                                
+                                                <div data-translatecontent="STR_12"></div>
                                             </p>
                                             <p align="justify">
-                                            <em>Tip: </em> hover over a reading with the mouse for additional details.
+                                            <em data-translatecontent="STR_13"></em> <span data-translatecontent="STR_14"></span>
                                             </p>
                                         </td>
                                     </tr>
@@ -123,16 +117,14 @@
                                 <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
                                 <span id="alert-message"></span>
                             </p>
-                            <p>
-                                The BPC application will use adult JNC7 guidelines for blood
-                                pressure data after age 19 for this patient.
+                            <p data-translatecontent="STR_15">
+                                
                             </p>
                         </div>
                         <div id="dialog-demo" title="Information">
                             <p>
                                 <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
-                                <span id="alert-message">The BPC application was launched outside a SMART container and
-                                will run in DEMO mode.</span>
+                                <span id="alert-message" data-translatecontent="STR_16"></span>
                             </p>
                         </div>
                     </div>
@@ -144,35 +136,35 @@
                         <div id="filters">
                             <div id="filter_encounter" class="toggle-set">
                                 <input type="checkbox" id="chkFilterInpatient" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterInpatient"> Inpatient </label>
+                                <label for="chkFilterInpatient"> <span data-translatecontent="STR_17"></span> </label>
                                 <input type="checkbox" id="chkFilterAmbulatory" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterAmbulatory"> Ambulatory </label>
+                                <label for="chkFilterAmbulatory"> <span data-translatecontent="STR_18"></span> </label>
                                 <input type="checkbox" id="chkFilterEncounterUnknown" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterEncounterUnknown"> Unknown </label>
+                                <label for="chkFilterEncounterUnknown"> <span data-translatecontent="STR_19"></span></label>
                             </div>
                             <div id="filter_site" class="toggle-set">
                                 <input type="checkbox" id="chkFilterArm" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterArm"> Arm </label>
+                                <label for="chkFilterArm"> <span data-translatecontent="STR_20"></span></label>
                                 <input type="checkbox" id="chkFilterLeg"  onClick="BPC.updateFilters()" />
-                                <label for="chkFilterLeg"> Leg </label>
+                                <label for="chkFilterLeg"> <span data-translatecontent="STR_21"></span></label>
                                 <input type="checkbox" id="chkFilterSiteUnknown" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterSiteUnknown"> Unknown </label>
+                                <label for="chkFilterSiteUnknown"> <span data-translatecontent="STR_22"></span></label>
                             </div>
                             <div id="filter_position" class="toggle-set">
                                 <input type="checkbox" id="chkFilterSitting" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterSitting"> Sitting </label>
+                                <label for="chkFilterSitting"><span data-translatecontent="STR_23"></span></label>
                                 <input type="checkbox" id="chkFilterStanding"  onClick="BPC.updateFilters()" />
-                                <label for="chkFilterStanding"> Standing </label>
+                                <label for="chkFilterStanding"><span data-translatecontent="STR_24"></span></label>
                                 <input type="checkbox" id="chkFilterPositionUnknown" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterPositionUnknown"> Unknown </label>
+                                <label for="chkFilterPositionUnknown"><span data-translatecontent="STR_25"></span></label>
                             </div>
                             <div id="filter_method" class="toggle-set">
                                 <input type="checkbox" id="chkFilterAuscultation" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterAuscultation"> Auscultation </label>
+                                <label for="chkFilterAuscultation"> <span data-translatecontent="STR_26"></span></label>
                                 <input type="checkbox" id="chkFilterMachine"  onClick="BPC.updateFilters()" />
-                                <label for="chkFilterMachine"> Machine </label>
+                                <label for="chkFilterMachine"> <span data-translatecontent="STR_27"></span></label>
                                 <input type="checkbox" id="chkFilterMethodUnknown" onClick="BPC.updateFilters()" />
-                                <label for="chkFilterMethodUnknown"> Unknown </label>
+                                <label for="chkFilterMethodUnknown"> <span data-translatecontent="STR_28"></span></label>
                             </div>
                             <div id="filter_timerange">
                                 <div id="label-timerange"></div>
@@ -190,8 +182,8 @@
                 </div>
                 
                 <div id="tab_calculator">
-                    <div id="calculator-title">
-                        Pediatric Percentile Calculator
+                    <div id="calculator-title" data-translatecontent="STR_29">
+                        
                     </div>
                     <div id="result-label">
                     </div>
@@ -279,28 +271,28 @@
                         
                         <form id="input" method="GET" action="#" data-ajax="false">
                             <table>
-                                <tr><th colspan=3>Patient</th></tr>
+                                <tr><th colspan=3 data-translatecontent="STR_30"></th></tr>
                                 <tr>
                                     <td class="inputLabel"><label for="add_systolic">BP</label></td>
                                     <td><input type="number" name="add_systolic" id="add_systolic" value="0" min="0" max="200" size="2"  /> /</td>
                                     <td><input type="number" name="add_diastolic" id="add_diastolic" value="0" min="0" max="200" size="2" /> mmHg</td>
                                 </tr>
                                 <tr>
-                                    <td class="inputLabel"><label for="add_age">Age</label></td>
-                                    <td><input type="number" name="add_age" id="add_age" value="0" min="0" max="18" size="2" autofocus/> y</td>
-                                    <td><input type="number" name="add_months" id="add_months" value="0" min="0" max="11" size="2" /> m</td>
+                                    <td class="inputLabel"><label for="add_age"><span data-translatecontent="STR_31"></span></label></td>
+                                    <td><input type="number" name="add_age" id="add_age" value="0" min="0" max="18" size="2" autofocus/> <span data-translatecontent="STR_32"></span></td>
+                                    <td><input type="number" name="add_months" id="add_months" value="0" min="0" max="11" size="2" /> <span data-translatecontent="STR_33"></span></td>
                                 </tr>
                                 <tr>
-                                    <td class="inputLabel"><label for="add_height">Height</label></td>
-                                    <td colspan=2><input type="number" name="add_height" id="add_height" value="0" min="0" max="200" size="2" /> cm</td>
+                                    <td class="inputLabel"><label for="add_height"><span data-translatecontent="STR_34"></span></label></td>
+                                    <td colspan=2><input type="number" name="add_height" id="add_height" value="0" min="0" max="200" size="2" /> <span data-translatecontent="STR_35"></span></td>
                                 </tr>
                                 <tr>
-                                    <td class="inputLabel"><label for="add_gender">Gender</label></td>
+                                    <td class="inputLabel"><label for="add_gender"><span data-translatecontent="STR_36"></span></label></td>
                                     <td colspan=2>
                                       <input type="radio" name="add_gender" id="add_male" value="male" checked="checked" /> 
-                                      <label for="add_male">Male</label> 
+                                      <label for="add_male"><span data-translatecontent="STR_37"></span></label> 
                                       <input type="radio" name="add_gender" id="add_female" value="female" /> 
-                                      <label for="add_female">Female</label> 
+                                      <label for="add_female"><span data-translatecontent="STR_38"></span></label> 
                                     </td>
                                 </tr>
                             </table>
@@ -309,7 +301,7 @@
                     <div id="calculator-results-panel">
                         <div id='result-percentiles' class="calc-panel">
                           <table>
-                            <tr><th>Systolic</th><th></th><th>Diastolic</th></tr>
+                            <tr><th data-translatecontent="STR_39"></th><th></th><th data-translatecontent="STR_40"></th></tr>
                             <tr>
                               <td><span class="spct">%</span></td>
                               <td><span class="slash">/</span></td>
@@ -319,7 +311,7 @@
                         </div>
                         <div id='result-thresholds' class="calc-panel">
                           <table>
-                            <tr><th>Thresholds</th></tr>
+                            <tr><th data-translatecontent="STR_41"></th></tr>
                             <tr>
                               <td><span id="calculator-thresholds-out"></span></td>
                             </tr>
@@ -354,10 +346,10 @@
                         <li>
                             <p>
 CDC Clinical Growth Charts obtained 6 April 2011 (
-<a href="http://www.cdc.gov/growthcharts/clinical_charts.htm" target="_blank">Charts</a>,
-<a href="http://www.cdc.gov/growthcharts/percentile_data_files.htm" target="_blank">Data</a>,
-<a href="http://www.cdc.gov/growthcharts/data/zscore/lenageinf.xls" target="_blank">Length</a>,
-<a href="http://www.cdc.gov/growthcharts/data/zscore/statage.xls" target="_blank">Stature</a>
+<a href="http://www.cdc.gov/growthcharts/clinical_charts.htm" target="_blank"><span data-translatecontent="STR_42"></span></a>,
+<a href="http://www.cdc.gov/growthcharts/percentile_data_files.htm" target="_blank"><span data-translatecontent="STR_43"></span></a>,
+<a href="http://www.cdc.gov/growthcharts/data/zscore/lenageinf.xls" target="_blank"><span data-translatecontent="STR_44"></span></a>,
+<a href="http://www.cdc.gov/growthcharts/data/zscore/statage.xls" target="_blank"><span data-translatecontent="STR_45"></span></a>
 )
                             </p>
                         </li>
@@ -370,7 +362,7 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
                <div id="warning"></div>
                <div id="copy">v0.9</div>
                <div id="loaded_through"></div>
-               <div id="div_y"><button id="btn_year" onclick="BPC.loadAnotherY();">load another year</button></div>
+               <div id="div_y"><button id="btn_year" onclick="BPC.loadAnotherY();"><span data-translatecontent="STR_46"></span></button></div>
             </div>
         </div>
         
@@ -391,15 +383,15 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
             
             {#template HEAD}
                 <tr>
-                    <th>Date</th>
-                    <th>Age</th>
-                    <th>Height</th>
-                    <th>Blood Pressure</th>
-                    <th>Percentiles</th>
-                    <th>Site</th>
-                    <th>Position</th>
-                    <th>Method</th>
-                    <th>Encounter</th>
+                    <th data-translatecontent="STR_47"></th>
+                    <th data-translatecontent="STR_48"></th>
+                    <th data-translatecontent="STR_49"></th>
+                    <th data-translatecontent="STR_50"></th>
+                    <th data-translatecontent="STR_51"></th>
+                    <th data-translatecontent="STR_52"></th>
+                    <th data-translatecontent="STR_53"></th>
+                    <th data-translatecontent="STR_54"></th>
+                    <th data-translatecontent="STR_55"></th>
                 </tr>
             {#/template HEAD}
             
@@ -410,10 +402,10 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
                     <td>{#if $T.height}{$T.height} cm{#else}-{#/if}</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
                     <td>{#if $T.plabel}{$T.plabel}{#else}-{#/if}</td>
-                    <td>{#if $T.site}{$T.site}{#else}-{#/if}</td>
-                    <td>{#if $T.position}{$T.position}{#else}-{#/if}</td>
-                    <td>{#if $T.method}{$T.method}{#else}-{#/if}</td>
-                    <td>{#if $T.encounter}{$T.encounter}{#else}-{#/if}</td>
+                    <td{#if $T.site} data-translatecontent="STR_SMART_site_{$T.site}"{#/if}>{#if $T.site}{$T.site}{#else}-{#/if}</td>
+                    <td{#if $T.position} data-translatecontent="STR_SMART_position_{$T.position}"{#/if}>{#if $T.position}{$T.position}{#else}-{#/if}</td> 
+                    <td{#if $T.method} data-translatecontent="STR_SMART_method_{$T.method}"{#/if}>{#if $T.method}{$T.method}{#else}-{#/if}</td>
+                    <td{#if $T.encounter} data-translatecontent="STR_SMART_encounter_{$T.encounter}"{#/if}>{#if $T.encounter}{$T.encounter}{#else}-{#/if}</td>
                 </tr>
             {#/template ROW}
         --></textarea></div>
