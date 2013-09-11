@@ -19,6 +19,7 @@
 //       [ ] Clean up the drawGraph function
 
 // Initialize the BPC global obeject as needed
+
 var BPC;
 if (!BPC) {
     BPC = {};
@@ -30,7 +31,6 @@ if (!BPC) {
     // The canvases for the short and long term graphs
     var r_short,
         r_long;
-
 
     /**
     * Initializes the BPC app with a new patient
@@ -44,9 +44,12 @@ if (!BPC) {
         if (patient) {
             // Update the global patient handle
             BPC.patient = patient;
-            
+
             // Initialize the patient object
             BPC.initPatient (patient);
+            
+            // Initialize the patient information area
+            $("#patient-info").text(String(patient));
             
             // Clear the error message
             $("#info").text("").hide();
@@ -58,8 +61,14 @@ if (!BPC) {
             BPC.initFilterButtons ();
             
             // Draw the views
+
             $("#tabs").show();
+
             BPC.drawViews (patient,BPC.settings.zones);
+            
+            $(window).on("set:language", function() {
+            	BPC.drawViews (patient, BPC.settings.zones);
+            });
             
             // Find the last pre-adult data record available
             for (i = patient.data.length - 1; i >= 0; i--) {
@@ -77,6 +86,7 @@ if (!BPC) {
                            systolic: patient.data[i].systolic, 
                            diastolic: patient.data[i].diastolic});
             }
+        
             
             // Display the demo dialog, if needed
             if (demo_mode) {
@@ -317,7 +327,7 @@ if (!BPC) {
         r.drawGrid(s.leftgutter, s.topgutter, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, s.gridCols, s.gridRows, s.gridColor, shortTerm, patientType, transitionX);
           
         // Draw the percentiles axis (needs to be reworked as a function and tested for correct scaling)
-        r.drawVAxisLabels (s.leftgutter - 15, s.topgutter,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel, s.txt2, shortTerm);
+        r.drawVAxisLabels (s.leftgutter - 15, s.topgutter,s.height - s.topgutter - s.bottomgutter, s.vLabels, s.max, s.vAxisLabel ? BPC.str("STR_VAXIS_LABEL_" + s.vAxisLabel) : null, s.txt2, shortTerm);
             
         // Draw the zones
         if (!shortTerm) r.drawZones(s.leftgutter, s.topgutter, s.width - s.leftgutter - s.rightgutter, s.height - s.topgutter - s.bottomgutter, zones, s, patientType, transitionX);
@@ -340,9 +350,9 @@ if (!BPC) {
         label.push(r.text(45, 27, "5y 8m, 75 cm, male").attr(s.txt).attr({"text-anchor":"start"}));
         label.push(r.text(45, 42, "96/75 mmHg (79%/63%)").attr(s.txt).attr({"text-anchor":"start"}));
         label.push(r.text(45, 57, "Arm, Sitting, Auscultation").attr(s.txt).attr({"text-anchor":"start"}));
-        label.push(r.text(40, 27, "Patient:").attr(s.txt3).attr({"text-anchor":"end"}));
-        label.push(r.text(40, 42, "BP:").attr(s.txt3).attr({"text-anchor":"end"}));
-        label.push(r.text(40, 57, "Other:").attr(s.txt3).attr({"text-anchor":"end"}));
+        label.push(r.text(40, 27, BPC.str("STR_SMART_Patient") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
+        label.push(r.text(40, 42, BPC.str("STR_SMART_BP") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
+        label.push(r.text(40, 57, BPC.str("STR_SMART_Other") + ":").attr(s.txt3).attr({"text-anchor":"end"}));
         label.hide();
         frame = r.popup(100, 100, label, "right").attr({fill: "#000", stroke: "#666", "stroke-width": 2, "fill-opacity": .9}).hide();  
           
@@ -386,21 +396,21 @@ if (!BPC) {
                     // Construct the other information string from the available metadata
                     var otherInfo = "";
                     
-                    if (data.site) otherInfo += data.site;
+                    if (data.site) otherInfo += BPC.str("STR_SMART_site_" + data.site);
                     if (data.position) {
                         if (otherInfo) otherInfo += ", ";
-                        otherInfo += data.position;
+                        otherInfo += BPC.str("STR_SMART_position_" + data.position);
                     }
                     if (data.method) {
                         if (otherInfo) otherInfo += ", ";
-                        otherInfo += data.method;
+                        otherInfo += BPC.str("STR_SMART_method_" + data.method);
                     }
                     if (!otherInfo) otherInfo = "none";
                     
                     // Display the label box
-                    label[0].attr({text: data.date + (data.encounter?" - " + data.encounter:"") + ((data.age >= BPC.settings.adult_age) ? " - ADULT" : "")});
-                    if (data.height) label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, " + data.height + " cm, " + gender});
-                    else label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, ? cm, " + gender});
+                    label[0].attr({text: data.date + (BPC.str("STR_SMART_encounter_" + data.encounter)?" - " + BPC.str("STR_SMART_encounter_" + data.encounter):"") + ((data.age >= BPC.settings.adult_age) ? " - ADULT" : "")});
+                    if (data.height) label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, " + data.height + " cm, " + BPC.str("STR_SMART_gender_" + gender)});
+                    else label[1].attr({text: BPC.getYears(data.age) + "y " + BPC.getMonths(data.age) + "m, ? cm, " + BPC.str("STR_SMART_gender_" + gender)});
                     if (data.label) {
                         label[2].attr({text: data.systolic + "/" + data.diastolic + " mmHg (" + data.label + ")"});
                     } else {
@@ -522,15 +532,16 @@ if (!BPC) {
         // Draw the side label for the systolic and diastolic graphs in the long term view
         if (!shortTerm) {
             var mytext;
-            if (systolic) mytext = "Systolic";
-            else mytext = "Diastolic";
-            r.text(s.width - s.rightgutter + 20, Math.round(s.topgutter + ((s.height-s.topgutter-s.bottomgutter)/2)), mytext).attr({font: '20px Helvetica, Arial', fill: "#555"}).rotate(90).toBack();
+            
+            if (systolic) mytext = BPC.str("STR_SMART_sys_Systolic");
+            else mytext = BPC.str("STR_SMART_sys_Diastolic");
+            r.text(s.width - s.rightgutter + 20, Math.round(s.topgutter + ((s.height-s.topgutter-s.bottomgutter)/2)), mytext).attr({font: '20px Helvetica, Arial', fill: "#555"}).rotate(90).toBack();       
         }
         
         // Add the "help" hotspot to the short term view
         if (shortTerm) {
             var helpBlanket = r.rect (s.width-s.rightgutter-55, 13, 60, 15).attr({fill: "#fff", opacity: 0, cursor:"pointer"});
-            var helpL = r.text(s.width-s.rightgutter, 20, "Help >>").attr({"text-anchor":"end"}).attr(s.txt2).attr({fill: "#555"});
+            var helpL = r.text(s.width-s.rightgutter, 20, BPC.str("STR_SMART_help") + ">>").attr({"text-anchor":"end"}).attr(s.txt2).attr({fill: "#555"});
             
             var animation_duration = 200; //milliseconds
             
@@ -551,16 +562,16 @@ if (!BPC) {
                 
                     // get effect type 
                     var selectedEffect = $( "#effectType" ).val();
-                    
+  
                     if (!animating) {
                         if (!displayed) {
                             animating=true;
                             $( "#help-content" ).stop().show( selectedEffect, {}, 1000, function () {animating=false;} );
-                            helpL.attr({text:"Help <<"});
+                            helpL.attr({text:BPC.str("STR_SMART_help") + "<<"}); 
                             displayed = true;
                         } else {
                             animating=true;
-                            helpL.attr({text:"Help >>"});
+                            helpL.attr({text:BPC.str("STR_SMART_help") + ">>"});
                             $( "#help-content" ).stop().hide( selectedEffect, {}, 1000, function () {animating=false;} );
                             displayed = false;
                         }
@@ -799,12 +810,21 @@ if (!BPC) {
             colorhue,
             i;
         
-        legend.push(this.text(x - width + 35, y - height + 15, "Legend").attr(settings.txt5));
+        legend.push(this.text(x - width + 35, y - height + 15, BPC.str("STR_SMART_Legend")).attr(settings.txt5));
         
         for (i = zones.length - 1; i >= 0; i--) {
             colorhue = zones[i].colorhue;
             legend.push(this.circle(x - width + 20, y - height + (zones.length-i)*dy + 15, 6).attr({color: "hsb(" + [colorhue, 0.8, 1] + ")", fill: "hsb(" + [colorhue, 0.5, 0.4] + ")", stroke: "hsb(" + [colorhue, 0.5, 1] + ")", "stroke-width": 2}));
-            legend.push(this.text(x - width + 36, y - height + (zones.length-i)*dy + 15, zones[i].definition).attr(settings.txt6));
+            //legend.push(this.text(x - width + 36, y - height + (zones.length-i)*dy + 15, zones[i].definition).attr(settings.txt6));
+            legend.push(
+            	this.text(
+		        	x - width + 36, 
+		        	y - height + (zones.length-i)*dy + 15, 
+		        	("STR_SMART_" + zones[i].definition in BPC.localizations) ? 
+				    	BPC.str("STR_SMART_" + zones[i].definition) : 
+				    	zones[i].definition
+		        ).attr(settings.txt6)
+		    );
         }
         
         legend.hide();
@@ -852,6 +872,8 @@ if (!BPC) {
         return s.colorhueDefault;  // never returned unless the zones don't sum up to 100%
     }
 
+
+
     /**
     * Prints the table view using jTemplate
     *
@@ -860,10 +882,13 @@ if (!BPC) {
     */
     BPC.printTableView = function (divID, patient) {
         // Table output (using jTemplates)
+    	
         $("#"+divID).setTemplateElement("template");
         $("#"+divID).processTemplate(patient);
+        BPC.translateHTML($("#"+divID).parent());
+        
     };
-    
+
     /**
     * Implements the scaling function for the long-term view graphics
     *
@@ -923,4 +948,5 @@ if (!BPC) {
             return Math.round (BPC.scale (transitionUnixTime,patient.startUnixTime,patient.endUnixTime,settings.startX,settings.endX));
         }
     };
+
 }());

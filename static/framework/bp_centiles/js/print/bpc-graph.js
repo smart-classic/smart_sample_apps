@@ -1,60 +1,7 @@
 (function(NS, $) {
 	
-	// Basic configuration for all graphs. The subclasses of Graph will inherit 
-	// and extend this configuration
-	var CONFIG = {
-		
-		// margins to be left around the main grid (for labels etc)
-		leftgutter   : 40, 
-		rightgutter  : 40,
-		bottomgutter : 30,
-		topgutter    : 30,
-		leftpadding  : 0, 
-		rightpadding : 0,
-		
-		// parameters for the graph's background grid
-		gridRows : 20,  
-		gridCols : 20,
-		gridColor: "#CECECE",
-		
-		// Styling definitions for the graph and labels
-		dotSize: 4,         // normal radius for the data point circle
-		dotSizeSelected: 6, // radius for when the data point is selected (hovered over)
-		blanketSize: 20,    // hover area diameter (invisible)
-		showDotLabel: false,    // flag for displaying the percentile within the data circle
-		colorS: "hsb(.6, 0.5, 1)",   // systolic pressure line color
-		colorD: "hsb(.5, 0.5, 1)",   // diastolic pressure line color
-		colorhueDefault: 0.9,          // default colorhue for datapoints when no percentile data is available
-		txt: {font: '12px Helvetica, Arial', fill: "#ccc"},  // Styling for the popup label data
-		txt1: {font: '10px Helvetica, Arial', fill: "#aaa"},  // Styling for the popup label heading
-		txt2: {font: '10px Helvetica, Arial', fill: "#666"},  // Axis labels styling
-		txt3: {font: '12px Helvetica, Arial', fill: "#666"},  // Styling for the popup label line headers
-		
-		// X axis definitons
-		minDX: 30,  // minimum spacing between each two consecutive labels
-		
-		// Y axis definitions
-		max: 100,  // maximum value of the data (plotted on the Y axis); this is either mmHg or percentile
-		vLabels: 10, // number of labels to display for the Y axis
-		vAxisLabel: "",// text to be displayed as the units label
-		
-		// Legend settings
-		//txt4: {font: '14px Times New Roman', "font-weight": "bold", "font-style": "italic", fill: "#555"},  // the legend "i" icon text style
-		txt5: {font: '12px Helvetica, Arial', fill: "#555", "font-weight": "bold"},  // the legend title text style
-		txt6: {font: '10px Helvetica, Arial', fill: "#ccc", "text-anchor": "start"}, // the legend items text style
-		legendWidth: 160,
-		legendHeightEmpty: 34,   // the legend height when there are no items to display
-		legendItemHeight: 24,
-		
-		// Date format
-		dateFormat: "dd MMM yy",
-		
-		// Default zone abbreviation and label
-		abbreviationDefault: "-",
-		labelDefault: "N/A"
-	};
-	
-	function isNumber(x) {
+	function isNumber(x) 
+	{
 		var _x = parseFloat(x);
 		return !isNaN(_x) && isFinite(_x);
 	}
@@ -148,7 +95,11 @@
 		getSettings : function( customSettings ) 
 		{
 			if (!this.settings) {
-				this.settings = $.extend( true, {}, CONFIG, customSettings );
+				this.settings = $.extend(
+					true, 
+					{}, 
+					customSettings
+				);
 			}
 			return this.settings;
 		},

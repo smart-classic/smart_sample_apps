@@ -160,7 +160,8 @@ $.Model.extend('ApiType',
 	this.calls = [];
   },
 
-  fetchParameters: function() {   		
+  fetchParameters: function() {
+    try {
    		var c = this.fetchParametersCall();
    		var base_regexes = [];
    		
@@ -194,6 +195,9 @@ $.Model.extend('ApiType',
    		});
    		
    		SMART.api_call(args[0], args[1]);
+    } catch(err) {
+        // just ignore it
+    }
    },
 
    fetchParametersCall: function() {	   

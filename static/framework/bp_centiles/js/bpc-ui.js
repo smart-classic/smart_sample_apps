@@ -114,9 +114,14 @@ if (!BPC) {
             };
             
             if (bpparams.age && bpparams.height && bpparams.sex) {
-                $("#result-label").text(BPC.getYears(bpparams.age) + "y " + BPC.getMonths(bpparams.age) + "m, "
-                                        + Math.round(bpparams.height * 100) + " cm, " + bpparams.sex + ", "
-                                        + bpparams.systolic + "/" + bpparams.diastolic + " mmHg");
+                            $("#result-label").html(
+    	BPC.getYears(bpparams.age) + "y " + 
+    	BPC.getMonths(bpparams.age) + "m, " +
+        Math.round(bpparams.height * 100) + " cm, " + 
+        '<span data-translatecontent="STR_SMART_gender_' + bpparams.sex + '">'  +
+        BPC.str("STR_SMART_gender_" + bpparams.sex) + "</span>, " +
+        bpparams.systolic + "/" + bpparams.diastolic + " mmHg"
+    );
             } else {
                 $("#result-label").text("Please enter patient data");
             }
@@ -200,6 +205,8 @@ if (!BPC) {
 
         // Initialize the slider range
         BPC.setDateRange($("#slider-timerange").slider("values", 0),$("#slider-timerange").slider("values", 1));
+        
+        $("#print button").css("visibility", "visible");
     };
     
     /**
@@ -253,6 +260,7 @@ if (!BPC) {
 	 * If the window is already opened, then just focus it.
 	 */
 	BPC.openPrintWindow = function() {
+
 		if (!BPC.patient || !(BPC.patient instanceof BPC.Patient)) {
 			alert("Cannot print a patient with no data.");
 			return false;
@@ -264,6 +272,7 @@ if (!BPC) {
 			BPC.PRINT_WINDOW.focus();
 			BPC.PRINT_WINDOW.location.reload();
 		}
+
 	};
 	
 }());

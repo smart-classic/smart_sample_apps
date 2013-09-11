@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="UTF-8">
 		<title>Growth Charts Application</title>
@@ -109,50 +109,71 @@
 				<div class="header-table-wrap">
 					<table border="0" cellspacing="0" cellpadding="4" class="header-table">
 						<tr class="patient-row">
-							<th class="patient-name-cell"><div class="settings-toggle"></div>&nbsp;&nbsp;<span class="patient-name title"></span></th>
+							<th class="patient-name-cell">
+								<div class="icon icon-user"></div>
+								<span class="patient-name title"></span>
+							</th>
 							<td><span class="vertical-divider"></span></td>
-							<td colspan="7"> sex <span class="patient-gender title"></span> dob <span class="patient-birth title"></span> age <span class="patient-age title"></span><span class="weeker" style="display:none;"> { <span class="value title" style="margin-right: 0"></span> }&nbsp;&nbsp; </span><span style="display: none;"> corrected age <span id="corrected-age" class="title"></span> </span></td>
-							<td colspan="3" align="right"><a id="print-button" href="javascript:GC.App.print();">Print View</a></td>
+							<td colspan="7"> 
+								<span data-translatecontent="STR_3053"></span> 
+								<span class="patient-gender title"></span> 
+								<span data-translatecontent="STR_3054"></span> 
+								<span class="patient-birth title"></span> 
+								<span data-translatecontent="STR_3055"></span> 
+								<span class="patient-age title"></span>
+								<span class="weeker" style="display:none;"> 
+								{ 
+									<span class="value title" style="margin-right: 0"></span> 
+									<span data-translatecontent="STR_3006"></span>
+								}&nbsp;&nbsp; 
+								</span>
+								<span style="display: none;"> 
+									<span data-translatecontent="STR_3056"></span> 
+									<span id="corrected-age" class="title"></span> 
+								</span>
+							</td>
+							<td colspan="3" align="right"></td>
 						</tr>
 						<tr>
-							<th>Actual vs. Expected Delivery</th>
+							<th data-translatecontent="STR_3000"></th>
 							<td><span class="vertical-divider"></span></td>
-							<td align="right">DOB</td>
+							<td align="right" data-translatecontent="STR_3001"></td>
+							<td><input type="text" data-translateattr="placeholder=STR_3002" name="DOB" /></td>
+							<td align="right" data-translatecontent="STR_3003"></td>
+							<td><input type="text" data-translateattr="placeholder=STR_3004" name="EDD" /></td>
+							<td colspan="2" align="right" data-translatecontent="STR_3005"></td>
+							<td><input type="text" style="width:6em" readonly class="result" name="GA" value="N/A" /></td>
 							<td>
-							<input type="text" placeholder="Child's DOB" name="DOB" />
+								<span class="weeker" style="display:none;color:#FFF;white-space:nowrap;">
+								(<span class="value"></span> 
+								<span data-translatecontent="STR_3006"></span>)
+								</span>
 							</td>
-							<td align="right">EDD</td>
-							<td>
-							<input type="text" placeholder="Child's EDD" name="EDD" />
-							</td>
-							<td colspan="2" align="right">Gestational Correction</td>
-							<td>
-							<input type="text" style="width:6em" readonly class="result" name="GA" value="N/A" />
-							</td>
-							<td><span class="weeker" style="display:none;">(<span class="value" style="color:#FFF; white-space:nowrap;"></span>)</span></td>
 							<td width="100%"></td>
 							<td></td>
 						</tr>
 						<tr>
-							<th>Parent’s Heights</th>
+							<th data-translatecontent="STR_3007"></th>
 							<td><span class="vertical-divider"></span></td>
-							<td align="right">Mother</td>
+							<td align="right" data-translatecontent="STR_3008"></td>
 							<td style="white-space:nowrap">
 							<input type="text" name="mother-height" style="width:7em" />
 							<label style="white-space:nowrap;margin-right:-2em">
-								<input type="checkbox" name="bio-mother">
-								Biological</label></td>
-							<td align="right">Father</td>
+								<input type="checkbox" name="bio-mother" >
+								<span data-translatecontent="STR_3009"></span>
+								</label></td>
+							<td align="right" data-translatecontent="STR_3010"></td>
 							<td colspan="2" style="white-space:nowrap">
 							<input type="text" name="fader-height" style="width:7em" />
 							<label style="white-space:nowrap">
-								<input type="checkbox" name="bio-father">
-								Biological</label></td>
-							<td align="right" style="white-space:nowrap">Mid Parental Height</td>
+								<input type="checkbox" name="bio-father" >
+								<span data-translatecontent="STR_3011"></span>
+								</label></td>
+							<td align="right" style="white-space:nowrap" data-translatecontent="STR_3012"></td>
 							<td>
 							<input type="text" readonly name="mid-height" style="width:6em" class="result" />
 							</td>
-							<td><img id="not-bio-parents-info" src="img/info.png" title="Both parents must be biological parents and have height specified to calculate the Mid Parental Height Value" /></td>
+							<td><img id="not-bio-parents-info" src="img/info.png" data-translateattr="title=STR_3013" /></td>
 							<td></td>
 							<td></td>
 						</tr>
@@ -160,14 +181,14 @@
 							<td colspan="12"></td>
 						</tr>
 						<tr>
-							<th class="prefs-header"><div class="icon" id="system-settings-icon"></div> App Preferences </th>
+							<th class="prefs-header"><div class="icon" id="system-settings-icon"></div><span data-translatecontent="STR_3014"></span></th>
 							<td><span class="vertical-divider"></span></td>
 							<td></td>
 							<td>
-							<input type="button" value=" Advanced Settings " onClick="GC.App.editSettings()" />
+							<input type="button" data-translateattr="value=STR_3015" onClick="GC.App.editSettings()" />
 							</td>
 							<td colspan="2">
-                                <input type="button" value=" About This App " onClick="GC.App.aboutAppDialog()" />
+                                <input type="button" data-translateattr="value=STR_3016" onClick="GC.App.aboutAppDialog()" />
 								<!--label>
 									<input type="checkbox" id="edit-enabled" checked="checked" />
 									Enable patient editing 
@@ -181,78 +202,80 @@
 							<td></td>
 						</tr>
 						<tr>
-							<th>Default Units</th>
+							<th data-translatecontent="STR_3017"></th>
 							<td><span class="vertical-divider"></span></td>
-							<td colspan="4" style="white-space:nowrap; text-align:center">
+							<td colspan="4" style="white-space:nowrap; text-align:right">
 							<input class="toggle-button" type="hidden" name="metrics" value="metric" data-value1="metric" data-value2="eng" data-label1="kg/cm" data-label2="lb/ft" />
 							&nbsp;<span class="vertical-divider"></span>&nbsp;
 							<input class="toggle-button" type="hidden" name="pctz" value="pct" data-value1="pct" data-value2="z" data-label1="%" data-label2="Z" />
 							&nbsp;<span class="vertical-divider"></span>&nbsp;
-							<input class="toggle-button" type="hidden" name="language" value="en" data-value1="en" data-value2="es" data-label1="English" data-label2="Spanish" />
+							<span class="language-selector"></span>
+							<!--input class="toggle-button" type="hidden" name="language" value="en" data-value1="en" data-value2="es" data-label1="English" data-label2="Spanish" /-->
 							</td>
-							<td align="right">Velocity</td>
+							<td align="right" data-translatecontent="STR_3018"></td>
 							<td>
 							<select name="roundPrecision.velocity.std" style="width:7em">
-								<option value="year">Year</option>
-								<option value="month">Month</option>
-								<option value="week">Week</option>
-								<option value="day">Day</option>
-								<option value="auto">Auto</option>
+								<option value="year" data-translatecontent="STR_3020"></option>
+								<option value="month" data-translatecontent="STR_3021"></option>
+								<option value="week" data-translatecontent="STR_3022"></option>
+								<option value="day" data-translatecontent="STR_3023"></option>
+								<option value="auto" data-translatecontent="STR_3057"></option>
 							</select></td>
-							<td align="right" style="white-space: nowrap;">NICU Velocity</td>
+							<td align="right" style="white-space: nowrap;" data-translatecontent="STR_3019" ></td>
 							<td>
 							<select name="roundPrecision.velocity.nicu" style="width:7em">
-								<option value="year">Year</option>
-								<option value="month">Month</option>
-								<option value="week">Week</option>
-								<option value="day">Day</option>
-								<option value="auto">Auto</option>
+								<option value="year" data-translatecontent="STR_3024"></option>
+								<option value="month" data-translatecontent="STR_3025"></option>
+								<option value="week" data-translatecontent="STR_3026"></option>
+								<option value="day" data-translatecontent="STR_3027"></option>
+								<option value="auto" data-translatecontent="STR_3058"></option>
 							</select></td>
 							<td>&nbsp;</td>
 							<td></td>
 						</tr>
 						<tr>
-							<th>Gestational Correction</th>
+							<th data-translatecontent="STR_3028"></th>
 							<td><span class="vertical-divider"></span></td>
-							<td align="right">Type</td>
+							<td align="right" data-translatecontent="STR_3029"></td>
 							<td>
-							<select name="gest-correction-type">
-								<option value="fixed">Fixed Length</option>
-								<option value="declining">Variable Length</option>
-								<option value="both">Fixed &amp; Variable</option>
-								<option value="none">Hidden</option>
-							</select></td>
-							<td align="right" style="white-space:nowrap">for 2 years if</td>
-							<td>
-							<input name="gest-correction-treshold" value="&lt; 32 Weeker" type="text" style="width:10em;" />
+								<select name="gest-correction-type" class="disabled-on-fenton">
+									<option value="fixed" data-translatecontent="STR_3030"></option>
+									<option value="declining" data-translatecontent="STR_3031"></option>
+									<option value="both" data-translatecontent="STR_3032"></option>
+									<option value="none" data-translatecontent="STR_3033"></option>
+								</select>
 							</td>
-							<td style="white-space:nowrap" colspan="2">(or for 1 year otherwise)</td>
+							<td align="right" style="white-space:nowrap" data-translatecontent="STR_3034"></td>
+							<td>
+								<input name="gest-correction-treshold" type="text" style="width:10em;" class="disabled-on-fenton" data-translateattr="value=STR_3035"/>
+							</td>
+							<td style="white-space:nowrap" colspan="2" data-translatecontent="STR_3036"></td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td></td>
 						</tr>
 						<tr class="last">
-							<th>Appearance</th>
+							<th data-translatecontent="STR_3037"></th>
 							<td><span class="vertical-divider"></span></td>
-							<td align="right">Aspect&nbsp;Ratio</td>
+							<td align="right" data-translatecontent="STR_3038"></td>
 							<td>
 							<select name="aspectRatio" title="Height-To-Width Ratio">
 								<option value="0.8">1:1.25</option>
 								<option value="0.625">1:1.6</option>
-								<option value="1">1:1 (square)</option>
+								<option value="1" data-translatecontent="STR_3059"></option>
 								<option value="0.5">1:2</option>
 								<option value="0.6666666666666667">2:3</option>
 								<option value="0.75">3:4</option>
 								<option value="0.6">3:5</option>
 								<option value="0.375">9:16</option>
-								<option value="0">stretch (default)</option>
+								<option value="0" data-translatecontent="STR_3039"></option>
 							</select></td>
-							<td align="right">Font Size</td>
+							<td align="right" data-translatecontent="STR_3040"></td>
 							<td>
 							<input name="fontSize" type="text" />
 							</td>
-							<td align="right">Colors</td>
+							<td align="right" data-translatecontent="STR_3041"></td>
 							<td colspan="2"><select name="color-preset"></select></td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
@@ -260,12 +283,15 @@
 						</tr>
 					</table>
 				</div>
-
+				
+				<div class="toolbar-btn settings-toggle" data-translateattr="title=STR_2999"></div>
+				<a class="toolbar-btn print" href="javascript:GC.App.print();" data-translateattr="title=STR_179"></a>
+				
 				<!-- View Mode -->
 				<div id="view-mode">
-					<span data-value="parent">PARENT</span>
-					<span data-value="table">TABLE</span>
-					<span data-value="graphs">GRAPHS</span>
+					<span data-value="parent" data-translatecontent="STR_3042"></span>
+					<span data-value="table" data-translatecontent="STR_3043"></span>
+					<span data-value="graphs" data-translatecontent="STR_3044"></span>
 				</div>
 
 				<div id="the-tab">
@@ -277,7 +303,7 @@
 					<div class="disable-overlay"></div>
 				</div>
 
-				<span class="app-version">App Version: <span class="version"></span> </span>
+				<span class="app-version"><span data-translatecontent="STR_3045"></span><span class="version"></span> </span>
 
 			</div>
 
@@ -286,22 +312,26 @@
 					<div class="cell angle-right">
 						<label>
 							<input type="radio" name="time-range" value="0:13">
-							0 – 13 Weeks </label>
+							0 – 13 <span data-translatecontent="STR_19"></span>
+						</label>
 					</div>
 					<div class="cell angle-left angle-right">
 						<label>
 							<input type="radio" name="time-range" value="0:26.08928571428572" checked>
-							0 – 6 Months </label>
+							0 – 6 <span data-translatecontent="STR_17"></span>
+						</label>
 					</div>
 					<div class="cell angle-left">
 						<label>
 							<input type="radio" name="time-range" value="0:104.3571428571429">
-							0 – 2 Years </label>
+							0 – 2 <span data-translatecontent="STR_15"></span>
+						</label>
 					</div>
 					<div class="cell">
 						<label>
 							<input type="radio" name="time-range" value="0:1043.571428571429">
-							0 – 20 Years </label>
+							0 – 20 <span data-translatecontent="STR_15"></span>
+						</label>
 					</div>
 					<div class="cell" style="width:9px">
 						<span class="vertical-divider" style="margin-left:4px;margin-right:4px"></span>
@@ -309,10 +339,11 @@
 					<div class="cell btn" style="width:120px;white-space:nowrap;" id="btn-fit-to-age" onclick="GC.App.fitToData();">
 						<label>
 							<input type="radio" name="time-range" value="0:1">
-							Fit to Age </label>
+							<span data-translatecontent="STR_3050"></span>
+						</label>
 					</div>
 					<div class="cell btn" style="width:140px;white-space:nowrap;" id="btn-toggle-zoom">
-						<label>Zoom Out</label>
+						<label data-translatecontent="STR_3051"></label>
 					</div>
 				</div>
 				<div class="disable-overlay"></div>
@@ -320,7 +351,7 @@
 
 			<div id="info-bar" style="padding-right: 11em;overflow: hidden">
 
-				<span class="last-recording"> <span style="color: #AAA">last recording&nbsp;&nbsp;</span> <b><span class="date"></span>&nbsp;&nbsp;<span class="age"></span></b> </span>
+				<span class="last-recording"> <span style="color: #AAA" data-translatecontent="STR_3052"></span> <b><span class="date"></span>&nbsp;&nbsp;<span class="age"></span></b> </span>
 				<span style="float:right;">
 					<span>
 						<input type="checkbox" name="nicu" class="checkbox-button" data-label="NICU" />
@@ -334,19 +365,19 @@
 						<input class="toggle-button" type="hidden" name="metrics" value="metric" data-value1="metric" data-value2="eng" data-label1="kg/cm" data-label2="lb/ft" />
 						<span class="vertical-divider"></span>
 					</span>
-					<span>
-						<input class="toggle-button" type="hidden" name="language" value="en" data-value1="en" data-value2="es" data-label1="English" data-label2="Spanish" />
+					<span class="language-selector">
+						<!--input class="toggle-button" type="hidden" name="language" value="en" data-value1="en" data-value2="es" data-label1="English" data-label2="Spanish" /-->
 					</span>
 				</span>
-				<span class="add-entry">Add Data</span>
+				<span class="add-entry" data-translatecontent="STR_178"></span>
 			</div>
 		</div>
 
 		<div id="timeline-top" class="timeline">
-			<div class="years"></div>
-			<div class="months"></div>
-			<div class="weeks"></div>
-			<div class="days"></div>
+			<div data-translateattr="data-content=STR_15" class="years"></div>
+			<div data-translateattr="data-content=STR_17" class="months"></div>
+			<div data-translateattr="data-content=STR_19" class="weeks"></div>
+			<div data-translateattr="data-content=STR_21" class="days"></div>
 			<div class="gest"></div>
 		</div>
 		<div id="stage">
@@ -464,17 +495,17 @@
 		</div>
 		<div id="timeline-bottom" class="timeline">
 			<div class="gest"></div>
-			<div class="days"></div>
-			<div class="weeks"></div>
-			<div class="months"></div>
-			<div class="years"></div>
+			<div data-translateattr="data-content=STR_21" class="days"></div>
+			<div data-translateattr="data-content=STR_19" class="weeks"></div>
+			<div data-translateattr="data-content=STR_17" class="months"></div>
+			<div data-translateattr="data-content=STR_15" class="years"></div>
 		</div>
 
 		
 
 		<div id="dialog"></div>
 		<div id="loading-indicator">
-			<h2>Please Wait <div class="msg"></div></h2>
+			<h2><span data-translatecontent="STR_180"></span> <div class="msg"></div></h2>
 		</div>
 	</body>
 </html>

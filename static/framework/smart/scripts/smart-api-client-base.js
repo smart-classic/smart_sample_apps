@@ -313,7 +313,7 @@ SMART_CONNECT_CLIENT.prototype.process_rdf = function(contentType, data) {
     var r = d.childNodes[0];
     if (r.nodeName !== "RDF" && r.nodeName !== "rdf:RDF")
       r = d.childNodes[1];
-    if (r.attributes == null)  // we need non-strict comparison here to capture the behavior of the XML parser in chrome where r.attributes is "undefined"
+    if (!r.attributes || r.attributes.length < 1)
       r = d.childNodes[1];
 
 

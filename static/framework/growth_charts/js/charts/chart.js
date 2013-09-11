@@ -1264,7 +1264,7 @@ Chart.prototype = {
 		this.drawTitle();
 		
 		if ( !this.dataSet ) {
-			this.drawNoData("No curves data");
+			this.drawNoData(GC.str("STR_6046"));
 		} else {
 			
 			if ( GC.chartSettings.drawChartOutlines ) {
@@ -1290,7 +1290,7 @@ Chart.prototype = {
 				x2 = this.x + this.width - rShWidth;
 				
 			if ( len < 2 ) {
-				this.drawNoData("No curves data");
+				this.drawNoData(GC.str("STR_6046"));
 			} else {
 				
 				this.drawFillChartRegion(data);
@@ -1412,7 +1412,7 @@ Chart.prototype = {
 		this._nodes.push(this.pane.paper.text(
 			this.x + this.width / 2, 
 			this.y + this.height / 2, 
-			msg || "No data available!"
+			msg || GC.str("STR_6045")
 		).attr({
 			"font-size" : fontSize || 30,
 			"fill" : "#A60",
@@ -1982,7 +1982,8 @@ Chart.prototype = {
 		var caFixed      = GC.App.getPatient().gestationAge, //GC.Util.intVal(GC.App.getCorrectionAge()),
 			correctUntil = getCorrectionMonths( GC.App.getPatient().weeker ),
 			arrowType    = GC.chartSettings.gestCorrectionType,
-			canDraw      = arrowType != "none",
+			dsType       = GC.App.getPrimaryChartType(),
+			canDraw      = arrowType != "none" && dsType != "FENTON",
 			startX       = cfg.startX,
 			startY       = cfg.startY,
 			caDeclining,
@@ -2225,7 +2226,8 @@ Chart.prototype = {
 		// Compile the small text
 		life1.setMonths( start );
 		life2.setMonths( end );
-		txt3.push( patient.gender == "male" ? "Boy, " : "Girl, ");
+		//txt3.push( patient.gender == "male" ? "Boy, " : "Girl, ");
+		txt3.push( GC.Util.ucfirst(GC.str("STR_SMART_GENDER_" + patient.gender)) + ", ")
 		txt3.push( 
 			(start === 0 ? "0" : life1.toString(GC.chartSettings.timeInterval)) + 
 			" - " + life2.toString(GC.chartSettings.timeInterval)

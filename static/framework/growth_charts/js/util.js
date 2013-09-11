@@ -131,6 +131,11 @@ if ( !Array.prototype.indexOf ) {
 		return Math.round( n * q ) / q;
 	}
 	
+	function ucfirst(str) {
+		var _str = String(str);
+		return _str.charAt(0).toUpperCase() + _str.substr(1);
+	}
+	
 	// Output formatting
 	// =========================================================================
 	
@@ -468,10 +473,10 @@ if ( !Array.prototype.indexOf ) {
 			if ( queue.length ) {
 				var task = queue.shift();
 				cfg.onChange(task);
-				task.worker(run);
+				setTimeout(function() { task.worker(run); }, 100);
 			}
 			else {
-				cfg.onComplete();
+				setTimeout(function() { cfg.onComplete(); }, 100);
 			}
 		}
 
@@ -480,7 +485,7 @@ if ( !Array.prototype.indexOf ) {
 			{
 				queue.push({ 
 					worker      : worker, 
-					description : description || "Anonimous task"
+					description : description || "Anonymous task"
 				});
 				return this;
 			},
@@ -694,7 +699,7 @@ if ( !Array.prototype.indexOf ) {
 		if ( cfg.inputName ) {
 			$(function() {
 				$("[name='" + cfg.inputName + "']").change(function() {
-					obj[ setterName ](this.type == "checkbox" || this.type == "radio" ? this.checked : this.value);
+					obj[ setterName ](this.type == "checkbox" || this.type == "radio" ? this.checked : $(this).val());
 				});
 			});
 		}
@@ -1164,6 +1169,26 @@ if ( !Array.prototype.indexOf ) {
 		return res;
 	}
 	
+	function translateHTML(context) {
+		$('[data-translatecontent]', context || document).each(function() {
+			$(this).html(NS.str(this.getAttribute("data-translatecontent")));
+		});
+		$('[data-translateattr]', context || document).each(function() {
+			var src = this.getAttribute("data-translateattr"),
+				pos = src.indexOf("="),
+				attrName, attrValue;
+			if (pos > -1) {
+				attrName  = $.trim(src.substr(0, pos));
+				attrValue = $.trim(src.substr(pos + 1));
+				if (attrName && attrValue) {
+					attrValue = NS.str(attrValue);
+					//$(this).attr(attrName, attrValue);
+					this.setAttribute(attrName, attrValue);
+				}
+			}
+		});
+	}
+	
 	$.extend(NS.Util, {
 		floatVal              : floatVal,
 		intVal                : intVal,
@@ -1202,7 +1227,9 @@ if ( !Array.prototype.indexOf ) {
 		getCurvesData         : getCurvesData,
 		cropCurvesDataX       : cropCurvesDataX,
 		scale                 : scale,
-		findMinMax            : findMinMax
+		findMinMax            : findMinMax,
+		translateHTML         : translateHTML,
+		ucfirst               : ucfirst
 	});
 	
 	$.extend(NS, {
@@ -1858,54 +1885,58 @@ if ( !Array.prototype.indexOf ) {
 		});
 	}
 	
+	$.createToggleButton = function(input) {
+		var $input = $(input),
+			v1 = $input.attr("data-value1"),
+			v2 = $input.attr("data-value2"),
+			l1 = $input.attr("data-label1"),
+			l2 = $input.attr("data-label2"),
+			c  = $input.attr("data-classnames");
+		
+		if ( v1 && v2 && l1 && l2 ) {
+			$input.removeClass("toggle-button").wrap('<span class="toggle-button-wrap"/>');
+			var $wrapper = $input.parent();
+			$wrapper.append(
+				'<table class="toggle-button">' + 
+					'<tr>' + 
+						'<td><label data-value="' + v1 + '">' + l1 + '</label></td>' + 
+						'<td class="action">' + 
+							'<div>' + 
+								'<label data-value="' + v1 + '"></label>' + 
+								'<label data-value="' + v2 + '"></label>' + 
+							'</div>' + 
+						'</td>' + 
+						'<td><label data-value="' + v2 + '">' + l2 + '</label></td>' + 
+					'</tr>' + 
+				'</table>'
+			);
+			
+			if (c) {
+				$wrapper.addClass(c);
+			}
+			
+			$input.change(function() {
+				updateToggleButtons(this.name, this.value);
+			});
+			
+			$wrapper.on("click", "label", function() {
+				if ($(this).closest(".toggle-button-wrap").is(".disabled")) {
+					return true;
+				}
+				var val = this.getAttribute("data-value");
+				if (val !== $input.val()) {
+					$input.val(val);
+					$input.trigger("change");
+				}
+			});
+			
+			updateToggleButtons($input[0].name, $input.val());
+		}
+	};
+	
 	$(function() {
 		$("input.toggle-button").each(function(i, input) {
-			var $input = $(input),
-				v1 = $input.attr("data-value1"),
-				v2 = $input.attr("data-value2"),
-				l1 = $input.attr("data-label1"),
-				l2 = $input.attr("data-label2"),
-				c  = $input.attr("data-classnames");
-			
-			if ( v1 && v2 && l1 && l2 ) {
-				$input.removeClass("toggle-button").wrap('<span class="toggle-button-wrap"/>');
-				var $wrapper = $input.parent();
-				$wrapper.append(
-					'<table class="toggle-button">' + 
-						'<tr>' + 
-							'<td><label data-value="' + v1 + '">' + l1 + '</label></td>' + 
-							'<td class="action">' + 
-								'<div>' + 
-									'<label data-value="' + v1 + '"></label>' + 
-									'<label data-value="' + v2 + '"></label>' + 
-								'</div>' + 
-							'</td>' + 
-							'<td><label data-value="' + v2 + '">' + l2 + '</label></td>' + 
-						'</tr>' + 
-					'</table>'
-				);
-				
-				if (c) {
-					$wrapper.addClass(c);
-				}
-				
-				$input.change(function() {
-					updateToggleButtons(this.name, this.value);
-				});
-				
-				$wrapper.on("click", "label", function() {
-					if ($(this).closest(".toggle-button-wrap").is(".disabled")) {
-						return true;
-					}
-					var val = this.getAttribute("data-value");
-					if (val !== input.value) {
-						input.value = val;
-						$input.trigger("change");
-					}
-				});
-				
-				updateToggleButtons(input.name, input.value);
-			}
+			$.createToggleButton(input);
 		});
 	});
 }(jQuery));
@@ -1917,10 +1948,25 @@ if ( !Array.prototype.indexOf ) {
 	function onCheckboxButtonChange() {
 		$(this).closest(".checkbox-button")
 		.toggleClass("on", this.checked)
-		.toggleClass("off", !this.checked);
+		.toggleClass("off", !this.checked)
+		.find(".btn-wrap").attr(
+			"data-content",
+			GC.str(this.checked ? "STR_6043" : "STR_6044")
+		);
 	}
 	
 	$(function() {
+		
+		$("html").on("set:language", function() {
+			var lang = GC.App.getLanguage();
+			$(".checkbox-button input").each(function() {
+				$(this).closest(".checkbox-button").find(".btn-wrap").attr(
+					"data-content",
+					GC.str(this.checked ? "STR_6043" : "STR_6044")
+				);
+			});
+		});
+		
 		$("input.checkbox-button").each(function(i, input) {
 			var $input = $(input),
 				l  = $input.attr("data-label"),
@@ -2002,8 +2048,12 @@ if ( !Array.prototype.indexOf ) {
 			
 			if ( this._index > -1 ) {
 				this.index( this._index, true );
+				this.element.find(".value > span")
+				.removeAttr("data-translatecontent");
 			} else {
-				this.element.find(".value > span").html(this.options.placeHolder);
+				this.element.find(".value > span")
+				.attr("data-translatecontent", this.options.placeHolder)
+				.html(GC.str(this.options.placeHolder));
 			}
 		},
 		
@@ -2073,7 +2123,7 @@ if ( !Array.prototype.indexOf ) {
 			
 			this._index = -1;
 			this._value = undefined;
-			this.element.find(".value > span").html(this.options.placeHolder);
+			this.element.find(".value > span").html(GC.str(this.options.placeHolder)).attr("data-translatecontent", this.options.placeHolder);
 			this.element.find(".menu > div").removeClass("selected");
 			return this;
 		},
@@ -2095,7 +2145,8 @@ if ( !Array.prototype.indexOf ) {
 					}
 					
 					if ( option.value === val ) {
-						inst.element.find(".value > span").text( option.label );
+						inst.element.find(".value > span").text( option.label )
+							.removeAttr("data-translatecontent");
 						inst._value = val;
 						inst._index = j;
 						option.selected = true;
@@ -2144,7 +2195,7 @@ if ( !Array.prototype.indexOf ) {
 	
 	$(function() {
 		$(".menu-button").menuButton({
-			placeHolder : "PICK A CHART",
+			placeHolder : "STR_6049",
 			dataSet : [
 				{
 					label : "CDC",
@@ -2484,8 +2535,10 @@ if ( !Array.prototype.indexOf ) {
 			
 			this._on(this.element.parent(), {
 				"mousedown .up" : function() {
-					this.element.trigger("focus");
-					this._start(1);
+					if (!this.isDisabled()) {
+						this.element.trigger("focus");
+						this._start(1);
+					}
 					return false;
 				},
 				"mouseup" : function() {
@@ -2495,8 +2548,10 @@ if ( !Array.prototype.indexOf ) {
 					this._stop();
 				},
 				"mousedown .down" : function() {
-					this.element.trigger("focus");
-					this._start(-1);
+					if (!this.isDisabled()) {
+						this.element.trigger("focus");
+						this._start(-1);
+					}
 					return false;
 				},
 				"mouseout .down" : function() {
@@ -2505,14 +2560,21 @@ if ( !Array.prototype.indexOf ) {
 				"keydown > input" : function(e) {
 					switch (e.keyCode) {
 						case 38: // Up
-							this._step(1);
+							if (!this.isDisabled()) { 
+								this._step(1); 
+							}
 						return false;
 						case 40: // Down
-							this._step(-1);
+							if (!this.isDisabled()) {
+								this._step(-1);
+							}
 						return false;
 					}
 				},
 				"focusin > input" : function() {
+					if (this.isDisabled()) {
+						return false;
+					}
 					var inst = this;
 					$(window).unbind(mw).bind(mw, function(e) {
 						var q = $.browser.mozilla 
@@ -2524,10 +2586,14 @@ if ( !Array.prototype.indexOf ) {
 				},
 				"focusout > input" : function(e) {
 					$(window).unbind(mw);
-					this.value(this._parse(e.target.value));
+					if (!this.isDisabled()) {
+						this.value(this._parse(e.target.value));
+					}
 				},
 				"paste > input" : function(e) {
-					this.value(this._parse(e.target.value));
+					if (!this.isDisabled()) {
+						this.value(this._parse(e.target.value));
+					}
 				}
 			});
 			
@@ -2557,6 +2623,13 @@ if ( !Array.prototype.indexOf ) {
 		enable : function() {
 			this.element.prop("disabled", false).parent().removeClass("disabled");
 			return this._super();
+		},
+		
+		isDisabled : function() {
+			return  this.element.prop("disabled") || 
+					this.element.parent().is(".disabled") ||
+					this.element.parent().is(".ui-state-disabled") || 
+					$(this.element).is("[disabled] input, .disabled input, .ui-state-disabled input");
 		},
 		
 		value : function(n, silent) {

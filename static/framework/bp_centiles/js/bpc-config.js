@@ -193,7 +193,7 @@ if (!BPC) {
     * @returns {Object} Patient object
     */
     BPC.getSamplePatient = function () {
-        var patient = new BPC.Patient("Jane Doe", "1994-03-27", "female");
+        var patient = new BPC.Patient("Sample Patient", "1994-03-27", "female", "1234567");
         patient.data = [
             {timestamp: "1998-04-01T04:32:00Z", height: 85, systolic: 98, diastolic: 73, site: "Arm", position: "Standing", method: "Auscultation", encounter: "Inpatient"},
             {timestamp: "1999-05-25T06:21:00Z", height: 96, systolic: 82, diastolic: 53, site: "Leg", position: "Sitting", method: "Auscultation", encounter: "Ambulatory"},
@@ -345,4 +345,6 @@ if (!BPC) {
             return res;
         };
     }());
+    
+
 }());
