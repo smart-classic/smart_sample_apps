@@ -271,9 +271,8 @@ if (!BPC) {
             getClosestHeight,
             i;
 
-        // Initialize the patient information area
+        // Initialize the patient object
         patient = new BPC.Patient(demographics.name, demographics.birthday, demographics.gender, demographics.identifier);
-        $("#patient-info").text(String(patient));
         
         if (vitals_bp.length === 0) {
             // Display appropriate error message when there are no vitals

@@ -48,6 +48,9 @@ if (!BPC) {
             // Initialize the patient object
             BPC.initPatient (patient);
             
+            // Initialize the patient information area
+            $("#patient-info").text(String(patient));
+            
             // Clear the error message
             $("#info").text("").hide();
             
