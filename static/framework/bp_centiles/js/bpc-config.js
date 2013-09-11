@@ -25,6 +25,8 @@ if (!BPC) {
     
     BPC.settings.app_title = "Blood Pressure Centiles";
     
+    BPC.settings.hide_patient_header = false;
+    
     // BPC Data Load settings
     BPC.settings.loading_mode = "full";   // possible values: full = complete data load, 
                                           //                  progressive = paginate automatically,
