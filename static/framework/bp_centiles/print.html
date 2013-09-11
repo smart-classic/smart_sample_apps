@@ -173,7 +173,7 @@
 					</td>
                     {#if !$P.short}
                     <td class="grey-4 small lowercase notes">
-						<span {#if $T.site} data-translatecontent="STR_SITE_{$T.site.toUpperCase()}"{#/if}>{#if $T.site}{$T.site}</span>,
+						<span {#if $T.site} data-translatecontent="STR_SITE_{$T.site.toUpperCase().replace(" ","_")}"{#/if}>{#if $T.site}{$T.site}</span>,
 						<span {#if $T.position} data-translatecontent="STR_POSITION_{$T.position.toUpperCase()}"{#/if}>{#if $T.position},{$T.position}</span>,
 						<span {#if $T.method} data-translatecontent="STR_METHOD_{$T.method.toUpperCase()}"{#/if}>{#if $T.method},{$T.method}</span>
 					</td>
