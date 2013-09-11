@@ -41,6 +41,10 @@ if (!BPC) {
         
         var i, age;
 
+        if (BPC.settings.hide_patient_header) { 
+            $("#patient-info").hide();
+        }
+        
         if (patient) {
             // Update the global patient handle
             BPC.patient = patient;
