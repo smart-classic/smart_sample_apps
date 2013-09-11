@@ -402,7 +402,7 @@ CDC Clinical Growth Charts obtained 6 April 2011 (
                     <td>{#if $T.height}{$T.height} cm{#else}-{#/if}</td>
                     <td>{$T.systolic}/{$T.diastolic} mmHg</td>
                     <td>{#if $T.plabel}{$T.plabel}{#else}-{#/if}</td>
-                    <td{#if $T.site} data-translatecontent="STR_SITE_{$T.site.toUpperCase()}"{#/if}>{#if $T.site}{$T.site}{#else}-{#/if}</td>
+                    <td{#if $T.site} data-translatecontent="STR_SITE_{$T.site.toUpperCase().replace(" ","_")}"{#/if}>{#if $T.site}{$T.site}{#else}-{#/if}</td>
                     <td{#if $T.position} data-translatecontent="STR_POSITION_{$T.position.toUpperCase()}"{#/if}>{#if $T.position}{$T.position}{#else}-{#/if}</td> 
                     <td{#if $T.method} data-translatecontent="STR_METHOD_{$T.method.toUpperCase()}"{#/if}>{#if $T.method}{$T.method}{#else}-{#/if}</td>
                     <td{#if $T.encounter} data-translatecontent="STR_ENCOUNTER_{$T.encounter.toUpperCase()}"{#/if}>{#if $T.encounter}{$T.encounter}{#else}-{#/if}</td>

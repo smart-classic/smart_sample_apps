@@ -369,6 +369,26 @@ BPC.localizations = {
         es : "Brazo",
         bg : "Ръка"
     },
+    STR_SITE_LEFT_LEG : {
+        en : "Left Leg",
+        es : "Pierna Izquierda",
+        bg : "Ляв Крак"
+    },
+    STR_SITE_LEFT_ARM : {
+        en : "Left Arm",
+        es : "Brazo Izquierdo",
+        bg : "Лява Ръка"
+    },
+    STR_SITE_RIGHT_LEG : {
+        en : "Right Leg",
+        es : "Pierna Derecha",
+        bg : "Десен Крак"
+    },
+    STR_SITE_RIGHT_ARM : {
+        en : "Right Arm",
+        es : "Brazo Derecho",
+        bg : "Дясна Ръка"
+    },
     STR_ENCOUNTER_INPATIENT: {
         en : "Inpatient",
         es : "Hospitalización",

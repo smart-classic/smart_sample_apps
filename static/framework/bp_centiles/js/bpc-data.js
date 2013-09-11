@@ -536,7 +536,15 @@ if (!BPC) {
         var s = BPC.getViewSettings(),
             d = parse_date (this.birthdate);
             
-        return this.name + " (" + this.sex + ", DOB: " + d.toString(s.dateFormat) + ")";
+        var out = this.name + " (";
+        if (this.sex.toUpperCase() === "MALE") {
+            out += BPC.str("STR_MALE_37").toLowerCase();
+        } else if (this.sex.toUpperCase() === "FEMALE") {
+            out += BPC.str("STR_FEMALE_38").toLowerCase();
+        }
+        out += ", " + BPC.str("STR_DOB_108").toUpperCase() + ": " + d.toString(s.dateFormat) + ")";
+            
+        return out;
     };
 
     /**

@@ -68,6 +68,7 @@ if (!BPC) {
             
             $(window).on("set:language", function() {
             	BPC.drawViews (patient, BPC.settings.zones);
+                $("#patient-info").text(String(patient));
             });
             
             // Find the last pre-adult data record available
@@ -396,7 +397,7 @@ if (!BPC) {
                     // Construct the other information string from the available metadata
                     var otherInfo = "";
                     
-                    if (data.site) otherInfo += BPC.str("STR_SITE_" + data.site.toUpperCase());
+                    if (data.site) otherInfo += BPC.str("STR_SITE_" + data.site.toUpperCase().replace(" ","_"));
                     if (data.position) {
                         if (otherInfo) otherInfo += ", ";
                         otherInfo += BPC.str("STR_POSITION_" + data.position.toUpperCase());
