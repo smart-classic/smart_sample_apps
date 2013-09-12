@@ -32,6 +32,12 @@
 			RISK_FOR_OBESE       : 32,
 			IMPROVING            : 64,
 			NONE                 : 128
+		},
+		DEFAULT_HEIGHTS = {
+			Infant     : 70,
+			Toddler    : 100,
+			Child      : 120,
+			Adolescent : 160
 		};
 	
 	/**
@@ -46,6 +52,30 @@
 			return null;
 		}
 		return PATIENT.getLastEnryHaving(propName);
+	}
+	
+	/**
+	 * Returns a label that describes the patient depending on his age.
+	 * @returns {String} Infant|Toddler|Child|Adolescent
+	 */
+	function getPatientLabel() {
+		var years = PATIENT.getCurrentAge().getYears();
+		if (years <= AGES.Infant) 
+			return "Infant";
+		if (years <= AGES.Toddler) 
+			return "Toddler";
+		if (years <= AGES.Child) 
+			return "Child";
+		return "Adolescent";
+	}
+	
+	/**
+	 * Returns a (rough) height for the patient depending on his age. This is
+	 * ONLY used if the patient has no height data at all because we still need
+	 * to set some height to the patient's image.
+	 */
+	function getDefaultHeight() {
+		return DEFAULT_HEIGHTS[getPatientLabel()];
 	}
 	
 	/**
@@ -286,7 +316,7 @@
 			if (!this._nodes.childHeightLine) {
 				this._nodes.childHeightLine = this.paper.rect(
 					this.paper.width * 0.3333 + 30, 
-					this.paper.height - 1, 
+					this.paper.height / 2, 
 					this.paper.width * 0.3333 - 60, 
 					2
 				).attr({
@@ -303,7 +333,7 @@
 					50
 				).attr({
 					"stroke" : "none",
-					"fill"   : "#25B3DF",
+					"fill"   : "#FFF",
 					"fill-opacity" : 0.75
 				});
 			}
@@ -311,7 +341,7 @@
 			if (!this._nodes.childName) {
 				this._nodes.childName = this.paper.text(
 					this.paper.width / 2, 
-					this.paper.height - 1, 
+					this.paper.height / 2 - 10, 
 					PATIENT.name
 				).attr({
 					"text-anchor" : "center",
@@ -348,7 +378,10 @@
 					y,
 					lastHeight = PATIENT.getLastModelEntry(function(rec) {
 						return rec.hasOwnProperty("lengthAndStature");
-					});
+					}) || {
+						agemos : null,
+						lengthAndStature : getDefaultHeight()
+					};
 					
 					if (lastHeight) {
 						heightChild = GC.Util.roundToPrecision(lastHeight.lengthAndStature, 1);
@@ -363,10 +396,12 @@
 					});
 					
 					this._nodes.childHeightLabel.attr({
-						text : "on " + 
+						text : lastHeight.agemos === null ?
+							GC.str("STR_158") :
+							("on " + 
 							(new XDate(PATIENT.DOB.getTime())).addMonths(lastHeight.agemos)
 							.toString(GC.chartSettings.dateFormat) + "\n" 
-							+ heightChild + " cm",
+							+ heightChild + " cm"),
 						y : heightChild > heightTreshold ?
 							y + 35 :
 							y - 16
@@ -884,7 +919,12 @@
 			out.name = PATIENT.name;
 			
 			if (!lastWeightEntry || !lastHeightEntry) {
-				out.error = "has not enough data to calculate it's state.";
+				out.error = [
+					PATIENT.name,
+					GC.str("STR_183"),
+					GC.str(PATIENT.gender == "male" ? "STR_181" : "STR_182"),
+					GC.str("STR_184")
+				].join(" ");
 			}
 			
 			else {
@@ -971,7 +1011,7 @@
 				i    = 0;
 			
 			if (meta.error) {
-				$("#vitals-message").html(meta.error);
+				$("#vitals-message").html('<b>' + meta.error + '</b>');
 			} else {
 				
 				// Weight Status Category Text
@@ -1011,19 +1051,20 @@
 				
 				// The standard healthy weight message
 				// -------------------------------------------------------------
-				msg[i++] = GC.str(PATIENT.gender == "male" ? "STR_163" : "STR_164");
-				msg[i++] = GC.Util.format(meta.healthyWeightMin, { type : "weight", system: "metric" });
-				msg[i++] = " &mdash; ";
-				msg[i++] = GC.Util.format(meta.healthyWeightMax, { type : "weight", system: "metric" });
-				msg[i++] = "(" + GC.Util.format(meta.healthyWeightMin, { type : "weight", system: "eng" });
-				msg[i++] = " &mdash; ";
-				msg[i++] = GC.Util.format(meta.healthyWeightMax, { type : "weight", system: "eng" }) + ").";
-				
-				$("#vitals-message .weight-range").html(msg.join(" "));
-				
-				msg = [];
-				i = 0;
-				
+				if (meta.healthyWeightMin && meta.healthyWeightMax) {
+					msg[i++] = GC.str(PATIENT.gender == "male" ? "STR_163" : "STR_164");
+					msg[i++] = GC.Util.format(meta.healthyWeightMin, { type : "weight", system: "metric" });
+					msg[i++] = " &mdash; ";
+					msg[i++] = GC.Util.format(meta.healthyWeightMax, { type : "weight", system: "metric" });
+					msg[i++] = "(" + GC.Util.format(meta.healthyWeightMin, { type : "weight", system: "eng" });
+					msg[i++] = " &mdash; ";
+					msg[i++] = GC.Util.format(meta.healthyWeightMax, { type : "weight", system: "eng" }) + ").";
+					
+					$("#vitals-message .weight-range").html(msg.join(" "));
+					
+					msg = [];
+					i = 0;
+				}
 				
 				// Contingent Trend Message
 				// -------------------------------------------------------------

@@ -805,17 +805,26 @@
 			SMART.ready(function() {
 				var SMART_NS = "http://smartplatforms.org/terms#", 
 					capabilities = {
-						preferences : {
-							read  : false,
-							write : false,
-							unset : false
-						},
-						scratchpad : {
-							read  : false,
-							write : false,
-							unset : false
-						}
+						demographics  : { read: false, write: false, unset: false },
+						vitalsignset  : { read: false, write: false, unset: false },
+						preferences   : { read: false, write: false, unset: false },
+						scratchpad    : { read: false, write: false, unset: false },
+						familyhistory : { read: false, write: false, unset: false },
+						clinicalnotes : { read: false, write: false, unset: false },
+						labresults    : { read: false, write: false, unset: false }
 					};
+					
+				function returnResolved(arg) {
+					var dfd = new $.Deferred();
+					dfd.resolve(arg);
+					return dfd.promise();
+				}
+				
+				function returnReejected(arg) {
+					var dfd = new $.Deferred();
+					dfd.reject(arg);
+					return dfd.promise();
+				}
 				
 				function createCapabilityAnalyzer(propName) {
 					return function(i, name) {
@@ -837,20 +846,52 @@
 				GC.getContainerManifest().done(
 					function parseContainerManifest(response) {
 						debugLog("Analyzing SMART capabilities...");
-						
-						
+						//console.log("parseContainerManifest: ", response);
 						var label;
 						for (label in response.json.capabilities) {
-							if (label == SMART_NS + "UserPreferences") {
-								$.each(
-									response.json.capabilities[label].methods, 
-									createCapabilityAnalyzer("preferences")
-								);
-							} else if (label == SMART_NS + "ScratchpadData") {
-								$.each(
-									response.json.capabilities[label].methods, 
-									createCapabilityAnalyzer("scratchpad")
-								);
+							switch (label) {
+								case SMART_NS + "Demographics":
+									$.each(
+										response.json.capabilities[label].methods, 
+										createCapabilityAnalyzer("demographics")
+									);
+								break;
+								case SMART_NS + "VitalSignSet":
+									$.each(
+										response.json.capabilities[label].methods, 
+										createCapabilityAnalyzer("vitalsignset")
+									);	
+								break;
+								case SMART_NS + "UserPreferences":
+									$.each(
+										response.json.capabilities[label].methods, 
+										createCapabilityAnalyzer("preferences")
+									);	
+								break;
+								case SMART_NS + "ScratchpadData":
+									$.each(
+										response.json.capabilities[label].methods, 
+										createCapabilityAnalyzer("scratchpad")
+									);	
+								break;
+								case SMART_NS + "FamilyHistory":
+									$.each(
+										response.json.capabilities[label].methods, 
+										createCapabilityAnalyzer("familyhistory")
+									);
+								break;
+								case SMART_NS + "ClinicalNote":
+									$.each(
+										response.json.capabilities[label].methods, 
+										createCapabilityAnalyzer("clinicalnotes")
+									);
+								break;
+								case SMART_NS + "LabResult":
+									$.each(
+										response.json.capabilities[label].methods, 
+										createCapabilityAnalyzer("labresults")
+									);
+								break;
 							}
 						}
 						//console.log("capabilities: ", capabilities);
@@ -889,11 +930,32 @@
 	
 						// Patient
 						$.when(
-							GC.get_demographics(), 
-							GC.get_vitals(),
-							GC.get_parental_heights(),
-							GC.get_clinical_notes(),
-							GC.get_bone_age_results()
+							
+							// demographics
+							capabilities.demographics.read ?
+								GC.get_demographics() :
+								returnReejected({ data : "The 'Demographics' API must be supported by the SMART server!" }),
+								
+							// vitals
+							capabilities.vitalsignset.read ?
+								GC.get_vitals() :
+								returnReejected({ data : "The 'VitalSignSet' API must be supported by the SMART server!" }),
+								
+							// family history
+							capabilities.familyhistory.read ?
+								GC.get_parental_heights() :
+								returnResolved({ /* Same as an empty family history */ }),
+							
+							// annotations
+							capabilities.clinicalnotes.read /*&& capabilities.clinicalnotes.write*/ ?
+								GC.get_clinical_notes() :
+								returnResolved([ /* Same as an empty annotations list */ ]),
+							
+							// bone age
+							capabilities.labresults.read /*&& capabilities.labresults.write*/ ?
+								GC.get_bone_age_results() :
+								returnResolved([ /* Same as an empty boneage list */ ])
+							
 						).then(
 							function(demographics, vitals, familyHistory, annotations, boneAge) {
 								//console.log(boneAge);
@@ -1256,7 +1318,7 @@
 				renderMidParentalHeight();
 				$("#not-bio-parents-info")[!PATIENT.midParentalHeight ? "show" : "hide"]();
 			});
-
+			
 			// PATIENT inputs
 			// =================================================================
 

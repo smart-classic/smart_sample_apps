@@ -24,14 +24,14 @@ window.GC = window.GC || {};
 	// =========================================================================
 	var readOnlySettings = {
 		
-		fileRevision : 201,
+		fileRevision : 202,
 		
 		// See the toString method for the rendering template
 		version : {
 			major    : 0,
 			minor    : 9,
 			build    : 8,
-			revision : 0,
+			revision : 2,
 			state    : "beta", // dev|alpha|beta|rc|r
 			
 			asString : function() {
@@ -56,7 +56,7 @@ window.GC = window.GC || {};
 		patientFamilyHistoryEditable : false,
 		patientDataEditable : false,
 		
-		hidePatientHeader : false
+		hidePatientHeader : true
 	};
 	
 	// =========================================================================
