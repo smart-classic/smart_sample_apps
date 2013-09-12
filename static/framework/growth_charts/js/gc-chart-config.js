@@ -56,7 +56,7 @@ window.GC = window.GC || {};
 		patientFamilyHistoryEditable : false,
 		patientDataEditable : false,
 		
-		hidePatientHeader : true
+		hidePatientHeader : false
 	};
 	
 	// =========================================================================
