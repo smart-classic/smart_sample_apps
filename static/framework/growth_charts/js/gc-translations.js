@@ -193,6 +193,11 @@ window.GC = (function(NS) {
 		STR_179: { en : "Print View", es : "Imprimir View",     bg: "Принтирай" },
 		STR_180 : { en : "Please Wait...", es : "Espere por favor...", bg : "Моля изчакайте..." },
 		
+		STR_181 : { en : "his", es : "su" , bg : "неговият" },
+		STR_182 : { en : "her", es : "sus", bg : "нейният" }, 
+		STR_183 : { en : "has not enough data to calculate", es : "no tiene suficientes datos para calcular", bg : "няма достатъчно данни за изчисляване на" },
+		STR_184 : { en : "state", es : "estado", bg : "статус" },
+		
 		// Header --------------------------------------------------------------
 		STR_2999 : {
 			en : "Toggle Settings",
