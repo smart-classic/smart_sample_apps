@@ -1,6 +1,7 @@
 /*global Chart, GC, PointSet, Raphael, XDate, console,
  Raphael, $, jQuery, SMART, debugLog*/
 /*jslint eqeq: true, nomen: true, plusplus: true, newcap: true */
+"use strict";
 window.GC = window.GC || {};
 
 (function () {

@@ -6,7 +6,7 @@ XDate, setTimeout, getDataSet*/
 /*jslint undef: true, eqeq: true, nomen: true, plusplus: true, forin: true*/
 (function(NS, $) {
 	
-	//"use strict";
+	"use strict";
 	
 	var selectedIndex = -1,
 	

@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Class PointSet - wraps an array of objects and adds some useful methods to 
  * work with that array. An instance would be relatively the same as line of 

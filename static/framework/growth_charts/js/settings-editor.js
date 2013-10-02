@@ -44,7 +44,7 @@
 			
 			$.when(MODEL.save()).then(function() {
 				var path;
-				less.refresh();
+				GC.styleGenerator.refresh();
 				GC.App.refresh();
 				for (path in CHANGES) {
 					if (CHANGES.hasOwnProperty(path)) {
@@ -93,7 +93,7 @@
 				//GC.Preferences.prop("fileRevision", 0);
 				//GC.Preferences.sync();
 				GC.Preferences.save();
-				less.refresh();
+				GC.styleGenerator.refresh();
 				GC.App.refresh();
 				root.unmask(200);
 				$dialog.dialog("close");

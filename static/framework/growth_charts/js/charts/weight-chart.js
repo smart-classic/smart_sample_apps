@@ -1,6 +1,6 @@
 
 (function(NS, $) {
-	
+	"use strict";
 	var NAME = "Weight Chart";
 	
 	function WeightChart() {

@@ -1,5 +1,7 @@
 /* global Chart, GC, PointSet, Raphael, console, $,jQuery, debugLog, XDate, setTimeout, getDataSet*/
 /*jslint undef: true, eqeq: true, nomen: true, plusplus: true, forin: true*/
+"use strict";
+
 var GC = window.GC || {};
 if (!GC.Util) {
     GC.Util = {};
@@ -161,7 +163,7 @@ if ( !Array.prototype.indexOf ) {
 			case "zscore":
 				return format.zscore(input, options);
 			case "dite":
-				return format.dite(input, options);
+				return format.date(input, options);
 			case "time":
 				return format.time(input, options);
 			case "duration":
@@ -381,7 +383,7 @@ if ( !Array.prototype.indexOf ) {
 		return roundToPrecision(floatVal(input), cfg.precision) + cfg.z;
 	};
 	
-	format.dite = function(input, format) {
+	format.date = function(input, format) {
 		return new XDate(input).toString(format || GC.chartSettings.dateFormat);
 	};
 	
@@ -3136,7 +3138,8 @@ GC.TimeInterval = function(d1, d2) {
 GC.TimeInterval.prototype = new GC.Time();
 
 GC.TimeInterval.prototype.setStartDate = function( date ) {
-	var d = new XDate( String(date) );
+        //console.log(typeof date, date);
+	var d = new XDate( date );
 	if (d.valid()) {
 		this._startDate = d;
 		this._milliseconds = d.diffMilliseconds(this._endDate);
@@ -3145,7 +3148,8 @@ GC.TimeInterval.prototype.setStartDate = function( date ) {
 };
 
 GC.TimeInterval.prototype.setEndDate = function( date ) {
-	var d = new XDate( String(date) );
+	//console.log(typeof date, date);
+        var d = new XDate( date );
 	if (d.valid()) {
 		this._endDate = d;
 		this._milliseconds = this._startDate.diffMilliseconds(d);

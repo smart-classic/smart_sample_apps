@@ -1,6 +1,6 @@
 /*global Chart, GC, PointSet, Raphael, console, $, jQuery, debugLog */
 /*jslint eqeq: true, nomen: true, plusplus: true */
-
+"use strict";
 /**
  * Class Chart - the base class for all the charts
  * @author Vladimir Ignatov <vlad.ignatov@gmail.com>

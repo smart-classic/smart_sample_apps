@@ -1,5 +1,5 @@
 window.GC = (function(NS) {
-	
+	"use strict";
 	var locales = {};
 	
 	function createLocale(options) {

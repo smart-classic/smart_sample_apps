@@ -1,6 +1,6 @@
 /*global Chart, GC, PointSet, Raphael, console, $, jQuery, debugLog, months2weeks, XDate, setTimeout*/
 /*jslint eqeq: true, nomen: true, plusplus: true, forin: true*/
-
+"use strict";
 /**
  * The ChartPane class creates the main view in chart mode. It draws some 
  * common stuff like timelines, columns annotations, etc. It also contains all 
@@ -1342,7 +1342,7 @@ ChartPane.prototype = {
 	{
 		var today     = new XDate(),
 			label     = today.toString(GC.chartSettings.dateFormat),
-			birth     = new XDate(GC.App.getPatient().birthdate),
+			birth     = new XDate(GC.App.getPatient().DOB),
 			startWeek = GC.App.getStartWeek(),
 			endWeek   = GC.App.getEndWeek(),
 			diffWeeks = birth.diffWeeks(today),
@@ -1410,7 +1410,7 @@ ChartPane.prototype = {
 						'<div class="details">',
 							'<div class="header">',
 								'<div class="title">Annotation</div>',
-								new XDate(GC.App.getPatient().birthdate)
+								new XDate(GC.App.getPatient().DOB)
 									.addMonths(entry.agemos)
 									.toString(GC.chartSettings.dateFormat),
 							'</div>',

@@ -1,4 +1,5 @@
 (function() {
+	"use strict";
 	// Coefficients for Prediction of Adult Height
 	var data = {
 		

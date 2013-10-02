@@ -1,11 +1,13 @@
 (function() {
 	
+	"use strict";
+	
 	var drawn, 
 		leftPane, 
 		parentalDarwn,
 		PATIENT = opener.GC.currentPatient;
 	
-	debugLog = window.console ? console.log : $.noop;
+	window.debugLog = window.console ? console.log : $.noop;
 	
 	$.extend(true, GC.chartSettings, opener.GC.chartSettings);
 	GC.translateFentonDatasets(PATIENT);
@@ -178,6 +180,7 @@
 	}
 	
 	$(function() {
+		GC.styleGenerator.refresh();
 		
 		$("html").addClass(PATIENT.gender);
 		

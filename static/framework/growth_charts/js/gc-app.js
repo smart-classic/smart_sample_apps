@@ -5,7 +5,7 @@
 
 (function(NS, $) {
 
-	//"use strict";
+	"use strict";
 
 	NS.App = {};
 
@@ -791,7 +791,7 @@
 
 		function onModelsReady() {
 			return $.when(GC.Preferences.sync(), GC.Scratchpad.sync()).then(function() {
-				less.refresh();
+				GC.styleGenerator.refresh();
 			});
 		}
 
@@ -1382,7 +1382,7 @@
 				GC.Preferences.prop("selectionLine.stroke", presetValue["Primary selection"]);
 				GC.Preferences.prop("hoverSelectionLine.stroke", presetValue["Secondary selection"]);
 				GC.Preferences.prop("currentColorPreset", presetName);
-				less.refresh();
+				GC.styleGenerator.refresh();
 
 			}).val(GC.Preferences.prop("currentColorPreset"));
 
