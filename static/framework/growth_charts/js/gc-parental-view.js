@@ -912,17 +912,17 @@
                             "src", 
                             getWeightImageSrc(
                                 states[j], 
-                                states[j] == state, 
+                                states[j] === state, 
                                 ageYears, 
                                 gender
                             )
                         );
                     }
                     
-                    $(cell).toggleClass("active", states[j] == state);
+                    $(cell).toggleClass("active", states[j] === state);
                     
                     if (i == 2) {
-                        if (states[j] == state) {
+                        if (states[j] === state) {
                             $(cell).html(
                                 GC.Util.format(weight, { type : "weight", system: "metric" }) + 
                                 '<span style="font-weight: normal; font-size: 0.9em;"> (' +
