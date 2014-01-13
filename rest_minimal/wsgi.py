@@ -14,7 +14,7 @@ from smart_client.client import SMARTClient
 ###########################################################################
 # SMART Container OAuth Endpoint Configuration
 _ENDPOINT = {
-    "url": "http://sandbox-api-v06.smartplatforms.org",
+    "url": "http://sandbox-api-v06.smartplatforms.org", # aka "api_base"
     "name": "SMART Sandbox API v0.6",
     "app_id": "my-app@apps.smartplatforms.org",
     "consumer_key": "my-app@apps.smartplatforms.org",
@@ -73,7 +73,7 @@ def _request_token_for_record(client):
     flask.session['req_token'] = None
     logging.debug("Requesting token for %s on %s" % (
         flask.session['record_id'],
-        flask.session['api_base'])
+        _ENDPOINT.get('url'))
     )
     try:
         flask.session['req_token'] = client.fetch_request_token()
@@ -115,7 +115,6 @@ def index():
         the "MyApp" app inside the SMART Reference container at
         http://localhost:8000/smartapp/index.html
     """
-    api_base = flask.session['api_base'] = _ENDPOINT.get('url')
     current_record_id = flask.session.get('record_id')
     args_record_id = flask.request.args.get('record_id')
 
@@ -174,7 +173,7 @@ def index():
         record_name = '%s %s' % (res[0], res[1])
 
     return flask.render_template('index.html',
-                                 api_base=api_base,
+                                 api_base=_ENDPOINT.get('url'),
                                  record_id=record_id,
                                  record_name=record_name)
 
@@ -184,14 +183,13 @@ def authorize():
     """ Extract the oauth_verifier and exchange it for an access token. """
     new_oauth_token = flask.request.args.get('oauth_token')
     req_token = flask.session['req_token']
-    api_base = flask.session['api_base']
     record_id = flask.session['record_id']
     assert new_oauth_token == req_token.get('oauth_token')
-    assert api_base and record_id
+    assert record_id
 
     _exchange_token(flask.request.args.get('oauth_verifier'))
     return flask.redirect('/smartapp/index.html?api_base=%s&record_id=%s' %
-                          (api_base, record_id))
+                          (_ENDPOINT.get('url'), record_id))
 
 ###########################################################################
 
