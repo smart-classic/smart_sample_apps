@@ -294,7 +294,11 @@ class TestFamilyHistory(TestRDF, TestDataModelStructure):
 class TestFulfillments(TestRDF, TestDataModelStructure):
     '''Tests for the Fulfillments data model'''
     pass
-    
+ 
+class TestImagingStudy(TestRDF, TestDataModelStructure):
+    '''Tests for the Imaging Studies data model'''
+    pass
+ 
 class TestImmunizations(TestRDF, TestDataModelStructure):
     '''Tests for the Immunizations data model'''
     pass
@@ -305,6 +309,10 @@ class TestLabPanels(TestRDF, TestDataModelStructure):
     
 class TestLabResults(TestRDF, TestDataModelStructure):
     '''Tests for the Lab Results data model'''
+    pass
+    
+class TestMedicalImage(TestRDF, TestDataModelStructure):
+    '''Tests for the Medical Images data model'''
     pass
     
 class TestMedications(TestRDF, TestDataModelStructure):
@@ -504,9 +512,11 @@ tests = {'Allergy': TestAllergies,
          'Encounter': TestEncounters,
          'FamilyHistory': TestFamilyHistory,
          'Fulfillment': TestFulfillments,
+         'ImagingStudy': TestImagingStudy,
          'Immunization': TestImmunizations,
          'LabPanel': TestLabPanels,
          'LabResult': TestLabResults,
+         'MedicalImage': TestMedicalImage,
          'Medication': TestMedications,
          'Ontology': TestOntology,
          'Photograph': TestPhotographs,
