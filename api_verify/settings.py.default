@@ -5,7 +5,7 @@ APP_PATH = '/path/to/smart/api_verify'
 
 # SMART Container OAuth Endpoint Configuration
 ENDPOINT = {
-    "url": "http://sandbox-api-v06.smartplatforms.org/",
+    "url": "http://sandbox-api-v10.smartplatforms.org/",
     "name": "Localhost",
     "app_id": "api-verifier@apps.smartplatforms.org",
     "consumer_key": "api-verifier@apps.smartplatforms.org",
@@ -16,4 +16,4 @@ ENDPOINT = {
 ONTOLOGY_PATH = APP_PATH + '/smart_client/common/schema/smart.owl'
 
 # The base for the data model documentation
-DOC_BASE = 'http://docs-v06.smartplatforms.org/reference/data_model/#'
+DOC_BASE = 'http://docs-v10.smartplatforms.org/framework/models/#'
