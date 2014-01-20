@@ -75,7 +75,7 @@ def _request_token_for_record(record_id, client):
         sessions = flask.session['sessions']
         sessions[record_id] = {'req_token': req_token, 'acc_token': None}
         flask.session['sessions'] = sessions
-        flask.session['current_record_id'] = record_id
+        flask.session['auth_in_progress_record_id'] = record_id
 
     except Exception as e:
         logging.critical('Could not fetch_request_token: %s' % e)
@@ -127,21 +127,34 @@ def index():
         return flask.redirect(client.launch_url)
 
     # check if we already have a valid acc_token in the sessions object
-    sessions = flask.session.get('sessions', {})
-    session = sessions.get(record_id, {})
-    acc_token = session.get('acc_token', None)
-    client = _init_smart_client(record_id)
-    bad_token_p = False
+    reauth_required_p = False
 
-    if not session or not acc_token:
-        bad_token_p = True
+    sessions = flask.session.get('sessions', {})
+    if not sessions:
+        # no sessions object, create a fresh one
+        flask.session['sessions'] = {}
+        reauth_required_p = True
+
+    session = sessions.get(record_id, {})
+    if not session:
+        # no session for this record_id in the sessions object, create one
+        sessions[record_id] = {}
+        flask.session['sessions'] = sessions
+        reauth_required_p = True
+
+    client = _init_smart_client(record_id)
+
+    acc_token = session.get('acc_token', None)
+    if not acc_token:
+        # missing acc_token for this session
+        reauth_required_p = True
     else:
         client.update_token(acc_token)
 
         if not _test_acc_token(client):
-            bad_token_p = True
+            reauth_required_p = True
 
-    if bad_token_p:
+    if reauth_required_p:
         # start the OAuth dance: get a fresh req_token and session
         _request_token_for_record(record_id, client)
 
@@ -149,7 +162,7 @@ def index():
         logging.debug("Redirecting to authorize url")
         return flask.redirect(client.auth_redirect_url)
     else:
-        logging.debug('acc_token: %s', acc_token)
+        logging.debug('valid acc_token: %s', acc_token)
 
     # Now we're ready to get data! Get demographics and display the name.
     demo = client.get_demographics()
@@ -178,11 +191,11 @@ def index():
 def authorize():
     """ Extract the oauth_verifier and exchange it for an access token. """
     new_oauth_token = flask.request.args.get('oauth_token')
-    record_id = flask.session['current_record_id']
+    record_id = flask.session['auth_in_progress_record_id']
 
-    # confirm the passed in token is equal to the one saved for this record_id
+    # confirm the token is the same as the one saved for this record_id
     sessions = flask.session['sessions']
-    session = sessions.get(flask.session['current_record_id'])
+    session = sessions.get(flask.session['auth_in_progress_record_id'])
     req_token = session.get('req_token')
     assert new_oauth_token == req_token.get('oauth_token')
 
