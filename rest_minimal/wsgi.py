@@ -195,7 +195,7 @@ def authorize():
 
     # confirm the token is the same as the one saved for this record_id
     sessions = flask.session['sessions']
-    session = sessions.get(flask.session['auth_in_progress_record_id'])
+    session = sessions.get(record_id)
     req_token = session.get('req_token')
     assert new_oauth_token == req_token.get('oauth_token')
 
