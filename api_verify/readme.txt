@@ -1,4 +1,4 @@
-API Verifier 0.6
+API Verifier 1.0
 Nikolai Schwertner,  CHIP
 -------------------------
 
