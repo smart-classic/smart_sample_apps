@@ -39,13 +39,7 @@ from smart_client.client import SMARTClient
 logging.basicConfig(level=logging.DEBUG)  # cf. .INFO or commented out
 
 # SMART Container OAuth Endpoint Configuration
-_ENDPOINT = {
-    "url": "http://localhost:7000",
-    "name": "SMART Sandbox API v0.6",
-    "app_id": "mpr-monitor@apps.smartplatforms.org",
-    "consumer_key": "mpr-monitor@apps.smartplatforms.org",
-    "consumer_secret": "smartapp-secret"
-}
+_ENDPOINT = settings.ENDPOINT
 
 # Global variables
 ISO_8601_DATETIME = '%Y-%m-%d'
