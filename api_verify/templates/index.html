@@ -65,6 +65,7 @@ $def with (version)
         &lt;dcterms:title&gt;no known allergies&lt;/dcterms:title&gt;
       &lt;/sp:CodedValue&gt;
     &lt;/sp:allergyExclusionName&gt;
+    &lt;dcterms:date&gt;2008-05-05&lt;/dcterms:date&gt;
     &lt;sp:belongsTo rdf:resource=&quot;patient&quot;/&gt;
   &lt;/sp:AllergyExclusion&gt;
   &lt;sp:Code rdf:about=&quot;http://purl.bioontology.org/ontology/SNOMEDCT/160244002&quot;&gt;
@@ -96,7 +97,7 @@ $def with (version)
   "index" : "http://example.com/smartapp/index.html",
   "icon" :  "http://example.com/smartapp/icon.png",
   
-  "smart_version": "0.4",
+  "smart_version": "1.0",
   
   "requires": {
         "http://smartplatforms.org/terms#Demographics": {
@@ -117,17 +118,7 @@ $def with (version)
                 "GET"
             ]
         }
-   }, 
-  
-   "supportedBrowserEnvironments": [
-        "desktop", 
-        "tablet",
-        "mobile"
-   ],
-  
-   "optimalBrowserEnvironments": [
-        "desktop"
-   ]
+   }
 }</textarea></p>
             <p><input id="validate_manifest" type="button" value="Validate" /></p>
             <div id="spinner_manifest"><p><img src='/static/images/ajax-loader.gif' /></p></div>
