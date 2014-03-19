@@ -5,7 +5,7 @@ APP_PATH = "{{path_to_api_verifier}}"
 
 # SMART Container OAuth Endpoint Configuration
 ENDPOINT = {
-    "url": "{{apiverifier_base_url}}",
+    "url": "{{api_server_base_url}}",
     "name": "Localhost",
     "app_id": "api-verifier@apps.smartplatforms.org",
     "consumer_key": "api-verifier@apps.smartplatforms.org",
