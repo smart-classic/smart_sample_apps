@@ -8,7 +8,7 @@
   "mode" : "ui",
   "scope" : "record",
 
-  "index" :  "http://localhost:8000/smartapp/index.html",
-  "oauth_callback": "http://localhost:8000/smartapp/authorize",
-  "icon" :  "http://localhost:8000/smartapp/icon.png"
+  "index" :  "http://localhost:9002/smartapp/index.html",
+  "oauth_callback": "http://localhost:9002/smartapp/authorize",
+  "icon" :  "http://localhost:9002/smartapp/icon.png"
 }

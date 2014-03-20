@@ -363,8 +363,8 @@ def generate_queries (data, queries, type_url, visited_types = None):
                         q += " " * (INDENT * 2)
                         q += " ".join((OBJECT, normalize(pr, prefixes_query), '"' + p["values"][pr] + '"', ".\n"))
                 
-                # As long as the property is not 'belongsTo'
-                if p_name != str(NS['sp']['belongsTo']):
+                # As long as the property is not 'belongsTo' or 'images'
+                if p_name != str(NS['sp']['belongsTo']) and p_name != str(NS['sp']['images']):
                 
                     # Recurse into the property and augment the query with the appropriate tripples from
                     # the query generation
@@ -390,8 +390,8 @@ def generate_queries (data, queries, type_url, visited_types = None):
                    "description": "%s must have at least one %s property" % (type, predicate)
                 })
              
-            # If optional property (different from 'belongsTo')
-            elif p_name != str(NS['sp']['belongsTo']):
+            # If optional property (different from 'belongsTo' and 'images')
+            elif p_name != str(NS['sp']['belongsTo']) and p_name != str(NS['sp']['images']):
                 
                 # Recursively generate further queries
                 generate_queries (data, queries, p_type, visited_types)

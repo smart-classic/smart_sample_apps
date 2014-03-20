@@ -33,6 +33,15 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+#SMART Server Endpoint
+ENDPOINT = {
+    "url": "http://localhost:7000",
+    "name": "SMART Sandbox API v1.0",
+    "app_id": "mpr-monitor@apps.smartplatforms.org",
+    "consumer_key": "mpr-monitor@apps.smartplatforms.org",
+    "consumer_secret": "smartapp-secret"
+}
+
 # Used to assign relative paths
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 

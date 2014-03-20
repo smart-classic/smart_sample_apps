@@ -8,6 +8,6 @@
   "index": "http://localhost:8000/",
   "oauth_callback": "http://localhost:8000/authorize",
   "icon": "http://localhost:8000/static/icon.png",
-  "smart_version": "0.6",
+  "smart_version": "1.0",
   "version": ".1"
 }

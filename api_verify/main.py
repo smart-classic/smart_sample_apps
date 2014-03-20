@@ -177,7 +177,7 @@ class index:
         # We are good to go
         template_html = web.template.frender(APP_PATH +
                                              '/templates/index.html')
-        html = template_html("0.6")
+        html = template_html("1.0")
         web.header('Content-Type', 'text/html')
         return html
 
