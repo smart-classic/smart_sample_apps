@@ -1,0 +1,170 @@
+﻿<div>
+    <div id="panel" style="font-size: 12px !important">
+        <div class="span4">
+            <div style="font-size: 16px; margin-bottom: 6px;">
+                <strong>Monograph Preferences</strong>
+            </div>
+            <div>
+                <div class="row_prf">
+                    <label class="preflabel">Service Port</label>
+                    <div style="float: left;">
+                        <input ng-model="sharedVars.servicePort" style="width: 40px;" /></div>
+                    <div style="clear: both"></div>
+                </div>
+                <div class="row_prf">
+                    <label class="preflabel" for="example_2">Verbose Display</label>
+                    <button type="button" class="btn  btn-primary" bs-button ng-model="sharedVars.verboseDisplay" style="width: 80px; height: 24px; padding-top: 2px;">{{buttonLabel(sharedVars.verboseDisplay)}}</button>
+                    <div style="clear: both"></div>
+                </div>
+                <div class="row_prf">
+                    <label class="preflabel" for="example_3">SMART Cart</label>
+                    <button type="button" class="btn  btn-primary" bs-button
+                        ng-model="sharedVars.enableCart"
+                        ng-disabled="cartViewModel.getCartDisabled()"
+                        style="width: 80px; height: 24px; padding-top: 2px;">
+                        {{buttonLabel(sharedVars.enableCart)}}</button>
+                    <div style="clear: both"></div>
+                </div>
+
+                <div style="width: 400px; margin-top: 4px;">
+                    <div style="float: left; border: solid 0px red; width: 100px;">De-Identify:</div>
+                    <div style="float: left; padding-top: 4px">
+                        <ui-discrete-slider ng-model="patientDemographicsViewModel.deIdOptions" style="width: 140px;"></ui-discrete-slider>
+                    </div>
+                    <div style="float: left; margin-left: 12px">
+                        <div>{{patientDemographicsViewModel.deIdOptions.selected.name}}</div>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="span5">
+            <div>
+                <div style="border-bottom: solid 1px #cccccc">
+                    <div style="float: left; width: 240px;">
+                        <label class="preflabel" for="example_1">SMART Semantics</label>
+                        <button type="button" class="btn " disabled="disabled" style="width: 80px; height: 24px; padding-top: 2px;">On</button>
+
+                    </div>
+                    <div style="float: left; padding-left: 6px">
+                        <button type="button" class="btn  " disabled="disabled" style="width: 80px; height: 24px; padding-top: 2px;">Set...</button>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+                <div style="margin-top: 8px;">
+                    <div style="float: left; width: 240px">
+                        <label class="preflabel" for="semanticbuttonid">Problem-Med Links</label>
+                        <button type="button" class="btn  btn-primary"
+                            ng-model="problemMedSemanticViewModel.probMedSemantics"
+                            bs-button style="width: 80px; height: 24px; padding-top: 2px;">
+                            {{buttonLabel(problemMedSemanticViewModel.probMedSemantics)}}</button>
+                    </div>
+                    <div style="float: left; padding-top: 4px; padding-left: 4px">RxNorm-NDF-RT Sample
+                        <img src="img/information.png" style="vertical-align: baseline" /></div>
+                    <div style="clear: both"></div>
+                </div>
+                <div>
+                    <div style="float: left; width: 240px">
+                        <label class="preflabel" for="example_2">Decision Support</label>
+                        <button type="button" class="btn  btn-primary" bs-button style="width: 80px; height: 24px; padding-top: 2px;" ng-model="labResultsViewModel.showDecisionSupport">{{buttonLabel(labResultsViewModel.showDecisionSupport)}}</button>
+                    </div>
+                    <div style="float: left; padding-top: 4px; padding-left: 4px">
+                        Partners ECRS Placeholder
+                        <img src="img/information.png" style="vertical-align: baseline" />
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+                <div>
+                    <div style="float: left; width: 240px">
+                        <label class="preflabel" for="example_3">Service X</label>
+                        <button type="button" class="btn " disabled="disabled" style="width: 80px; height: 24px; padding-top: 2px;">Off</button>
+                    </div>
+                    <div style="float: left; padding-top: 4px; padding-left: 4px">
+                        Service Provider Y
+                        <img src="img/information.png" style="vertical-align: baseline" />
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="span3">
+            <div style="border: solid 0px red !important">
+                <div style="font-size: 16px; margin-bottom: 6px">
+                    <strong>Semantic UI Preferences</strong>
+                </div>
+                <div style="margin-top: 8px">
+
+                    <div>
+                        <div style="width: 400px; margin-bottom: 12px">
+                            <div style="float: left; border: solid 0px red; width: 100px;">UI Action:</div>
+                            <div style="float: left; padding-top: 4px">
+                                <ui-discrete-slider ng-model="problemMedSemanticViewModel.mouseAction" style="width: 140px"></ui-discrete-slider>
+                            </div>
+                            <div style="float: left; margin-left: 12px">{{problemMedSemanticViewModel.mouseAction.selected.name}}</div>
+                            <div style="clear: both"></div>
+
+                        </div>
+                        <div style="width: 400px; margin-bottom: 12px">
+                            <div style="float: left; border: solid 0px red; width: 100px;">UI Display:</div>
+                            <div style="float: left; padding-top: 4px">
+                                <ui-discrete-slider ng-model="problemMedSemanticViewModel.semanticHighlight" style="width: 140px"></ui-discrete-slider>
+                            </div>
+                            <div style="float: left; margin-left: 12px">{{problemMedSemanticViewModel.semanticHighlight.selected.name}}</div>
+                            <div style="clear: both"></div>
+
+                        </div>
+                        <div style="width: 400px; margin-bottom: 12px">
+                            <div style="float: left; border: solid 0px red; width: 100px;">Dim:</div>
+                            <div style="float: left; padding-top: 4px">
+                                <ui-percent-slider ng-model="problemMedSemanticViewModel.dimAlpha" style="width: 140px"></ui-percent-slider>
+                            </div>
+                            <div style="float: left; padding-top: 4px; margin-left: 12px">
+                                <div ng-style="problemMedSemanticViewModel.getDimStyle()"></div>
+                            </div>
+                            <div style="clear: both"></div>
+
+                        </div>
+                        <div style="width: 400px;">
+                            <div style="float: left; border: solid 0px red; width: 100px">Highlight:</div>
+                            <div style="float: left; padding-top: 4px">
+                                <ui-percent-slider ng-model="problemMedSemanticViewModel.colorPerc" style="width: 140px"></ui-percent-slider>
+                            </div>
+                            <div style="float: left; padding-top: 4px; margin-left: 12px">
+                                <div ng-style="problemMedSemanticViewModel.getBgColorStyle()"></div>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+</div>
+
+<div class="span12" >
+    <div class="span3" id="patientName">
+        <div ng-include src="'views/partials/patient_template.html'" />
+    </div>
+    <div class="span2">
+        <div ng-include src="'views/partials/patient_disease_template.html'" />
+    </div>
+    <div class="span2">
+        <div class="middle_inner_demo_line slide">
+            <my-preferences>
+                <div class="btn-slide">Preferences</div>
+            </my-preferences>
+        </div>
+    </div>
+    <div class="span5 toplinks" style="text-align: right">
+        <a href="#"  bs-modal="'views/dialogs/patient_summary_dialog.html'">Patient Summary</a> &middot;
+        <a href="#"  bs-modal="'views/dialogs/app_explainer_dialog.html'">App Explainer</a> &middot;
+        <a href="#"  bs-modal="'views/dialogs/time_line_dialog.html'">Time Line</a>
+    </div>
+    <div style="clear: both"></div>
+</div>

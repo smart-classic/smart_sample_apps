@@ -1,0 +1,22 @@
+﻿<ul class="dropdown-menu" style="font-weight:normal; width:460px; left:0;" ng-class="cartViewModel.cartMode">
+    <li style="background-color:transparent">
+        <button type="button" class="btn  btn-primary noclose" style="width:90px;height:24px;padding-top:2px;" ng-click="labResultsViewModel.setStatus(model, 'discontinue', cartViewModel.cartMode)">Discontinue</button>
+        <button type="button" class="btn  btn-primary noclose" style="width:80px;height:24px;padding-top:2px;" ng-click="labResultsViewModel.setStatus(model, 'resume', cartViewModel.cartMode)">Resume</button>
+        <button type="button" class="btn  btn-primary noclose" style="width:80px;height:24px;padding-top:2px;" ng-click="labResultsViewModel.setStatus(model, 'adjust', cartViewModel.cartMode)">Adjust</button>
+        <button type="button" class="btn  btn-primary " style="width:80px;height:24px;padding-top:2px;" ng-click="labResultsViewModel.setStatus(model, 'clear')">Clear</button>
+        <button type="button" disabled="disabled" class="btn  btn-primary" style="width:80px;height:24px;padding-top:2px;" ng-click="labResultsViewModel.setStatus(model, 'New', cartViewModel.cartMode)">New</button>
+          <img src="img/cross.png" style="float:right;margin:2px" />
+        <div style="clear:both"></div>
+        <div style="margin-top:12px;padding:4px">
+            <textarea rows="4" ng-model="model.note" style="width:410px" placeholder="Optional note area"/>
+        </div>
+        <div style="text-align:center;"> 
+            <button type="button" class="btn  btn-primary noclose" bs-button 
+                        ng-click="cartViewModel.setMode()"
+                        style="widthx: 80px; height: 24px; padding-top: 2px;">
+                        {{cartViewModel.buttonLabel()}}</button>
+        </div>
+
+    </li>
+
+</ul>

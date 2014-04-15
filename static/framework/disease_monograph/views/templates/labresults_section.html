@@ -1,0 +1,21 @@
+﻿<header class="section_header" >Lab Results</header>
+<div section-editor template="labresults_editor.html" countermodel="labResultsViewModel.checkedOptions()"></div>
+<ul sort-section="labResultsViewModel.labPanels">
+    <li  ng-repeat="panel in labResultsViewModel.labPanels" class="subsection" >
+        <header class="subsection_header" ng-ds-fade="panel.show">{{panel.panelName}}</header>
+        <table class="sortable" style='width:100%;border-collapse:collapse' ng-ds-fade="panel.show">
+            <tr class="sortabletr" sort-lab ng-repeat="labresult in panel.tests" ng-show="labresult.hasData ||  sharedVars.verboseDisplay">
+                <td style="width:50%;padding-left:4px">
+                    <span style="font-weight:bold">{{labresult.testName}}</span> <span class="smaller">{{labresult.testUnits}}<br/>{{labresult.range}}</span>
+                </td>
+                <td style="width:25%;padding-left:4px">
+                    <span ng-class="{highlight: labresult.data[0].flag}" class="test_value">{{labresult.data[0].value}}</span><br/><span class="smaller">{{labresult.data[0].shortdate}}</span>
+                </td>
+                <td style="width:25%;padding-left:4px">
+                    <span ng-class="{highlight: labresult.data[1].flag}" class="test_value">{{labresult.data[1].value}}</span><br/><span class="smaller">{{labresult.data[1].shortdate}}</span>
+                </td>
+            </tr>
+        </table>
+
+    </li>
+</ul>

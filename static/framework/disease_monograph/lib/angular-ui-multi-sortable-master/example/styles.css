@@ -1,0 +1,25 @@
+.column-wrapper {
+  width: 200px;
+  float: left;
+  margin-right: 20px;
+}
+.column-title {
+  background-color: #aaa;
+  font-size: 1.3em;
+}
+.column {
+  height: 300px;
+  background: #ededed;
+}
+
+.item {
+  box-sizing: border-box;
+  padding: 2px;
+  background: #8c0;
+  margin-bottom: 1px;
+}
+
+.ui-sortable-helper {
+  background: #8cf;
+}
+

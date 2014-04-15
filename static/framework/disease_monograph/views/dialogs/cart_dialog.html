@@ -1,0 +1,31 @@
+﻿<div style="border-radius:inherit">
+    <div class="modal-header">
+         <div style="float: left; width: 50%; font-size: 18pt; font-weight: bold; color: #e46c0a">Items in Cart</div>
+        <div style="float: left; width: 50%">
+            <div style="text-align: center; background-image: url(img/cart.png); width: 60px; height: 50px; float: right; font-size: 12pt; font-weight: bold; color: red;">{{cartViewModel.getCartNum()}}</div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+    <div class="modal-body" style="background-color:#dce6f2;min-height:400px;">
+         <div style="color: #08c; font-size:12pt; font-weight:bold">Problems</div>
+        <div ng-show="problemViewModel.getCartItems().length==0">No problems in cart</div>
+        <div ng-repeat="problem in problemViewModel.getCartItems()">
+            <div style="float: left; width: 50%">{{problem.status}}</div>
+            <div style="float: left; width: 50%" ng-class="problem.status">{{problem.problemName}}</div>
+            <div style="clear: both"></div>
+
+        </div>
+
+        <div style="color: #08c; font-size:12pt; font-weight:bold; margin-top:12px;">Medicines</div>
+        <div ng-show="medicineViewModel.getCartItems().length==0">No medicines in cart</div>
+        <div ng-repeat="med in medicineViewModel.getCartItems()">
+            <div style="float: left; width: 50%">{{med.status}}</div>
+            <div style="float: left; width: 50%" ng-class="med.status">{{med.rxName}}</div>
+            <div style="clear: both"></div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="dismiss()">Close</button>
+    </div>
+</div>

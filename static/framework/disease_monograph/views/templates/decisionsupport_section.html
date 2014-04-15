@@ -1,0 +1,31 @@
+﻿<div ng-ds-fade="labResultsViewModel.showDecisionSupport">
+    <header class="section_header">Decision Support</header>
+    <ul class="section-content">
+        <li class="subpanel" ng-repeat="panel in labResultsViewModel.reminders" >
+            <header class="subsection_header" >{{panel.panelName}}</header>
+           <ul class="unstyled">
+            <li ng-repeat="message in panel.dsMessages" >
+                <div ng-switch on="message.messageType" >
+                    <div ng-switch-when="periodicTestDue"> <div>
+                    <span class='bold'>{{message.action}}</span><span class="highlight"> &middot; {{message.reason}}</span>
+                </div>
+                <div>
+                    <span>{{message.note}}</span>
+                </div></div>
+                    <div ng-switch-when="abnormalValue"><div>
+                    <span class='bold'>{{message.reason}}</span>
+                </div>
+                <div>
+                    <span>{{message.note}}</span>
+                </div></div>
+                    
+                  </div>
+               
+            </li>
+        </ul>
+
+        </li>
+    </ul>
+</div>
+
+ 

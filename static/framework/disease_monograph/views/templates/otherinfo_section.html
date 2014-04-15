@@ -1,0 +1,13 @@
+﻿<header class="section_header">Other Info</header>
+<div section-editor template="otherinfo_editor.html" countermodel="otherInfoViewModel.checkedOptions()"></div>
+<div class="section-content">
+    <table style='width:100%;border-collapse:collapse'>
+        <tr ng-repeat="other in otherInfoViewModel.otherinfo" ng-ds-fade="other.show">
+            <td style="font-weight:bold">{{other.name}}</td>
+            <td>{{other.value}} {{other.units}}</td>
+            <td>{{other.date}}</td>
+
+        </tr>
+    </table>
+</div>
+

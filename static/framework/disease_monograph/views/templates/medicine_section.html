@@ -1,0 +1,14 @@
+﻿<header class="section_header">Medications</header>
+<div section-editor template="medicine_editor.html"></div>
+<div class="section-content">
+    <ul class="unstyled">
+        <li ng-show="medicineViewModel.medicines.length==0">No known medicines</li>
+        <li ng-repeat="med in medicineViewModel.medicines"  ng-mousedown="problemMedSemanticViewModel.medMouseDown(med)" ng-mouseup="problemMedSemanticViewModel.medMouseUp(med)" ng-mouseover="problemMedSemanticViewModel.medMouseOver(med)" ng-mouseleave="problemMedSemanticViewModel.medMouseLeave(med)"  ng-style="med.style" class="list">
+            <div ng-class="med.mode">
+                <span cart-editor template="medicine_cart_editor.html" ng-model="med" enabled="sharedVars.enableCart"></span>
+                <span ng-class="med.status" ng-click="medicineViewModel.setSelected(med, sharedVars.enableCart)" style="cursor:pointer"> <span ng-show="medicineViewModel.sort=='chrono'">{{med.startDate}} </span>
+                    {{med.rxName}} {{ med.strengthAndDoseForm}}<span style="color: gray"> &middot; {{med.ins}}</span><span ng-show="med.isDirty"> ({{med.status}})</span></span>
+            </div>
+        </li>
+    </ul>
+</div>

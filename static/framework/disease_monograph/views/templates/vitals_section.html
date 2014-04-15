@@ -1,0 +1,12 @@
+﻿<header class="section_header">Vitals</header>
+<div section-editor template="vitals_editor.html" countermodel="vitalsViewModel.checkedOptions()"></div>
+<div class="section-contentx">
+    <table style='width:100%;border-collapse:collapse'>
+        <tr ng-repeat="vital in vitalsViewModel.vitals" ng-ds-fade="vital.show">
+            <td style="font-weight:bold">{{vital.name.toProperCase()}}</td>
+            <td>{{vital.data[0].value}} {{vital.units}}</td>
+            <td>{{vital.data[0].date}}</td>
+        </tr>
+    </table>
+</div>
+

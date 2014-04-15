@@ -1,0 +1,32 @@
+<!-- Need to move some inline styles to style sheet -->
+<div style="position: relative; width: 100%; height: 100%">
+    <div style="overflow-y: scroll; overflow-y: hidden; position: absolute; top: 0; left: 0; right: 0; height: 37px; margin: 0; padding: 0;">
+        <div id="app_title_line">
+            <div class="span12">
+                <div style="padding: 8px">
+                    <img class='smart_bug' src='img/smart_bug.png' />SMART Disease Monograph {{sharedVars.version}}
+                </div>
+            </div>
+            <div style="clear: both"></div>
+        </div>
+    </div>
+    <div style="overflow-y: scroll; overflow-x: hidden; position: absolute; top: 37px; left: 0; right: 0; bottom: 0; margin: 0; padding: 0;">
+        <div ng-include src="'views/partials/_preferences.html'"></div>
+        <div ng-include src="'views/partials/_monographheader.html'"></div>
+        
+        <div style="box-sizing: border-box; margin: auto;">
+            <!--<button ng-click="setCol()">Change</button>-->
+           <div ng-include src="'views/partials/_section_layout.html'"></div>
+            <div style="clear:both"></div>
+            </div>
+       <!-- <pre ng-bind="layoutViewModel.columns | json"></pre>-->
+        </div>
+    </div>
+
+<script>
+    $(function () {
+    
+    });
+
+</script>
+
