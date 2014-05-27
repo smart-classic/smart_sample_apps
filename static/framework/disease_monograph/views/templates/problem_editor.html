@@ -1,0 +1,11 @@
+﻿<ul class="dropdown-menu" style="font-weight:normal;right:0;left:auto;">
+    <li data-ng-repeat="category in problemViewModel.categories" >
+        <label><input type="checkbox"  ng-model="category.show"/> {{category.label}}</label>
+    </li>
+     <li class="divider"></li>
+    <li>
+        <label><input type="radio" name="problemSort" ng-model="problemViewModel.sort" value="alpha" ng-change="problemViewModel.setSort()" style="margin-top:-4px"/>Alpha</label>
+       
+    </li>
+    <li> <label><input type="radio" name="problemSort" ng-model="problemViewModel.sort" value="chrono" ng-change="problemViewModel.setSort()" style="margin-top:-4px"/>Chrono</label></li>
+</ul>

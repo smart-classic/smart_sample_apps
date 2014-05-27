@@ -1,0 +1,10 @@
+﻿<div class="span12" style="padding-right:8px">
+    <div style="text-align: right;cursor: pointer">
+        <div bs-modal="'views/dialogs/cart_dialog.html'" ng-ds-fade="sharedVars.enableCart" 
+            style="text-align: center;  background-image: url(img/cart.png); width: 60px; height: 50px; float: right; font-size: 12pt; font-weight: bold; color: red;">
+            <span class="normal" style="font-weight:bold">{{cartViewModel.getCartNum('normal')}}</span> <span class="hypothetical">{{cartViewModel.getCartNum('hypothetical')}}</span>
+        </div>
+        <div style="float: right; margin-top: 10px; margin-right: 8px" ng-include src="'views/partials/disease_selector_template.html'"></div>
+    </div>
+    <div style="clear: both"></div>
+</div>

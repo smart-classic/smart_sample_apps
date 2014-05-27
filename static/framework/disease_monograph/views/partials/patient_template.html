@@ -1,0 +1,10 @@
+﻿<div style='margin-top:4px' ng-class="patientDemographicsViewModel.showPatient">
+    <div class='demo_line'>
+        <span class='name'> <span class='family_name'>{{patientDemographicsViewModel.patientDemographics.familyName}}</span>, <span class='given_name'>{{patientDemographicsViewModel.patientDemographics.givenName}}</span> </span>
+    </div>
+    <div class='demo_line' style='font-weight: normal !important; font-size: 14px;'>
+        <span class='demo_line_label'>DOB</span> <span class='birthday'>{{patientDemographicsViewModel.patientDemographics.bday}}</span>&nbsp;&nbsp;
+        <span class='demo_line_label'>AGE</span> <span class='age'>{{patientDemographicsViewModel.patientDemographics.age}}</span>&nbsp;&nbsp;
+        <span class='demo_line_label'>SEX</span> <span class='gender'>{{patientDemographicsViewModel.patientDemographics.gender[0]}}</span>&nbsp;&nbsp;
+    </div>
+</div>

@@ -1,0 +1,23 @@
+﻿
+
+<div ui-multi-sortable ng-model="layoutViewModel.columns" model-subset="column1" class="span3 alpha col">
+    <div class="sortable section" ng-repeat="item in layoutViewModel.columns.column1">
+        <module template="item.template" />
+    </div>
+</div> 
+
+<div ui-multi-sortable ng-model="layoutViewModel.columns" model-subset="column2" class="span3 col">
+    <div class="sortable section" ng-repeat="item in layoutViewModel.columns.column2">
+        <module template="item.template" />
+
+    </div>
+</div> 
+
+<div ui-multi-sortable ng-model="layoutViewModel.columns" model-subset="column3" class="span6 col">
+    <div class="sortable section" ng-repeat="item in layoutViewModel.columns.column3">
+        <module template="item.template" />
+
+    </div>
+</div> 
+
+<!--<pre ng-bind="layoutViewModel.columns | json"></pre>-->

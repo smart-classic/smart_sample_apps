@@ -1,0 +1,11 @@
+﻿<ul class="dropdown-menu" style="font-weight:normal; min-width:220px;right:0;left:auto;">
+    <li>
+        <label><input type="checkbox"  ng-model="medicineViewModel.medNames" ng-change="medicineViewModel.setMedNames()"/> Use RxTerms synonyms</label>
+    </li>
+    <li class="divider"></li>
+    <li>
+        <label><input type="radio" name="medSort" ng-model="medicineViewModel.sort" value="alpha" ng-change="medicineViewModel.setSort()" style="margin-top:-4px"/>Alpha</label>
+       
+    </li>
+    <li> <label><input type="radio" name="medSort" ng-model="medicineViewModel.sort" value="chrono" ng-change="medicineViewModel.setSort()" style="margin-top:-4px"/>Chrono</label></li>
+</ul>

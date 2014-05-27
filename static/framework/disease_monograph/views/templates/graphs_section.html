@@ -1,0 +1,8 @@
+﻿<header class="section_header">Graphs</header>
+<div section-editor template="graphs_editor.html" countermodel="graphViewModel.checkedOptions()"></div>
+<ul sort-section="graphViewModel.graphs" >
+    <li ng-repeat="graph in graphViewModel.graphs" class="subsection" ng-ds-fade="graph.show">
+        <ng-graph data="graph"  />
+    </li>
+</ul>
+

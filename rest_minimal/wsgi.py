@@ -14,8 +14,8 @@ from smart_client.client import SMARTClient
 ###########################################################################
 # SMART Container OAuth Endpoint Configuration
 _ENDPOINT = {
-    "url": "http://sandbox-api-v06.smartplatforms.org",  # aka "api_base"
-    "name": "SMART Sandbox API v0.6",
+    "url": "http://sandbox-api.smartplatforms.org",  # aka "api_base"
+    "name": "SMART Sandbox API v0.6.2",
     "app_id": "my-app@apps.smartplatforms.org",
     "consumer_key": "my-app@apps.smartplatforms.org",
     "consumer_secret": "smartapp-secret"

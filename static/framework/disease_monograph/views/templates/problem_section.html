@@ -1,0 +1,18 @@
+﻿<header class="section_header">Problems</header>
+<div section-editor template="problem_editor.html" countermodel="problemViewModel.checkedOptions()"></div>
+<ul sort-section="problemViewModel.categories" class="unstyled">
+    <li ng-repeat="category in problemViewModel.categories" class="subsection">
+        <header class="subsection_header" ng-ds-fade="category.show">{{category.label}}</header>
+        <ul class="unstyled" ng-ds-fade="category.show">
+            <li ng-show="problemViewModel.hasFilteredProblems(category.filter)">No known problems</li>
+            <li ng-repeat="problem in problemViewModel.problems | filter:{category:category.filter}" ng-mousedown="problemMedSemanticViewModel.problemMouseDown(this.problem)" ng-mouseup="problemMedSemanticViewModel.problemMouseUp(this.problem)" ng-mouseover="problemMedSemanticViewModel.problemMouseOver(this.problem)" ng-mouseleave="problemMedSemanticViewModel.problemMouseLeave(this.problem)" ng-style="problem.style" class="list">
+                <div ng-class="problem.mode">
+                    <span cart-editor template="problem_cart_editor.html" ng-model="problem" enabled="sharedVars.enableCart"></span>
+                    <span ng-class="problem.status" ng-click="problemViewModel.setSelected(problem, sharedVars.enableCart)" style="cursor: pointer"><span ng-show="problemViewModel.sort=='chrono'">{{problem.startDate}} </span>{{problem.name}}<span ng-show="problem.isDirty"> ({{problem.status}})</span></span>
+                </div>
+            </li>
+        </ul>
+    </li>
+</ul>
+<div style="clear:both"></div>
+
