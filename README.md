@@ -1,14 +1,6 @@
-SMArt Sample Apps
-Joshua dot Mandel at childrens.harvard.edu
+SMART Sample Apps
 
-This repository contains a collection of sample SMArt Connect Apps:
- 
- * API Playground 
- * Got Statins
- * Med List
- * Problem List
- * Blue Button Import (+ Med Coder to clean up imported data)
-
+This repository contains a collection of sample SMArt Connect Apps.
 The entire collection of sample apps is packaged here as a django app,
 because that's how we deploy it on our development servers.  All the
 javascript/html code resides in /static.
