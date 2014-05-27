@@ -1,6 +1,6 @@
 SMART Sample Apps
 
-This repository contains a collection of sample SMArt Connect Apps.
+This repository contains a collection of sample SMART Connect Apps and SMART REST Apps.
 The entire collection of sample apps is packaged here as a django app,
 because that's how we deploy it on our development servers.  All the
 javascript/html code resides in /static.
