@@ -1,8 +1,8 @@
 """
 The minimal Flask-based SMART REST app for SMART version 1.0 and later.
 
-Arjun Sanyal <arjun dot sanyal at childrens harvard edu>
-Pascal Pfiffner <pascal dot pfiffner at childrens.harvard.edu>
+Arjun Sanyal
+Pascal Pfiffner
 """
 
 import flask
