@@ -11,4 +11,4 @@ static/framework/smart, and individual application code resides in
 subdirectories of static/framework
 (e.g. static/framework/problem_list).For installation instructions, please see the README at:
 
-  https://github.com/chb/smart_server/
+  https://github.com/smart-platforms/smart_server/

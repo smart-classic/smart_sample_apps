@@ -15,7 +15,7 @@ To get started on ubuntu, you can
   sudo easy_install -U "rdflib>=3.0.0" rdfextras
 
 Now, obtain the app code:
-  git clone https://github.com/chb/smart_sample_apps
+  git clone https://github.com/smart-platforms/smart_sample_apps
   cd smart_sample_apps/direct_apps
 
 Note (for Windows users): You will need to set up manually the

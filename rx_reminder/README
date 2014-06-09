@@ -21,7 +21,7 @@ To get started on Windows, you can:
   * c:\pythonxx\Scripts\easy_install.exe web.py pyparsing rdflib rdfextras
 
 Now. obtain and launch reminder.py:
-  git clone https://github.com/chb/smart_rx_reminder.git
+  git clone https://github.com/smart-platforms/smart_rx_reminder.git
   cd smart_rx_reminder
   python reminder.py 8000
 
