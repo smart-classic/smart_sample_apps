@@ -6,7 +6,7 @@
 	url = https://github.com/jupiterjs/jquerymx
 [submodule "smart_client"]
 	path = smart_client
-	url = https://github.com/chb/smart_client_python.git
+	url = https://github.com/smart-platforms/smart_client_python.git
 [submodule "static/framework/funcunit"]
 	path = static/framework/funcunit
 	url = https://github.com/bitovi/funcunit.git
