@@ -1,12 +1,12 @@
 [submodule "static/framework/steal"]
 	path = static/framework/steal
-	url = https://github.com/jupiterjs/steal.git
+	url = https://github.com/smart-platforms/steal.git
 [submodule "static/framework/jquery"]
 	path = static/framework/jquery
-	url = https://github.com/jupiterjs/jquerymx
+	url = https://github.com/smart-platforms/jquerymx.git
 [submodule "smart_client"]
 	path = smart_client
 	url = https://github.com/smart-platforms/smart_client_python.git
 [submodule "static/framework/funcunit"]
 	path = static/framework/funcunit
-	url = https://github.com/bitovi/funcunit.git
+	url = https://github.com/smart-platforms/funcunit.git
