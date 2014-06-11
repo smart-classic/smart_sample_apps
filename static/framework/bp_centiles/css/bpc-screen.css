@@ -42,7 +42,7 @@ body {
 #result-thresholds table td {font-size: 50%; padding: 5px}
 #calculator-inputs table th {font-size: .9em;}
 #result-percentiles table th, #result-thresholds table th {font-size: 30%;}
-input[type='number'] {border: 1px solid #555;}
+input[type='number'] {border: 1px solid #555; width: 40px;}
 #gender_select {width: 140px}
 .inputLabel {text-align: right}
 #calculator-inputs {float:left}
