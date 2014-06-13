@@ -4,7 +4,7 @@
 Arjun Sanyal & Pascal Pfiffner, Harvard Medical School
 
 For complete documentation on SMART REST including a tutorial using this
-app see the complete SMART documentation at <http://docs.smartplatforms.org>
+app see the complete SMART documentation at <http://docs-v06.smartplatforms.org>
 
 ---
 
