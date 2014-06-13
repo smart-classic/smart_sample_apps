@@ -16,4 +16,4 @@ ENDPOINT = {
 ONTOLOGY_PATH = APP_PATH + "/smart_client/common/schema/smart.owl"
 
 # The base for the data model documentation
-DOC_BASE = "http://docs.smartplatforms.org/framework/models/#"
+DOC_BASE = "http://docs-v06.smartplatforms.org/framework/models/#"
