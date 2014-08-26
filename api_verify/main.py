@@ -146,7 +146,7 @@ class index:
         # We should have the api_base and record_id in the query string
         # e.g we're not going to redirect to the record selection UI
         global _session
-        _session['api_base'] = api_base = _ENDPOINT.get('url')
+        _session['api_base'] = api_base = _ENDPOINT.get('url').rstrip("/")
         _session['record_id'] = record_id = web.input().get('record_id')
 
         logging.debug('api_base: ' + str(api_base) +

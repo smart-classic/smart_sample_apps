@@ -8,7 +8,7 @@
 import copy
 
 # Import the app settings
-from settings import APP_PATH, DOC_BASE, ONTOLOGY_PATH
+from settings import DOC_BASE, ONTOLOGY_PATH
 
 # Imports from the SMART client
 from smart_client.common.rdf_tools import rdf_ontology
