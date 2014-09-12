@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demographics</title>
+    <style>
+    #TheAnswer{
+         font-weight: bold; font-size: 16px; font-family: Arial, sans-serif; text-decoration: none; color: black; padding:6px;
+	 -moz-border-radius: 5px;
+	 -webkit-border-radius: 5px;
+	 border-radius: 5px;
+	 -khtml-border-radius: 5px;
+    }
+    .vtext {
+        color:#000;font-size:11px;font-family:Arial;
+    }
+	#pat-photo {
+		-moz-box-shadow: inset 0 0 10px #000000;
+	    -webkit-box-shadow: inset 0 0 10px #000000;
+	    box-shadow: inset 0 0 10px #000000;
+		width: 48px;
+		height: 48px;
+		display: inline-block;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+	a, img{
+		text-decoration:none; border:none;
+	}
+    </style>
+<script type="text/javascript" src="js/smart-api-client.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/load_data.js"></script>
+<script language="javascript">
+
+function capitalize(val) {
+        val = val.toLowerCase();
+        var newVal = val.substring(0,1).toUpperCase() + val.substring(1,val.length);
+
+        return newVal;
+}
+
+function calculate_age(birth_year,birth_month,birth_day) {
+    today_date = new Date();
+    today_year = today_date.getFullYear();
+    today_month = today_date.getMonth();
+    today_day = today_date.getDate();
+    age = today_year - birth_year;
+    if ( today_month < (birth_month - 1))
+    {
+      age--;
+    }
+    if (((birth_month - 1) == today_month) && (today_day < birth_day))
+    { 
+      age--;
+    }
+  return age;
+}
+
+SMART.ready(function() {
+
+		$.when(get_demographics(), get_photograph()).then(function() {
+			
+			var testgdr = $("#pat-gender").html();
+
+				if (document.getElementById("pat-photo").src == false){
+
+					if ($('#pat-gender:contains("Female")').length > 0) {
+						document.getElementById("pat-photo").src = "photos/female_silhouette.png";
+						document.getElementById("pat-photo-url").href = "photos/female_silhouette.png";
+					}
+					else {
+						document.getElementById("pat-photo").src = "photos/male_silhouette.png";
+						document.getElementById("pat-photo-url").href = "photos/male_silhouette.png";
+					}
+				}	
+				document.getElementById("pat-photo").style.display = "block";
+		});
+ });
+ 
+</script>
+
+
+</head>
+<body>
+
+<span id="pat_name" style="color:#888;font-size:24px;font-family:Arial">...</span><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="15%" class="vtext" valign="top">
+<a alt="Photo image" id="pat-photo-url" target="_blank"><img id="pat-photo" src="photos/male_silhouette.png" /></a></td>
+<td width="42%" id="demo-left" class="vtext" valign="top">
+<span id="pat-id"></span><br/>
+<span id="pat-bday"></span><br/>
+<span id="pat-age"></span></td>
+<td width="42%" class="vtext" valign="top" style="padding-left:10px;">
+<span id="pat-gender"></span><br/>
+<span id="pat-race"></span><br/>
+
+</td>
+</tr>
+</table>
+
+  </body>
+</html>

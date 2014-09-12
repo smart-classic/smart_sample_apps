@@ -1,0 +1,12 @@
+{
+  "name" : "EMR View",
+  "description" : "SMART EMR View",
+  "author" : "Nich Wattanasin",
+  "id" : "emr-view@apps.smartplatforms.org",
+  "version" : ".1a",
+  "mode" : "frame_ui",
+  "scope" : "record",
+
+  "index" : "http://sample-apps.smartplatforms.org/framework/emrview/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/emrview/icon.png"
+}
