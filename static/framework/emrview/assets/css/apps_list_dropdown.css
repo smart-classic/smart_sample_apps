@@ -1,0 +1,85 @@
+#emr_view_header { width:100%; height: 100px; background:#fff; margin-top:7px; }
+#emr_view_demographics { float:left; width:40%; }
+#emr_view_apps { float:right; width:60%; text-align:right;}
+.ui-effects-transfer { border: 2px dotted gray; } 
+#emr_view_apps a:link {color: #1291D4; font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;}
+#emr_view_plugin_carousel .viewMoreApps{float:right; position:relative; margin-right: 10px; margin-top: -12px; color: #1C94C4;}
+/*.allAppsWrapper {display:none;}*/
+#allAppsWrapper {margin:0 auto; text-align: left; width: 100%; height:100%; position: relative; background-color:#ffffff;}
+div.showAllApp div.sortApps{width:100%; margin: 0 auto 10px; clear: both; display:table; border-bottom:2px solid #000; height:55px;}
+div.showAllApp div.sortApps li{float: left; display: inline-block; padding: 5px 5px 0; vertical-align: top;}
+div.showAllApp div.sortApps ul {list-style-type:none; display:block;}
+div.showAllApp div.sortApps li.views {margin:  10px 0;}
+div.showAllApp div.sortApps ul.filterInputs {float:left;}
+div.showAllApp div.sortApps ul.views {float:right;}
+div.showAllApp div.sortApps ul.views select{vertical-align: bottom; margin-top: 8px}
+div.showAllApp div.sortApps ul.filterInputs li {margin:  10px 0; padding:5px 0 0 10px;}
+div.showAllApp div.sortApps ul.filterInputs li select {background-color:#f6f6f6; width: 150px; height:24px; border-radius: 6px; border: 1px solid #cccccc;}
+div.showAllApp div.sortApps ul.filterInputs li input {padding: 0 0 0 5px; background-color:#f6f6f6; width: 200px; height:20px; border-radius: 6px; border: 1px solid #cccccc;}
+
+div.showAllApp ul#showAllApps {list-style-type:none; clear: both; position: relative;}
+div.showAllApp ul#showAllApps li {float: left; display: inline-block; vertical-align: top; text-align:left; width: 195px; padding:0 10px; height: 105px;}
+div.showAllApp ul#showAllApps li:hover, div.showAllApp ul#showAllApps li:focus {background-color:#fdf5ce; color: #000; border-radius: 6px;}
+#displaybox {
+	z-index: 10000;
+	filter: alpha(opacity=50); /*older IE*/
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50); /* IE */
+	-moz-opacity: .50; /*older Mozilla*/
+	-khtml-opacity: 0.5;   /*older Safari*/
+	opacity: 0.5;   /*supported by current Mozilla, Safari, and Opera*/
+	background-color:#000000;
+	position:fixed; top:0px; left:0px; width:100%; height:100%; color:#FFFFFF; text-align:center; vertical-align:middle;
+}
+div.showAllApp ul#showAllApps li div.appContent span.detailed {display:none;}
+div.showAllApp ul#showAllApps li div.back {white-space: nowrap; width:5%; display:none; cursor:pointer; font-weight: normal; position: relative; top: -8px;}
+div.showAllApp ul#showAllApps li div.back:hover {text-decoration: underline;}
+
+div.showAllApp ul#showAllApps li div.appImage {float:left; width:38px; cursor: pointer; }
+div.showAllApp ul#showAllApps li div.appImage img{width: 32px; height: 32px; }
+
+div.showAllApp ul#showAllApps li.viewApps2 {width: 98%; float: none; clear: both;}
+div.showAllApp ul#showAllApps li.viewApps2 div.appContent span.appDescription {min-height: 20px; height:auto;}
+div.showAllApp ul#showAllApps li.viewApps2 div span {display: inline;}
+div.showAllApp ul#showAllApps li.viewApps2 div.appImage{width: 22px;}
+div.showAllApp ul#showAllApps li.viewApps2.addedDetailed div.appImage img{width: 32px; height: 32px; }
+div.showAllApp ul#showAllApps li.viewApps2 div.appImage img{width: 18px; height: 18px; }
+div.showAllApp ul#showAllApps li.viewApps2 div.appContent {width: auto;}
+div.showAllApp ul#showAllApps li.viewApps2 div.appContent span {display: inline;}
+div.showAllApp ul#showAllApps li.viewApps2 div.appContent span.listView {margin-right: 7px; display: block;}
+div.showAllApp ul#showAllApps li.viewApps2 div.appContent span.appDescription {width: auto;}
+
+
+div.showAllApp ul#showAllApps li div.appContent {float:left; width: 155px;}
+div.showAllApp ul#showAllApps li div.appContent span {display: block; padding-right: 7px;}
+div.showAllApp li div.appContent span.addApp {font-weight:bold; cursor: pointer; background: #fdf5ce url(../img/plus.gif) no-repeat 7px center; padding-left:20px; font-size:11px; border-radius: 6px; border: 1px solid #fbcb09; color: #c77405; width: 68px; height:16px; margin-top:4px;}
+div.showAllApp li div.appContent span.addApp:hover {background-color: #f6f6f6; border: 1px solid #ccc; color: #1c94c4;}
+div.showAllApp li.addedDetailed div.appContent span.addApp:hover {}
+#simplemodal-container {background-color: #fff;}
+div.showAllApp ul#showAllApps .hidden {display: none;}
+
+div.showAllApp ul#showAllApps li div span {display: block;}
+div.showAllApp ul#showAllApps li.addedDetailed div.appImage {width:38px;}
+div.showAllApp ul#showAllApps li.viewApps2.addedDetailed {width: 97%; height: auto;  border-bottom: none;}
+div.showAllApp ul#showAllApps li.addedDetailed div.appContent{width: 100%; min-height: 300px;}
+div.showAllApp ul#showAllApps li.addedDetailed div.appContent span.detailed{padding: 5px 0 25px; margin-left: 200px; overflow: auto; margin-top: 22px;}
+div.showAllApp ul#showAllApps li.addedDetailed div.appContent span.by{color: #444; font-size: 11px; margin: 5px 0 8px; width: 150px;}
+div.showAllApp ul#showAllApps li.addedDetailed:focus, div.showAllApp ul#showAllApps li.addedDetailed:hover {background-color: transparent; }
+div.showAllApp ul#showAllApps li.addedDetailed div.appImage p.appImage  {position: fixed; width: 38px; top: 70px;}
+div.showAllApp ul#showAllApps li.addedDetailed div.appContent span.addApp  {}
+div.showAllApp ul#showAllApps li.addedDetailed div.appContent div.addApp  {position: fixed; margin-left: 44px; height: 80px; bottom: 0;}
+div.showAllApp ul#showAllApps li.addedDetailed div.appContent span.addApp {font-size:16px; color: #c77405; height:25px; margin-top:4px; width: 95px; }
+div.showAllApp ul#showAllApps li.viewApps2 {height: auto; height: 22px; border-bottom: 1px dotted #F2F2F2; margin: 2px 0 0;}
+
+div.showAllApp ul#showAllApps li.viewApps2.addedDetailed span.detailed span{display: block !important;}
+
+div.showAllApp ul#showAllApps li div.appContent span.appDescription {width: 155px; min-height: 20px; max-height:65px; margin-bottom: 0; line-height: 16px;}
+div.showAllApp ul#showAllApps li div.appContent span.listView {margin-right: 7px; display: none;}
+div.showAllApp ul#showAllApps li.addedDetailed div.appContent span.appTitle {font-size: 20px; with: 90%;}
+div.showAllApp ul#showAllApps li.addedDetailed span.detailed span h2{font-size: 16px;}
+
+div.showAllApp ul#showAllApps li.addedDetailed span.titleBy {position: fixed; margin-left: 44px;}
+
+div.showAllApp ul#showAllApps .ellipsis {white-space: nowrap; overflow: hidden;}
+div.showAllApp ul#showAllApps .ellipsis.multiline {white-space: normal;}
+.ellipsis {white-space: nowrap; overflow: hidden;}
+.ellipsis.multiline {white-space: normal;}

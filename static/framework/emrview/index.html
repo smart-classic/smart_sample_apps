@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SMART i2b2 EMR View</title>
+    <!--
+     *  *************************
+     *     SMART EMR View App
+     *            v1.0.3
+     *  *************************
+     *  @modified: 11/14/2013
+     *  Author:
+     *     Nich Wattanasin
+     *     
+     */-->
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" type="text/css" href="assets/jquery.ui.custom.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/skin.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/overlay-apple.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/layout-default-latest.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/emr_view.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/apps_list_dropdown.css" />
+    <link rel="stylesheet" type="text/css" href="assets/ui.notify.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/basic.css">	
+    <link rel="stylesheet" type="text/css" href="assets/css/osx.css">
+
+    <script type="text/javascript" src="emrview_config_data.js"></script>
+
+    <!-- Instantiate SMART, to access the container's SMART Connect Host -->
+    <script type="text/javascript" src="assets/js/smart-api-client.js"></script>
+    <script type="text/javascript" src="assets/js/smart-api-container.js"></script>
+
+    <!-- Instantiate SMART_HOST, to provide a SMART Connect Host to framed apps-->
+    <script type="text/javascript" src="smart-frame-ui.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/emrview-lib.js"></script>
+    <script type="text/javascript" src="assets/js/emrview.plugin.carousel.js"></script>
+    <script type="text/javascript" src="assets/js/emrview.plugin.allapps.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.autoellipsis.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-ui-latest.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.ui.tooltip.js"></script>
+    <script type="text/javascript" src="assets/js/jquery_ui_layout.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.jcarousel.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.simplemodal.js"></script>
+    <script type="text/javascript" src="assets/js/osx.js"></script>
+    <script type="text/javascript" src="assets/js/basic.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.notify.js"></script>
+    <script type="text/javascript">
+
+var EMRView_version = "1.03";
+
+jQuery(document).ready(function() {
+     jQuery("#savelink").attr("title", "v" + EMRView_version);
+     SMART_HOST.on("request_fullscreen", function(app_instance) {
+        var req_widget_id = app_instance.iframe.id.substring(5);
+	var r=confirm("An app is requesting full screen. Allow?");
+	if (r==true){
+		  EMRView.canvas.zoomAppWidget(req_widget_id);
+	//goFullscreen(req_widget_id);
+  	}
+     });
+
+     SMART.ready(function() {
+        	
+        if (SMART.context.record) {
+	   $('#record_id').empty();
+	   $('#record_id').append($('<option>').text(SMART.record.id).attr('value', SMART.record.id));
+	   $("#record_name").val(SMART.record.full_name);
+	   $("#pat_name").html(SMART.record.full_name);
+	   $("#pat_id").html("Patient Number: " + SMART.record.id);
+	};
+
+        SMART.get_user_preferences().success(function(prefpayload) {
+
+	   EMRView.canvas.preferences = prefpayload.body;
+	   $("#loading-mask").hide();
+
+           SMART.get_app_manifests().success(function(manifestpayload) {
+	      var manifests = manifestpayload.json;
+	      EMRView.canvas.manifests = manifests;
+	      
+		  $(".ellipsis").ellipsis();
+	      $(".tooltip-default").tooltip();
+	      EMRView.canvas.loadCanvas();
+		  
+		  $("div.widget-content").find("div.ui-resizable-handle").append("<span></span>");
+	      //alert('MANIFESTS_get > loadCanvas() done');
+		  $('.ui-layout-toggler').click(function() {
+			$('iframe').each(function() {
+				$("#columns .widget-content" ).css('width','100%');
+			});
+		  });
+
+	      $('#savelink').click(function(){
+                var $dialog = $('<div></div>')
+                .html("<textarea id='savexml' rows='20' cols='80'>" + EMRView.canvas.preferences  + "</textarea>")
+                .dialog({
+                   autoOpen: false,
+                   title: 'EMR View XML Debugger',
+                   width: 600,
+                   modal: true,
+                   buttons: {
+                    "Save XML": function() {
+                       var savexmlstring = $('#savexml').val();
+		       parent.i2b2.SmartContainer.savePreferences(savexmlstring);
+                       $( this ).dialog( "close" );
+                       alert('Canvas Saved!');
+                    },
+                    "Load XML": function() {
+                       var loadxmlstring = $('#savexml').val();
+                       EMRView.canvas.preferences = loadxmlstring;
+                       $( this ).dialog( "close" );
+                       alert('Canvas Loaded!');
+                    },
+                    Cancel: function() {
+                      $( this ).dialog( "close" );
+                    }
+                   }
+                });
+                $dialog.dialog('open');
+                return false;
+             });
+
+	     var person_manifest = {
+	        "name" : "Person Info",
+			"description" : "View demographics on an individual",
+			"author" : "i2b2",
+			"id" : "emr-view@apps.smartplatforms.org",
+			"version" : ".1a",
+			"mode" : "ui",
+			"scope" : "record",
+			"index" : demographics_index_url,
+			"icon" :  demographics_icon_url
+	     }
+
+	     var app_context = jQuery.extend({}, SMART.context);
+	     app_context.record = {
+	        id: $("#record_id").val(),
+		full_name: $("#record_name").val()
+	     };
+
+	     SMART_HOST.launch_app(person_manifest, app_context, {elt: $("#demoframe")});
+		
+       }); // end MANIFESTS_get
+
+     }); // end PREFERENCES_get
+
+     //nich
+     SMART.api_call(
+    {
+      method: 'GET',
+      url: "/records/",
+      data: {}
+    },
+    function(response) {
+       $.each($.parseJSON(response.body), function(i, value) {
+            $('#record_id').append($('<option>').text(value).attr('value', value));
+        });
+
+     //alert('data received: ' + response.body); 
+     });
+	  
+   }); //end SMART.ready
+
+
+     SMART_HOST.get_iframe = function (app_instance, callback){
+
+	if(app_instance.options.launched_by == undefined){
+		callback(app_instance.options.elt[0]);
+	}
+	else{ // app launching app
+		var launching_app_id = app_instance.manifest.id;
+		var launching_title = '<img src="assets/img/newwindow.png" title="' + app_instance.manifest.name + ' launched by ' + app_instance.options.launched_by.manifest.name + '"> '+ app_instance.manifest.name;
+		
+		var launched_widget_id = EMRView.canvas.createAppWidgetSingle(launching_app_id, launching_title, 'launchview');
+		$("#launchview").show();
+		$("#launchview").css('height',window.innerHeight-75);
+	        $('#'+launched_widget_id +' div.widget-content').css('height',window.innerHeight-75);
+
+//		$('#'+launched_widget_id +' div.widget-head a.close');
+
+		var launched_iframe = $("#frame"+launched_widget_id);
+		callback(launched_iframe[0]);
+	}
+     };
+
+     $('#record_id').bind('click', function(e) {
+       $('#record_id').change(function() {
+         parent.clicked('emr-view@apps.smartplatforms.org',$('#record_id').val());
+       });
+     });
+
+     EMRView.general.init();
+	 
+	 // Search for a specific App(s) - A simple Filter Implementation
+	  $("#filter").keyup(function () {
+        var filter = $(this).val(), count = 0;
+        $(".filtered li").each(function () {
+            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                $(this).addClass("hidden").hide();
+            } else {
+                $(this).removeClass("hidden").show();
+                count++;
+            }
+        });
+    });
+	
+	// Selecting a specific App view - Default view is Enlarge Apps
+	
+	var valApplicable = "Enlarge view";
+    $('[name="viewapps" ][value="' + valApplicable + '"]').attr('checked', true);
+	
+	$("input:radio[id=viewapps2]").click(function() {
+		$("span.detailed").hide();
+	    var selected = $(this).attr('checked', true);
+		if ($(this).is(":checked")){
+			$("#showAllApps").children("li").addClass("viewApps2");
+			$("#showAllApps").children("li").find("div span").css("display", "inline"); 
+			$("#showAllApps").children("li").find("span.iconView").css("display", "none");
+			$("#showAllApps").children("li").css("width", "98%").find("span.appDescription").css("display", "inline"); $("span.detailed").hide();
+			$("#showAllApps").children("li").find("span.by").hide();		}
+		else {
+			$("#showAllApps").children("li").removeClass("viewApps2");
+			$("#showAllApps").children("li").find("div span").css("display", "block"); 
+			$("#showAllApps").children("li").find("span.listView").css("display", "none");
+			$("#showAllApps").children("li").find("span.iconView").css("display", "block");
+			$("#showAllApps").children("li").css("width", "auto").find("span.appDescription").css("display", "block");
+		}
+	});
+	$("input:radio[id=viewapps1]").click(function() {
+		
+	    var selected = $(this).attr('checked', true);
+		if ($(this).is(":checked")){
+			$("#showAllApps").children("li").removeClass("viewApps2");
+			$("#showAllApps").children("li").find("div span").css("display", "block"); 
+			$("#showAllApps").children("li").find("span.listView").css("display", "none");
+			$("#showAllApps").children("li").css("width", "auto").find("span.appDescription").css("display", "block");
+			$("span.detailed").hide();
+			$("#showAllApps").children("li").find("span.by").hide();
+		}
+	});
+
+    }); //end jQuery(document).ready
+    </script>
+
+</head>
+<body>
+<div id="loading-mask"><img src="assets/images/loading-prefs.gif"/></div>
+<ul style="position: absolute;z-index:10000;width:95%;" id="zoomview"></ul>
+<ul style="position: absolute;z-index:10000;width:95%;margin-left:15px;margin-top:15px;" id="launchview"></ul>
+<!------------------------------------------->
+<!--    Start EMRView UI Layout North      -->
+<!------------------------------------------->
+<div id="header" class="ui-layout-north">
+    <h3 class="ui-widget-header">
+    <span style="float:left"><img id="savelink" src="assets/img/emrview_icon.png" border="0" align="absbottom" /> Patient Centric View</span><span style="float:right;margin-top:-5px;">Patient Number: <select name="record_id" id="record_id"><option>...</option></select></span>&nbsp;</h3>
+
+    <div id="emr_view_header">
+        <div id="emr_view_demographics">
+	    <div style="margin-left:10px">
+	        <iframe SEAMLESS src='about:blank' id='demoframe' width='400' height='100' border='0' frameborder='0'></iframe>
+	        <span id="pat_name" style="color:#888;font-size:32px;font-family:Arial;display:none;"></span><br/>
+		<span id="pat_id" style="color:#000;font-size:12px;font-family:Arial;display:none;"></span>
+		<input id="record_name" value='' style="display:none;" />
+	    </div>
+	</div> <!-- end emr_view_demographics -->
+	<div id="emr_view_apps">
+	    <div id="emr_view_plugin_carousel" style="float:right; width:500px;text-align:left;display:none;">
+	       	<span style="font-size:12px;color:#3a5479;padding-left:12px;">Click an icon to add a new SMART app</span><span id="basic-modal" style="float:right; margin-right:10px;"><a class="basic" href="#" rel="#allAppsWrapper"><img src="assets/img/more.gif" border="0" title="View More Apps" /></a></span><br/>
+	        <div class="carousel_widget"><span style="float:left;position:relative;left:-36px;top:-1px;"><a href="#" id="link_normal_mode" onclick="return false;"><img src="assets/img/customize-close.png" border="0" title="Return to Normal Mode" /></a></span>
+				<ul id="mycarousel" class="jcarousel-skin-tango"></ul>
+		</div> <!-- end carousel_widget -->
+	    </div> <!-- end emr_view_plugin_carousel -->
+	    <div id="emr_view_edit_entrance" style="float:right;width:100px;text-align:center;padding-top:10px;">
+	        <span style="color:#000;font-size:11px;"><a id="link_edit_mode" href="#" onclick="return false;"><img src="assets/img/customize.png" border="0" /></a></span><br/>
+	    </div> <!-- end emr_view_edit_entrance -->
+	</div> <!-- end emr_view_apps -->
+    </div> <!-- end emr_view_header -->
+
+    <div style="float:right; display: none;">
+        <a href="#" style=" background: transparent url(assets/images/ui-icons_222222_256x240.png) no-repeat -19px -82px; height:15px; width: 12px; margin: 0 18px; display: block; text-decoration: none;"><span style="visibility: hidden;">X</span></a>
+	<a href="#" style="text-align: center; text-decoration: none; font-size:11px; display: none;">Expand</a>
+    </div>
+</div> <!-- end header -->
+		
+<!------------------------------------------->
+<!--    End EMRView UI Layout North	   -->
+<!------------------------------------------->
+
+<!------------------------------------------->
+<!--    Start EMRView UI Layout Center     -->
+<!------------------------------------------->
+
+
+<div class="ui-layout-center"> 
+        <span id="emrview-view-controls" style="display:none;float:right;margin-top:5px;margin-right:5px">
+            <input id="emrview-view-save" type="button" value="Save Layout" /><input id="emrview-view-rename" type="button" value="Rename" /><input id="emrview-view-delete" type="button" value="Delete View" />
+
+            <span class="tooltip-default ui-widget ui-state-default ui-corner-all" style="padding:.4em 1em;color:gray;">
+            <a href="#" onclick="javascript:EMRView.canvas.viewColumns(1,'columns'); return false;" title="1-Column Layout" class="columnsLinkView tooltip-default"><img src="assets/img/column1.gif" border="0" align="absmiddle"></a>&nbsp;
+            <a href="#" onclick="javascript:EMRView.canvas.viewColumns(2,'columns'); return false;" title="2-Column Layout" class="columnsLinkView tooltip-default"><img src="assets/img/column2.gif" border="0" align="absmiddle"></a>&nbsp;
+            <a href="#" onclick="javascript:EMRView.canvas.viewColumns(3,'columns'); return false;" title="3-Column Layout" class="columnsLinkView tooltip-default"><img src="assets/img/column3.gif" border="0" align="absmiddle"></a>&nbsp;
+            </span>
+        </span>
+
+	<div style="padding-left:20px;padding-top:10px;border-top:1px solid #a1bbde;"><span id="emrview-view-name" style="color:#888;font-size:25px;font-family:Arial">...</span>
+	&nbsp;&nbsp;
+	</div>
+	
+	<div id="columns" class="ui-layout-content">       
+	<!-- Start Canvas of Columns -->        
+	</div>
+</div> <!-- end ui-layout-center -->
+<!------------------------------------------->
+<!--    End EMRView UI Layout Center       -->
+<!------------------------------------------->
+
+<!------------------------------------------->
+<!--    Start EMRView UI Layout West       -->
+<!------------------------------------------->
+
+<div class="ui-layout-west" style="">
+	<div><span id="emrview-new-view" style="float:right;margin-top:6px;margin-right:4px;display:none;"><a href="#" onclick="javascript:EMRView.views.newView();return false" title="Create a New View" class="tooltip-default"><img src="assets/img/add_new.png" border="0" /></a></span><h3 class="ui-widget-header">Select View</h3></div>
+	<div class="ui-layout-content" id="emrview-views">
+	<!-- emrview views are inserted here dynamically -->
+
+	</div> <!-- end ui-layout-content -->
+</div> <!-- end ui-layout-west -->
+
+<!------------------------------------------->
+<!--    End EMRView UI Layout West         -->
+<!------------------------------------------->
+ 
+	<script type="text/javascript"> 
+	var outerLayout; 
+	jQuery(document).ready(function () { 
+		outerLayout = $('body').layout({ 
+
+		north__spacing_open:0 
+		}); 
+	}); 
+	</script> 
+	
+<!--- bottom notifications --->
+<div id="emrview-notices" style="top:auto; right:0; bottom:0; margin:0 0 10px 10px;z-index:20000;">
+   <div id="emrview-notice">
+      <p>#{text}</p>
+   </div>
+</div>
+
+<!-- Display all available apps -->
+	<div id="allAppsWrapper" class="allAppsWrapper">
+		<div id="basic-modal-content" class="showAllApp" style="z-index:20000; position:relative; width: 95%; margin:0 auto;">
+			<div class="sortApps">
+				<form>
+				
+				<ul class="filterInputs">
+					<li>
+						<img src="assets/images/magnifer.gif" alt="Search" title="Search" class="searchFilter" />
+						<input type="text" id="filter" name="filter" />
+					</li>
+				</ul>
+				<ul class="views">
+					<li class="views">Views:</li>
+					<li>
+						<fieldset>
+							
+							<label><input type="radio" value="Enlarge view" id="viewapps1" class="enlargeView radioViews" name="viewapps" /> Icon view</label>
+						</fieldset>
+						<fieldset>
+							
+							<label><input type="radio" value="List view" id="viewapps2" class="listView radioViews" name="viewapps" /> List view</label>
+						</fieldset>
+					</li>
+				</ul>
+				</form>
+			</div>
+			<ul style="" id="showAllApps" class="filtered">
+				
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
